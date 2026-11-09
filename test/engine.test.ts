@@ -103,7 +103,7 @@ describe.skipIf(!built)('the Austen engine', () => {
       expect(a.why.split(/(?<=\.)\s+(?=[A-Z])/).length).toBe(1);
       expect(m.cite(a.model.id)!.text).toBe(a.model.text);
     }
-    expect(r.aligned[1]!.why).toMatch(/^This sentence joins two sentences \(4, 4 words\) into one of 14, replaces “grabbed”, “super” \(never in Austen\), and uses her “judgement in abstract nouns”, modelled on .+, ¶ \d+\.$/);
+    expect(r.aligned[1]!.why).toMatch(/^This sentence uses her “judgement in abstract nouns”, joins two sentences \(4, 4 words\) into one of 14, and removes “grabbed”, “super” \(never in Austen\), modelled on .+, ¶ \d+\.$/);
   });
 
   it('explains a rewritten sentence by what changed, and links the move it makes', () => {

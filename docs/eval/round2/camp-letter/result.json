@@ -1,0 +1,96 @@
+{
+ "text": "My dear Mother and Father,\n\nI cannot say that camp is all I could wish, though I would not call it unsatisfactory; the food is disagreeable, and my companion in the cabin sleeps with a noise I never met with before. Yesterday we went out upon the lake in a boat, and I overturned it, and all were amused at my expense; my mortification was extreme.\n\nBut there is a girl of the name of Kayla, who is really very agreeable; she is from Ohio, and knows a great deal about horses. We walk by the lake after dinner, and talk of nothing in particular; I flatter myself that she likes me, but I am not certain of it.\n\nBe so good as to send more refreshments, and the little device without which my instrument is useless, and which I entirely forgot; the advisers are somewhat strict, but for the most part satisfactory.\n\nYour affectionate son, Jake.\n\nP.S. I beg that you will not suffer Max to use my apartment.",
+ "aligned": [
+  {
+   "after": "My dear Mother and Father,",
+   "before": [
+    "Dear Mom and Dad,"
+   ]
+  },
+  {
+   "after": "I cannot say that camp is all I could wish, though I would not call it unsatisfactory; the food is disagreeable, and my companion in the cabin sleeps with a noise I never met with before.",
+   "before": [
+    "Camp is okay I guess.",
+    "The food is gross and my bunkmate snores like crazy."
+   ]
+  },
+  {
+   "after": "Yesterday we went out upon the lake in a boat, and I overturned it, and all were amused at my expense; my mortification was extreme.",
+   "before": [
+    "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+    "It was so embarrassing."
+   ]
+  },
+  {
+   "after": "But there is a girl of the name of Kayla, who is really very agreeable; she is from Ohio, and knows a great deal about horses.",
+   "before": [
+    "But there's this girl named Kayla who's really cool.",
+    "She's from Ohio and she knows a ton about horses."
+   ]
+  },
+  {
+   "after": "We walk by the lake after dinner, and talk of nothing in particular; I flatter myself that she likes me, but I am not certain of it.",
+   "before": [
+    "We hang out at the lake after dinner and talk about stuff.",
+    "I think she likes me but I'm not sure."
+   ]
+  },
+  {
+   "after": "Be so good as to send more refreshments, and the little device without which my instrument is useless, and which I entirely forgot; the advisers are somewhat strict, but for the most part satisfactory.",
+   "before": [
+    "Can you send more snacks?",
+    "And my phone charger, which I totally forgot.",
+    "The counselors are kind of strict but mostly fine."
+   ]
+  },
+  {
+   "after": "Your affectionate son, Jake.",
+   "before": [
+    "Love, Jake"
+   ]
+  },
+  {
+   "after": "P.S. I beg that you will not suffer Max to use my apartment.",
+   "before": [
+    "P.S. Please don't let Max use my room."
+   ]
+  }
+ ],
+ "explanation": "A hedge stays a hedge, joined by semicolons into longer periods; slang and modern things are rendered by what they do.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "The food is gross and my bunkmate snores like crazy.",
+   "after": "the food is disagreeable, and my companion in the cabin sleeps with a noise I never met with before",
+   "austen": "“I am sorry to say that I am very far from well; and Jemima has just told me that the butcher says there is a bad sore-throat very much about.",
+   "cite": "Persuasion, ch. 18, ¶ 9",
+   "verified": true
+  },
+  {
+   "technique": "Judgement in abstract nouns",
+   "before": "It was so embarrassing.",
+   "after": "my mortification was extreme",
+   "austen": "I will tell you why she is out of spirits.",
+   "cite": "Persuasion, ch. 6, ¶ 27",
+   "verified": true
+  },
+  {
+   "technique": "Feeling shown by conduct",
+   "before": "I think she likes me but I'm not sure.",
+   "after": "I flatter myself that she likes me, but I am not certain of it",
+   "austen": "Marianne coloured, and replied very hastily, “Where, pray?”",
+   "cite": "Sense and Sensibility, ch. 13, ¶ 62",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "Camp is okay I guess.",
+   "after": "I cannot say that camp is all I could wish, though I would not call it unsatisfactory",
+   "austen": "I dare say she will not be in good humour again this month; but I am determined I will not be cross; it is not a little matter that puts me out of temper.”",
+   "cite": "Northanger Abbey, ch. 15, ¶ 4",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 18,
+ "scoreAfter": 92
+}

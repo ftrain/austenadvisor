@@ -1,0 +1,83 @@
+{
+ "text": "I stood in need of milk, and, taking up my keys, drove to the shop, which was extremely crowded; a man, who was talking to some absent friend, had so entirely stopped the passage, that I could not proceed.\n\nI did not wish to be uncivil, and begged his pardon; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk. I then saw, at the counter, one to whom I had formerly been attached, and was, in effect, terrified.\n\nShe spoke to me, however, with great composure, observing that it was a long time since we had met, and that I looked very well; to which I answered with thanks, and a compliment of the same kind.\n\nI paid, and left the shop as quickly as I could; and I may honestly say that it was ten minutes, the most awkward of my week.",
+ "aligned": [
+  {
+   "after": "I stood in need of milk, and, taking up my keys, drove to the shop, which was extremely crowded; a man, who was talking to some absent friend, had so entirely stopped the passage, that I could not proceed.",
+   "before": [
+    "I needed milk.",
+    "So I grabbed my keys and drove to the store.",
+    "It was super crowded.",
+    "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
+   ]
+  },
+  {
+   "after": "I did not wish to be uncivil, and begged his pardon; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk.",
+   "before": [
+    "I didn't want to be rude.",
+    "I said excuse me.",
+    "He totally ignored me.",
+    "Finally he moved and I got the milk."
+   ]
+  },
+  {
+   "after": "I then saw, at the counter, one to whom I had formerly been attached, and was, in effect, terrified.",
+   "before": [
+    "Then I saw my ex at the checkout and I basically panicked."
+   ]
+  },
+  {
+   "after": "She spoke to me, however, with great composure, observing that it was a long time since we had met, and that I looked very well; to which I answered with thanks, and a compliment of the same kind.",
+   "before": [
+    "\"Hey,\" she said.",
+    "\"Long time no see.",
+    "You look great.\"",
+    "\"Thanks,\" I said.",
+    "\"You too.\""
+   ]
+  },
+  {
+   "after": "I paid, and left the shop as quickly as I could; and I may honestly say that it was ten minutes, the most awkward of my week.",
+   "before": [
+    "I paid and left as fast as I could.",
+    "Honestly, it was the most awkward ten minutes of my week."
+   ]
+  }
+ ],
+ "explanation": "Short sentences are joined by commas and semicolons into periods; modern things are rendered by what they do; the dialogue becomes reported speech in the narrator's syntax.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "So I grabbed my keys and drove to the store.",
+   "after": "I stood in need of milk, and, taking up my keys, drove to the shop, which was extremely crowded; a man, who was talking to some absent friend, had so entirely stopped the passage, that I could not proceed.",
+   "austen": "She then sat still five minutes longer; but unable to waste such a precious occasion, she suddenly got up, and saying to Kitty, “Come here, my love, I want to speak to you,” took her out of the room.",
+   "cite": "Pride and Prejudice, ch. 55, ¶ 13",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported",
+   "before": "\"Hey,\" she said. \"Long time no see. You look great.\"",
+   "after": "She spoke to me, however, with great composure, observing that it was a long time since we had met, and that I looked very well",
+   "austen": "Mrs. Bennet assured her that they never sat there after dinner; and then added—",
+   "cite": "Pride and Prejudice, ch. 56, ¶ 12",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "I basically panicked.",
+   "after": "and was, in effect, terrified.",
+   "austen": "She not unfrequently stopped at the Parsonage, and had a few minutes’ conversation with Charlotte, but was scarcely ever prevailed on to get out.",
+   "cite": "Pride and Prejudice, ch. 30, ¶ 2",
+   "verified": true
+  },
+  {
+   "technique": "Feeling shown by conduct",
+   "before": "I didn't want to be rude. I said excuse me.",
+   "after": "I did not wish to be uncivil, and begged his pardon",
+   "austen": "But now—in short, she made herself as miserable as possible for about half an hour, went down when the clock struck five, with a broken heart, and could scarcely give an intelligible answer to Eleanor’s inquiry if she was well.",
+   "cite": "Northanger Abbey, ch. 25, ¶ 1",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 15,
+ "scoreAfter": 80
+}

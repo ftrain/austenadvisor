@@ -1,0 +1,174 @@
+{
+ "text": "I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it. A man was standing in the very heart of the passage, talking to someone far away, and stopping the way of every body else.\n\nI was unwilling to be rude, and said that I begged his pardon, as civilly as I could; but he took no very great notice of me, and it was some time before he thought proper to move, and I might get my milk. I then saw a lady with whom I had formerly been intimate standing at the counter, and was essentially alarmed.\n\n\"It is a long time since we met,\" said she, \"and you look remarkably well.\"\n\n\"I thank you,\" said I, \"and you the same;\" and I paid and left the shop as quickly as I could, having passed, I believe, the most awkward ten minutes of my week, which was a very sufficient allowance for a meeting of so little consequence.",
+ "aligned": [
+  {
+   "after": "I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it.",
+   "before": [
+    "I needed milk.",
+    "So I grabbed my keys and drove to the store.",
+    "It was super crowded."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (3, 10, 4 words) into one of 34, and removes “grabbed”, “super” (never in Austen), modelled on Pride and Prejudice, ch. 43, ¶ 4.",
+   "model": {
+    "id": 8363,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 43,
+    "chapterTitle": "XLIII",
+    "paragraph": 4,
+    "sentence": 1,
+    "text": "They descended the hill, crossed the bridge, and drove to the door; and, while examining the nearer aspect of the house, all her apprehensions of meeting its owner returned.",
+    "cite": "Pride and Prejudice, ch. 43, ¶ 4"
+   }
+  },
+  {
+   "after": "A man was standing in the very heart of the passage, talking to someone far away, and stopping the way of every body else.",
+   "before": [
+    "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
+   ],
+   "why": "This sentence removes “guy”, “hoodie”, “blocking”, “aisle” (never in Austen), modelled on Pride and Prejudice, ch. 18, ¶ 74.",
+   "model": {
+    "id": 6427,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 18,
+    "chapterTitle": "XVIII",
+    "paragraph": 74,
+    "sentence": 6,
+    "text": "Mr. Bingley and Jane were standing together, a little detached from the rest, and talked only to each other.",
+    "cite": "Pride and Prejudice, ch. 18, ¶ 74"
+   }
+  },
+  {
+   "after": "I was unwilling to be rude, and said that I begged his pardon, as civilly as I could; but he took no very great notice of me, and it was some time before he thought proper to move, and I might get my milk.",
+   "before": [
+    "I didn't want to be rude.",
+    "I said excuse me.",
+    "He totally ignored me.",
+    "Finally he moved and I got the milk."
+   ],
+   "why": "This sentence uses her “speech reported”, “understatement and litotes”, joins four sentences (6, 4, 4, 8 words) into one of 44, and removes “ignored” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 17.",
+   "model": {
+    "id": 11612,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 7,
+    "chapterTitle": "VII",
+    "paragraph": 17,
+    "sentence": 2,
+    "text": "She began then to be afraid of appearing rude and impatient; and walked to meet them with a great anxiety to avoid the suspicion.",
+    "cite": "Mansfield Park, ch. 7, ¶ 17"
+   }
+  },
+  {
+   "after": "I then saw a lady with whom I had formerly been intimate standing at the counter, and was essentially alarmed.",
+   "before": [
+    "Then I saw my ex at the checkout and I basically panicked."
+   ],
+   "why": "This sentence removes “ex”, “checkout”, “basically”, “panicked” (never in Austen) and brings in her “counter”, modelled on Sense and Sensibility, ch. 33, ¶ 3.",
+   "model": {
+    "id": 2934,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 33,
+    "chapterTitle": "XXXIII",
+    "paragraph": 3,
+    "sentence": 2,
+    "text": "All that could be done was, to sit down at that end of the counter which seemed to promise the quickest succession; one gentleman only was standing there, and it is probable that Elinor was not without hope of exciting his politeness to a quicker despatch.",
+    "cite": "Sense and Sensibility, ch. 33, ¶ 3"
+   }
+  },
+  {
+   "after": "\"It is a long time since we met,\" said she, \"and you look remarkably well.\"",
+   "before": [
+    "\"Hey,\" she said.",
+    "\"Long time no see.",
+    "You look great.\""
+   ],
+   "why": "This sentence uses her “speech tagged after its first clause” and joins three sentences (3, 4, 3 words) into one of 15, modelled on Pride and Prejudice, ch. 1, ¶ 5.",
+   "model": {
+    "id": 4931,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 1,
+    "chapterTitle": "I",
+    "paragraph": 5,
+    "sentence": 1,
+    "text": "“But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.”",
+    "cite": "Pride and Prejudice, ch. 1, ¶ 5"
+   }
+  },
+  {
+   "after": "\"I thank you,\" said I, \"and you the same;\" and I paid and left the shop as quickly as I could, having passed, I believe, the most awkward ten minutes of my week, which was a very sufficient allowance for a meeting of so little consequence.",
+   "before": [
+    "\"Thanks,\" I said.",
+    "\"You too.\"",
+    "I paid and left as fast as I could.",
+    "Honestly, it was the most awkward ten minutes of my week."
+   ],
+   "why": "This sentence uses her “ironic verdict”, “judgement in abstract nouns” and joins four sentences (3, 2, 9, 11 words) into one of 46, modelled on Northanger Abbey, ch. 25, ¶ 13.",
+   "model": {
+    "id": 27349,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 25,
+    "chapterTitle": "XXV",
+    "paragraph": 13,
+    "sentence": 1,
+    "text": "Nothing further was said for a few minutes; and then speaking through her tears, she added, “I do not think I shall ever wish for a letter again!”",
+    "cite": "Northanger Abbey, ch. 25, ¶ 13"
+   }
+  }
+ ],
+ "explanation": "Short sentences are joined into periods; the modern things are rendered by their office (the counter, someone far away); the excuse becomes reported speech and the slight is told by understatement.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "I needed milk.",
+   "after": "I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it.",
+   "austen": "She then sat still five minutes longer; but unable to waste such a precious occasion, she suddenly got up, and saying to Kitty, “Come here, my love, I want to speak to you,” took her out of the room.",
+   "cite": "Pride and Prejudice, ch. 55, ¶ 13",
+   "verified": true
+  },
+  {
+   "technique": "Speech tagged after its first clause",
+   "before": "\"Hey,\" she said.",
+   "after": "\"It is a long time since we met,\" said she, \"and you look remarkably well.\"",
+   "austen": "“But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.”",
+   "cite": "Pride and Prejudice, ch. 1, ¶ 5",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported",
+   "before": "I said excuse me.",
+   "after": "said that I begged his pardon, as civilly as I could",
+   "austen": "In a few minutes the servant returned, and with a look which did not quite confirm his words, said he had been mistaken, for that Miss Tilney had walked out.",
+   "cite": "Northanger Abbey, ch. 12, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "He totally ignored me.",
+   "after": "he took no very great notice of me",
+   "austen": "In a few moments Catherine, with unaffected pleasure, assured her that she need not be longer uneasy, as the gentlemen had just left the Pump Room.",
+   "cite": "Northanger Abbey, ch. 6, ¶ 36",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "Honestly, it was the most awkward ten minutes of my week.",
+   "after": "which was a very sufficient allowance for a meeting of so little consequence",
+   "austen": "In short, Catherine, everything has gone wrong, but it is now all happily settled.",
+   "cite": "Lady Susan, ch. 24, ¶ 3",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 15,
+ "scoreAfter": 86
+}

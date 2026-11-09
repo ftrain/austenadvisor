@@ -1,0 +1,160 @@
+<brief register="narrative" person="first" sentences="16">
+<targets>
+Narration: Austen’s sentences have a median of 24 words; half fall between 13 and 41. Speech: median 13.
+About one sentence in three has a semicolon; 1.8 commas a sentence. Contractions only in speech, and rarely.
+These are ranges to write within, not scores to raise: a sentence padded to length is worse than a short one.
+</targets>
+<paragraph n="1">
+<sentence n="1" register="narration" words="3">
+I needed milk.
+  <model id="S27930">Goodwill supplying the place of experience, his character needed no attestation. (Northanger Abbey, ch. 31, ¶ 1)</model>
+  <model id="S6766">It needed all Jane’s steady mildness to bear these attacks with tolerable tranquillity. (Pride and Prejudice, ch. 23, ¶ 14)</model>
+</sentence>
+<sentence n="2" register="narration" words="10">
+So I grabbed my keys and drove to the store.
+  <never word="grabbed">Austen never wrote it. Hers: caught (‘take hold of so as to seize or restrain or stop the motion of’; 92×); stopped (a kind of ‘take hold of so as to seize or restrain or stop the motion of’; 84×); seized (more general than ‘take hold of so as to seize or restrain or stop the motion of’; 19×); moved (more general than ‘make a grasping or snatching motion with the hand’; 52×)</never>
+  <model id="S8543">Mr. Darcy handed the ladies into the carriage, and when it drove off, Elizabeth saw him walking slowly towards the house. (Pride and Prejudice, ch. 43, ¶ 66)</model>
+  <model id="S8363">They descended the hill, crossed the bridge, and drove to the door; and, while examining the nearer aspect of the house, all her apprehensions of meeting its owner returned. (Pride and Prejudice, ch. 43, ¶ 4)</model>
+</sentence>
+<sentence n="3" register="narration" words="4">
+It was super crowded.
+  <never word="super">Austen never wrote it. Hers: extremely (‘to an extreme degree’; 149×); exceedingly (‘to an extreme degree’; 108×)</never>
+  <model id="S24596">The season was full, the room crowded, and the two ladies squeezed in as well as they could. (Northanger Abbey, ch. 2, ¶ 9)</model>
+  <model id="S9844">The gentlemen came; and she thought he looked as if he would have answered her hopes; but, alas! the ladies had crowded round the table, where Miss Bennet was making tea, and Elizabeth pouring out the coffee, in so close a confederacy that there was not a single vacancy near her which would admit of a chair. (Pride and Prejudice, ch. 54, ¶ 16)</model>
+</sentence>
+<sentence n="4" register="narration" words="16">
+A guy in a hoodie was blocking the whole aisle while he talked on his phone.
+  <never word="guy">Austen never wrote it. Hers: man (more general than ‘an informal term for a youth or man’; 918×); image (more general than ‘an effigy of Guy Fawkes that is burned on a bonfire on Guy Fawkes Day’; 8×); brace (more general than ‘a cable, wire, or rope that is used to brace something (especially a tent)’; 2×); bracing (more general than ‘a cable, wire, or rope that is used to brace something (especially a tent)’; 2×)</never>
+  <never word="hoodie">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <never word="blocking">Austen never wrote it. Hers: stopping (‘render unsuitable for passage’; 22×); breaking up (more general than ‘interfere with or prevent the reception of signals’; 17×); cutting off (more general than ‘interfere with or prevent the reception of signals’; 14×); closing (a kind of ‘render unsuitable for passage’; 5×)</never>
+  <never word="aisle">Austen never wrote it. Hers: passage (more general than ‘a long narrow passage (as in a cave or woods)’; 45×); area (more general than ‘part of a church divided laterally from the nave proper by rows of pillars or columns’; 1×)</never>
+  <never word="phone">Austen never wrote it. Hers: sound (‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 73×); extension (a kind of ‘electronic equipment that converts sound into electrical signals that can be transmitted over distances and then converts received signals back into sounds’; 4×); vowel (a kind of ‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 1×)</never>
+  <model id="S6427">Mr. Bingley and Jane were standing together, a little detached from the rest, and talked only to each other. (Pride and Prejudice, ch. 18, ¶ 74)</model>
+  <model id="S29662">Mr. Elliot, and his friends in Marlborough Buildings, were talked of the whole evening. (Persuasion, ch. 15, ¶ 13)</model>
+</sentence>
+</paragraph>
+<paragraph n="2">
+<sentence n="5" register="narration" words="6">
+I didn't want to be rude.
+  <never word="didn't">Austen never wrote it. Hers: did not (written out, as Austen wrote it; 1611×)</never>
+  <model id="S26276">He could not be accountable for his children’s want of spirits, or for her want of enjoyment in his company. (Northanger Abbey, ch. 16, ¶ 1)</model>
+  <model id="S11612">She began then to be afraid of appearing rude and impatient; and walked to meet them with a great anxiety to avoid the suspicion. (Mansfield Park, ch. 7, ¶ 17)</model>
+</sentence>
+<sentence n="6" register="narration" words="4">
+I said excuse me.
+  <model id="S31305">She began not to understand a word they said, and was obliged to plead indisposition and excuse herself. (Persuasion, ch. 23, ¶ 46)</model>
+  <model id="S25612">She could not think the Tilneys had acted quite well by her, in so readily giving up their engagement, without sending her any message of excuse. (Northanger Abbey, ch. 11, ¶ 50)</model>
+</sentence>
+<sentence n="7" register="narration" words="4">
+He totally ignored me.
+  <never word="ignored">Austen never wrote it. Hers: cut (‘refuse to acknowledge’; 50×); disregarded (‘refuse to acknowledge’; 9×); treated (more general than ‘refuse to acknowledge’; 46×); passed off (a kind of ‘bar from attention or consideration’; 329×)</never>
+  <model id="S17673">Harriet certainly was not clever, but she had a sweet, docile, grateful disposition, was totally free from conceit, and only desiring to be guided by anyone she looked up to. (Emma, ch. 4, ¶ 2)</model>
+  <model id="S16320">Susan had always behaved pleasantly to herself, but the determined character of her general manners had astonished and alarmed her, and it was at least a fortnight before she began to understand a disposition so totally different from her own. (Mansfield Park, ch. 40, ¶ 4)</model>
+</sentence>
+<sentence n="8" register="narration" words="8">
+Finally he moved and I got the milk.
+  <model id="S2172">Wherever they went, she was evidently always on the watch. (Sense and Sensibility, ch. 26, ¶ 24)</model>
+  <model id="S28247">He had, very soon after their engagement ceased, got employ: and all that he had told her would follow, had taken place. (Persuasion, ch. 4, ¶ 8)</model>
+</sentence>
+<sentence n="9" register="narration" words="12">
+Then I saw my ex at the checkout and I basically panicked.
+  <never word="ex">Austen never wrote it. Hers: man (more general than ‘a man who was formerly a certain woman's husband’; 918×); letter (more general than ‘the 24th letter of the Roman alphabet’; 533×); woman (more general than ‘a woman who was formerly a particular man's wife’; 494×)</never>
+  <never word="checkout">Austen never wrote it. Hers: check (‘the act of inspecting or verifying’; 22×); review (more general than ‘the act of inspecting or verifying’; 8×); inspection (more general than ‘the act of inspecting or verifying’; 7×); counter (more general than ‘a counter in a supermarket where you pay for your purchases’; 3×)</never>
+  <never word="basically">Austen never wrote it. Hers: essentially (‘in essence’; 4×)</never>
+  <never word="panicked">Austen never wrote it. Hers: feared (more general than ‘be overcome by a sudden fear’; 65×); dreaded (more general than ‘be overcome by a sudden fear’; 22×); terrified (more general than ‘cause sudden fear in or fill with sudden panic’; 4×)</never>
+  <model id="S19748">Emma saw its artifice, and returned to her first surmises. (Emma, ch. 20, ¶ 16)</model>
+  <model id="S23092">He looked around, as if to see that no one were near, and then said, (Emma, ch. 43, ¶ 55)</model>
+</sentence>
+</paragraph>
+<paragraph n="3">
+<sentence n="10" register="narration" words="3">
+"Hey," she said.
+  <model id="S19150">Mr. John Knightley looked as if he did not comprehend the pleasure, but said only, coolly, (Emma, ch. 13, ¶ 40)</model>
+  <model id="S26324">Catherine, without hesitation, replied that she was very sure Miss Thorpe did not mean to dance at all. (Northanger Abbey, ch. 16, ¶ 16)</model>
+</sentence>
+<sentence n="11" register="speech" words="4">
+"Long time no see.
+  <model id="S11670">How long have you had it?” (Mansfield Park, ch. 7, ¶ 38)</model>
+  <model id="S27606">If you think it long—” (Northanger Abbey, ch. 28, ¶ 5)</model>
+</sentence>
+<sentence n="12" register="speech" words="3">
+You look great."
+  <model id="S11861">There you must look for the banners and the achievements.” (Mansfield Park, ch. 9, ¶ 7)</model>
+  <model id="S12598">She has not the look of it. (Mansfield Park, ch. 14, ¶ 13)</model>
+</sentence>
+</paragraph>
+<paragraph n="4">
+<sentence n="13" register="narration" words="3">
+"Thanks," I said.
+  <model id="S7952">Elizabeth was eager with her thanks and assurances of happiness. (Pride and Prejudice, ch. 38, ¶ 3)</model>
+  <model id="S5615">She longed to speak, but could think of nothing to say; and after a short silence Mrs. Bennet began repeating her thanks to Mr. Bingley for his kindness to Jane, with an apology for troubling him also with Lizzy. (Pride and Prejudice, ch. 9, ¶ 35)</model>
+</sentence>
+<sentence n="14" register="speech" words="2">
+"You too."
+  <model id="S2566">And the dried cherries too! (Sense and Sensibility, ch. 30, ¶ 8)</model>
+  <model id="S590">I have been too much at my ease, too happy, too frank. (Sense and Sensibility, ch. 10, ¶ 5)</model>
+</sentence>
+<sentence n="15" register="narration" words="9">
+I paid and left as fast as I could.
+  <model id="S22927">Every distinguishing attention that could be paid, was paid to her. (Emma, ch. 43, ¶ 3)</model>
+  <model id="S7027">She wrote again when the visit was paid, and she had seen Miss Bingley. (Pride and Prejudice, ch. 26, ¶ 23)</model>
+</sentence>
+<sentence n="16" register="narration" words="11">
+Honestly, it was the most awkward ten minutes of my week.
+  <model id="S20913">“Well,” said he, in a deliberating manner, “for five minutes, perhaps.” (Emma, ch. 28, ¶ 43)</model>
+  <model id="S30482">Could she have believed it a week ago; three hours ago! (Persuasion, ch. 20, ¶ 51)</model>
+</sentence>
+</paragraph>
+<advice>
+3 short sentences in a row: Yours run 3, 10, 4 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+You lean on “said”: Rates per 1,000 words over all Austen’s works.
+You lean on “long”: Rates per 1,000 words over all Austen’s works.
+You lean on “then”: Rates per 1,000 words over all Austen’s works.
+You lean on “great”: Rates per 1,000 words over all Austen’s works.
+5 short sentences in a row: Yours run 6, 4, 4, 8, 12 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+2 short sentences in a row: Yours run 9, 11 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+</advice>
+<measures score="15">
+Words Austen used: the writer’s 87.3, Austen’s 100
+Narrative sentence length: the writer’s 6, Austen’s 24
+Semicolons per sentence: the writer’s 0, Austen’s 0.32
+Commas per sentence: the writer’s 0.19, Austen’s 1.79
+-ly adverbs per 1,000 words: the writer’s 39.2, Austen’s 14.1
+Contractions in narration per 1,000 words: the writer’s 11, Austen’s 0.2
+Words in speech: the writer’s 11, Austen’s 14
+Narrative paragraph length: the writer’s 33, Austen’s 69
+Flesch–Kincaid grade: the writer’s 1.1, Austen’s 10.1
+</measures>
+<moves>
+<move id="balance" name="Clauses balanced in one period">
+  <example id="S9924">She then sat still five minutes longer; but unable to waste such a precious occasion, she suddenly got up, and saying to Kitty, “Come here, my love, I want to speak to you,” took her out of the room. (Pride and Prejudice, ch. 55, ¶ 13)</example>
+  <example id="S27349">Nothing further was said for a few minutes; and then speaking through her tears, she added, “I do not think I shall ever wish for a letter again!” (Northanger Abbey, ch. 25, ¶ 13)</example>
+</move>
+<move id="judgement" name="Judgement in abstract nouns">
+  <example id="S17772">They remained but a few minutes together, as Miss Woodhouse must not be kept waiting; and Harriet then came running to her with a smiling face, and in a flutter of spirits, which Miss Woodhouse hoped very soon to compose. (Emma, ch. 4, ¶ 28)</example>
+  <example id="S1460">He entered the room with a look of self-consequence, slightly bowed to the ladies, without speaking a word, and, after briefly surveying them and their apartments, took up a newspaper from the table, and continued to read it as long as he stayed. (Sense and Sensibility, ch. 19, ¶ 22)</example>
+</move>
+<move id="litotes" name="Understatement and litotes">
+  <example id="S22991">“Oh! very well,” exclaimed Miss Bates, “then I need not be uneasy. (Emma, ch. 43, ¶ 24)</example>
+  <example id="S24925">In a few moments Catherine, with unaffected pleasure, assured her that she need not be longer uneasy, as the gentlemen had just left the Pump Room. (Northanger Abbey, ch. 6, ¶ 36)</example>
+</move>
+<move id="reported" name="Speech reported">
+  <example id="S33670">“Pray go on.” said I. She did so. (Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 35)</example>
+  <example id="S25709">In a few minutes the servant returned, and with a look which did not quite confirm his words, said he had been mistaken, for that Miss Tilney had walked out. (Northanger Abbey, ch. 12, ¶ 3)</example>
+</move>
+<move id="saidshe" name="Speech tagged after its first clause">
+  <example id="S25202">“You will not be frightened, Miss Morland,” said Thorpe, as he handed her in, “if my horse should dance about a little at first setting off. (Northanger Abbey, ch. 9, ¶ 9)</example>
+  <example id="S4931">“But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.” (Pride and Prejudice, ch. 1, ¶ 5)</example>
+</move>
+<move id="conduct" name="Feeling shown by conduct">
+  <example id="S27279">But now—in short, she made herself as miserable as possible for about half an hour, went down when the clock struck five, with a broken heart, and could scarcely give an intelligible answer to Eleanor’s inquiry if she was well. (Northanger Abbey, ch. 25, ¶ 1)</example>
+  <example id="S33101">I have been plagued ever since I came here with tiresome visits from a parcel of Scotch wretches, with terrible hard-names; they were so civil, gave me so many invitations, and talked of coming again so soon, that I could not help affronting them. (Love and Freindship, “Lesley Castle”, ¶ 18)</example>
+</move>
+<move id="irony" name="An ironic verdict">
+  <example id="S32112">In short, Catherine, everything has gone wrong, but it is now all happily settled. (Lady Susan, ch. 24, ¶ 3)</example>
+  <example id="S24987">John Thorpe kept of course with Catherine, and, after a few minutes’ silence, renewed the conversation about his gig. (Northanger Abbey, ch. 7, ¶ 19)</example>
+</move>
+</moves>
+</brief>
+
+Rewrite the passage in the brief (the text before and after is context only). Then call submit_rewrite.

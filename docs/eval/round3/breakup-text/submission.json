@@ -1,0 +1,18 @@
+{"paragraphs":[
+{"sentences":[
+{"text":"Ryan wrote to me at midnight, to say that we must talk; and I understood at once what such a request meant.","from":[1,2,3],"model":"S16032"}]},
+{"sentences":[
+{"text":"We met the next day at a shop where coffee was served, and I found him there before me, busy with the instrument in his hand, and looking not a little nervous; he said that he was not ready for anything serious, and that the fault was not mine but his own.","from":[4,5,6,7,8],"model":"S18714"}]},
+{"sentences":[
+{"text":"I wished to cry, but did not; I only nodded, and said that it was all very well, and walked home in the rain, and ate a whole pint of ice, which was mostly cream.","from":[9,10,11],"model":"S21914"}]},
+{"sentences":[
+{"text":"My friend, who shared my room, thought that I made too much of it; and perhaps I did, but it hurt me still, as a grief pronounced unreasonable commonly does.","from":[12,13,14],"model":"S6700"}]}
+],
+"notes":[
+{"move":"reported","before":"He said it wasn't me, it was him.","after":"he said that he was not ready for anything serious, and that the fault was not mine but his own","model":"S4801"},
+{"move":"litotes","before":"He looked nervous.","after":"looking not a little nervous","model":"S26108"},
+{"move":"balance","before":"My roommate thought I was overreacting. Maybe I was. But it still hurt.","after":"thought that I made too much of it; and perhaps I did, but it hurt me still","model":"S32079"},
+{"move":"conduct","before":"I just nodded and said okay.","after":"I only nodded, and said that it was all very well","model":"S23097"},
+{"move":"irony","before":"But it still hurt.","after":"as a grief pronounced unreasonable commonly does","model":"S24058"}
+],
+"explanation":"Short sentences are joined into balanced periods; his speech is reported; the nervousness is understated; the close gives a dry general verdict; modern things are rendered by what they do."}

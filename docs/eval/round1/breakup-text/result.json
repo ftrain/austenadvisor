@@ -1,0 +1,76 @@
+{
+ "text": "At midnight there came a note from Ryan, which said that we must talk; and I knew at once what such a request meant.\n\nThe next day we met at a house of refreshment in the town, where he was before me, attending to the little instrument in his hand, and looking nervous; and he said that he was not ready for anything serious, and that the fault was not mine, but his own.\n\nI wished to cry, but did not; I only nodded, and said that it was all right, and then walked home in the rain, and ate a whole pint of ice cream.\n\nMy friend, who shared my room, thought that I made too much of it; perhaps I did, but it hurt me still.",
+ "aligned": [
+  {
+   "after": "At midnight there came a note from Ryan, which said that we must talk; and I knew at once what such a request meant.",
+   "before": [
+    "Ryan texted me at midnight.",
+    "He said we needed to talk.",
+    "I knew right away what that meant."
+   ]
+  },
+  {
+   "after": "The next day we met at a house of refreshment in the town, where he was before me, attending to the little instrument in his hand, and looking nervous; and he said that he was not ready for anything serious, and that the fault was not mine, but his own.",
+   "before": [
+    "The next day we met at a coffee shop downtown.",
+    "He was already there, scrolling on his phone.",
+    "He looked nervous.",
+    "He said he wasn't ready for something serious.",
+    "He said it wasn't me, it was him."
+   ]
+  },
+  {
+   "after": "I wished to cry, but did not; I only nodded, and said that it was all right, and then walked home in the rain, and ate a whole pint of ice cream.",
+   "before": [
+    "I wanted to cry but I didn't.",
+    "I just nodded and said okay.",
+    "Then I walked home in the rain and ate a whole pint of ice cream."
+   ]
+  },
+  {
+   "after": "My friend, who shared my room, thought that I made too much of it; perhaps I did, but it hurt me still.",
+   "before": [
+    "My roommate thought I was overreacting.",
+    "Maybe I was.",
+    "But it still hurt."
+   ]
+  }
+ ],
+ "explanation": "Fourteen short sentences are gathered into four periods, with the text message made a note and the phone a little instrument.",
+ "notes": [
+  {
+   "technique": "Balance and period: clauses held by semicolons and \", and\"",
+   "before": "I knew right away what that meant.",
+   "after": "and I knew at once what such a request meant.",
+   "austen": "She knew so much already, that she must know everything.",
+   "cite": "Mansfield Park, ch. 37, ¶ 26",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported rather than quoted",
+   "before": "He said it wasn't me, it was him.",
+   "after": "and that the fault was not mine, but his own.",
+   "austen": "Mr. Elton certainly did not very well know what to say.",
+   "cite": "Emma, ch. 9, ¶ 108",
+   "verified": true
+  },
+  {
+   "technique": "Modern things rendered by what they do in her world",
+   "before": "Ryan texted me at midnight.",
+   "after": "At midnight there came a note from Ryan",
+   "austen": "She could not wish him to stay, and would much rather not have him speak to her.",
+   "cite": "Mansfield Park, ch. 23, ¶ 48",
+   "verified": true
+  },
+  {
+   "technique": "Restraint and understatement in feeling",
+   "before": "But it still hurt.",
+   "after": "perhaps I did, but it hurt me still.",
+   "austen": "Elizabeth would wonder, and probably would blame her; and though her resolution was not to be shaken, her feelings must be hurt by such disapprobation.",
+   "cite": "Pride and Prejudice, ch. 22, ¶ 3",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 27,
+ "scoreAfter": 93
+}

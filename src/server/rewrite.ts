@@ -121,7 +121,7 @@ The writer has asked you to show them how ${a.short} would have written a passag
 Render the passage as ${a.short} would have written it.
 Keep: what happens and in what order; who speaks and what they mean; the point of view and person (a first-person narrator stays first-person); the form (a letter stays a letter, with its greeting and its close); the writer's names.
 Change: the words, the sentences, how they are joined, what is told and what is shown.
-You may join sentences, split them, reorder within a paragraph, turn quoted speech into reported speech or back. You may not add incidents, people, opinions or feelings the passage does not imply, nor drop any of its sentences without rendering them somewhere.
+You may join sentences, split them, reorder within a paragraph, turn quoted speech into reported speech or back. You may not add incidents, people, opinions or feelings the passage does not imply, nor drop any of its sentences without rendering them somewhere. Add no clause the writer did not imply: an ironic verdict is the one licence, and it comments on what is there.
 </task>
 
 <craft>
@@ -177,6 +177,21 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const keptCompounds = check.compounds.filter((c) => !brief.sentences.some((x) => x.text.includes(c) && /^\p{Lu}/u.test(c)));
   if (keptCompounds.length)
     problems.push(`Compounds ${short} never wrote, though each word is hers: ${keptCompounds.map((c) => `“${c}”`).join(', ')}. Find what the thing would be in ${short}’s world, or describe it.`);
+  // A modern adverb on an adjective of hers (“essentially alarmed”, “really cool”): a calque, not her idiom.
+  for (const para of s.paragraphs)
+    for (const x of para.sentences) {
+      const toks = tokenize(x.text);
+      const tags = m.tagger.tagTokens(toks);
+      toks.forEach((t, k) => {
+        const nx = toks[k + 1];
+        if (!nx || t.kind !== 'word' || nx.kind !== 'word' || t.quoted) return;
+        if (!/^(RB|QL)/.test(tags[k]!) || !/^JJ|^VBN/.test(tags[k + 1]!)) return;
+        // Only the modern intensifiers, or an -ly adverb she seldom used: “extremely” is hers, whatever follows it.
+        const modern = ['really', 'super', 'totally', 'basically', 'essentially', 'literally', 'absolutely', 'incredibly', 'seriously'].includes(t.norm);
+        if (!modern && !(t.norm.endsWith('ly') && (m.word(t.norm)?.count ?? 0) < 30)) return;
+        if (m.lm.bigram(t.norm, nx.norm) === 0) problems.push(`“${t.text} ${nx.text}”: ${short} never put these together; a calque of the modern idiom. Choose another word, or “very”, “quite”, “rather”.`);
+      });
+    }
   // Contractions outside speech.
   for (const para of s.paragraphs)
     for (const x of para.sentences)
@@ -253,7 +268,8 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
       p.sentences.map((x) => {
         const before = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
         const reg = brief.sentences[(x.from[0] ?? 1) - 1]?.register;
-        const w = explainSentence(m, before, x.text, x.model, reg === 'letter' ? 'letter' : undefined);
+        const noted = s.notes.filter((n) => n.after && x.text.includes(n.after.trim().replace(/[.,;]$/, ''))).map((n) => n.move);
+        const w = explainSentence(m, before, x.text, x.model, reg === 'letter' ? 'letter' : undefined, [], noted);
         return { after: x.text, before, why: w.why, model: w.model };
       }),
     ),

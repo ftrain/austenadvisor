@@ -15,7 +15,7 @@ A shared word processor where you write and **Advisor** writes beside you. Advis
 
 The editor, margin, redline and review panel are [Tiny Little Office](https://github.com/aboard-io/tinylittleoffice)'s, from its `v2` branch. Its kernel orders everyone's edits on the server.
 
-See **[docs/before-after.md](docs/before-after.md)** for six everyday pieces (a trip to the store, a letter home from camp, a breakup…), each before and after the engine. Every change is listed with its reason and a sentence of Austen's.
+See **[docs/rewrite-eval.md](docs/rewrite-eval.md)** for how the AI rewrite was designed and tested: three rounds of Claude Sonnet rewriting and Claude Opus judging, and what each round changed. See **[docs/before-after.md](docs/before-after.md)** for six everyday pieces (a trip to the store, a letter home from camp, a breakup…), each before and after the engine. Every change is listed with its reason and a sentence of Austen's.
 
 ## Running it
 

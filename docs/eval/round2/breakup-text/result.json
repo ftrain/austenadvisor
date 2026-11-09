@@ -1,0 +1,76 @@
+{
+ "text": "Ryan sent me a message at midnight, desiring to speak with me; and I knew at once what such a request implied.\n\nWe met on the following day at the place appointed, where he was before me, and looked very much discomposed; he said he was not ready for any thing so serious, and the fault, he assured me, was not mine but his own.\n\nI wished to cry, but did not; I only nodded, and said it was all right, and then walked home in the rain, and consoled myself with a great deal of ice.\n\nMy friend, who shared my lodgings, thought me too much affected; I was not unwilling to allow she might be right, but it hurt me still.",
+ "aligned": [
+  {
+   "after": "Ryan sent me a message at midnight, desiring to speak with me; and I knew at once what such a request implied.",
+   "before": [
+    "Ryan texted me at midnight.",
+    "He said we needed to talk.",
+    "I knew right away what that meant."
+   ]
+  },
+  {
+   "after": "We met on the following day at the place appointed, where he was before me, and looked very much discomposed; he said he was not ready for any thing so serious, and the fault, he assured me, was not mine but his own.",
+   "before": [
+    "The next day we met at a coffee shop downtown.",
+    "He was already there, scrolling on his phone.",
+    "He looked nervous.",
+    "He said he wasn't ready for something serious.",
+    "He said it wasn't me, it was him."
+   ]
+  },
+  {
+   "after": "I wished to cry, but did not; I only nodded, and said it was all right, and then walked home in the rain, and consoled myself with a great deal of ice.",
+   "before": [
+    "I wanted to cry but I didn't.",
+    "I just nodded and said okay.",
+    "Then I walked home in the rain and ate a whole pint of ice cream."
+   ]
+  },
+  {
+   "after": "My friend, who shared my lodgings, thought me too much affected; I was not unwilling to allow she might be right, but it hurt me still.",
+   "before": [
+    "My roommate thought I was overreacting.",
+    "Maybe I was.",
+    "But it still hurt."
+   ]
+  }
+ ],
+ "explanation": "Fourteen short sentences are gathered into four periods joined by semicolons and commas; the contractions, the telephone, and the modern places and words give way to plain equivalents; feeling is shown by conduct, and the concession to the friend is made by understatement.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "The next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous.",
+   "after": "We met on the following day at the place appointed, where he was before me, and looked very much discomposed;",
+   "austen": "“No, but I wrote to him—I did indeed, I got up this morning before it was light, and was two hours about it; and when my letter was done I thought I never should have courage to give it.",
+   "cite": "Lady Susan, ch. 24, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported",
+   "before": "He said he wasn't ready for something serious.",
+   "after": "he said he was not ready for any thing so serious, and the fault, he assured me, was not mine but his own.",
+   "austen": "Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening.",
+   "cite": "Emma, ch. 38, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Feeling shown by conduct",
+   "before": "I wanted to cry but I didn't. I just nodded and said okay.",
+   "after": "I wished to cry, but did not; I only nodded, and said it was all right,",
+   "austen": "Emma recollected, blushed, was sorry, but tried to laugh it off.",
+   "cite": "Emma, ch. 43, ¶ 57",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "Maybe I was.",
+   "after": "I was not unwilling to allow she might be right,",
+   "austen": "Now, as we may fairly suppose, he would not allow much time to pass before he spoke to the lady, and as he does not appear to have spoken yesterday, it is not unlikely that he should be at Mrs. Goddard’s today; and she may be detained by a visitor, without thinking him at all a tiresome wretch.”",
+   "cite": "Emma, ch. 8, ¶ 27",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 27,
+ "scoreAfter": 93
+}

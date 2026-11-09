@@ -33,6 +33,8 @@ export interface AuthorConfig {
   years: string;
   /** How the advisor speaks of the author: she / her / her / hers. */
   pronouns?: Pronouns;
+  /** Works not to be linked as a model of the author's manner (a burlesque, an unfinished draft). */
+  linkExclude?: string[];
   /** Works told in letters, whose sentences are models for a writer's letter. */
   epistolary?: string[];
   persona: string;

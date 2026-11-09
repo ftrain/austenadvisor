@@ -1,0 +1,627 @@
+{
+ "register": "letter",
+ "person": "first",
+ "sentences": [
+  {
+   "n": 1,
+   "paragraph": 1,
+   "text": "Dear Mom and Dad,",
+   "register": "letter",
+   "words": 4,
+   "never": [],
+   "models": [
+    {
+     "id": 16541,
+     "work": "mansfield",
+     "title": "Mansfield Park",
+     "year": 1814,
+     "chapter": 43,
+     "chapterTitle": "XLIII",
+     "paragraph": 2,
+     "sentence": 5,
+     "text": "My dear, dear Fanny, if I had you here, how I would talk to you!",
+     "cite": "Mansfield Park, ch. 43, ¶ 2",
+     "sim": 0.7391572363197051
+    },
+    {
+     "id": 33689,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 29,
+     "chapterTitle": "LETTER the FIFTH From a YOUNG LADY very much in love to her Freind",
+     "paragraph": 41,
+     "sentence": 1,
+     "text": "“Oh! the dear Creature, cried I, how passionately he loves me!",
+     "cite": "Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 41",
+     "sim": 0.7379711399623897
+    }
+   ]
+  },
+  {
+   "n": 2,
+   "paragraph": 2,
+   "text": "Camp is okay I guess.",
+   "register": "letter",
+   "words": 5,
+   "never": [
+    {
+     "word": "okay",
+     "alternatives": [
+      "all right (‘being satisfactory or in satisfactory condition’; 355×)",
+      "fine (‘being satisfactory or in satisfactory condition’; 238×)",
+      "cool (‘being satisfactory or in satisfactory condition’; 26×)",
+      "satisfactory (near ‘being satisfactory or in satisfactory condition’; 30×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 31562,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 3,
+     "chapterTitle": "III",
+     "paragraph": 3,
+     "sentence": 6,
+     "text": "You may guess, therefore, my dear madam, with what feelings I look forward to her arrival.",
+     "cite": "Lady Susan, ch. 3, ¶ 3",
+     "sim": 0.6541257688793477
+    },
+    {
+     "id": 9006,
+     "work": "pride",
+     "title": "Pride and Prejudice",
+     "year": 1813,
+     "chapter": 47,
+     "chapterTitle": "XLVII",
+     "paragraph": 61,
+     "sentence": 2,
+     "text": "I am going to Gretna Green, and if you cannot guess with who, I shall think you a simpleton, for there is but one man in the world I love, and he is an angel.",
+     "cite": "Pride and Prejudice, ch. 47, ¶ 61",
+     "sim": 0.5571216204773924
+    }
+   ]
+  },
+  {
+   "n": 3,
+   "paragraph": 2,
+   "text": "The food is gross and my bunkmate snores like crazy.",
+   "register": "letter",
+   "words": 10,
+   "never": [
+    {
+     "word": "bunkmate",
+     "alternatives": [
+      "friend (more general than ‘someone who occupies the same sleeping quarters as yourself’; 623×)",
+      "acquaintance (more general than ‘someone who occupies the same sleeping quarters as yourself’; 363×)"
+     ]
+    },
+    {
+     "word": "crazy",
+     "alternatives": [
+      "sick (‘affected with madness or insanity’; 43×)",
+      "mad (‘affected with madness or insanity’; 20×)",
+      "insane (near ‘affected with madness or insanity’; 1×)",
+      "wild (‘intensely enthusiastic about or preoccupied with’; 39×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 29999,
+     "work": "persuasion",
+     "title": "Persuasion",
+     "year": 1817,
+     "chapter": 18,
+     "chapterTitle": "XVIII",
+     "paragraph": 7,
+     "sentence": 27,
+     "text": "We see nothing of them, and this is really an instance of gross inattention.",
+     "cite": "Persuasion, ch. 18, ¶ 7",
+     "sim": 0.47290206393636786
+    },
+    {
+     "id": 31598,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 5,
+     "chapterTitle": "V",
+     "paragraph": 4,
+     "sentence": 6,
+     "text": "The house is a good one, the furniture fashionable, and everything announces plenty and elegance.",
+     "cite": "Lady Susan, ch. 5, ¶ 4",
+     "sim": 0.33484098100220594
+    }
+   ]
+  },
+  {
+   "n": 4,
+   "paragraph": 2,
+   "text": "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+   "register": "letter",
+   "words": 12,
+   "never": [
+    {
+     "word": "canoeing",
+     "alternatives": []
+    },
+    {
+     "word": "flipped",
+     "alternatives": [
+      "turned (more general than ‘lightly throw to see which side comes up’; 197×)",
+      "turned out (a kind of ‘cause to go on or to be engaged or set in operation’; 197×)",
+      "turned off (a kind of ‘cause to go on or to be engaged or set in operation’; 197×)",
+      "turned on (a kind of ‘cause to go on or to be engaged or set in operation’; 197×)"
+     ]
+    },
+    {
+     "word": "canoe",
+     "alternatives": []
+    }
+   ],
+   "models": [
+    {
+     "id": 30013,
+     "work": "persuasion",
+     "title": "Persuasion",
+     "year": 1817,
+     "chapter": 18,
+     "chapterTitle": "XVIII",
+     "paragraph": 11,
+     "sentence": 8,
+     "text": "She and the Harvilles came on Tuesday very safely, and in the evening we went to ask her how she did, when we were rather surprised not to find Captain Benwick of the party, for he had been invited as well as the Harvilles; and what do you think was the reason?",
+     "cite": "Persuasion, ch. 18, ¶ 11",
+     "sim": 0.5098529303355714
+    },
+    {
+     "id": 8725,
+     "work": "pride",
+     "title": "Pride and Prejudice",
+     "year": 1813,
+     "chapter": 46,
+     "chapterTitle": "XLVI",
+     "paragraph": 5,
+     "sentence": 4,
+     "text": "Colonel Forster came yesterday, having left Brighton the day before, not many hours after the express.",
+     "cite": "Pride and Prejudice, ch. 46, ¶ 5",
+     "sim": 0.5096707072812267
+    }
+   ]
+  },
+  {
+   "n": 5,
+   "paragraph": 2,
+   "text": "It was so embarrassing.",
+   "register": "letter",
+   "words": 4,
+   "never": [],
+   "models": [
+    {
+     "id": 31614,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 6,
+     "chapterTitle": "VI",
+     "paragraph": 3,
+     "sentence": 6,
+     "text": "I am sorry it is so, for what is this but deceit?",
+     "cite": "Lady Susan, ch. 6, ¶ 3",
+     "sim": 0.5403286528758119
+    },
+    {
+     "id": 30003,
+     "work": "persuasion",
+     "title": "Persuasion",
+     "year": 1817,
+     "chapter": 18,
+     "chapterTitle": "XVIII",
+     "paragraph": 9,
+     "sentence": 1,
+     "text": "“I am sorry to say that I am very far from well; and Jemima has just told me that the butcher says there is a bad sore-throat very much about.",
+     "cite": "Persuasion, ch. 18, ¶ 9",
+     "sim": 0.5171708510470882
+    }
+   ]
+  },
+  {
+   "n": 6,
+   "paragraph": 3,
+   "text": "But there's this girl named Kayla who's really cool.",
+   "register": "letter",
+   "words": 9,
+   "never": [
+    {
+     "word": "who's",
+     "alternatives": [
+      "who is (written out, as Austen wrote it; 1701×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 33002,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 19,
+     "chapterTitle": "LESLEY CASTLE",
+     "paragraph": 4,
+     "sentence": 19,
+     "text": "“Dear Eloisa (said I) there’s no occasion for your crying so much about such a trifle.",
+     "cite": "Love and Freindship, “Lesley Castle”, ¶ 4",
+     "sim": 0.4497784215492704
+    },
+    {
+     "id": 33309,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 23,
+     "chapterTitle": "THE HISTORY OF ENGLAND",
+     "paragraph": 12,
+     "sentence": 3,
+     "text": "Whether innocent or guilty, he did not reign long in peace, for Henry Tudor E. of Richmond as great a villain as ever lived, made a great fuss about getting the Crown and having killed the King at the battle of Bosworth, he succeeded to it.",
+     "cite": "Love and Freindship, “The History Of England”, ¶ 12",
+     "sim": 0.42445615496385786
+    }
+   ]
+  },
+  {
+   "n": 7,
+   "paragraph": 3,
+   "text": "She's from Ohio and she knows a ton about horses.",
+   "register": "letter",
+   "words": 10,
+   "never": [
+    {
+     "word": "She's",
+     "alternatives": [
+      "She is (written out, as Austen wrote it; 5465×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 32034,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 23,
+     "chapterTitle": "XXIII",
+     "paragraph": 3,
+     "sentence": 13,
+     "text": "Send him away immediately; he is only a fool: but what her mother can mean, Heaven only knows!",
+     "cite": "Lady Susan, ch. 23, ¶ 3",
+     "sim": 0.43652561293247133
+    },
+    {
+     "id": 33301,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 23,
+     "chapterTitle": "THE HISTORY OF ENGLAND",
+     "paragraph": 8,
+     "sentence": 3,
+     "text": "One of Edward’s Mistresses was Jane Shore, who has had a play written about her, but it is a tragedy and therefore not worth reading.",
+     "cite": "Love and Freindship, “The History Of England”, ¶ 8",
+     "sim": 0.35350775380463667
+    }
+   ]
+  },
+  {
+   "n": 8,
+   "paragraph": 3,
+   "text": "We hang out at the lake after dinner and talk about stuff.",
+   "register": "letter",
+   "words": 12,
+   "never": [],
+   "models": [
+    {
+     "id": 33410,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 27,
+     "chapterTitle": "LETTER the SECOND From a YOUNG LADY crossed in Love to her freind",
+     "paragraph": 1,
+     "sentence": 1,
+     "text": "Why should this last disappointment hang so heavily on my spirits?",
+     "cite": "Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 1",
+     "sim": 0.49462716469667967
+    },
+    {
+     "id": 16542,
+     "work": "mansfield",
+     "title": "Mansfield Park",
+     "year": 1814,
+     "chapter": 43,
+     "chapterTitle": "XLIII",
+     "paragraph": 2,
+     "sentence": 6,
+     "text": "You should listen to me till you were tired, and advise me till you were still tired more; but it is impossible to put a hundredth part of my great mind on paper, so I will abstain altogether, and leave you to guess what you like.",
+     "cite": "Mansfield Park, ch. 43, ¶ 2",
+     "sim": 0.4886392985316245
+    }
+   ]
+  },
+  {
+   "n": 9,
+   "paragraph": 3,
+   "text": "I think she likes me but I'm not sure.",
+   "register": "letter",
+   "words": 9,
+   "never": [],
+   "models": [
+    {
+     "id": 32560,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 7,
+     "chapterTitle": "LETTER 5th LAURA to MARIANNE",
+     "paragraph": 6,
+     "sentence": 5,
+     "text": "“I’m glad of it (cried my Father) for I long to know who it is.”",
+     "cite": "Love and Freindship, “Letter 5th Laura To Marianne”, ¶ 6",
+     "sim": 0.7495723179919062
+    },
+    {
+     "id": 33620,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 29,
+     "chapterTitle": "LETTER the FIFTH From a YOUNG LADY very much in love to her Freind",
+     "paragraph": 8,
+     "sentence": 1,
+     "text": "“I am glad you think so replied she, for he is distractedly in love with you.”",
+     "cite": "Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 8",
+     "sim": 0.7003277510327
+    }
+   ]
+  },
+  {
+   "n": 10,
+   "paragraph": 4,
+   "text": "Can you send more snacks?",
+   "register": "letter",
+   "words": 5,
+   "never": [
+    {
+     "word": "snacks",
+     "alternatives": [
+      "meals (more general than ‘a light informal meal’; 3×)",
+      "refreshments (a kind of ‘a light informal meal’; 4×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 9175,
+     "work": "pride",
+     "title": "Pride and Prejudice",
+     "year": 1813,
+     "chapter": 49,
+     "chapterTitle": "XLIX",
+     "paragraph": 18,
+     "sentence": 10,
+     "text": "Send back your answer as soon as you can, and be careful to write explicitly.",
+     "cite": "Pride and Prejudice, ch. 49, ¶ 18",
+     "sim": 0.6657769033130021
+    },
+    {
+     "id": 32034,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 23,
+     "chapterTitle": "XXIII",
+     "paragraph": 3,
+     "sentence": 13,
+     "text": "Send him away immediately; he is only a fool: but what her mother can mean, Heaven only knows!",
+     "cite": "Lady Susan, ch. 23, ¶ 3",
+     "sim": 0.6503665131697689
+    }
+   ]
+  },
+  {
+   "n": 11,
+   "paragraph": 4,
+   "text": "And my phone charger, which I totally forgot.",
+   "register": "letter",
+   "words": 8,
+   "never": [
+    {
+     "word": "phone",
+     "alternatives": [
+      "sound (‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 73×)",
+      "extension (a kind of ‘electronic equipment that converts sound into electrical signals that can be transmitted over distances and then converts received signals back into sounds’; 4×)",
+      "vowel (a kind of ‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 1×)"
+     ]
+    },
+    {
+     "word": "charger",
+     "alternatives": [
+      "device (more general than ‘a device that can hold a rechargeable battery by means of an electrical cable’; 4×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 33174,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 19,
+     "chapterTitle": "LESLEY CASTLE",
+     "paragraph": 50,
+     "sentence": 8,
+     "text": "Never to be sure were there two more different Dispositions in the World.",
+     "cite": "Love and Freindship, “Lesley Castle”, ¶ 50",
+     "sim": 0.36561690490116544
+    },
+    {
+     "id": 31884,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 18,
+     "chapterTitle": "XVIII",
+     "paragraph": 3,
+     "sentence": 9,
+     "text": "Though totally without accomplishments, she is by no means so ignorant as one might expect to find her, being fond of books and spending the chief of her time in reading.",
+     "cite": "Lady Susan, ch. 18, ¶ 3",
+     "sim": 0.36166456762144406
+    }
+   ]
+  },
+  {
+   "n": 12,
+   "paragraph": 4,
+   "text": "The counselors are kind of strict but mostly fine.",
+   "register": "letter",
+   "words": 9,
+   "never": [
+    {
+     "word": "counselors",
+     "alternatives": [
+      "advisers (more general than ‘someone who gives advice about problems’; 1×)",
+      "counsels (‘a lawyer who pleads cases in court’; 3×)",
+      "lawyers (more general than ‘a lawyer who pleads cases in court’; 1×)",
+      "attorneys (more general than ‘a lawyer who pleads cases in court’; 1×)"
+     ]
+    }
+   ],
+   "models": [
+    {
+     "id": 32244,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 26,
+     "chapterTitle": "XXVI",
+     "paragraph": 3,
+     "sentence": 16,
+     "text": "Silly woman to expect constancy from so charming a man! but she always was silly—intolerably so in marrying him at all, she the heiress of a large fortune and he without a shilling: one title, I know, she might have had, besides baronets.",
+     "cite": "Lady Susan, ch. 26, ¶ 3",
+     "sim": 0.43094944085016484
+    },
+    {
+     "id": 31698,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 10,
+     "chapterTitle": "X",
+     "paragraph": 3,
+     "sentence": 13,
+     "text": "We are advancing now to some kind of confidence, and in short are likely to be engaged in a sort of platonic friendship.",
+     "cite": "Lady Susan, ch. 10, ¶ 3",
+     "sim": 0.40768686986039904
+    }
+   ]
+  },
+  {
+   "n": 13,
+   "paragraph": 5,
+   "text": "Love, Jake",
+   "register": "letter",
+   "words": 2,
+   "never": [],
+   "models": [
+    {
+     "id": 33624,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 29,
+     "chapterTitle": "LETTER the FIFTH From a YOUNG LADY very much in love to her Freind",
+     "paragraph": 11,
+     "sentence": 1,
+     "text": "“I wish it may be true said I, for that is the only kind of love I would give a farthing for—There is some sense in being in love at first sight.”",
+     "cite": "Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 11",
+     "sim": 0.6203544516453879
+    },
+    {
+     "id": 32625,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 9,
+     "chapterTitle": "LETTER 7th LAURA to MARIANNE",
+     "paragraph": 11,
+     "sentence": 1,
+     "text": "“And did you then never feel the pleasing Pangs of Love, Augusta?",
+     "cite": "Love and Freindship, “Letter 7th Laura To Marianne”, ¶ 11",
+     "sim": 0.5121083380424376
+    }
+   ]
+  },
+  {
+   "n": 14,
+   "paragraph": 6,
+   "text": "P.S. Please don't let Max use my room.",
+   "register": "letter",
+   "words": 9,
+   "never": [],
+   "models": [
+    {
+     "id": 32100,
+     "work": "susan",
+     "title": "Lady Susan",
+     "year": 1794,
+     "chapter": 24,
+     "chapterTitle": "XXIV",
+     "paragraph": 3,
+     "sentence": 40,
+     "text": "I said; “you will find Mr. Vernon in his own room.”",
+     "cite": "Lady Susan, ch. 24, ¶ 3",
+     "sim": 0.5465140033194398
+    },
+    {
+     "id": 33704,
+     "work": "juvenilia",
+     "title": "Love and Freindship",
+     "year": 1790,
+     "chapter": 29,
+     "chapterTitle": "LETTER the FIFTH From a YOUNG LADY very much in love to her Freind",
+     "paragraph": 49,
+     "sentence": 4,
+     "text": "My Aunt is calling me to come and make the pies, so adeiu my dear freind, and beleive me yours etc—H. Halton.",
+     "cite": "Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 49",
+     "sim": 0.5035605102057831
+    }
+   ]
+  }
+ ],
+ "advice": [
+  "Short paragraphs of narration: Your narrative paragraphs run a median 22 words; Austen’s 69 (a quarter of hers are under 30).",
+  "You lean on “about”: Rates per 1,000 words over all Austen’s works.",
+  "You lean on “like”: Rates per 1,000 words over all Austen’s works.",
+  "You lean on “but”: Rates per 1,000 words over all Austen’s works.",
+  "You lean on “sure”: Rates per 1,000 words over all Austen’s works.",
+  "4 short sentences in a row: Yours run 5, 10, 12, 4 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.",
+  "An unusual opening: Under 0.0% of Austen’s narrative sentences open with adverbial noun (home, today) (NR); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).",
+  "4 short sentences in a row: Yours run 9, 10, 12, 9 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.",
+  "An unusual opening: Under 0.0% of Austen’s narrative sentences open with he / she / it + is (PPS+BEZ); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).",
+  "An unusual opening: Under 0.4% of Austen’s narrative sentences open with modal (could, must) (MD); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).",
+  "2 short sentences in a row: Yours run 8, 9 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times."
+ ],
+ "measures": [
+  "Words Austen used: the writer’s 88.2, Austen’s 100",
+  "Narrative sentence length: the writer’s 9, Austen’s 24",
+  "Semicolons per sentence: the writer’s 0, Austen’s 0.32",
+  "Commas per sentence: the writer’s 0.21, Austen’s 1.79",
+  "-ly adverbs per 1,000 words: the writer’s 27.8, Austen’s 14.1",
+  "Contractions in narration per 1,000 words: the writer’s 46.3, Austen’s 0.2",
+  "Words in speech: the writer’s 0, Austen’s 14",
+  "Narrative paragraph length: the writer’s 22, Austen’s 69",
+  "Flesch–Kincaid grade: the writer’s 2.4, Austen’s 10.1"
+ ],
+ "score": 18
+}

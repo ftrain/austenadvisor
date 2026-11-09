@@ -115,6 +115,30 @@ The server renders each quotation from the corpus by its id. An invented quotati
 
 The findings go back as the tool's answer, and the model revises, up to three submissions.
 
+**Every rewritten sentence links to the Austen sentence that inspired it, with a reason the system writes** (`src/engine/explain.ts`). The model names, for each sentence, the ID of the sentence of hers that inspired it. The engine then compares the new sentence with the writer's sentences it renders and fills a template from what it can see:
+
+- the author's moves now made (by pattern, and as the notes credit them);
+- sentences joined;
+- words she never wrote removed;
+- her likelier words preferred;
+- contractions written out;
+- quoted speech reported;
+- the most telling word of hers brought in.
+
+The result is one sentence, for example: *"This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Pride and Prejudice, ch. 10, ¶ 37."* The link is checked as well. The model's own pick stands only if it shows a move made in the sentence (or, with no move, shares a word the sentence brings in). Otherwise the engine links the nearest exemplar of the move, or a sentence of hers using the word brought in. The juvenilia burlesques are never linked. Austenize, the statistical rewrite, aligns its sentences by shared words and gets the same treatment. Advisor's margin thread lists every rewritten sentence with its reason and its link.
+
+**The moves** (`authors/austen.json`) are named, described, and given a pattern each:
+
+- balance;
+- judgement in abstract nouns;
+- litotes;
+- reported speech;
+- speech tagged after its first clause;
+- feeling shown by conduct;
+- ironic verdict.
+
+The patterns power `find_example`, the brief's exemplars, the gate's check that a note's cited sentence (and the note's own words) show its move, and the explanations. Another author's file brings its own moves.
+
 **Testing without a key.** `npm run cli -- brief <file> <dir>` writes the exact system and user prompts. `npm run cli -- tool <name> '<json>'` answers as the tools do. `npm run cli -- submit <dir> <submission.json>` runs the gate and renders the result. Any model, including an agent in a terminal, can then run the protocol end to end. [rewrite-eval.md](rewrite-eval.md) is such a run: Sonnet rewriting, Opus judging.
 
 ## Shared editing

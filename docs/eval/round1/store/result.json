@@ -1,0 +1,88 @@
+{
+ "text": "Being in want of milk, I caught up my keys and drove to the shop, which I found extremely crowded; and a man in a coat drawn over his head, who stood talking to a distant person by means of a little instrument in his hand, had stopped the whole passage.\n\nI did not wish to be rude, and begged him to excuse me; but he disregarded me entirely, and it was long before he moved, and I was able to get my milk. I saw at the counter a woman with whom I had formerly been connected, and was exceedingly terrified.\n\n\"How do you do?\" said she. \"It is a great while since we met; you look extremely well.\"\n\n\"I thank you,\" said I, \"and you also.\" I paid and left as fast as I could; it was, I declare, the most awkward ten minutes of my week.",
+ "aligned": [
+  {
+   "after": "Being in want of milk, I caught up my keys and drove to the shop, which I found extremely crowded; and a man in a coat drawn over his head, who stood talking to a distant person by means of a little instrument in his hand, had stopped the whole passage.",
+   "before": [
+    "I needed milk.",
+    "So I grabbed my keys and drove to the store.",
+    "It was super crowded.",
+    "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
+   ]
+  },
+  {
+   "after": "I did not wish to be rude, and begged him to excuse me; but he disregarded me entirely, and it was long before he moved, and I was able to get my milk.",
+   "before": [
+    "I didn't want to be rude.",
+    "I said excuse me.",
+    "He totally ignored me.",
+    "Finally he moved and I got the milk."
+   ]
+  },
+  {
+   "after": "I saw at the counter a woman with whom I had formerly been connected, and was exceedingly terrified.",
+   "before": [
+    "Then I saw my ex at the checkout and I basically panicked."
+   ]
+  },
+  {
+   "after": "\"How do you do?\" said she. \"It is a great while since we met; you look extremely well.\"",
+   "before": [
+    "\"Hey,\" she said.",
+    "\"Long time no see.",
+    "You look great.\""
+   ]
+  },
+  {
+   "after": "\"I thank you,\" said I, \"and you also.\"",
+   "before": [
+    "\"Thanks,\" I said.",
+    "\"You too.\""
+   ]
+  },
+  {
+   "after": "I paid and left as fast as I could; it was, I declare, the most awkward ten minutes of my week.",
+   "before": [
+    "I paid and left as fast as I could.",
+    "Honestly, it was the most awkward ten minutes of my week."
+   ]
+  }
+ ],
+ "explanation": "Short sentences were joined into periods with semicolons; modern words became their effects in her world (a little instrument, a coat drawn over the head, the counter); contractions were written out; the first-person narrator and the order of events are kept.",
+ "notes": [
+  {
+   "technique": "Balance and period: clauses joined by semicolon and 'and'",
+   "before": "I needed milk. So I grabbed my keys and drove to the store. It was super crowded.",
+   "after": "Being in want of milk, I caught up my keys and drove to the shop, which I found extremely crowded;",
+   "austen": "They descended the hill, crossed the bridge, and drove to the door; and, while examining the nearer aspect of the house, all her apprehensions of meeting its owner returned.",
+   "cite": "Pride and Prejudice, ch. 43, ¶ 4",
+   "verified": true
+  },
+  {
+   "technique": "Periphrasis for a modern thing",
+   "before": "talked on his phone",
+   "after": "talking to a distant person by means of a little instrument in his hand",
+   "austen": "Mr. Bingley and Jane were standing together, a little detached from the rest, and talked only to each other.",
+   "cite": "Pride and Prejudice, ch. 18, ¶ 74",
+   "verified": true
+  },
+  {
+   "technique": "Judgement by understatement and conduct",
+   "before": "I didn't want to be rude. I said excuse me.",
+   "after": "I did not wish to be rude, and begged him to excuse me;",
+   "austen": "She began then to be afraid of appearing rude and impatient; and walked to meet them with a great anxiety to avoid the suspicion.",
+   "cite": "Mansfield Park, ch. 7, ¶ 17",
+   "verified": true
+  },
+  {
+   "technique": "Speech in her manner, speaker named after the first clause",
+   "before": "\"Hey,\" she said. \"Long time no see.\"",
+   "after": "\"How do you do?\" said she.",
+   "austen": "Mr. John Knightley looked as if he did not comprehend the pleasure, but said only, coolly,",
+   "cite": "Emma, ch. 13, ¶ 40",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 15,
+ "scoreAfter": 84
+}

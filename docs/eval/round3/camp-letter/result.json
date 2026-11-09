@@ -1,0 +1,220 @@
+{
+ "text": "My dear Mother and Father,\n\nCamp is, I suppose, all right; the food is not to be borne, and the friend who shares my cabin snores beyond all reason. Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.\n\nThere is, however, a girl of the name of Kayla, who is really fine company; she is from Ohio, and knows a great deal of horses. We walk down to the lake after dinner, and talk of nothing in particular; I think she likes me, though I am not certain of it, which is the usual condition of such discoveries.\n\nWill you send me more refreshments? and the device which keeps me within your call, which I have entirely forgotten. The persons set over us are not a little strict, though in general tolerable.\n\nYour affectionate Jake.\n\nP.S. I beg you will not let Max use my room.",
+ "aligned": [
+  {
+   "after": "My dear Mother and Father,",
+   "before": [
+    "Dear Mom and Dad,"
+   ],
+   "why": "This sentence puts the writer’s sense into her diction, modelled on Lady Susan, ch. 18, ¶ 3.",
+   "model": {
+    "id": 31882,
+    "work": "susan",
+    "title": "Lady Susan",
+    "year": 1794,
+    "chapter": 18,
+    "chapterTitle": "XVIII",
+    "paragraph": 3,
+    "sentence": 7,
+    "text": "I think, my dear mother, you would not disapprove of her as a daughter.",
+    "cite": "Lady Susan, ch. 18, ¶ 3",
+    "sim": 0.7243561492681472
+   }
+  },
+  {
+   "after": "Camp is, I suppose, all right; the food is not to be borne, and the friend who shares my cabin snores beyond all reason.",
+   "before": [
+    "Camp is okay I guess.",
+    "The food is gross and my bunkmate snores like crazy."
+   ],
+   "why": "This sentence joins two sentences (5, 10 words) into one of 24, removes “okay”, “bunkmate”, “crazy” (never in Austen), and brings in her “shares”, modelled on Persuasion, ch. 22, ¶ 23.",
+   "model": {
+    "id": 30956,
+    "work": "persuasion",
+    "title": "Persuasion",
+    "year": 1817,
+    "chapter": 22,
+    "chapterTitle": "XXII",
+    "paragraph": 23,
+    "sentence": 5,
+    "text": "It is very fit they should have daughters’ shares; and I am sure he has always been a very kind, liberal father to me.",
+    "cite": "Persuasion, ch. 22, ¶ 23"
+   }
+  },
+  {
+   "after": "Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.",
+   "before": [
+    "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+    "It was so embarrassing."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 25, and removes “canoeing”, “flipped”, “canoe” (never in Austen), modelled on Persuasion, ch. 18, ¶ 11.",
+   "model": {
+    "id": 30013,
+    "work": "persuasion",
+    "title": "Persuasion",
+    "year": 1817,
+    "chapter": 18,
+    "chapterTitle": "XVIII",
+    "paragraph": 11,
+    "sentence": 8,
+    "text": "She and the Harvilles came on Tuesday very safely, and in the evening we went to ask her how she did, when we were rather surprised not to find Captain Benwick of the party, for he had been invited as well as the Harvilles; and what do you think was the reason?",
+    "cite": "Persuasion, ch. 18, ¶ 11"
+   }
+  },
+  {
+   "after": "There is, however, a girl of the name of Kayla, who is really fine company; she is from Ohio, and knows a great deal of horses.",
+   "before": [
+    "But there's this girl named Kayla who's really cool.",
+    "She's from Ohio and she knows a ton about horses."
+   ],
+   "why": "This sentence joins two sentences (9, 10 words) into one of 26, writes out “there’s”, “who’s”, and brings in her “company”, modelled on Persuasion, ch. 16, ¶ 16.",
+   "model": {
+    "id": 29795,
+    "work": "persuasion",
+    "title": "Persuasion",
+    "year": 1817,
+    "chapter": 16,
+    "chapterTitle": "XVI",
+    "paragraph": 16,
+    "sentence": 1,
+    "text": "“My idea of good company, Mr. Elliot, is the company of clever, well-informed people, who have a great deal of conversation; that is what I call good company.”",
+    "cite": "Persuasion, ch. 16, ¶ 16"
+   }
+  },
+  {
+   "after": "We walk down to the lake after dinner, and talk of nothing in particular; I think she likes me, though I am not certain of it, which is the usual condition of such discoveries.",
+   "before": [
+    "We hang out at the lake after dinner and talk about stuff.",
+    "I think she likes me but I'm not sure."
+   ],
+   "why": "This sentence uses her “ironic verdict”, “clauses balanced in one period”, joins two sentences (12, 9 words) into one of 34, and writes out “I’m”, modelled on Mansfield Park, ch. 43, ¶ 2.",
+   "model": {
+    "id": 16542,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 43,
+    "chapterTitle": "XLIII",
+    "paragraph": 2,
+    "sentence": 6,
+    "text": "You should listen to me till you were tired, and advise me till you were still tired more; but it is impossible to put a hundredth part of my great mind on paper, so I will abstain altogether, and leave you to guess what you like.",
+    "cite": "Mansfield Park, ch. 43, ¶ 2"
+   }
+  },
+  {
+   "after": "Will you send me more refreshments? and the device which keeps me within your call, which I have entirely forgotten.",
+   "before": [
+    "Can you send more snacks?",
+    "And my phone charger, which I totally forgot."
+   ],
+   "why": "This sentence joins two sentences (5, 8 words) into one of 20, removes “snacks”, “phone”, “charger” (never in Austen), and brings in her “refreshments”, modelled on Sense and Sensibility, ch. 36, ¶ 18.",
+   "model": {
+    "id": 3314,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 36,
+    "chapterTitle": "XXXVI",
+    "paragraph": 18,
+    "sentence": 7,
+    "text": "The dining parlour will admit eighteen couple with ease; card-tables may be placed in the drawing-room; the library may be open for tea and other refreshments; and let the supper be set out in the saloon.’",
+    "cite": "Sense and Sensibility, ch. 36, ¶ 18"
+   }
+  },
+  {
+   "after": "The persons set over us are not a little strict, though in general tolerable.",
+   "before": [
+    "The counselors are kind of strict but mostly fine."
+   ],
+   "why": "This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Pride and Prejudice, ch. 10, ¶ 37.",
+   "model": {
+    "id": 5695,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 10,
+    "chapterTitle": "X",
+    "paragraph": 37,
+    "sentence": 5,
+    "text": "But in general and ordinary cases between friend and friend, where one of them is desired by the other to change a resolution of no very great moment, should you think ill of that person for complying with the desire, without waiting to be argued into it?”",
+    "cite": "Pride and Prejudice, ch. 10, ¶ 37",
+    "sim": 0.3133620561223478
+   }
+  },
+  {
+   "after": "Your affectionate Jake.",
+   "before": [
+    "Love, Jake"
+   ],
+   "why": "This sentence brings in her “affectionate”, modelled on Lady Susan, ch. 1, ¶ 5.",
+   "model": {
+    "id": 31526,
+    "work": "susan",
+    "title": "Lady Susan",
+    "year": 1794,
+    "chapter": 1,
+    "chapterTitle": "I",
+    "paragraph": 5,
+    "sentence": 1,
+    "text": "Your most obliged and affectionate sister,",
+    "cite": "Lady Susan, ch. 1, ¶ 5"
+   }
+  },
+  {
+   "after": "P.S. I beg you will not let Max use my room.",
+   "before": [
+    "P.S. Please don't let Max use my room."
+   ],
+   "why": "This sentence writes out “don’t” and brings in her “beg”, modelled on Pride and Prejudice, ch. 19, ¶ 3.",
+   "model": {
+    "id": 6443,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 19,
+    "chapterTitle": "XIX",
+    "paragraph": 3,
+    "sentence": 2,
+    "text": "I beg you will not go.",
+    "cite": "Pride and Prejudice, ch. 19, ¶ 3"
+   }
+  }
+ ],
+ "explanation": "Short flat sentences are joined into balanced periods with semicolons; feelings are named by judgement nouns, and modern things are rendered by what they do.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+   "after": "Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.",
+   "austen": "Good bye,” he added, shaking my hand with earnestness; “I do not know when you will see me again; but remember what I tell you of Frederica; you MUST make it your business to see justice done her.",
+   "cite": "Lady Susan, ch. 23, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Judgement in abstract nouns",
+   "before": "It was so embarrassing.",
+   "after": "my own very considerable mortification",
+   "austen": "I will tell you why she is out of spirits.",
+   "cite": "Persuasion, ch. 6, ¶ 27",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "The counselors are kind of strict but mostly fine.",
+   "after": "not a little strict",
+   "austen": "“Oh! very well,” exclaimed Miss Bates, “then I need not be uneasy.",
+   "cite": "Emma, ch. 43, ¶ 24",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "I think she likes me but I'm not sure.",
+   "after": "which is the usual condition of such discoveries",
+   "austen": "If I did not believe that she had some regard for me, of course I should not say this, but I do believe it.",
+   "cite": "Mansfield Park, ch. 44, ¶ 2",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 18,
+ "scoreAfter": 88
+}

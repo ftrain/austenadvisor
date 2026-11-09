@@ -14,6 +14,9 @@
     "susan",
     "juvenilia"
   ],
+  "linkExclude": [
+    "juvenilia"
+  ],
   "persona": "Jane Austen (1775–1817), English novelist of the Regency: irony, free indirect discourse, balanced periodic sentences joined by semicolons, precise abstract nouns of judgement (sense, propriety, civility, esteem, amiable), and dialogue that reveals character.",
   "moves": [
     {
@@ -41,7 +44,7 @@
       "id": "reported",
       "name": "Speech reported",
       "does": "Speech reported rather than quoted, in the narrator’s syntax: “He said that he was not ready…”.",
-      "pattern": "\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+(that|he|she|it|they|I|we|his|her|there)\\b|\\b(told|assured|informed)\\s+(him|her|them|me|us)\\b",
+      "pattern": "\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+that\\b|\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+(he|she|it|they|I|we|there)\\s+(was|were|had|would|could|should|did|must|might|is|am|are|knew|thought|meant|wished|hoped|might|will|shall|need|could)\\b|\\b(told|assured|informed)\\s+(him|her|them|me|us)\\s+(that|of|how|what)\\b",
       "register": "narration"
     },
     {
@@ -60,7 +63,7 @@
     },
     {
       "id": "irony",
-      "name": "An ironic verdict",
+      "name": "Ironic verdict",
       "does": "The narrator’s dry verdict on the situation or on the speaker, implied by precision rather than announced; often a generalization (“It is a truth…”, “as is usual…”) or a deflating last clause.",
       "pattern": "\\b(it\\s+is\\s+a\\s+truth|as\\s+is\\s+(usual|often)|a\\s+(very|most)\\s+\\w+\\s+(thing|circumstance)|perhaps\\s+not|in\\s+short|of\\s+course|however\\s+little|it\\s+was\\s+not\\s+to\\s+be)\\b",
       "register": "narration"

@@ -1,0 +1,139 @@
+{
+ "text": "Ryan wrote to me at midnight, to say that we must talk; and I understood at once what such a request meant.\n\nWe met the next day at a shop where coffee was served, and I found him there before me, busy with the instrument in his hand, and looking not a little nervous; he said that he was not ready for anything serious, and that the fault was not mine but his own.\n\nI wished to cry, but did not; I only nodded, and said that it was all very well, and walked home in the rain, and ate a whole pint of ice, which was mostly cream.\n\nMy friend, who shared my room, thought that I made too much of it; and perhaps I did, but it hurt me still, as a grief pronounced unreasonable commonly does.",
+ "aligned": [
+  {
+   "after": "Ryan wrote to me at midnight, to say that we must talk; and I understood at once what such a request meant.",
+   "before": [
+    "Ryan texted me at midnight.",
+    "He said we needed to talk.",
+    "I knew right away what that meant."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 22, and removes “texted” (never in Austen), modelled on Pride and Prejudice, ch. 55, ¶ 11.",
+   "model": {
+    "id": 9919,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 55,
+    "chapterTitle": "LV",
+    "paragraph": 11,
+    "sentence": 4,
+    "text": "Elizabeth would not observe her; and when at last Kitty did, she very innocently said, “What is the matter, mamma?",
+    "cite": "Pride and Prejudice, ch. 55, ¶ 11",
+    "sim": 0.48701842695503456
+   }
+  },
+  {
+   "after": "We met the next day at a shop where coffee was served, and I found him there before me, busy with the instrument in his hand, and looking not a little nervous; he said that he was not ready for anything serious, and that the fault was not mine but his own.",
+   "before": [
+    "The next day we met at a coffee shop downtown.",
+    "He was already there, scrolling on his phone.",
+    "He looked nervous.",
+    "He said he wasn't ready for something serious.",
+    "He said it wasn't me, it was him."
+   ],
+   "why": "This sentence uses her “speech reported”, “understatement and litotes”, joins five sentences (10, 8, 3, 8, 8 words) into one of 52, and removes “downtown”, “scrolling”, “phone” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 33.",
+   "model": {
+    "id": 11658,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 7,
+    "chapterTitle": "VII",
+    "paragraph": 33,
+    "sentence": 1,
+    "text": "Her own gentle voice speaking from the other end of the room, which was a very long one, told them that she was on the sofa.",
+    "cite": "Mansfield Park, ch. 7, ¶ 33",
+    "sim": 0.30684061995609585
+   }
+  },
+  {
+   "after": "I wished to cry, but did not; I only nodded, and said that it was all very well, and walked home in the rain, and ate a whole pint of ice, which was mostly cream.",
+   "before": [
+    "I wanted to cry but I didn't.",
+    "I just nodded and said okay.",
+    "Then I walked home in the rain and ate a whole pint of ice cream."
+   ],
+   "why": "This sentence uses her “feeling shown by conduct”, “speech reported”, joins three sentences (7, 6, 15 words) into one of 35, and removes “okay” (never in Austen), modelled on Northanger Abbey, ch. 25, ¶ 10.",
+   "model": {
+    "id": 27333,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 25,
+    "chapterTitle": "XXV",
+    "paragraph": 10,
+    "sentence": 3,
+    "text": "They went to breakfast directly; but Catherine could hardly eat anything.",
+    "cite": "Northanger Abbey, ch. 25, ¶ 10",
+    "sim": 0.431415100481038
+   }
+  },
+  {
+   "after": "My friend, who shared my room, thought that I made too much of it; and perhaps I did, but it hurt me still, as a grief pronounced unreasonable commonly does.",
+   "before": [
+    "My roommate thought I was overreacting.",
+    "Maybe I was.",
+    "But it still hurt."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, “ironic verdict”, joins three sentences (6, 3, 4 words) into one of 30, and removes “roommate”, “overreacting” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.",
+   "model": {
+    "id": 6700,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 22,
+    "chapterTitle": "XXII",
+    "paragraph": 3,
+    "sentence": 14,
+    "text": "Elizabeth would wonder, and probably would blame her; and though her resolution was not to be shaken, her feelings must be hurt by such disapprobation.",
+    "cite": "Pride and Prejudice, ch. 22, ¶ 3"
+   }
+  }
+ ],
+ "explanation": "Short sentences are joined into balanced periods; his speech is reported; the nervousness is understated; the close gives a dry general verdict; modern things are rendered by what they do.",
+ "notes": [
+  {
+   "technique": "Speech reported",
+   "before": "He said it wasn't me, it was him.",
+   "after": "he said that he was not ready for anything serious, and that the fault was not mine but his own",
+   "austen": "It was his business, however, to say that he did, and he said it very prettily.",
+   "cite": "Sense and Sensibility, ch. 49, ¶ 23",
+   "verified": false
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "He looked nervous.",
+   "after": "looking not a little nervous",
+   "austen": "I dare say she will not be in good humour again this month; but I am determined I will not be cross; it is not a little matter that puts me out of temper.”",
+   "cite": "Northanger Abbey, ch. 15, ¶ 4",
+   "verified": true
+  },
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "My roommate thought I was overreacting. Maybe I was. But it still hurt.",
+   "after": "thought that I made too much of it; and perhaps I did, but it hurt me still",
+   "austen": "“No, but I wrote to him—I did indeed, I got up this morning before it was light, and was two hours about it; and when my letter was done I thought I never should have courage to give it.",
+   "cite": "Lady Susan, ch. 24, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Feeling shown by conduct",
+   "before": "I just nodded and said okay.",
+   "after": "I only nodded, and said that it was all very well",
+   "austen": "Emma recollected, blushed, was sorry, but tried to laugh it off.",
+   "cite": "Emma, ch. 43, ¶ 57",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "But it still hurt.",
+   "after": "as a grief pronounced unreasonable commonly does",
+   "austen": "In time, of course, Mr. Knightley would be forgotten, that is, supplanted; but this could not be expected to happen very early.",
+   "cite": "Emma, ch. 51, ¶ 38",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 27,
+ "scoreAfter": 86
+}

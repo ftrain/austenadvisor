@@ -1,0 +1,101 @@
+{
+ "text": "My dear Mother and Father,\n\nI must confess that camp is no more than tolerable, for the table is a very indifferent one, and the friend who shares my room snores with a violence that leaves me little rest. Yesterday we went upon the water in a small boat, which I overturned, to the great diversion of the whole party; and I cannot express the mortification of it.\n\nThere is, however, a young lady of the name of Kayla, whom I find very agreeable; she is from Ohio, and knows a great deal more of horses than anybody here. We walk down to the lake after dinner and converse upon a variety of subjects; and though I fancy she likes me, I am not certain of it.\n\nWill you be so good as to send me some refreshments, and the device which I was so foolish as to leave behind? The advisers are rather strict, but upon the whole I have no great reason to complain of them.\n\nYours affectionately, Jake\n\nP.S. Pray do not suffer Max to make use of my room.",
+ "aligned": [
+  {
+   "after": "My dear Mother and Father,",
+   "before": [
+    "Dear Mom and Dad,"
+   ]
+  },
+  {
+   "after": "I must confess that camp is no more than tolerable, for the table is a very indifferent one, and the friend who shares my room snores with a violence that leaves me little rest.",
+   "before": [
+    "Camp is okay I guess.",
+    "The food is gross and my bunkmate snores like crazy."
+   ]
+  },
+  {
+   "after": "Yesterday we went upon the water in a small boat, which I overturned, to the great diversion of the whole party; and I cannot express the mortification of it.",
+   "before": [
+    "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+    "It was so embarrassing."
+   ]
+  },
+  {
+   "after": "There is, however, a young lady of the name of Kayla, whom I find very agreeable; she is from Ohio, and knows a great deal more of horses than anybody here.",
+   "before": [
+    "But there's this girl named Kayla who's really cool.",
+    "She's from Ohio and she knows a ton about horses."
+   ]
+  },
+  {
+   "after": "We walk down to the lake after dinner and converse upon a variety of subjects; and though I fancy she likes me, I am not certain of it.",
+   "before": [
+    "We hang out at the lake after dinner and talk about stuff.",
+    "I think she likes me but I'm not sure."
+   ]
+  },
+  {
+   "after": "Will you be so good as to send me some refreshments, and the device which I was so foolish as to leave behind?",
+   "before": [
+    "Can you send more snacks?",
+    "And my phone charger, which I totally forgot."
+   ]
+  },
+  {
+   "after": "The advisers are rather strict, but upon the whole I have no great reason to complain of them.",
+   "before": [
+    "The counselors are kind of strict but mostly fine."
+   ]
+  },
+  {
+   "after": "Yours affectionately, Jake",
+   "before": [
+    "Love, Jake"
+   ]
+  },
+  {
+   "after": "P.S. Pray do not suffer Max to make use of my room.",
+   "before": [
+    "P.S. Please don't let Max use my room."
+   ]
+  }
+ ],
+ "explanation": "Short flat statements are joined into balanced sentences, slang is replaced by words Austen used, and feeling is given in abstract nouns and litotes.",
+ "notes": [
+  {
+   "technique": "Balance and period",
+   "before": "The food is gross and my bunkmate snores like crazy.",
+   "after": "the table is a very indifferent one, and the friend who shares my room snores with a violence that leaves me little rest",
+   "austen": "The house is a good one, the furniture fashionable, and everything announces plenty and elegance.",
+   "cite": "Lady Susan, ch. 5, ¶ 4",
+   "verified": true
+  },
+  {
+   "technique": "Abstract nouns of judgement",
+   "before": "It was so embarrassing.",
+   "after": "I cannot express the mortification of it",
+   "austen": "I am sorry it is so, for what is this but deceit?",
+   "cite": "Lady Susan, ch. 6, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Irony by understatement",
+   "before": "Camp is okay I guess.",
+   "after": "camp is no more than tolerable",
+   "austen": "You may guess, therefore, my dear madam, with what feelings I look forward to her arrival.",
+   "cite": "Lady Susan, ch. 3, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Modern things by what they do",
+   "before": "Can you send more snacks?",
+   "after": "Will you be so good as to send me some refreshments",
+   "austen": "Send back your answer as soon as you can, and be careful to write explicitly.",
+   "cite": "Pride and Prejudice, ch. 49, ¶ 18",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 18,
+ "scoreAfter": 90
+}
