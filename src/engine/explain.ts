@@ -66,7 +66,8 @@ export function explainSentence(
   // The author's moves made here and not in the writer's words.
   const moves = (m.author.moves ?? []).filter((mv) => {
     const re = new RegExp(mv.pattern, 'i');
-    return re.test(after) && !re.test(src);
+    const c = (t: string) => t.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
+    return re.test(c(after)) && !re.test(c(src));
   });
   if (quotedBefore && !quotedAfter && !moves.some((x) => x.id === 'reported')) parts.push('turns quoted speech into reported speech');
   if (moves.length) parts.push(`uses ${pr.possessive} ${moves.slice(0, 2).map((x) => `“${x.name.toLowerCase()}”`).join(', ')}`);

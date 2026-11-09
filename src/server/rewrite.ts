@@ -157,6 +157,10 @@ export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: str
 
 export const submissionText = (s: Submission) => s.paragraphs.map((p) => p.sentences.map((x) => x.text.trim()).join(' ')).join('\n\n');
 
+/** Straight quotation marks made curly, as the corpus has them, so a move's pattern reads a typed sentence as hers. */
+export const curl = (s: string) =>
+  s.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/(^|[\s(—])'/g, '$1‘').replace(/'/g, '’');
+
 const idOf = (s: string) => Number(/^S?(\d+)$/.exec(s.trim())?.[1] ?? NaN);
 
 /** What the engine finds still wrong with a submission: nothing, and it is accepted. */
@@ -194,11 +198,12 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
     if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
     else if (c && !new RegExp(mv.pattern, 'i').test(c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
     // The writer is to see the move in your words too (irony has no pattern a machine can trust).
-    else if (mv.id !== 'irony' && n.after && !new RegExp(mv.pattern, 'i').test(n.after)) problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. Quote the part of your rewrite that makes the move, or name the move it does make.`);
+    else if (mv.id !== 'irony' && n.after && !new RegExp(mv.pattern, 'i').test(curl(n.after))) problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. Quote the part of your rewrite that makes the move, or name the move it does make.`);
     if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
   }
   if (moves.has('irony') && brief.sentences.length >= 6 && !s.notes.some((n) => n.move === 'irony'))
     problems.push(`Give the passage one ironic verdict in ${short}’s manner where it invites one, and a note for it (move "irony"; find_example "irony" for a model).`);
+  const sourceCompounds = checkPassage(m, brief.sentences.map((x) => x.text).join(' ')).compounds.map((c) => c.toLowerCase());
   // Feeling kept at the writer's degree; the writer's things kept.
   const HEDGE = /\b(basically|kind of|sort of|i guess|maybe|probably|a bit|a little|pretty much|kinda)\b/i;
   const INFLATE = /\b(exceedingly|extremely|extreme|terrified|terror|violence|violent|excessively|dreadfully|horror|agony|despair)\b/i;
@@ -217,7 +222,9 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
       const tags = m.tagger.tagTokens(toks);
       toks.forEach((t, k) => {
         if (t.kind !== 'word' || !/^NNS?$/.test(tags[k]!) || GENERIC.has(t.norm) || !m.word(t.norm) || /^\p{Lu}/u.test(t.text)) return;
-        if (check.compounds.some((c) => c.toLowerCase().includes(t.norm))) return;
+        // A noun of a compound flagged in the writer's words (“ice cream”) goes with its compound: the thing is
+        // rendered whole (“ices”), not word by word.
+        if (sourceCompounds.some((c) => c.split(/\s+/).includes(t.norm)) || check.compounds.some((c) => c.toLowerCase().includes(t.norm))) return;
         if (out.has(t.norm) || synonyms(t.norm).some((w) => w.split('_').every((p) => out.has(p)))) return;
         const lemma = m.wn.lemmas(t.norm, 'n')[0];
         if (lemma && [...out].some((w) => m.wn.lemmas(w, 'n')[0] === lemma)) return;
