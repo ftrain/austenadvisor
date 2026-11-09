@@ -304,7 +304,7 @@ export async function rewriteWithAI(
   let last: Submission | null = null;
   let rounds = 0;
   let problems: string[] = [];
-  for (let turn = 0; turn < 14 && !accepted; turn++) {
+  for (let turn = 0; turn < 18 && !accepted; turn++) {
     onProgress(turn === 0 ? 'reading the brief' : 'consulting the works');
     const params = {
       model: MODEL,
@@ -335,7 +335,7 @@ export async function rewriteWithAI(
         rounds++;
         problems = gate(m, brief, last);
         onProgress(problems.length ? `revising (${problems.length} to mend)` : 'accepted');
-        if (!problems.length || rounds >= 3) accepted = last;
+        if (!problems.length || rounds >= 4) accepted = last;
         results.push({ type: 'tool_result', tool_use_id: u.id, content: problems.length && !accepted ? `Not yet accepted:\n- ${problems.join('\n- ')}` : 'Accepted.' });
         continue;
       }

@@ -196,6 +196,7 @@ export async function rewriteBlocks(
     text: [
       `Rewritten with AI (${result.model}), checked against ${short}’s works by the engine: score ${result.scoreBefore} → ${result.scoreAfter}. It consulted the engine ${result.toolCalls.length} times.`,
       result.explanation,
+      result.problems.length ? `The engine still found, after ${result.rounds} drafts:\n- ${result.problems.join('\n- ')}` : '',
       ...result.aligned.map(sentenceNote),
       result.notes.length ? `Moves to practise:\n${result.notes.map((n) => `${n.technique}: “${n.before}” → “${n.after}”. ${cite({ text: n.austen, cite: n.cite } as Citation)}`).join('\n')}` : '',
     ]

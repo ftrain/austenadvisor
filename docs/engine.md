@@ -113,7 +113,7 @@ The server renders each quotation from the corpus by its id. An invented quotati
 - an id is unknown;
 - there are fewer than three notes.
 
-The findings go back as the tool's answer, and the model revises, up to three submissions.
+The findings go back as the tool's answer, and the model revises, up to four submissions (after which the last is shown, with what the gate still found).
 
 **Every rewritten sentence links to the Austen sentence that inspired it, with a reason the system writes** (`src/engine/explain.ts`). The model names, for each sentence, the ID of the sentence of hers that inspired it. The engine then compares the new sentence with the writer's sentences it renders and fills a template from what it can see:
 
