@@ -9,6 +9,7 @@ import { AuthorModel } from '../src/engine/model.ts';
 import { concordance, wordProfile } from '../src/engine/tools.ts';
 import { buildBrief } from '../src/engine/brief.ts';
 import { gate, render, type Submission } from '../src/server/rewrite.ts';
+import { explainSentence } from '../src/engine/explain.ts';
 
 const built = existsSync(authorDbPath('austen'));
 
@@ -73,7 +74,7 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(brief.sentences[1]!.models.length).toBeGreaterThan(0);
     const model = `S${m.moveExamples('judgement', 'keys', 1)[0]!.id}`;
     const bad: Submission = {
-      paragraphs: [{ sentences: [{ text: 'Dear Mama,', from: [1] }] }, { sentences: [{ text: 'I grabbed my keys.', from: [2] }] }],
+      paragraphs: [{ sentences: [{ text: 'Dear Mama,', from: [1], model: 'S1' }] }, { sentences: [{ text: 'I grabbed my keys.', from: [2], model: 'S1' }] }],
       notes: [{ move: 'balance', before: 'a', after: 'b', model: 'S999999999' }],
       explanation: '',
     };
@@ -83,18 +84,33 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(problems).toMatch(/Unknown ids: S999999999/);
     const good: Submission = {
       paragraphs: [
-        { sentences: [{ text: 'My dear Mama,', from: [1] }] },
-        { sentences: [{ text: 'I caught up my keys, though the shop was extremely crowded.', from: [2, 3] }] },
-        { sentences: [{ text: 'Your affectionate Jake', from: [4] }] },
+        { sentences: [{ text: 'My dear Mama,', from: [1], model }] },
+        { sentences: [{ text: 'I caught up my keys with some composure, though the shop was extremely crowded.', from: [2, 3], model: 'S999999999' }] },
+        { sentences: [{ text: 'Your affectionate Jake', from: [4], model }] },
       ],
-      notes: [1, 2, 3].map(() => ({ move: 'judgement', before: 'b', after: 'My dear Mama,', model })),
+      notes: [1, 2, 3].map(() => ({ move: 'judgement', before: 'b', after: 'with some composure', model })),
       explanation: 'e',
     };
+    expect(gate(m, brief, good).join(' ')).toMatch(/inspired it; these do not: “I caught up my keys/);
+    good.paragraphs[1]!.sentences[0]!.model = model;
     expect(gate(m, brief, good)).toEqual([]);
     const r = render(m, brief, good);
     expect(r.notes[0]!.austen).toBe(m.cite(Number(model.slice(1)))!.text);
     expect(r.notes[0]!.verified).toBe(true);
     expect(r.aligned[1]!.before).toEqual(['I grabbed my keys.', 'It was super crowded.']);
+    // Every rewritten sentence: one sentence of why, from the template, and a real sentence of hers.
+    for (const a of r.aligned) {
+      expect(a.why.split(/(?<=\.)\s+(?=[A-Z])/).length).toBe(1);
+      expect(m.cite(a.model.id)!.text).toBe(a.model.text);
+    }
+    expect(r.aligned[1]!.why).toMatch(/^This sentence joins two sentences \(4, 4 words\) into one of 14, replaces “grabbed”, “super” \(never in Austen\), and uses her “judgement in abstract nouns”, modelled on .+, ¶ \d+\.$/);
+  });
+
+  it('explains a rewritten sentence by what changed, and links the move it makes', () => {
+    const w = explainSentence(m, ['“I’m not ready,” he said.'], 'He said that he was not ready for anything so serious.', null);
+    expect(w.why).toMatch(/^This sentence .*(turns quoted speech into reported speech|“speech reported”).*, modelled on .+, ¶ \d+\.$/);
+    expect(w.moves).toContain('reported');
+    expect(new RegExp(m.author.moves!.find((x) => x.id === 'reported')!.pattern, 'i').test(w.model.text)).toBe(true);
   });
 
   it('reads a page quickly once warm', () => {

@@ -6,6 +6,7 @@
 import { analyze, type Advice, type Analysis } from './analyze.ts';
 import type { DocBlock } from './doc.ts';
 import type { AuthorModel, Citation } from './model.ts';
+import { alignSentences, explainSentence } from './explain.ts';
 
 export interface Change {
   block: number;
@@ -25,6 +26,9 @@ export interface Austenized {
   scoreBefore: number;
   scoreAfter: number;
   analysisAfter: Analysis;
+  /** Every sentence that changed: the writer's sentences it renders, why (one sentence, from the template), and the
+   * author's sentence that shows it. */
+  aligned: { block: number; after: string; before: string[]; why: string; model: Citation }[];
 }
 
 interface Edit {
@@ -116,5 +120,17 @@ export function austenize(m: AuthorModel, blocks: DocBlock[]): Austenized {
   const after = mid.map((b, i) => (joins.has(i) ? { ...b, text: applyEdits(b.text, joins.get(i)!) } : b));
   for (const list of joins.values()) for (const e of list) changes.push(e.change);
   const analysisAfter = analyze(m, after, { contextual: false });
-  return { before: blocks, after, changes, kept, scoreBefore: first.report.score, scoreAfter: analysisAfter.report.score, analysisAfter };
+  const aligned: Austenized['aligned'] = [];
+  after.forEach((b, i) => {
+    if (b.text === blocks[i]!.text) return;
+    for (const pair of alignSentences(blocks[i]!.text, b.text)) {
+      if (pair.before.length === 1 && pair.before[0] === pair.after) continue;
+      // The sentence of hers a change in this sentence was found with, where there is one.
+      const named = changes.find((c) => c.block === i && c.example && pair.after.includes(c.after))?.example?.id ?? null;
+      const swaps = changes.filter((c) => c.block === i && (c.kind === 'usage' || (c.kind === 'word' && !!m.word(c.before)))).map((c): [string, string] => [c.before, c.after]);
+      const w = explainSentence(m, pair.before, pair.after, named, undefined, swaps);
+      aligned.push({ block: i, ...pair, why: w.why, model: w.model });
+    }
+  });
+  return { before: blocks, after, changes, kept, scoreBefore: first.report.score, scoreAfter: analysisAfter.report.score, analysisAfter, aligned };
 }

@@ -95,7 +95,7 @@ export function checkPassage(m: AuthorModel, text: string) {
       .map((w) => ({ word: w.word, note: w.note, alternatives: w.alternatives.slice(0, 5).map((x) => `${x.text} (${x.source}, ${x.count}×)`) })),
     names: a.words.filter((w) => w.kind === 'name').map((w) => w.word),
     compounds: a.compounds.map((c) => c.text),
-    unattested: unattestedPairs(m, text),
+    rarePairs: unattestedPairs(m, text),
     advice: a.advice.map((x) => ({ severity: x.severity, title: x.title, message: x.message, why: x.why, suggestion: x.replacements?.[0]?.text })),
     measures: a.report.measures.map((x) => `${x.label}: yours ${x.yours}${x.unit === '%' ? '%' : ''}, ${m.author.short} ${x.author}${x.unit === '%' ? '%' : ''}`),
     overused: a.report.overused,

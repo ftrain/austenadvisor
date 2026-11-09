@@ -10,7 +10,10 @@ import { aiAvailable, rewriteWithAI, type RewriteResult } from './rewrite.ts';
 import { ADVISOR, type Replacement, type Room } from './room.ts';
 import { newId } from './store.ts';
 
-export const cite = (c: Citation) => `“${c.text}” — ${c.cite}`;
+export const cite = (c: Pick<Citation, 'text' | 'cite'>) => `“${c.text}” — ${c.cite}`;
+
+/** One rewritten sentence in a thread: the new words, why (the engine's one sentence), and her sentence. */
+const sentenceNote = (a: { after: string; why: string; model: Pick<Citation, 'text' | 'cite'> }) => `“${a.after}”\n${a.why}\n${cite(a.model)}`;
 
 export interface AdvisorDeps {
   model: (id: string) => AuthorModel;
@@ -136,8 +139,8 @@ export function austenizeBlocks(deps: AdvisorDeps, room: Room, from: number, to:
     block: reps[0]!.block,
     offset: 0,
     text: [
-      `A statistical rewrite in ${short}’s manner (score ${st.scoreBefore} → ${st.scoreAfter}), made without a language model: every word is one ${short} used.`,
-      ...st.changes.slice(0, 8).map((c) => `“${c.before}” → “${c.after}”. ${c.why}${c.example ? ` ${cite(c.example)}` : ''}`),
+      `A statistical rewrite in ${short}’s manner (score ${st.scoreBefore} → ${st.scoreAfter}), made without a language model. Each sentence, why, and the sentence of ${short}’s it follows:`,
+      ...st.aligned.map(sentenceNote),
       st.kept.length ? `I found no word of ${short}’s for ${st.kept.map((k) => `“${k.word}”`).join(', ')}: those are yours to recast.` : '',
     ]
       .filter(Boolean)
@@ -193,7 +196,8 @@ export async function rewriteBlocks(
     text: [
       `Rewritten with AI (${result.model}), checked against ${short}’s works by the engine: score ${result.scoreBefore} → ${result.scoreAfter}. It consulted the engine ${result.toolCalls.length} times.`,
       result.explanation,
-      ...result.notes.map((n) => `${n.technique}: “${n.before}” → “${n.after}”.\n${n.verified ? '✓' : '⚠ not found in the corpus:'} “${n.austen}” — ${n.cite}`),
+      ...result.aligned.map(sentenceNote),
+      result.notes.length ? `Moves to practise:\n${result.notes.map((n) => `${n.technique}: “${n.before}” → “${n.after}”. ${cite({ text: n.austen, cite: n.cite } as Citation)}`).join('\n')}` : '',
     ]
       .filter(Boolean)
       .join('\n\n'),

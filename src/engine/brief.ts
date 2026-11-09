@@ -114,9 +114,14 @@ export function craftOf(m: AuthorModel): string {
 export function renderMoves(m: AuthorModel, b: Brief): string {
   const near = b.sentences.map((x) => x.text).join(' ');
   const out = ['<moves>'];
+  const used = new Set<number>();
   for (const mv of m.author.moves ?? []) {
     out.push(`<move id="${mv.id}" name="${esc(mv.name)}">`);
-    for (const c of m.moveExamples(mv.id, near, 2)) out.push(`  <example id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</example>`);
+    // Each example shows one move only here, so a note cannot borrow another's.
+    for (const c of m.moveExamples(mv.id, near, 6).filter((c) => !used.has(c.id)).slice(0, 2)) {
+      used.add(c.id);
+      out.push(`  <example id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</example>`);
+    }
     out.push('</move>');
   }
   out.push('</moves>');

@@ -34,14 +34,14 @@
       "id": "litotes",
       "name": "Understatement and litotes",
       "does": "The verdict implied by understatement: “not unwelcome”, “no very great”, “not a little”, “rather too much”.",
-      "pattern": "\\b(not\\s+un(?!der|til|less)\\w{3,}|no\\s+very\\s+\\w+|not\\s+a\\s+little|not\\s+without\\s+\\w+|not\\s+ill|rather\\s+too\\s+\\w+|not\\s+the\\s+least\\s+\\w+)\\b",
+      "pattern": "\\b(not\\s+(\\w+\\s+){0,3}un(?!der|til|less)\\w{3,}|no\\s+very\\s+\\w+|not\\s+a\\s+little|not\\s+without\\s+\\w+|not\\s+ill|rather\\s+too\\s+\\w+|not\\s+the\\s+least\\s+\\w+|not\\s+all\\s+(I|she|he)\\s+could\\s+wish)\\b",
       "register": "any"
     },
     {
       "id": "reported",
       "name": "Speech reported",
       "does": "Speech reported rather than quoted, in the narrator’s syntax: “He said that he was not ready…”.",
-      "pattern": "\\b(he|she|they|I|[A-Z][a-z]+)\\s+(said|replied|declared|observed|owned|protested|answered)\\s+that\\b|\\b(told|assured)\\s+(him|her|them|me|us)\\s+that\\b",
+      "pattern": "\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+(that|he|she|it|they|I|we|his|her|there)\\b|\\b(told|assured|informed)\\s+(him|her|them|me|us)\\b",
       "register": "narration"
     },
     {
@@ -55,7 +55,7 @@
       "id": "conduct",
       "name": "Feeling shown by conduct",
       "does": "Feeling given by its effect on conduct or countenance, not named outright: “she could hardly keep her countenance”, “coloured”.",
-      "pattern": "\\b(could\\s+(hardly|scarcely|not\\s+help)|coloured|blushed|countenance|her\\s+colour|his\\s+colour|smiled|could\\s+not\\s+speak)\\b",
+      "pattern": "\\b(could\\s+(hardly|scarcely|not\\s+help)|coloured|blushed|countenance|her\\s+colour|his\\s+colour|smiled|nodded|bowed|sighed|wept|trembled|turned\\s+away|looked\\s+down|could\\s+not\\s+speak|in\\s+tears)\\b",
       "register": "narration"
     },
     {
@@ -67,10 +67,11 @@
     }
   ],
   "craftNotes": [
-    "Modern things: if the thing is not load-bearing, omit it or use a general phrase; if it is (the reader or the letter’s reader must know what it is), keep it identifiable in her words. A periphrasis is at most five words and never used twice.",
+    "Keep what the writer named and how much: what was eaten, where, how much (“a whole pint”, “more snacks”) stays, in her words if hers differ. Omit only modern texture that names nothing the story needs (the hoodie).",
+    "Modern things the story needs: a short plain phrase in her words (at most five words), identifiable to the reader, never used twice. Do not make a riddle of it.",
+    "Keep the writer’s degree and register of feeling: a hedge stays a hedge (“basically panicked” is comic, never “exceedingly terrified”), and nothing is compared that was not compared.",
     "A letter keeps the form of a letter: salutation, the writer’s own voice, and a close; her letters (Lady Susan, the juvenilia, the letters in the novels) are its models.",
-    "Keep the writer’s degree and register of feeling: a hedge stays a hedge (“basically panicked” is comic, not “exceedingly terrified”), quantities stay (“more snacks”), and nothing is compared that was not compared.",
-    "Where the passage invites it, give at least one ironic or retrospective verdict in her manner; in a first-person passage it belongs to the narrator looking back."
+    "Give the passage one ironic verdict in her manner where it invites it: in a first-person passage, the narrator looking back, dry and brief, often in a closing clause or a general observation."
   ],
   "works": [
     {

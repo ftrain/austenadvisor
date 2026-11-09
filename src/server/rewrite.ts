@@ -18,6 +18,7 @@ import { buildBrief, craftOf, renderBrief, type Brief } from '../engine/brief.ts
 import { blocksOfText, type DocBlock } from '../engine/doc.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
 import { CONTRACTIONS } from '../engine/profile.ts';
+import { explainSentence } from '../engine/explain.ts';
 import { checkPassage, runTool, TOOL_SPECS } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 
@@ -25,7 +26,7 @@ export const MODEL = process.env.ADVISOR_MODEL ?? 'claude-opus-5-5';
 export const aiAvailable = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
 
 export interface Submission {
-  paragraphs: { sentences: { text: string; from: number[] }[] }[];
+  paragraphs: { sentences: { text: string; from: number[]; model: string }[] }[];
   notes: { move: string; before: string; after: string; model: string }[];
   explanation: string;
 }
@@ -42,8 +43,9 @@ export interface RewriteNote {
 
 export interface RewriteResult {
   text: string;
-  /** Each new sentence beside the writer's sentences it renders. */
-  aligned: { after: string; before: string[] }[];
+  /** Each new sentence beside the writer's sentences it renders, why it was rewritten (one sentence, from the
+   * engine's template), and the author's sentence that inspired it. */
+  aligned: { after: string; before: string[]; why: string; model: Citation }[];
   explanation: string;
   notes: RewriteNote[];
   toolCalls: { name: string; input: unknown }[];
@@ -75,8 +77,9 @@ export const SUBMIT = {
                 properties: {
                   text: { type: 'string', description: 'One sentence of the rewrite.' },
                   from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders (one, or several joined).' },
+                  model: { type: 'string', description: 'The id of the author’s sentence that most inspired this one (from the brief or a tool result): “S12345”.' },
                 },
-                required: ['text', 'from'],
+                required: ['text', 'from', 'model'],
                 additionalProperties: false,
               },
             },
@@ -127,7 +130,7 @@ ${craftOf(m)}
 
 <the_engine>
 You are given a brief prepared by a statistical engine built from ${a.short}'s complete works: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (and ${pr.possessive} words instead, with how often ${pr.subject} used them), and two of ${pr.possessive} sentences nearest it in meaning and register, each with an id like S12345.
-The engine is also your tools: look a word up (word_profile); confirm a phrase is ${pr.possessive} (concordance); find ${pr.possessive} sentences like yours (similar_sentences, with a register); find ${pr.possessive} sentences that show a move (find_example); check a draft (check_passage). Before submitting, run check_passage on your draft: it lists compounds and word pairs never found together in ${pr.possessive} works; look each up in the concordance, and keep only what ${pr.subject} would have written. A periphrasis of your own making is exactly such a phrase.
+The engine is also your tools: look a word up (word_profile); confirm a phrase is ${pr.possessive} (concordance); find ${pr.possessive} sentences like yours (similar_sentences, with a register); find ${pr.possessive} sentences that show a move (find_example); check a draft (check_passage). Before submitting, run check_passage on your draft. A compound it lists is a modern thing in old words: find what it would be in ${pr.possessive} world. Its "rare pairs" are only for your judgement: most are fine; change one only if it sounds modern, by choosing another word, never by inverting the phrase. A periphrasis of your own making deserves a concordance check.
 ${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names. A modern thing with no word of ${pr.possessive} is rendered by what it does in ${pr.possessive} world, or by a phrase in ${pr.possessive} words.
 </the_engine>
 
@@ -136,7 +139,7 @@ Cite ${a.short} only by id (S12345), never by quoting: the writer is shown the s
 </citing>
 
 <finishing>
-Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders), three to six notes (each a different move, the writer's words and yours exactly as written), and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
+Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders, and the id of the sentence of ${pr.possessive} that most inspired it), three to six notes (each a different move, the writer's words and yours exactly as written), and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
 </finishing>`;
 }
 
@@ -179,18 +182,49 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const covered = new Set(s.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.from)));
   const missing = brief.sentences.filter((x) => !covered.has(x.n));
   if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
+  const badModels = s.paragraphs.flatMap((p) => p.sentences).filter((x) => !m.cite(idOf(x.model ?? '')));
+  if (badModels.length) problems.push(`Each sentence names the id of the sentence of ${short}’s that inspired it; these do not: ${badModels.map((x) => `“${x.text.slice(0, 40)}…” (${x.model || 'none'})`).join('; ')}.`);
   const bad = s.notes.filter((n) => !m.cite(idOf(n.model)));
   if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}. Use ids from the brief or a tool result.`);
+  const words = (t: string) => tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm);
   const moves = new Map((m.author.moves ?? []).map((x) => [x.id, x]));
   for (const n of s.notes) {
     const mv = moves.get(n.move);
     const c = m.cite(idOf(n.model));
     if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
     else if (c && !new RegExp(mv.pattern, 'i').test(c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
+    // The writer is to see the move in your words too (irony has no pattern a machine can trust).
+    else if (mv.id !== 'irony' && n.after && !new RegExp(mv.pattern, 'i').test(n.after)) problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. Quote the part of your rewrite that makes the move, or name the move it does make.`);
     if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
   }
+  if (moves.has('irony') && brief.sentences.length >= 6 && !s.notes.some((n) => n.move === 'irony'))
+    problems.push(`Give the passage one ironic verdict in ${short}’s manner where it invites one, and a note for it (move "irony"; find_example "irony" for a model).`);
+  // Feeling kept at the writer's degree; the writer's things kept.
+  const HEDGE = /\b(basically|kind of|sort of|i guess|maybe|probably|a bit|a little|pretty much|kinda)\b/i;
+  const INFLATE = /\b(exceedingly|extremely|extreme|terrified|terror|violence|violent|excessively|dreadfully|horror|agony|despair)\b/i;
+  const GENERIC = new Set(['thing', 'things', 'stuff', 'time', 'way', 'lot', 'ton', 'bit', 'day', 'something', 'anything', 'everything', 'nothing', 'one', 'kind', 'sort']);
+  for (const p of s.paragraphs)
+    for (const x of p.sentences) {
+      const src = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
+      const inflated = x.text.match(INFLATE)?.[0];
+      if (HEDGE.test(src) && inflated && !INFLATE.test(src)) problems.push(`“${inflated}” inflates what the writer hedged (“${src.match(HEDGE)![0]}”): keep their degree of feeling.`);
+      const out = new Set(words(x.text));
+      const synonyms = (w: string) => m.wn.lemmas(w, 'n').flatMap((l) => m.wn.senses(l, 'n').slice(0, 3)).flatMap((id) => {
+        const syn = m.wn.synset(id);
+        return syn ? [...syn.words, ...(syn.rels['@'] ?? []).flatMap((h) => m.wn.synset(h)?.words ?? [])] : [];
+      });
+      const toks = tokenize(src);
+      const tags = m.tagger.tagTokens(toks);
+      toks.forEach((t, k) => {
+        if (t.kind !== 'word' || !/^NNS?$/.test(tags[k]!) || GENERIC.has(t.norm) || !m.word(t.norm) || /^\p{Lu}/u.test(t.text)) return;
+        if (check.compounds.some((c) => c.toLowerCase().includes(t.norm))) return;
+        if (out.has(t.norm) || synonyms(t.norm).some((w) => w.split('_').every((p) => out.has(p)))) return;
+        const lemma = m.wn.lemmas(t.norm, 'n')[0];
+        if (lemma && [...out].some((w) => m.wn.lemmas(w, 'n')[0] === lemma)) return;
+        problems.push(`“${t.text}” (sentence ${x.from.join(', ')}) is lost: keep what the writer named, in ${short}’s words if hers differ.`);
+      });
+    }
   // A sentence left as it was is not yet rewritten.
-  const words = (t: string) => tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm);
   for (const p of s.paragraphs)
     for (const x of p.sentences) {
       const src = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
@@ -208,7 +242,14 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
 export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<RewriteResult, 'text' | 'aligned' | 'explanation' | 'notes'> {
   return {
     text: submissionText(s),
-    aligned: s.paragraphs.flatMap((p) => p.sentences.map((x) => ({ after: x.text, before: x.from.map((n) => brief.sentences[n - 1]?.text ?? '') }))),
+    aligned: s.paragraphs.flatMap((p) =>
+      p.sentences.map((x) => {
+        const before = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
+        const reg = brief.sentences[(x.from[0] ?? 1) - 1]?.register;
+        const w = explainSentence(m, before, x.text, x.model, reg === 'letter' ? 'letter' : undefined);
+        return { after: x.text, before, why: w.why, model: w.model };
+      }),
+    ),
     explanation: s.explanation,
     notes: s.notes.map((n) => {
       const c: Citation | null = m.cite(idOf(n.model));
