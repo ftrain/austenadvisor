@@ -77,23 +77,45 @@ The engine's own rewrite, by statistics alone:
 
 Every change is listed with its reason and a sentence of hers. See [before-after.md](before-after.md) for what it does well and what it can't: an idiom ("said okay"), or a thing with no Regency word (a phone).
 
-## Rewrite with AI (`src/server/rewrite.ts`)
+## Rewrite with AI (`src/engine/brief.ts`, `src/server/rewrite.ts`)
 
-Claude (`claude-opus-5-5`, adaptive thinking, high effort, server-side refusal fallback) is given:
+The language model gets structure, not a dump. Every quotation it gives comes from the corpus, never from the model.
 
-- the author's measured habits;
-- the engine's reading of the passage: each flagged word with the alternatives she used, the advice, and the measures;
-- the six sentences of hers nearest the passage in meaning;
-- the paragraphs before and after.
+**In: a brief.** The engine numbers the passage's sentences. For each sentence it gives:
 
-It has the engine as tools, the same functions the page uses (`src/engine/tools.ts`):
+- its register (narration, speech, or a letter, detected from the passage);
+- its length;
+- every word the author never wrote, with the author's alternatives by meaning (gap-fill guesses are left out: they are noise to a model);
+- two of the author's sentences nearest it in meaning *and in the same register*, each with an id: `<model id="S16541">My dear, dear Fanny, if I had you here, how I would talk to you! (Mansfield Park, ch. 43, ¶ 2)</model>`. A letter gets her letters (Lady Susan, the juvenilia, the letters in the novels), and speech gets her speech.
 
-- **`check_passage`:** the engine's reading of a draft.
-- **`word_profile`:** how she used a word, or what she used instead.
-- **`concordance`:** her sentences with a word or phrase.
-- **`similar_sentences`:** her sentences nearest a passage.
+The brief also carries the measures as *ranges to write within*, not scores to raise, because a model told to raise a score pads sentences. The system prompt carries the author's craft from `authors/<id>.json`: the moves statistics cannot see (free indirect speech, judgement in abstract nouns, irony by litotes, speech reported as often as quoted, modern things rendered by what they do in her world). It also says what to keep (events, speakers, point of view, form, names) and what may change.
 
-It is told to look words up, confirm idioms, check its draft until nothing she never wrote is left, and submit the rewrite with the techniques it used, each tied to a sentence of hers copied from a tool result. The server then checks each quotation word for word against the full-text index and marks it verified, or not, before the writer sees it.
+**Tools.** The engine's own functions, each answer citing by id:
+
+- `check_passage`
+- `word_profile`
+- `concordance`
+- `similar_sentences` (with a register)
+
+**Out: structured.** `submit_rewrite` (strict schema) takes three things:
+
+- the sentences, each naming the brief's sentence numbers it renders (`from`), so the writer sees before and after aligned and nothing is dropped unseen;
+- three to six notes, each naming a technique, the writer's words, the new words, and a model sentence *by id only*;
+- a short explanation.
+
+The server renders each quotation from the corpus by its id. An invented quotation is impossible, and an unknown id is refused.
+
+**A gate, not a request.** Each submission is checked by the engine on the server. It is refused if any of these hold:
+
+- a word the author never wrote remains (names aside);
+- there is a contraction in narration;
+- a source sentence is not rendered;
+- an id is unknown;
+- there are fewer than three notes.
+
+The findings go back as the tool's answer, and the model revises, up to three submissions.
+
+**Testing without a key.** `npm run cli -- brief <file> <dir>` writes the exact system and user prompts. `npm run cli -- tool <name> '<json>'` answers as the tools do. `npm run cli -- submit <dir> <submission.json>` runs the gate and renders the result. Any model, including an agent in a terminal, can then run the protocol end to end. [rewrite-eval.md](rewrite-eval.md) is such a run: Sonnet rewriting, Opus judging.
 
 ## Shared editing
 

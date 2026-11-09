@@ -6,7 +6,10 @@ import { tagName } from '../nlp/tagger.ts';
 import { alternatives } from './alternatives.ts';
 import { analyze } from './analyze.ts';
 import { blocksOfText } from './doc.ts';
-import type { AuthorModel, Citation } from './model.ts';
+import type { AuthorModel, Citation, Register } from './model.ts';
+
+/** One of the author's sentences as a tool gives it: its id first, to cite it by. */
+const line = (c: Citation) => `S${c.id}: ${c.text} (${c.cite})`;
 import { lmKey } from './profile.ts';
 
 export interface WordProfile {
@@ -143,7 +146,7 @@ export const TOOL_SPECS = [
   },
   {
     name: 'concordance',
-    description: "Real sentences from the author's works containing a word or exact phrase, each with its citation (work, chapter, paragraph). Use it to confirm an idiom or construction is the author's before you use it.",
+    description: "Real sentences from the author's works containing a word or exact phrase, each with its id and citation. Use it to confirm an idiom or construction is the author's before you use it.",
     input_schema: {
       type: 'object' as const,
       properties: { query: { type: 'string', description: 'A word or an exact phrase.' }, limit: { type: 'integer', description: 'At most this many (default 10).' } },
@@ -156,7 +159,12 @@ export const TOOL_SPECS = [
     description: "Sentences from the author's works nearest in meaning to a passage (SIF sentence vectors over the author's own word vectors), with citations: models of how the author said something like it.",
     input_schema: {
       type: 'object' as const,
-      properties: { text: { type: 'string' }, limit: { type: 'integer' }, min_words: { type: 'integer', description: 'Only sentences at least this long.' } },
+      properties: {
+        text: { type: 'string' },
+        register: { type: 'string', enum: ['narration', 'speech', 'letter'], description: 'Only sentences told so: in narration, in speech, or in a letter.' },
+        limit: { type: 'integer' },
+        min_words: { type: 'integer', description: 'Only sentences at least this long.' },
+      },
       required: ['text'],
       additionalProperties: false,
     },
@@ -171,14 +179,17 @@ export function runTool(m: AuthorModel, name: string, input: Record<string, unkn
       return checkPassage(m, String(input.text ?? ''));
     case 'word_profile': {
       const p = wordProfile(m, String(input.word ?? ''), { context: input.context ? String(input.context) : undefined, examples: 4 });
-      return { ...p, examples: p.examples.map((c) => `${c.text} — ${c.cite}`), alternatives: p.alternatives?.map((a) => ({ word: a.text, why: a.relation, count: a.count, example: a.example ? `${a.example.text} — ${a.example.cite}` : undefined })) };
+      return { ...p, examples: p.examples.map(line), alternatives: p.alternatives?.map((a) => ({ word: a.text, why: a.relation, count: a.count, example: a.example ? line(a.example) : undefined })) };
     }
     case 'concordance':
-      return concordance(m, String(input.query ?? ''), Math.min(25, Number(input.limit ?? 10))).map((k) => `${k.cite.text} — ${k.cite.cite}`);
+      return concordance(m, String(input.query ?? ''), Math.min(25, Number(input.limit ?? 10))).map((k) => line(k.cite));
     case 'similar_sentences':
       return m
-        .similarSentences(String(input.text ?? ''), Math.min(10, Number(input.limit ?? 5)), { minWords: input.min_words ? Number(input.min_words) : undefined })
-        .map((c) => `${c.text} — ${c.cite}`);
+        .similarSentences(String(input.text ?? ''), Math.min(10, Number(input.limit ?? 5)), {
+          minWords: input.min_words ? Number(input.min_words) : undefined,
+          register: ['narration', 'speech', 'letter'].includes(String(input.register)) ? (input.register as Register) : undefined,
+        })
+        .map(line);
     default:
       throw new Error(`no tool ${name}`);
   }

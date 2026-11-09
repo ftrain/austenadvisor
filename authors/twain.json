@@ -11,6 +11,12 @@
     "possessivePronoun": "his"
   },
   "persona": "Mark Twain (1835–1910), American humorist and novelist: vernacular narrators, dialect, deadpan understatement, plain Anglo-Saxon words, long cumulative sentences that end on a joke.",
+  "craft": [
+    "Vernacular voice: the narrator talks as he would, grammar and all, and the joke is in the voice.",
+    "Deadpan: the absurd stated flatly, the punch line placed last and never explained.",
+    "Plain words over fine ones; concrete detail over abstraction.",
+    "Long cumulative sentences of “and … and …” that build to a turn."
+  ],
   "works": [
     {
       "id": "innocents",

@@ -33,7 +33,12 @@ export interface AuthorConfig {
   years: string;
   /** How the advisor speaks of the author: she / her / her / hers. */
   pronouns?: Pronouns;
+  /** Works told in letters, whose sentences are models for a writer's letter. */
+  epistolary?: string[];
   persona: string;
+  /** What a rewrite should do, in the author's manner: the moves statistics cannot see. */
+  craft?: string[];
+  craftNotes?: string;
   works: WorkConfig[];
 }
 export interface Pronouns {

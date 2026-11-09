@@ -10,7 +10,21 @@
     "possessive": "her",
     "possessivePronoun": "hers"
   },
+  "epistolary": [
+    "susan",
+    "juvenilia"
+  ],
   "persona": "Jane Austen (1775–1817), English novelist of the Regency: irony, free indirect discourse, balanced periodic sentences joined by semicolons, precise abstract nouns of judgement (sense, propriety, civility, esteem, amiable), and dialogue that reveals character.",
+  "craft": [
+    "Balance and period: clauses held in one sentence by “, and”, “; and”, “; but”, “, which”, the main point arriving late; a short sentence kept only for a turn or a verdict.",
+    "Judgement in abstract nouns rather than things described: civility, propriety, composure, mortification, felicity, indifference, sense, spirits, consequence, attention.",
+    "Free indirect speech: the narration takes on a character’s thought and idiom without “she thought”, so the reader hears the character and smiles at her at once.",
+    "Irony by understatement and litotes: “not unwelcome”, “no very great”, “rather too much”; the verdict implied by precision rather than announced.",
+    "Speech reported as often as quoted: “He said that he was not ready…”; when quoted, it shows character and status, with the speaker named after the first clause (“said she”).",
+    "Restraint in qualifying: “very” and “quite” rather than stacked adverbs; feeling given by its effect on conduct (“she could hardly keep her countenance”).",
+    "Things of a modern world are not anachronisms but occasions: render them by what they do in her world (a letter, a note, an errand, a shop, a carriage), or by a periphrasis in her words."
+  ],
+  "craftNotes": "A letter keeps the form of a letter: salutation, the writer’s own voice, and a close; her letters (Lady Susan; the juvenilia) are its models.",
   "works": [
     {
       "id": "sense",

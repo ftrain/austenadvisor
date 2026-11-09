@@ -14,7 +14,9 @@ import { austenize } from './engine/austenize.ts';
 import { blocksOfText, textOfBlocks } from './engine/doc.ts';
 import { AuthorModel } from './engine/model.ts';
 import { concordance, wordProfile } from './engine/tools.ts';
-import { rewriteWithAI } from './server/rewrite.ts';
+import { mkdirSync, writeFileSync } from 'node:fs';
+import { buildBrief } from './engine/brief.ts';
+import { gate, render, rewriteWithAI, systemPrompt, toolResult, userPrompt, type Submission } from './server/rewrite.ts';
 
 const args = process.argv.slice(2);
 const ai = args.indexOf('--author');
@@ -63,6 +65,36 @@ switch (cmd) {
     const r = await rewriteWithAI(m, textOfBlocks(blocksOfText(text())), {}, (s) => console.error(`… ${s}`));
     console.log(r.text, `\n\n${r.explanation}\nScore ${r.scoreBefore} → ${r.scoreAfter}; ${r.toolCalls.length} calls to the engine.`);
     for (const n of r.notes) console.log(`  ${n.technique}: “${n.before}” → “${n.after}”\n    ${n.verified ? '✓' : '⚠'} “${n.austen}” — ${n.cite}`);
+    break;
+  }
+  // The rewrite protocol by hand, for testing a model without the API: the prompts out, the tools, the gate.
+  case 'brief': {
+    const [file, dir] = rest;
+    const brief = buildBrief(m, blocksOfText(readFileSync(file!, 'utf8')).filter((b) => b.kind !== 'title'));
+    mkdirSync(dir!, { recursive: true });
+    writeFileSync(`${dir}/system.txt`, systemPrompt(m));
+    writeFileSync(`${dir}/user.txt`, userPrompt(m, brief));
+    writeFileSync(`${dir}/brief.json`, JSON.stringify(brief, null, 1));
+    console.log(`${dir}/system.txt, ${dir}/user.txt (${brief.sentences.length} sentences, score ${brief.score})`);
+    break;
+  }
+  case 'tool': {
+    const [name, json] = rest;
+    console.log(toolResult(m, name!, JSON.parse(json ?? '{}')));
+    break;
+  }
+  case 'submit': {
+    const [dir, file] = rest;
+    const brief = JSON.parse(readFileSync(`${dir}/brief.json`, 'utf8'));
+    const sub = JSON.parse(readFileSync(file!, 'utf8')) as Submission;
+    const problems = gate(m, brief, sub);
+    if (problems.length) {
+      console.log(`Not yet accepted:\n- ${problems.join('\n- ')}`);
+      break;
+    }
+    const r = render(m, brief, sub);
+    writeFileSync(`${dir}/result.json`, JSON.stringify({ ...r, scoreBefore: brief.score, scoreAfter: analyze(m, blocksOfText(r.text)).report.score }, null, 1));
+    console.log(`Accepted. Score ${brief.score} → ${analyze(m, blocksOfText(r.text)).report.score}.`);
     break;
   }
   default:

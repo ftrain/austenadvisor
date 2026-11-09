@@ -1,124 +1,223 @@
-// "Rewrite with AI": Claude rewrites a passage in the author's manner with the engine at hand. It is given the
-// engine's reading of the passage (every flagged word and its alternatives, the advice, the measures), the author's
-// habits in numbers, and real sentences of the author's nearest the passage; it may ask the engine more (a word's use,
-// a concordance, sentences like a draft) and check its own draft before it submits. What it submits names the
-// author's sentences it learned from, and each quotation is checked against the corpus before the writer sees it.
+// "Rewrite with AI": Claude rewrites a passage in the author's manner, from the engine's brief and with the engine as
+// its tools.
+//
+// The protocol, and why:
+// - In: a numbered brief (engine/brief.ts), sentence by sentence: register, length, every word the author never wrote
+//   with the author's alternatives, and two of the author's sentences nearest it in the same register, by id. The
+//   model works from structure, not from a dump.
+// - Out: sentences, each naming the writer's sentences it renders (`from`), so the writer sees the passage aligned,
+//   and so nothing of theirs is silently dropped; notes naming a technique, the writer's words, the new words, and a
+//   model sentence of the author's by id only. The server renders every quotation from the corpus: a quotation cannot
+//   be invented, only an id, and an id that is not in the corpus is refused.
+// - Gate: the server checks every submission with the engine (words the author never wrote, contractions in
+//   narration, sentences left out, ids unknown) and sends back what it found until it is clean, twice at most.
 
 import Anthropic from '@anthropic-ai/sdk';
-import type { AuthorModel } from '../engine/model.ts';
-import { checkPassage, runTool, styleSummary, TOOL_SPECS, wordProfile } from '../engine/tools.ts';
+import { cap, pronounsOf } from '../corpus/sources.ts';
+import { buildBrief, craftOf, renderBrief, type Brief } from '../engine/brief.ts';
+import { blocksOfText, type DocBlock } from '../engine/doc.ts';
+import type { AuthorModel, Citation } from '../engine/model.ts';
+import { CONTRACTIONS } from '../engine/profile.ts';
+import { checkPassage, runTool, TOOL_SPECS } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 
 export const MODEL = process.env.ADVISOR_MODEL ?? 'claude-opus-5-5';
+export const aiAvailable = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
+
+export interface Submission {
+  paragraphs: { sentences: { text: string; from: number[] }[] }[];
+  notes: { technique: string; before: string; after: string; model: string }[];
+  explanation: string;
+}
 
 export interface RewriteNote {
   technique: string;
   before: string;
   after: string;
+  /** The author's sentence, rendered from the corpus by its id. */
   austen: string;
   cite: string;
-  /** The quotation was found, word for word, in the author's works. */
   verified: boolean;
 }
 
 export interface RewriteResult {
   text: string;
+  /** Each new sentence beside the writer's sentences it renders. */
+  aligned: { after: string; before: string[] }[];
   explanation: string;
   notes: RewriteNote[];
   toolCalls: { name: string; input: unknown }[];
+  rounds: number;
+  problems: string[];
   scoreBefore: number;
   scoreAfter: number;
   model: string;
 }
 
-export const aiAvailable = () => !!(process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN);
-
-const SUBMIT = {
+export const SUBMIT = {
   name: 'submit_rewrite',
-  description: 'Submit the finished rewrite, with an explanation and the techniques used, each tied to a sentence of the author returned by a tool. Call this once, last.',
+  description:
+    'Submit the rewrite. The engine checks it at once and answers either "Accepted" or with what still needs revising; revise and submit again until it is accepted.',
   strict: true,
   input_schema: {
     type: 'object' as const,
     properties: {
-      text: { type: 'string', description: 'The rewritten passage, paragraphs separated by blank lines.' },
-      explanation: { type: 'string', description: 'Two to four sentences for the writer: what you changed and why, as a teacher of style would say it.' },
-      techniques: {
+      paragraphs: {
         type: 'array',
+        description: 'The rewritten passage, paragraph by paragraph, in order.',
         items: {
           type: 'object',
           properties: {
-            technique: { type: 'string', description: 'The move, named: "joined clauses with a semicolon", "a judging abstract noun", "free indirect speech"…' },
-            before: { type: 'string', description: 'The writer’s words.' },
-            after: { type: 'string', description: 'Yours.' },
-            austen: { type: 'string', description: 'A sentence of the author’s, copied exactly from a tool result, that shows the move.' },
-            cite: { type: 'string', description: 'Its citation exactly as the tool gave it, e.g. “Emma, ch. 3, ¶ 12”.' },
+            sentences: {
+              type: 'array',
+              items: {
+                type: 'object',
+                properties: {
+                  text: { type: 'string', description: 'One sentence of the rewrite.' },
+                  from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders (one, or several joined).' },
+                },
+                required: ['text', 'from'],
+                additionalProperties: false,
+              },
+            },
           },
-          required: ['technique', 'before', 'after', 'austen', 'cite'],
+          required: ['sentences'],
           additionalProperties: false,
         },
       },
+      notes: {
+        type: 'array',
+        description: 'Three to six lessons for the writer, each a move you made.',
+        items: {
+          type: 'object',
+          properties: {
+            technique: { type: 'string', description: 'The move, named plainly: “two sentences balanced on a semicolon”, “feeling shown by conduct”.' },
+            before: { type: 'string', description: 'The writer’s words, exactly.' },
+            after: { type: 'string', description: 'Yours, exactly.' },
+            model: { type: 'string', description: 'The id of the author’s sentence that shows the move, as given in the brief or a tool result: “S12345”.' },
+          },
+          required: ['technique', 'before', 'after', 'model'],
+          additionalProperties: false,
+        },
+      },
+      explanation: { type: 'string', description: 'Two or three sentences to the writer: the chief difference between their passage and the author’s manner, and what to practise.' },
     },
-    required: ['text', 'explanation', 'techniques'],
+    required: ['paragraphs', 'notes', 'explanation'],
     additionalProperties: false,
   },
 };
 
-function systemPrompt(m: AuthorModel): string {
-  const s = styleSummary(m);
-  return [
-    `You are ${m.author.advisor}, a writing teacher who has read every word of ${m.author.name} and who works beside a living writer in a shared document.`,
-    `Your task: rewrite the passage you are given as ${m.author.short} would have written it, keeping what happens, who says what, and the writer's meaning. Change the words, the sentences and their joining; do not add events, characters or opinions the passage does not have. Modern things (telephones, cars, shops of today) become their nearest ${m.author.short}an equivalents only where the story allows; otherwise describe them in ${m.author.short}'s vocabulary.`,
-    `You have a statistical engine built from ${m.author.short}'s complete works (${s.works.join('; ')}): a vocabulary with counts, a trigram language model, word vectors, WordNet, and a full-text index of every sentence with its citation. Use its tools: look up a word before you rely on it, use the concordance to confirm an idiom is ${m.author.short}'s, ask for sentences like the one you are writing, and run check_passage on your draft. Prefer words and constructions the engine shows ${m.author.short} used. Revise until check_passage flags no word ${m.author.short} never wrote (names aside) and the measures are near hers.`,
-    `${m.author.short}'s habits, measured: narrative sentences ${s.sentenceLength.narration}; speech ${s.sentenceLength.speech}; paragraphs ${s.paragraphWords}. Punctuation per sentence: ${JSON.stringify(s.punctuationPerSentence)}. She joins clauses: ${s.clauseJoins.join(', ')}. Narration opens with: ${s.sentenceOpeners.join(', ')}. Her commonest words: ${s.commonestWords}.`,
-    `The writer is learning. When you finish, call submit_rewrite with the text, a short explanation, and three to six techniques, each with the writer's words, yours, and one sentence of ${m.author.short}'s copied exactly from a tool result with its citation as given. Never invent or paraphrase a quotation.`,
-  ].join('\n\n');
+export function systemPrompt(m: AuthorModel): string {
+  const a = m.author;
+  const pr = pronounsOf(a);
+  return `You are ${a.advisor}: a teacher of writing who has read every word ${a.name} published, working beside a living writer in a shared document. ${a.persona}
+
+The writer has asked you to show them how ${a.short} would have written a passage of theirs. They are learning to write, and to think like an author; your rewrite is a lesson as much as a text.
+
+<task>
+Render the passage as ${a.short} would have written it.
+Keep: what happens and in what order; who speaks and what they mean; the point of view and person (a first-person narrator stays first-person); the form (a letter stays a letter, with its greeting and its close); the writer's names.
+Change: the words, the sentences, how they are joined, what is told and what is shown.
+You may join sentences, split them, reorder within a paragraph, turn quoted speech into reported speech or back. You may not add incidents, people, opinions or feelings the passage does not imply, nor drop any of its sentences without rendering them somewhere.
+</task>
+
+<craft>
+${craftOf(m)}
+</craft>
+
+<the_engine>
+You are given a brief prepared by a statistical engine built from ${a.short}'s complete works: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (and ${pr.possessive} words instead, with how often ${pr.subject} used them), and two of ${pr.possessive} sentences nearest it in meaning and register, each with an id like S12345.
+The engine is also your tools: look a word up before you rely on it (word_profile), confirm an idiom is ${pr.possessive} (concordance), find ${pr.possessive} sentences like the one you are writing (similar_sentences, with a register), and check a draft (check_passage). Use them where you are unsure; you do not need them for what the brief already answers.
+${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names. A modern thing with no word of ${pr.possessive} is rendered by what it does in ${pr.possessive} world, or by a phrase in ${pr.possessive} words.
+</the_engine>
+
+<citing>
+Cite ${a.short} only by id (S12345), never by quoting: the writer is shown the sentence from the corpus itself. Use only ids from the brief or from tool results.
+</citing>
+
+<finishing>
+Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders), three to six notes, and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
+</finishing>`;
 }
 
-function userPrompt(m: AuthorModel, passage: string, context: { before?: string; after?: string; instructions?: string }): string {
-  const check = checkPassage(m, passage);
-  const similar = m.similarSentences(passage, 6, { minWords: 15 }).map((c) => `- ${c.text} — ${c.cite}`);
-  const flagged = check.neverUsed.slice(0, 12).map((w) => {
-    const p = wordProfile(m, w.word, { context: passage });
-    return `- “${w.word}”: ${w.note} Alternatives ${m.author.short} used: ${(p.alternatives ?? []).slice(0, 6).map((a) => `${a.text} (${a.relation}; ${a.count}×)`).join('; ') || 'none found'}`;
-  });
+export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: string; after?: string; instructions?: string } = {}): string {
   return [
-    context.before ? `<before>\n${context.before}\n</before>` : '',
-    `<passage>\n${passage}\n</passage>`,
-    context.after ? `<after>\n${context.after}\n</after>` : '',
+    context.before ? `<text_before>\n${context.before}\n</text_before>` : '',
+    renderBrief(m, brief),
+    context.after ? `<text_after>\n${context.after}\n</text_after>` : '',
     context.instructions ? `<writer_asks>\n${context.instructions}\n</writer_asks>` : '',
-    `<engine_reading>\nScore ${check.score}/100.\nWords ${m.author.short} never wrote:\n${flagged.join('\n') || '- none'}\nAdvice:\n${check.advice.map((a) => `- [${a.severity}] ${a.title}: ${a.why}${a.suggestion ? ` Suggestion: ${a.suggestion}` : ''}`).join('\n') || '- none'}\nMeasures:\n${check.measures.map((x) => `- ${x}`).join('\n')}\n</engine_reading>`,
-    `<sentences_of_${m.author.id}_nearest_in_meaning>\n${similar.join('\n')}\n</sentences_of_${m.author.id}_nearest_in_meaning>`,
-    `Rewrite only the passage (the text before and after is for context). Use the tools, then call submit_rewrite.`,
+    `Rewrite the passage in the brief (the text before and after is context only). Then call submit_rewrite.`,
   ]
     .filter(Boolean)
     .join('\n\n');
 }
 
-/** Whether a quotation is the author's own words, found in the full-text index. */
-export function verifyQuote(m: AuthorModel, quote: string): boolean {
-  const norm = (s: string) => s.toLowerCase().replace(/[’']/g, "'").replace(/[“”"]/g, '').replace(/\s+/g, ' ').trim();
-  const words = tokenize(quote).filter((t) => t.kind === 'word').map((t) => t.norm);
-  if (words.length < 3) return false;
-  const hits = m.search(words.slice(0, 8), { phrase: true, limit: 5 });
-  const q = norm(quote).replace(/[^\p{L}\p{N}' ]/gu, '');
-  return hits.some((h) => norm(h.text).replace(/[^\p{L}\p{N}' ]/gu, '').includes(q.slice(0, Math.min(q.length, 120))));
+export const submissionText = (s: Submission) => s.paragraphs.map((p) => p.sentences.map((x) => x.text.trim()).join(' ')).join('\n\n');
+
+const idOf = (s: string) => Number(/^S?(\d+)$/.exec(s.trim())?.[1] ?? NaN);
+
+/** What the engine finds still wrong with a submission: nothing, and it is accepted. */
+export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
+  const problems: string[] = [];
+  const short = m.author.short;
+  if (!s.paragraphs?.length) return ['The rewrite is empty.'];
+  const text = submissionText(s);
+  const check = checkPassage(m, text);
+  const names = new Set(brief.sentences.flatMap((x) => tokenize(x.text).filter((t) => t.kind === 'word' && /^\p{Lu}/u.test(t.text)).map((t) => t.norm)));
+  const never = check.neverUsed.filter((w) => !names.has(w.word.toLowerCase()));
+  if (never.length)
+    problems.push(`${short} never wrote: ${never.map((w) => `“${w.word}”${w.alternatives.length ? ` (${w.alternatives.slice(0, 3).join(', ')})` : ''}`).join('; ')}.`);
+  // Contractions outside speech.
+  for (const para of s.paragraphs)
+    for (const x of para.sentences)
+      for (const t of tokenize(x.text))
+        if (t.kind === 'word' && !t.quoted && CONTRACTIONS[t.norm] && brief.register !== 'letter')
+          problems.push(`“${t.text}” in narration: ${short} would write “${CONTRACTIONS[t.norm]}”.`);
+  const covered = new Set(s.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.from)));
+  const missing = brief.sentences.filter((x) => !covered.has(x.n));
+  if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
+  const bad = s.notes.filter((n) => !m.cite(idOf(n.model)));
+  if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}. Use ids from the brief or a tool result.`);
+  if (s.notes.length < 3) problems.push('Give at least three notes.');
+  return problems;
+}
+
+/** A submission as the writer sees it: aligned, explained, every quotation from the corpus. */
+export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<RewriteResult, 'text' | 'aligned' | 'explanation' | 'notes'> {
+  return {
+    text: submissionText(s),
+    aligned: s.paragraphs.flatMap((p) => p.sentences.map((x) => ({ after: x.text, before: x.from.map((n) => brief.sentences[n - 1]?.text ?? '') }))),
+    explanation: s.explanation,
+    notes: s.notes.map((n) => {
+      const c: Citation | null = m.cite(idOf(n.model));
+      return { technique: n.technique, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c };
+    }),
+  };
+}
+
+/** Tool results with ids, as the model is to cite them. */
+export function toolResult(m: AuthorModel, name: string, input: Record<string, unknown>): string {
+  return JSON.stringify(runTool(m, name, input));
 }
 
 export async function rewriteWithAI(
   m: AuthorModel,
-  passage: string,
+  passage: string | DocBlock[],
   context: { before?: string; after?: string; instructions?: string } = {},
   onProgress: (what: string) => void = () => {},
 ): Promise<RewriteResult> {
+  const blocks = typeof passage === 'string' ? blocksOfText(passage) : passage;
+  const brief = buildBrief(m, blocks);
   const client = new Anthropic();
   const tools = [...TOOL_SPECS.map((t) => ({ ...t, input_schema: { ...t.input_schema } })), SUBMIT] as unknown as Anthropic.Beta.BetaTool[];
-  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, passage, context) }];
+  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, brief, context) }];
   const toolCalls: RewriteResult['toolCalls'] = [];
-  type Submitted = { text: string; explanation: string; techniques: Omit<RewriteNote, 'verified'>[] };
-  let submitted = null as Submitted | null;
-  let lastText = '';
-  for (let turn = 0; turn < 12 && !submitted; turn++) {
-    onProgress(turn === 0 ? 'reading the passage' : 'consulting the works');
+  let accepted: Submission | null = null;
+  let last: Submission | null = null;
+  let rounds = 0;
+  let problems: string[] = [];
+  for (let turn = 0; turn < 14 && !accepted; turn++) {
+    onProgress(turn === 0 ? 'reading the brief' : 'consulting the works');
     const params = {
       model: MODEL,
       max_tokens: 16000,
@@ -133,38 +232,44 @@ export async function rewriteWithAI(
     const response = (await client.beta.messages.create(params as unknown as Anthropic.Beta.MessageCreateParamsNonStreaming)) as Anthropic.Beta.BetaMessage;
     if (response.stop_reason === 'refusal') throw new Error('The model declined to rewrite this passage.');
     messages.push({ role: 'assistant', content: response.content as Anthropic.Beta.BetaContentBlockParam[] });
-    for (const b of response.content) if (b.type === 'text') lastText = b.text;
     if (response.stop_reason === 'pause_turn') continue;
     const uses = response.content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
-    if (!uses.length) break;
+    if (!uses.length) {
+      messages.push({ role: 'user', content: 'Call submit_rewrite with your rewrite.' });
+      continue;
+    }
     const results: Anthropic.Beta.BetaToolResultBlockParam[] = [];
     for (const u of uses) {
       const input = (u.input ?? {}) as Record<string, unknown>;
       toolCalls.push({ name: u.name, input });
       if (u.name === SUBMIT.name) {
-        submitted = input as unknown as Submitted;
-        results.push({ type: 'tool_result', tool_use_id: u.id, content: 'Received.' });
+        last = input as unknown as Submission;
+        rounds++;
+        problems = gate(m, brief, last);
+        onProgress(problems.length ? `revising (${problems.length} to mend)` : 'accepted');
+        if (!problems.length || rounds >= 3) accepted = last;
+        results.push({ type: 'tool_result', tool_use_id: u.id, content: problems.length && !accepted ? `Not yet accepted:\n- ${problems.join('\n- ')}` : 'Accepted.' });
         continue;
       }
       onProgress(`${u.name.replace(/_/g, ' ')}${input.word ? ` “${input.word}”` : input.query ? ` “${input.query}”` : ''}`);
       try {
-        results.push({ type: 'tool_result', tool_use_id: u.id, content: JSON.stringify(runTool(m, u.name, input)) });
+        results.push({ type: 'tool_result', tool_use_id: u.id, content: toolResult(m, u.name, input) });
       } catch (e) {
         results.push({ type: 'tool_result', tool_use_id: u.id, content: String(e), is_error: true });
       }
     }
-    if (submitted) break;
     messages.push({ role: 'user', content: results });
   }
-  const sub: Submitted = submitted ?? { text: lastText.trim(), explanation: '', techniques: [] };
-  if (!sub.text) throw new Error('The model gave no rewrite.');
+  const sub = accepted ?? last;
+  if (!sub) throw new Error('The model gave no rewrite.');
+  const r = render(m, brief, sub);
   return {
-    text: sub.text.trim(),
-    explanation: sub.explanation,
-    notes: (sub.techniques ?? []).map((t) => ({ ...t, verified: verifyQuote(m, t.austen) })),
+    ...r,
     toolCalls,
-    scoreBefore: checkPassage(m, passage).score,
-    scoreAfter: checkPassage(m, sub.text).score,
+    rounds,
+    problems,
+    scoreBefore: brief.score,
+    scoreAfter: checkPassage(m, r.text).score,
     model: MODEL,
   };
 }

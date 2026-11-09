@@ -7,7 +7,8 @@ import { austenize } from '../src/engine/austenize.ts';
 import { blocksOfText } from '../src/engine/doc.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { concordance, wordProfile } from '../src/engine/tools.ts';
-import { verifyQuote } from '../src/server/rewrite.ts';
+import { buildBrief } from '../src/engine/brief.ts';
+import { gate, render, type Submission } from '../src/server/rewrite.ts';
 
 const built = existsSync(authorDbPath('austen'));
 
@@ -34,8 +35,7 @@ describe.skipIf(!built)('the Austen engine', () => {
     const a = analyze(m, blocksOfText('He totally ignored me.'));
     const ex = a.words.find((w) => w.word === 'ignored')!.alternatives.find((x) => x.example)!.example!;
     expect(ex.cite).toMatch(/, (ch\. \d+|“.*”), ¶ \d+$/);
-    expect(verifyQuote(m, ex.text)).toBe(true);
-    expect(verifyQuote(m, 'He totally ignored me at the checkout counter yesterday.')).toBe(false);
+    expect(m.cite(ex.id)!.text).toBe(ex.text);
   });
 
   it('writes out contractions in narration, and says how often she did', () => {
@@ -64,6 +64,36 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(p.neighbours).toEqual(expect.arrayContaining(['pretty']));
     expect(p.examples.length).toBeGreaterThan(0);
     expect(concordance(m, 'at last', 5).every((k) => /at last/i.test(k.match))).toBe(true);
+  });
+
+  it('briefs a rewrite, gates it, and renders its citations from the corpus', () => {
+    const brief = buildBrief(m, blocksOfText('Dear Mom,\n\nI grabbed my keys. It was super crowded.\n\nLove, Jake'));
+    expect(brief.register).toBe('letter');
+    expect(brief.sentences[1]!.never[0]!.word).toBe('grabbed');
+    expect(brief.sentences[1]!.models.length).toBeGreaterThan(0);
+    const model = `S${brief.sentences[1]!.models[0]!.id}`;
+    const bad: Submission = {
+      paragraphs: [{ sentences: [{ text: 'Dear Mama,', from: [1] }] }, { sentences: [{ text: 'I grabbed my keys.', from: [2] }] }],
+      notes: [{ technique: 'x', before: 'a', after: 'b', model: 'S999999999' }],
+      explanation: '',
+    };
+    const problems = gate(m, brief, bad).join(' ');
+    expect(problems).toMatch(/never wrote: “grabbed”/);
+    expect(problems).toMatch(/Not rendered: sentence 3/);
+    expect(problems).toMatch(/Unknown ids: S999999999/);
+    const good: Submission = {
+      paragraphs: [
+        { sentences: [{ text: 'My dear Mama,', from: [1] }] },
+        { sentences: [{ text: 'I caught up my keys, though the shop was extremely crowded.', from: [2, 3] }] },
+        { sentences: [{ text: 'Your affectionate Jake', from: [4] }] },
+      ],
+      notes: [1, 2, 3].map(() => ({ technique: 't', before: 'b', after: 'a', model })),
+      explanation: 'e',
+    };
+    expect(gate(m, brief, good)).toEqual([]);
+    const r = render(m, brief, good);
+    expect(r.notes[0]!.austen).toBe(brief.sentences[1]!.models[0]!.text);
+    expect(r.aligned[1]!.before).toEqual(['I grabbed my keys.', 'It was super crowded.']);
   });
 
   it('reads a page quickly once warm', () => {
