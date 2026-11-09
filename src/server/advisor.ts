@@ -10,7 +10,13 @@ import { aiAvailable, rewriteWithAI, type RewriteResult } from './rewrite.ts';
 import { ADVISOR, type Replacement, type Room } from './room.ts';
 import { newId } from './store.ts';
 
-export const cite = (c: Pick<Citation, 'text' | 'cite'>) => `“${c.text}” — ${c.cite}`;
+/** One of her sentences in a thread, with the figures of speech it shows named. */
+let figuresOf: (text: string) => string[] = () => [];
+export const setFigureNamer = (f: (text: string) => string[]) => (figuresOf = f);
+export const cite = (c: Pick<Citation, 'text' | 'cite'>) => {
+  const figs = figuresOf(c.text);
+  return `“${c.text}” — ${c.cite}${figs.length ? ` [${figs.join(', ')}]` : ''}`;
+};
 
 /** One rewritten sentence in a thread: the new words, why (the engine's one sentence), and her sentence. */
 const sentenceNote = (a: { after: string; why: string; model: Pick<Citation, 'text' | 'cite'> }) => `“${a.after}”\n${a.why}\n${cite(a.model)}`;

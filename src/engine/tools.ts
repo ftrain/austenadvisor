@@ -14,7 +14,7 @@ const line = (c: Citation) => `S${c.id}: ${c.text} (${c.cite})`;
 
 /** An author's sentence with the figures of speech it shows, named. */
 export function withFigures<C extends Citation>(m: AuthorModel, c: C): C & { figures: string[] } {
-  return { ...c, figures: [...new Set(findFigures(m, c.text).map((f) => FIGURES[f.term]!.name))] };
+  return { ...c, figures: [...new Set(findFigures(m, c.text, { spoken: m.spoken(c.id) }).map((f) => FIGURES[f.term]!.name))] };
 }
 import { lmKey } from './profile.ts';
 
@@ -51,6 +51,7 @@ export function wordProfile(m: AuthorModel, word: string, opts: { context?: stri
     const tags = m.tagger.tagTokens(toks);
     const k = toks.findIndex((t) => t.norm === w);
     alts = alternatives(m, { keys, at, word, tag: tags[Math.max(0, k)] ?? 'NN', context: ctxWords.filter((x) => x !== w) }, { limit: 8 });
+    for (const x of alts) if (x.example) x.example = withFigures(m, x.example);
   }
   return {
     word: w,

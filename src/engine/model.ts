@@ -224,6 +224,14 @@ export class AuthorModel {
     return c;
   }
 
+  /** Whether a sentence of the corpus is speech (most of its words inside quotation marks, there or in its paragraph). */
+  spoken(sentenceId: number): boolean {
+    const r = this.db.prepare('SELECT s.dialogue AS d, p.dialogue AS pd FROM sentences s JOIN paragraphs p ON p.id = s.paragraph WHERE s.id = ?').get(sentenceId) as
+      | { d: number; pd: number }
+      | undefined;
+    return !!r && (r.d >= 0.5 || r.pd >= 0.6);
+  }
+
   /** The paragraph a sentence stands in, whole, with the sentence's place in it. */
   paragraphOf(sentenceId: number): { text: string; start: number; end: number } | null {
     const r = this.db

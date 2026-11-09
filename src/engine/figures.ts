@@ -78,7 +78,7 @@ function litotes(m: AuthorModel, text: string, toks: Token[]): Figure[] {
 }
 
 /** Every figure in a passage, in order, as found by form. */
-export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolean } = {}): Figure[] {
+export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolean; spoken?: boolean } = {}): Figure[] {
   const text = curly(raw);
   const toks = tokenize(text);
   const out: Figure[] = [...litotes(m, text, toks)];
@@ -124,7 +124,7 @@ export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolea
       const last = seg[seg.length - 1]!;
       // A question or exclamation in the narration.
       // (In a letter the writer addresses the reader: a question there is no character's thought.)
-      if (!opts.letter && (last.norm === '?' || last.norm === '!') && !inSpeech(last.start) && !seg.some((t) => t.text === '“' || t.text === '”')) out.push(fig('fid', s0, s1, text));
+      if (!opts.letter && !opts.spoken && (last.norm === '?' || last.norm === '!') && !inSpeech(last.start) && !seg.some((t) => t.text === '“' || t.text === '”')) out.push(fig('fid', s0, s1, text));
       // Three or more “and”s joining.
       const ands = words.filter((t) => t.norm === 'and').length;
       if (ands >= 3) out.push(fig('polysyndeton', s0, s1, text));
@@ -163,7 +163,8 @@ export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolea
       if (/^(JJ|RB|QL)/.test(segTags[k] ?? '')) {
         k++;
         while (/^(JJ|NN)/.test(segTags[k] ?? '') && k < w0 + 3) k++;
-        if (/^(BEDZ|BED|HVD|HVZ|DOD|DOZ|MD|VBD)/.test(segTags[k] ?? '') && /^(PPS|PPSS|NP|AT|PP\$)/.test(segTags[k + 1] ?? '') && words[0]!.norm !== 'so')
+        // An auxiliary before its subject (“had Harriet”, “did they”): a lexical verb there is the ordinary order.
+        if (/^(BEDZ|BED|BEZ|HVD|HVZ|DOD|DOZ|MD)/.test(segTags[k] ?? '') && /^(PPS|PPSS|NP|AT|PP\$)/.test(segTags[k + 1] ?? '') && words[0]!.norm !== 'so')
           out.push(fig('inversion', s0, s1, text));
       }
     }
@@ -205,7 +206,7 @@ export function figureExamples(m: AuthorModel, term: string, near: string, k = 3
     for (const c of cands) {
       if (out.length >= k) return;
       if (exclude.has(c.work) || out.some((o) => o.id === c.id)) continue;
-      if (findFigures(m, c.text).some((f) => f.term === want)) out.push(c);
+      if (findFigures(m, c.text, { spoken: m.spoken(c.id) }).some((f) => f.term === want)) out.push(c);
     }
   };
   // The nearest first; then, for a rarer figure, the whole corpus sifted by a cheap sign of it, nearest first.

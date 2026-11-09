@@ -12,12 +12,17 @@ import { austenize } from '../src/engine/austenize.ts';
 import { blocksOfText, textOfBlocks } from '../src/engine/doc.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { aiAvailable, rewriteWithAI } from '../src/server/rewrite.ts';
+import { FIGURES, findFigures } from '../src/engine/figures.ts';
 
 const args = process.argv.slice(2);
 const withAI = args.includes('--ai') && aiAvailable();
 const ai = args.indexOf('--author');
 const m = AuthorModel.load(ai >= 0 ? args[ai + 1]! : 'austen');
 const short = m.author.short;
+const figs = (t: string) => {
+  const names = [...new Set(findFigures(m, t).map((f) => FIGURES[f.term]!.name))];
+  return names.length ? ` · ${names.join(', ')}` : '';
+};
 const quote = (s: string) => s.split('\n').map((l) => `> ${l}`).join('\n');
 
 const out: string[] = [
@@ -45,14 +50,14 @@ for (const f of readdirSync(join(ROOT, 'samples')).filter((x) => x.endsWith('.tx
   out.push(quote(textOfBlocks(r.after)), '');
   out.push('<details><summary>Every rewritten sentence, why, and the sentence of hers it follows</summary>', '');
   for (const a of r.aligned) {
-    out.push(`- “${a.after}”  \n  *${a.why}*\n  > ${a.model.text}\n  > — *${a.model.cite}*`);
+    out.push(`- “${a.after}”  \n  *${a.why}*\n  > ${a.model.text}\n  > — *${a.model.cite}*${figs(a.model.text)}`);
   }
   if (r.kept.length) out.push(`- Kept, with no word of ${short}’s near enough: ${r.kept.map((k) => `*${k.word}*`).join(', ')}.`);
   out.push('', '</details>', '');
   if (withAI) {
     const res = await rewriteWithAI(m, textOfBlocks(body), {}, (s) => console.error(`${f}: ${s}`));
     out.push(`**After, Rewrite with AI** (${res.model}, ${res.toolCalls.length} calls to the engine) — ${res.scoreAfter}/100.`, '', quote(res.text), '', res.explanation, '');
-    for (const a of res.aligned) out.push(`- “${a.after}”  \n  *${a.why}*\n  > ${a.model.text}\n  > — *${a.model.cite}*`);
+    for (const a of res.aligned) out.push(`- “${a.after}”  \n  *${a.why}*\n  > ${a.model.text}\n  > — *${a.model.cite}*${figs(a.model.text)}`);
     out.push('');
   }
 }

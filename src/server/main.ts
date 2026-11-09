@@ -15,9 +15,9 @@ import { austenize } from '../engine/austenize.ts';
 import { blocksOfText, blocksOfTlo, tloOfBlocks } from '../engine/doc.ts';
 import { AuthorModel } from '../engine/model.ts';
 import { concordance, styleSummary, withFigures, wordProfile } from '../engine/tools.ts';
-import { FIGURES, figureExamples } from '../engine/figures.ts';
+import { FIGURES, figureExamples, findFigures } from '../engine/figures.ts';
 import { pronounsOf, readAuthor } from '../corpus/sources.ts';
-import { answerThread, applyAdvice, austenizeBlocks, rewriteBlocks, type AdvisorDeps } from './advisor.ts';
+import { answerThread, applyAdvice, austenizeBlocks, rewriteBlocks, setFigureNamer, type AdvisorDeps } from './advisor.ts';
 import { aiAvailable, MODEL } from './rewrite.ts';
 import { ADVISOR, Room, type Replacement } from './room.ts';
 import { newId, Store } from './store.ts';
@@ -123,7 +123,12 @@ route('POST', '/api/analyze', async (req, res) => {
   const b = await body(req);
   const m = model(String(b.author ?? 'austen'));
   const blocks = typeof b.tlo === 'string' ? blocksOfTlo(b.tlo) : blocksOfText(String(b.text ?? ''));
-  send(res, 200, analyze(m, blocks));
+  const a = analyze(m, blocks);
+  // Every sentence of hers shown names the figures of speech it shows.
+  for (const f of a.words) for (const x of f.alternatives) if (x.example) x.example = withFigures(m, x.example);
+  for (const ad of a.advice) ad.examples = ad.examples.map((c) => withFigures(m, c));
+  for (const u of a.report.underused) if (u.example) u.example = withFigures(m, u.example);
+  send(res, 200, a);
 });
 route('POST', '/api/austenize', async (req, res) => {
   const b = await body(req);
@@ -314,6 +319,8 @@ async function main() {
     });
   });
 
+  // Her sentences in Advisor's threads name their figures of speech (by the document's author's model).
+  setFigureNamer((text) => [...new Set(findFigures(model('austen'), text).map((f) => FIGURES[f.term]!.name))]);
   // Each built author's model, read before the first writer arrives.
   for (const a of authors().filter((x) => x.built)) {
     const t = performance.now();
