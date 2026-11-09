@@ -71,10 +71,10 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(brief.register).toBe('letter');
     expect(brief.sentences[1]!.never[0]!.word).toBe('grabbed');
     expect(brief.sentences[1]!.models.length).toBeGreaterThan(0);
-    const model = `S${brief.sentences[1]!.models[0]!.id}`;
+    const model = `S${m.moveExamples('judgement', 'keys', 1)[0]!.id}`;
     const bad: Submission = {
       paragraphs: [{ sentences: [{ text: 'Dear Mama,', from: [1] }] }, { sentences: [{ text: 'I grabbed my keys.', from: [2] }] }],
-      notes: [{ technique: 'x', before: 'a', after: 'b', model: 'S999999999' }],
+      notes: [{ move: 'balance', before: 'a', after: 'b', model: 'S999999999' }],
       explanation: '',
     };
     const problems = gate(m, brief, bad).join(' ');
@@ -87,12 +87,13 @@ describe.skipIf(!built)('the Austen engine', () => {
         { sentences: [{ text: 'I caught up my keys, though the shop was extremely crowded.', from: [2, 3] }] },
         { sentences: [{ text: 'Your affectionate Jake', from: [4] }] },
       ],
-      notes: [1, 2, 3].map(() => ({ technique: 't', before: 'b', after: 'a', model })),
+      notes: [1, 2, 3].map(() => ({ move: 'judgement', before: 'b', after: 'My dear Mama,', model })),
       explanation: 'e',
     };
     expect(gate(m, brief, good)).toEqual([]);
     const r = render(m, brief, good);
-    expect(r.notes[0]!.austen).toBe(brief.sentences[1]!.models[0]!.text);
+    expect(r.notes[0]!.austen).toBe(m.cite(Number(model.slice(1)))!.text);
+    expect(r.notes[0]!.verified).toBe(true);
     expect(r.aligned[1]!.before).toEqual(['I grabbed my keys.', 'It was super crowded.']);
   });
 

@@ -26,7 +26,7 @@ export const aiAvailable = () => !!(process.env.ANTHROPIC_API_KEY || process.env
 
 export interface Submission {
   paragraphs: { sentences: { text: string; from: number[] }[] }[];
-  notes: { technique: string; before: string; after: string; model: string }[];
+  notes: { move: string; before: string; after: string; model: string }[];
   explanation: string;
 }
 
@@ -91,12 +91,12 @@ export const SUBMIT = {
         items: {
           type: 'object',
           properties: {
-            technique: { type: 'string', description: 'The move, named plainly: “two sentences balanced on a semicolon”, “feeling shown by conduct”.' },
+            move: { type: 'string', description: 'The id of the move you made, from the brief’s <moves>.' },
             before: { type: 'string', description: 'The writer’s words, exactly.' },
             after: { type: 'string', description: 'Yours, exactly.' },
-            model: { type: 'string', description: 'The id of the author’s sentence that shows the move, as given in the brief or a tool result: “S12345”.' },
+            model: { type: 'string', description: 'The id of a sentence of the author’s that shows this very move (from the brief’s <moves> or find_example): “S12345”.' },
           },
-          required: ['technique', 'before', 'after', 'model'],
+          required: ['move', 'before', 'after', 'model'],
           additionalProperties: false,
         },
       },
@@ -127,16 +127,16 @@ ${craftOf(m)}
 
 <the_engine>
 You are given a brief prepared by a statistical engine built from ${a.short}'s complete works: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (and ${pr.possessive} words instead, with how often ${pr.subject} used them), and two of ${pr.possessive} sentences nearest it in meaning and register, each with an id like S12345.
-The engine is also your tools: look a word up before you rely on it (word_profile), confirm an idiom is ${pr.possessive} (concordance), find ${pr.possessive} sentences like the one you are writing (similar_sentences, with a register), and check a draft (check_passage). Use them where you are unsure; you do not need them for what the brief already answers.
+The engine is also your tools: look a word up (word_profile); confirm a phrase is ${pr.possessive} (concordance); find ${pr.possessive} sentences like yours (similar_sentences, with a register); find ${pr.possessive} sentences that show a move (find_example); check a draft (check_passage). Before submitting, run check_passage on your draft: it lists compounds and word pairs never found together in ${pr.possessive} works; look each up in the concordance, and keep only what ${pr.subject} would have written. A periphrasis of your own making is exactly such a phrase.
 ${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names. A modern thing with no word of ${pr.possessive} is rendered by what it does in ${pr.possessive} world, or by a phrase in ${pr.possessive} words.
 </the_engine>
 
 <citing>
-Cite ${a.short} only by id (S12345), never by quoting: the writer is shown the sentence from the corpus itself. Use only ids from the brief or from tool results.
+Cite ${a.short} only by id (S12345), never by quoting: the writer is shown the sentence from the corpus itself. Each note names one move and cites a sentence of ${pr.possessive} that shows that very move, not one that merely shares a word with yours: take it from the brief's <moves> or from find_example. The engine checks that the sentence shows the move.
 </citing>
 
 <finishing>
-Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders), three to six notes, and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
+Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders), three to six notes (each a different move, the writer's words and yours exactly as written), and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
 </finishing>`;
 }
 
@@ -167,6 +167,9 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const never = check.neverUsed.filter((w) => !names.has(w.word.toLowerCase()));
   if (never.length)
     problems.push(`${short} never wrote: ${never.map((w) => `“${w.word}”${w.alternatives.length ? ` (${w.alternatives.slice(0, 3).join(', ')})` : ''}`).join('; ')}.`);
+  const keptCompounds = check.compounds.filter((c) => !brief.sentences.some((x) => x.text.includes(c) && /^\p{Lu}/u.test(c)));
+  if (keptCompounds.length)
+    problems.push(`Compounds ${short} never wrote, though each word is hers: ${keptCompounds.map((c) => `“${c}”`).join(', ')}. Find what the thing would be in ${short}’s world, or describe it.`);
   // Contractions outside speech.
   for (const para of s.paragraphs)
     for (const x of para.sentences)
@@ -178,6 +181,25 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
   const bad = s.notes.filter((n) => !m.cite(idOf(n.model)));
   if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}. Use ids from the brief or a tool result.`);
+  const moves = new Map((m.author.moves ?? []).map((x) => [x.id, x]));
+  for (const n of s.notes) {
+    const mv = moves.get(n.move);
+    const c = m.cite(idOf(n.model));
+    if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
+    else if (c && !new RegExp(mv.pattern, 'i').test(c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
+    if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
+  }
+  // A sentence left as it was is not yet rewritten.
+  const words = (t: string) => tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm);
+  for (const p of s.paragraphs)
+    for (const x of p.sentences) {
+      const src = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
+      const a = words(src);
+      if (a.length < 6 || brief.register === 'letter' && x.from.length === 1 && a.length < 8) continue;
+      const b = new Set(words(x.text));
+      const kept = a.filter((w) => b.has(w)).length / a.length;
+      if (kept >= 0.85 && words(x.text).length <= a.length + 2) problems.push(`Barely revised: “${x.text}” keeps the writer's sentence almost word for word.`);
+    }
   if (s.notes.length < 3) problems.push('Give at least three notes.');
   return problems;
 }
@@ -190,7 +212,8 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
     explanation: s.explanation,
     notes: s.notes.map((n) => {
       const c: Citation | null = m.cite(idOf(n.model));
-      return { technique: n.technique, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c };
+      const mv = m.author.moves?.find((x) => x.id === n.move);
+      return { technique: mv?.name ?? n.move, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c && !!mv && new RegExp(mv.pattern, 'i').test(c.text) };
     }),
   };
 }

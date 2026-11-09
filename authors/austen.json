@@ -15,16 +15,63 @@
     "juvenilia"
   ],
   "persona": "Jane Austen (1775–1817), English novelist of the Regency: irony, free indirect discourse, balanced periodic sentences joined by semicolons, precise abstract nouns of judgement (sense, propriety, civility, esteem, amiable), and dialogue that reveals character.",
-  "craft": [
-    "Balance and period: clauses held in one sentence by “, and”, “; and”, “; but”, “, which”, the main point arriving late; a short sentence kept only for a turn or a verdict.",
-    "Judgement in abstract nouns rather than things described: civility, propriety, composure, mortification, felicity, indifference, sense, spirits, consequence, attention.",
-    "Free indirect speech: the narration takes on a character’s thought and idiom without “she thought”, so the reader hears the character and smiles at her at once.",
-    "Irony by understatement and litotes: “not unwelcome”, “no very great”, “rather too much”; the verdict implied by precision rather than announced.",
-    "Speech reported as often as quoted: “He said that he was not ready…”; when quoted, it shows character and status, with the speaker named after the first clause (“said she”).",
-    "Restraint in qualifying: “very” and “quite” rather than stacked adverbs; feeling given by its effect on conduct (“she could hardly keep her countenance”).",
-    "Things of a modern world are not anachronisms but occasions: render them by what they do in her world (a letter, a note, an errand, a shop, a carriage), or by a periphrasis in her words."
+  "moves": [
+    {
+      "id": "balance",
+      "name": "Clauses balanced in one period",
+      "does": "Clauses held in one sentence by “, and”, “; and”, “; but”, “, which”, the main point arriving late; a short sentence kept only for a turn or a verdict.",
+      "pattern": "(;\\s+(and|but|for|yet)\\b)|(,\\s+and\\b.*;)",
+      "register": "narration"
+    },
+    {
+      "id": "judgement",
+      "name": "Judgement in abstract nouns",
+      "does": "Feeling and character named by abstract nouns of judgement rather than things described: civility, propriety, composure, mortification, felicity, indifference, consequence, spirits.",
+      "pattern": "\\b(civility|propriety|composure|mortification|felicity|indifference|consequence|spirits|vexation|solicitude|complacency|imprudence|delicacy|sensibility|esteem|regard|discretion)\\b",
+      "register": "any"
+    },
+    {
+      "id": "litotes",
+      "name": "Understatement and litotes",
+      "does": "The verdict implied by understatement: “not unwelcome”, “no very great”, “not a little”, “rather too much”.",
+      "pattern": "\\b(not\\s+un(?!der|til|less)\\w{3,}|no\\s+very\\s+\\w+|not\\s+a\\s+little|not\\s+without\\s+\\w+|not\\s+ill|rather\\s+too\\s+\\w+|not\\s+the\\s+least\\s+\\w+)\\b",
+      "register": "any"
+    },
+    {
+      "id": "reported",
+      "name": "Speech reported",
+      "does": "Speech reported rather than quoted, in the narrator’s syntax: “He said that he was not ready…”.",
+      "pattern": "\\b(he|she|they|I|[A-Z][a-z]+)\\s+(said|replied|declared|observed|owned|protested|answered)\\s+that\\b|\\b(told|assured)\\s+(him|her|them|me|us)\\s+that\\b",
+      "register": "narration"
+    },
+    {
+      "id": "saidshe",
+      "name": "Speech tagged after its first clause",
+      "does": "Quoted speech that shows character, the speaker named after the first clause, often inverted: “—,” said she, “—.”",
+      "pattern": "[,!?]”\\s+(said|cried|replied|returned)\\s+(she|he|[A-Z][a-z]+)",
+      "register": "any"
+    },
+    {
+      "id": "conduct",
+      "name": "Feeling shown by conduct",
+      "does": "Feeling given by its effect on conduct or countenance, not named outright: “she could hardly keep her countenance”, “coloured”.",
+      "pattern": "\\b(could\\s+(hardly|scarcely|not\\s+help)|coloured|blushed|countenance|her\\s+colour|his\\s+colour|smiled|could\\s+not\\s+speak)\\b",
+      "register": "narration"
+    },
+    {
+      "id": "irony",
+      "name": "An ironic verdict",
+      "does": "The narrator’s dry verdict on the situation or on the speaker, implied by precision rather than announced; often a generalization (“It is a truth…”, “as is usual…”) or a deflating last clause.",
+      "pattern": "\\b(it\\s+is\\s+a\\s+truth|as\\s+is\\s+(usual|often)|a\\s+(very|most)\\s+\\w+\\s+(thing|circumstance)|perhaps\\s+not|in\\s+short|of\\s+course|however\\s+little|it\\s+was\\s+not\\s+to\\s+be)\\b",
+      "register": "narration"
+    }
   ],
-  "craftNotes": "A letter keeps the form of a letter: salutation, the writer’s own voice, and a close; her letters (Lady Susan; the juvenilia) are its models.",
+  "craftNotes": [
+    "Modern things: if the thing is not load-bearing, omit it or use a general phrase; if it is (the reader or the letter’s reader must know what it is), keep it identifiable in her words. A periphrasis is at most five words and never used twice.",
+    "A letter keeps the form of a letter: salutation, the writer’s own voice, and a close; her letters (Lady Susan, the juvenilia, the letters in the novels) are its models.",
+    "Keep the writer’s degree and register of feeling: a hedge stays a hedge (“basically panicked” is comic, not “exceedingly terrified”), quantities stay (“more snacks”), and nothing is compared that was not compared.",
+    "Where the passage invites it, give at least one ironic or retrospective verdict in her manner; in a first-person passage it belongs to the narrator looking back."
+  ],
   "works": [
     {
       "id": "sense",

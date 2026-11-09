@@ -36,10 +36,19 @@ export interface AuthorConfig {
   /** Works told in letters, whose sentences are models for a writer's letter. */
   epistolary?: string[];
   persona: string;
-  /** What a rewrite should do, in the author's manner: the moves statistics cannot see. */
-  craft?: string[];
-  craftNotes?: string;
+  /** The author's moves: what a rewrite does in the author's manner, each found in a sentence by its pattern. */
+  moves?: Move[];
+  /** What a rewrite keeps and avoids, beyond the moves. */
+  craftNotes?: string[];
   works: WorkConfig[];
+}
+export interface Move {
+  id: string;
+  name: string;
+  does: string;
+  /** A sentence that shows the move matches this (case-insensitive). */
+  pattern: string;
+  register: 'narration' | 'speech' | 'any';
 }
 export interface Pronouns {
   subject: string;

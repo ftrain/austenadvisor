@@ -256,6 +256,11 @@ body {
   text-decoration: underline dotted var(--aa-name);
   text-underline-offset: 3px;
 }
+::highlight(advisor-phrase) {
+  text-decoration: underline dashed var(--aa-form);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
 ::highlight(advisor-focus) {
   background-color: var(--aa-accent-soft);
 }

@@ -223,13 +223,17 @@ export async function editorPage(root: HTMLElement, docId: string) {
     }, delay);
   }
 
-  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-focus'];
+  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-phrase', 'advisor-focus'];
   function highlight(focus?: { block: number; start: number; end: number }) {
     if (!words || !analysis || !('highlights' in CSS)) return;
-    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-focus': [] };
+    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-phrase': [], 'advisor-focus': [] };
     for (const f of analysis.words) {
       const r = rangeAt(words, f.block, f.start, f.end);
       if (r) groups[`advisor-${f.kind === 'rare' ? 'form' : f.kind}`]!.push(r);
+    }
+    for (const c of analysis.compounds ?? []) {
+      const r = rangeAt(words, c.block, c.start, c.end);
+      if (r) groups['advisor-phrase']!.push(r);
     }
     if (focus) {
       const r = rangeAt(words, focus.block, focus.start, focus.end);

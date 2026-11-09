@@ -94,6 +94,8 @@ export interface Report {
 export interface Analysis {
   author: { id: string; name: string; short: string; advisor: string };
   words: WordFlag[];
+  /** Two nouns together that the author never put together, though each is hers: "ice cream", "coffee shop". */
+  compounds: { block: number; start: number; end: number; text: string }[];
   sentences: SentenceInfo[];
   advice: Advice[];
   report: Report;
@@ -124,7 +126,10 @@ const STOP = new Set(
 const id = (...parts: (string | number)[]) => createHash('sha1').update(parts.join('\u0000')).digest('hex').slice(0, 12);
 
 /** Flags and alternatives of a sentence, kept by its words and the author: typing elsewhere costs nothing here. */
-const sentenceCache = new Map<string, { flags: Omit<WordFlag, 'block'>[]; advice: Omit<Advice, 'block'>[]; tags: string[]; bits: number }>();
+const sentenceCache = new Map<
+  string,
+  { flags: Omit<WordFlag, 'block'>[]; advice: Omit<Advice, 'block'>[]; compounds: { start: number; end: number; text: string }[]; tags: string[]; bits: number }
+>();
 
 export interface AnalyzeOptions {
   /** Alternatives offered for each flagged word (default 5). */
@@ -138,6 +143,7 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
   const short = m.author.short;
   const P = m.profile;
   const words: WordFlag[] = [];
+  const compounds: Analysis['compounds'] = [];
   const advice: Advice[] = [];
   const sentenceInfos: SentenceInfo[] = [];
   const work: SentenceWork[] = [];
@@ -204,6 +210,7 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
     }
     for (const f of cached.flags) words.push({ ...f, block: s.block, start: f.start + s.start, end: f.end + s.start });
     for (const a of cached.advice) advice.push({ ...a, block: s.block, start: a.start + s.start, end: a.end + s.start });
+    for (const c of cached.compounds) compounds.push({ ...c, block: s.block, start: c.start + s.start, end: c.end + s.start });
     const dist = s.spoken ? P.sentenceLength.dialogue : P.sentenceLength.narration;
     sentenceInfos.push({
       block: s.block,
@@ -248,6 +255,7 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
   return {
     author: { id: m.author.id, name: m.author.name, short, advisor: m.author.advisor },
     words,
+    compounds,
     sentences: sentenceInfos,
     advice,
     report,
@@ -369,6 +377,32 @@ function readSentence(m: AuthorModel, s: SentenceWork, sentenceText: string, opt
     });
   }
 
+  // Two of her nouns together that she never put together: a modern compound in old words.
+  const compounds: { start: number; end: number; text: string }[] = [];
+  for (let k = s.from; k + 1 < s.to; k++) {
+    const a = s.toks[k]!;
+    const b = s.toks[k + 1]!;
+    const ta = s.tags[k - s.from]!;
+    const tb = s.tags[k + 1 - s.from]!;
+    if (a.kind !== 'word' || b.kind !== 'word' || !/^NNS?$/.test(ta) || !/^NNS?$/.test(tb)) continue;
+    if (!m.word(a.norm) || !m.word(b.norm) || looksProper(s.toks, k, s.from) || looksProper(s.toks, k + 1, s.from)) continue;
+    // Both words nouns in her usage too, so a tagger's slip ("the request meant") is not taken for one.
+    if (!/^NNS?$/.test(m.usualTag(a.norm) ?? '') || !/^NNS?$/.test(m.usualTag(b.norm) ?? '')) continue;
+    if (m.lm.bigram(a.norm, b.norm) > 0 || m.word(`${a.norm}-${b.norm}`) || m.word(a.norm + b.norm)) continue;
+    compounds.push({ start: a.start - base, end: b.end - base, text: sentenceText.slice(a.start - base, b.end - base) });
+    advice.push({
+      id: id('compound', sentenceText, a.start),
+      kind: 'word',
+      severity: 'consider',
+      start: a.start - base,
+      end: b.end - base,
+      title: `“${a.text} ${b.text}”: a compound ${short} never wrote`,
+      message: `${short} used “${a.text}” and “${b.text}”, but never together: the thing may be newer than she is.`,
+      why: `“${a.norm}” ${m.word(a.norm)!.count}×, “${b.norm}” ${m.word(b.norm)!.count}×, “${a.norm} ${b.norm}” never.`,
+      examples: [],
+    });
+  }
+
   // How the sentence opens, where it is narration.
   if (!s.spoken) {
     const firstK = s.toks.slice(s.from, s.to).findIndex((t) => t.kind === 'word');
@@ -389,7 +423,7 @@ function readSentence(m: AuthorModel, s: SentenceWork, sentenceText: string, opt
       });
     }
   }
-  return { flags, advice, tags: s.tags, bits };
+  return { flags, advice, compounds, tags: s.tags, bits };
 }
 
 function topOpeners(m: AuthorModel): string {

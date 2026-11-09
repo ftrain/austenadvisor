@@ -61,7 +61,7 @@ export class AuthorModel {
   private works = new Map<string, { title: string; year: number }>();
   private citeStmt: ReturnType<DatabaseSync['prepare']>;
   private sentenceCache = new Map<number, Citation>();
-  private sif: { ids: Int32Array; vecs: Float32Array; pc: Float32Array; words: Int16Array; register: Uint8Array } | null = null;
+  private sif: { ids: Int32Array; vecs: Float32Array; pc: Float32Array; words: Int16Array; register: Uint8Array; texts: string[] } | null = null;
 
   private constructor(authorId: string) {
     this.db = open(authorDbPath(authorId), { readOnly: true });
@@ -265,7 +265,11 @@ export class AuthorModel {
   }
 
   /** Sentences nearest a passage in meaning (SIF sentence vectors, first principal component removed). */
-  similarSentences(text: string, k = 5, opts: { minWords?: number; maxWords?: number; register?: Register } = {}): (Citation & { sim: number })[] {
+  similarSentences(
+    text: string,
+    k = 5,
+    opts: { minWords?: number; maxWords?: number; register?: Register; test?: (text: string, register: Register) => boolean } = {},
+  ): (Citation & { sim: number })[] {
     const idx = this.sifIndex();
     const words = tokenize(text).filter((t) => t.kind === 'word').map((t) => t.norm);
     const v = this.contextVector(words);
@@ -280,6 +284,7 @@ export class AuthorModel {
       if (opts.minWords && idx.words[i]! < opts.minWords) continue;
       if (opts.maxWords && idx.words[i]! > opts.maxWords) continue;
       if (opts.register && REGISTERS[idx.register[i]!] !== opts.register) continue;
+      if (opts.test && !opts.test(idx.texts[i]!, REGISTERS[idx.register[i]!]!)) continue;
       let dot = 0;
       const o = i * dims;
       for (let j = 0; j < dims; j++) dot += v[j]! * idx.vecs[o + j]!;
@@ -336,8 +341,23 @@ export class AuthorModel {
       n = Math.sqrt(n) || 1;
       for (let j = 0; j < dims; j++) v[j]! /= n;
     }
-    this.sif = { ids, vecs, pc, words: wc, register };
+    this.sif = { ids, vecs, pc, words: wc, register, texts: rows.map((r) => r.text) };
     return this.sif;
+  }
+
+  /** The author's sentences that show a move (its pattern matched, in its register), nearest a passage first. */
+  moveExamples(moveId: string, near: string, k = 4): (Citation & { sim: number })[] {
+    const move = this.author.moves?.find((x) => x.id === moveId);
+    if (!move) return [];
+    const re = new RegExp(move.pattern, 'i');
+    const opts = {
+      minWords: 6,
+      maxWords: 60,
+      test: (t: string, reg: Register) => re.test(t) && (move.register === 'any' || reg === move.register || (move.register === 'narration' && reg === 'letter')),
+    };
+    const near1 = near ? this.similarSentences(near, k, opts) : [];
+    // Words the author never used give no meaning to be near: then near the move itself.
+    return near1.length ? near1 : this.similarSentences(move.does, k, opts);
   }
 
   /** Words found near a word more than chance allows: Dunning's log-likelihood (1993) over a window of five. */

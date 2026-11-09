@@ -96,18 +96,29 @@ export function renderBrief(m: AuthorModel, b: Brief): string {
   }
   if (para) out.push(`</paragraph>`);
   if (b.advice.length) out.push(`<advice>`, ...b.advice.map(esc), `</advice>`);
-  out.push(`<measures score="${b.score}">`, ...b.measures.map(esc), `</measures>`, `</brief>`);
+  out.push(`<measures score="${b.score}">`, ...b.measures.map(esc), `</measures>`, renderMoves(m, b), `</brief>`);
   return out.join('\n');
 }
 
 export function craftOf(m: AuthorModel): string {
   const pr = pronounsOf(m.author);
-  const craft = m.author.craft ?? [];
   return [
-    ...craft.map((c, i) => `${i + 1}. ${c}`),
-    m.author.craftNotes ?? '',
-    `${cap(pr.possessive)} measured habits are in the brief’s <targets>; ${pr.possessive} sentences in each <model> show the moves above in use.`,
-  ]
-    .filter(Boolean)
-    .join('\n');
+    `${cap(pr.possessive)} moves (each note you give names one, by its id):`,
+    ...(m.author.moves ?? []).map((x) => `- ${x.id}: ${x.name}. ${x.does}`),
+    '',
+    ...(m.author.craftNotes ?? []).map((x) => `- ${x}`),
+  ].join('\n');
+}
+
+/** Two of the author's sentences for each move, nearest the passage: exemplars to learn from and to cite. */
+export function renderMoves(m: AuthorModel, b: Brief): string {
+  const near = b.sentences.map((x) => x.text).join(' ');
+  const out = ['<moves>'];
+  for (const mv of m.author.moves ?? []) {
+    out.push(`<move id="${mv.id}" name="${esc(mv.name)}">`);
+    for (const c of m.moveExamples(mv.id, near, 2)) out.push(`  <example id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</example>`);
+    out.push('</move>');
+  }
+  out.push('</moves>');
+  return out.join('\n');
 }

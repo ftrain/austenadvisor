@@ -94,10 +94,27 @@ export function checkPassage(m: AuthorModel, text: string) {
       .filter((w) => w.kind !== 'name')
       .map((w) => ({ word: w.word, note: w.note, alternatives: w.alternatives.slice(0, 5).map((x) => `${x.text} (${x.source}, ${x.count}×)`) })),
     names: a.words.filter((w) => w.kind === 'name').map((w) => w.word),
+    compounds: a.compounds.map((c) => c.text),
+    unattested: unattestedPairs(m, text),
     advice: a.advice.map((x) => ({ severity: x.severity, title: x.title, message: x.message, why: x.why, suggestion: x.replacements?.[0]?.text })),
     measures: a.report.measures.map((x) => `${x.label}: yours ${x.yours}${x.unit === '%' ? '%' : ''}, ${m.author.short} ${x.author}${x.unit === '%' ? '%' : ''}`),
     overused: a.report.overused,
   };
+}
+
+/** Pairs of content words, each the author's, never found together in the author's works: phrases to look up. */
+export function unattestedPairs(m: AuthorModel, text: string): string[] {
+  const common = new Set(m.profile.mfw.words.slice(0, 120));
+  const out: string[] = [];
+  const toks = tokenize(text);
+  for (let i = 0; i + 1 < toks.length; i++) {
+    const a = toks[i]!;
+    const b = toks[i + 1]!;
+    if (a.kind !== 'word' || b.kind !== 'word' || common.has(a.norm) || common.has(b.norm)) continue;
+    if (!m.word(a.norm) || !m.word(b.norm) || /^\p{Lu}/u.test(a.text) || /^\p{Lu}/u.test(b.text)) continue;
+    if (m.lm.bigram(a.norm, b.norm) === 0) out.push(`${a.text} ${b.text}`);
+  }
+  return [...new Set(out)].slice(0, 15);
 }
 
 /** The author's habits in numbers, for a writer or a model to aim at. */
@@ -125,7 +142,7 @@ export const TOOL_SPECS = [
   {
     name: 'check_passage',
     description:
-      "Check a passage against the author's works with the statistical engine: every word the author never used (with the author's own alternatives), contractions, words the author would more likely have used in that place, runs of short sentences, and measures (sentence length, semicolons, function-word habits) against the author's. Use it on your draft before you submit, and revise until nothing needed is flagged.",
+      "Check a draft against the author's works: every word the author never used (with the author's alternatives), compounds of hers she never wrote together, pairs of content words never found together in her works (look them up in the concordance), contractions, short-sentence runs, and measures against hers.",
     input_schema: {
       type: 'object' as const,
       properties: { text: { type: 'string', description: 'The passage, paragraphs separated by blank lines.' } },
@@ -169,6 +186,21 @@ export const TOOL_SPECS = [
       additionalProperties: false,
     },
   },
+  {
+    name: 'find_example',
+    description:
+      "Sentences of the author's that show a named move (balance, litotes, reported speech…), nearest in meaning to the text you give, each with its id. Use it to choose the model sentence for a note: a note's model must show its move.",
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        move: { type: 'string', description: 'The move’s id, as listed in the brief’s <moves>.' },
+        near: { type: 'string', description: 'Your sentence, or the writer’s, to find examples near it.' },
+        limit: { type: 'integer' },
+      },
+      required: ['move', 'near'],
+      additionalProperties: false,
+    },
+  },
 ] as const;
 
 export type ToolName = (typeof TOOL_SPECS)[number]['name'];
@@ -190,6 +222,11 @@ export function runTool(m: AuthorModel, name: string, input: Record<string, unkn
           register: ['narration', 'speech', 'letter'].includes(String(input.register)) ? (input.register as Register) : undefined,
         })
         .map(line);
+    case 'find_example': {
+      const ex = m.moveExamples(String(input.move ?? ''), String(input.near ?? ''), Math.min(8, Number(input.limit ?? 4)));
+      if (!ex.length) return `No move "${input.move}". Moves: ${(m.author.moves ?? []).map((x) => x.id).join(', ')}.`;
+      return ex.map(line);
+    }
     default:
       throw new Error(`no tool ${name}`);
   }
