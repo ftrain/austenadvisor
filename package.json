@@ -1,0 +1,33 @@
+{
+  "name": "austenadvisor",
+  "version": "0.1.0",
+  "private": true,
+  "description": "A shared word processor where Advisor, a statistical model of an author's whole works, writes beside you. First author: Jane Austen.",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "build:model": "node src/train/build.ts",
+    "dev": "node src/server/main.ts --dev",
+    "start": "node src/server/main.ts",
+    "build": "vite build",
+    "cli": "node src/cli.ts",
+    "before-after": "node scripts/before-after.ts",
+    "vendor:tlo": "sh scripts/vendor-tlo.sh",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit -p ."
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^1.6.0",
+    "tinylittleoffice": "file:vendor/tinylittleoffice-v2-f13538e.tgz",
+    "ws": "^8.18.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/ws": "^8.18.1",
+    "typescript": "^5.9.3",
+    "vite": "^7.3.8",
+    "vitest": "^3.2.7"
+  }
+}

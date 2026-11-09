@@ -1,0 +1,107 @@
+{
+  "id": "austen",
+  "name": "Jane Austen",
+  "advisor": "Austen Advisor",
+  "short": "Austen",
+  "years": "1775–1817",
+  "pronouns": {
+    "subject": "she",
+    "object": "her",
+    "possessive": "her",
+    "possessivePronoun": "hers"
+  },
+  "persona": "Jane Austen (1775–1817), English novelist of the Regency: irony, free indirect discourse, balanced periodic sentences joined by semicolons, precise abstract nouns of judgement (sense, propriety, civility, esteem, amiable), and dialogue that reveals character.",
+  "works": [
+    {
+      "id": "sense",
+      "title": "Sense and Sensibility",
+      "year": 1811,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_sense-and-sensibility"
+      }
+    },
+    {
+      "id": "pride",
+      "title": "Pride and Prejudice",
+      "year": 1813,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_pride-and-prejudice"
+      }
+    },
+    {
+      "id": "mansfield",
+      "title": "Mansfield Park",
+      "year": 1814,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_mansfield-park"
+      }
+    },
+    {
+      "id": "emma",
+      "title": "Emma",
+      "year": 1815,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_emma"
+      }
+    },
+    {
+      "id": "northanger",
+      "title": "Northanger Abbey",
+      "year": 1817,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_northanger-abbey"
+      }
+    },
+    {
+      "id": "persuasion",
+      "title": "Persuasion",
+      "year": 1817,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/jane-austen_persuasion"
+      }
+    },
+    {
+      "id": "susan",
+      "title": "Lady Susan",
+      "year": 1794,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Lady-Susan_946",
+        "file": "946.txt",
+        "chapter": "^([IVXL]+|CONCLUSION)$",
+        "from": "^LADY SUSAN$"
+      }
+    },
+    {
+      "id": "juvenilia",
+      "title": "Love and Freindship",
+      "year": 1790,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Love-and-Freindship--sic-_1212",
+        "file": "1212-0.txt",
+        "chapter": "^(LETTER .*|[A-Z][A-Z ,'&.]{6,}|CHAPTER .*)$",
+        "from": "^LOVE AND FREINDSHIP$"
+      }
+    },
+    {
+      "id": "sanditon",
+      "title": "Sanditon (Fragment of a Novel)",
+      "year": 1817,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Fragment-of-a-novel-written-by-Jane-Austen-January-March-1817-b-Now-first-printed-from-the-ma__74233",
+        "file": "74233-0.txt",
+        "chapter": "^CHAPTER \\d+\\.?$",
+        "from": "^CHAPTER 1\\.$",
+        "until": "^NOTES$"
+      }
+    }
+  ]
+}

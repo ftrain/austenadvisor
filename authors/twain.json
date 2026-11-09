@@ -1,0 +1,88 @@
+{
+  "id": "twain",
+  "name": "Mark Twain",
+  "advisor": "Twain Advisor",
+  "short": "Twain",
+  "years": "1835–1910",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Mark Twain (1835–1910), American humorist and novelist: vernacular narrators, dialect, deadpan understatement, plain Anglo-Saxon words, long cumulative sentences that end on a joke.",
+  "works": [
+    {
+      "id": "innocents",
+      "title": "The Innocents Abroad",
+      "year": 1869,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_the-innocents-abroad"
+      }
+    },
+    {
+      "id": "roughing",
+      "title": "Roughing It",
+      "year": 1872,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_roughing-it"
+      }
+    },
+    {
+      "id": "sawyer",
+      "title": "The Adventures of Tom Sawyer",
+      "year": 1876,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_the-adventures-of-tom-sawyer"
+      }
+    },
+    {
+      "id": "prince",
+      "title": "The Prince and the Pauper",
+      "year": 1881,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_the-prince-and-the-pauper"
+      }
+    },
+    {
+      "id": "huck",
+      "title": "Adventures of Huckleberry Finn",
+      "year": 1884,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_the-adventures-of-huckleberry-finn"
+      }
+    },
+    {
+      "id": "yankee",
+      "title": "A Connecticut Yankee in King Arthur’s Court",
+      "year": 1889,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_a-connecticut-yankee-in-king-arthurs-court"
+      }
+    },
+    {
+      "id": "puddnhead",
+      "title": "Pudd’nhead Wilson",
+      "year": 1894,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_puddnhead-wilson"
+      }
+    },
+    {
+      "id": "joan",
+      "title": "Personal Recollections of Joan of Arc",
+      "year": 1896,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/mark-twain_personal-recollections-of-joan-of-arc"
+      }
+    }
+  ]
+}

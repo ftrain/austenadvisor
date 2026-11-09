@@ -1,0 +1,608 @@
+/* Austen Advisor's page, on Tiny Little Office's tokens (editors.css). */
+
+:root {
+  --aa-accent: #7a3b5f;
+  --aa-accent-soft: #f3e7ee;
+  --aa-never: #b3261e;
+  --aa-form: #b26a00;
+  --aa-name: #8a8f98;
+  --aa-side-w: 400px;
+  --aa-margin-w: 300px;
+  color-scheme: light dark;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --aa-accent: #e0a3c4;
+    --aa-accent-soft: #3a2532;
+    --aa-never: #ff8a80;
+    --aa-form: #ffb74d;
+  }
+}
+:root[data-theme='dark'] {
+  --aa-accent: #e0a3c4;
+  --aa-accent-soft: #3a2532;
+  --aa-never: #ff8a80;
+  --aa-form: #ffb74d;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--to-bg, #fbfaf7);
+  color: var(--to-ink, #1d1d1f);
+  font-family: var(--to-font, 'IBM Plex Sans', system-ui, sans-serif);
+}
+
+.aa-page {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.aa-editor-page {
+  height: 100dvh;
+}
+
+/* The header. */
+.aa-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--to-border, #ddd);
+  background: var(--to-surface, #fff);
+  flex-wrap: wrap;
+}
+.aa-home {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: inherit;
+  text-decoration: none;
+  font-weight: 600;
+}
+.aa-mark {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 6px;
+  background: var(--aa-accent);
+  color: #fff;
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-style: italic;
+}
+.aa-doc-title {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  color: var(--to-ink-2, #555);
+}
+.aa-spacer {
+  flex: 1;
+}
+.aa-status {
+  font-size: 0.85rem;
+  color: var(--aa-accent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+.aa-status.on {
+  opacity: 1;
+}
+.aa-score-pill {
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: var(--aa-accent-soft);
+  color: var(--aa-accent);
+}
+.aa-online {
+  display: flex;
+  gap: 4px;
+}
+.aa-offline .aa-head {
+  box-shadow: inset 0 -3px 0 var(--to-warning, #c90);
+}
+
+/* Buttons and fields. */
+.aa-btn {
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 6px 12px;
+  border-radius: var(--to-radius-sm, 6px);
+  border: 1px solid var(--to-border-strong, #bbb);
+  background: var(--to-surface, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+.aa-btn:hover {
+  border-color: var(--aa-accent);
+}
+.aa-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.aa-primary {
+  background: var(--aa-accent);
+  border-color: var(--aa-accent);
+  color: #fff;
+}
+.aa-ghost {
+  border-color: transparent;
+  background: transparent;
+}
+.aa-link {
+  font: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: var(--aa-accent);
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.aa-input {
+  font: inherit;
+  padding: 7px 10px;
+  border-radius: var(--to-radius-sm, 6px);
+  border: 1px solid var(--to-input-border, #ccc);
+  background: var(--to-input-bg, #fff);
+  color: inherit;
+  min-width: 0;
+}
+.aa-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 8px 0;
+}
+.aa-muted {
+  color: var(--to-ink-3, #777);
+}
+.aa-small {
+  font-size: 0.85rem;
+}
+
+/* The document, the margin and the side panel. */
+.aa-main {
+  flex: 1;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--aa-side-w);
+}
+.aa-paper {
+  min-height: 0;
+  overflow: auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--aa-margin-w);
+  position: relative;
+}
+.aa-editor {
+  min-width: 0;
+}
+.aa-margin {
+  min-width: 0;
+}
+.aa-side {
+  border-left: 1px solid var(--to-border, #ddd);
+  background: var(--to-surface, #fff);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.aa-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--to-border, #ddd);
+}
+.aa-tab {
+  flex: 1;
+  font: inherit;
+  font-size: 0.9rem;
+  padding: 10px 8px;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--to-ink-2, #555);
+  cursor: pointer;
+}
+.aa-tab[aria-selected='true'] {
+  color: var(--aa-accent);
+  border-bottom-color: var(--aa-accent);
+  font-weight: 600;
+}
+.aa-panel-body {
+  overflow: auto;
+  padding: 12px 16px 48px;
+  flex: 1;
+}
+@media (max-width: 1400px) {
+  .aa-paper {
+    grid-template-columns: 1fr;
+  }
+  .aa-margin {
+    --to-comments-beside: 0;
+  }
+}
+@media (max-width: 1100px) {
+  .aa-main {
+    grid-template-columns: 1fr;
+    grid-template-rows: minmax(0, 1fr) minmax(0, 40vh);
+  }
+  .aa-side {
+    border-left: 0;
+    border-top: 1px solid var(--to-border, #ddd);
+  }
+  .aa-paper {
+    grid-template-columns: 1fr;
+  }
+  .aa-margin {
+    --to-comments-beside: 0;
+  }
+}
+
+/* The words Advisor flags. */
+::highlight(advisor-never) {
+  text-decoration: underline wavy var(--aa-never);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+}
+::highlight(advisor-form) {
+  text-decoration: underline dotted var(--aa-form);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+}
+::highlight(advisor-name) {
+  text-decoration: underline dotted var(--aa-name);
+  text-underline-offset: 3px;
+}
+::highlight(advisor-focus) {
+  background-color: var(--aa-accent-soft);
+}
+
+/* The popover on a flagged word. */
+.aa-pop {
+  position: fixed;
+  z-index: 50;
+  max-height: min(70vh, 560px);
+  overflow: auto;
+  background: var(--to-surface, #fff);
+  color: var(--to-ink, #222);
+  border: 1px solid var(--to-border-strong, #bbb);
+  border-radius: var(--to-radius, 10px);
+  box-shadow: var(--to-shadow-pop, 0 10px 30px rgba(0, 0, 0, 0.18));
+  padding: 12px 14px;
+  font-size: 0.92rem;
+}
+.aa-pop[hidden] {
+  display: none;
+}
+.aa-pop-head {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.aa-pop-head strong {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 1.15rem;
+}
+.aa-pop-note {
+  margin: 4px 0 8px;
+}
+.aa-pop-sub {
+  margin: 8px 0 4px;
+  font-weight: 600;
+}
+.aa-kind {
+  font-size: 0.75rem;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: var(--to-surface-2, #eee);
+}
+.aa-kind-never {
+  background: color-mix(in srgb, var(--aa-never) 15%, transparent);
+  color: var(--aa-never);
+}
+.aa-kind-form {
+  background: color-mix(in srgb, var(--aa-form) 15%, transparent);
+  color: var(--aa-form);
+}
+.aa-alts {
+  margin: 0;
+  padding-left: 1.2em;
+}
+.aa-alts li {
+  margin: 6px 0 10px;
+}
+.aa-alt {
+  font: inherit;
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 1.02rem;
+  font-weight: 600;
+  border: 1px solid var(--aa-accent);
+  color: var(--aa-accent);
+  background: var(--aa-accent-soft);
+  border-radius: 999px;
+  padding: 1px 10px;
+  cursor: pointer;
+}
+.aa-alt-why {
+  margin-left: 6px;
+  font-size: 0.8rem;
+  color: var(--to-ink-3, #777);
+}
+.aa-pop-foot {
+  border-top: 1px solid var(--to-border, #ddd);
+  padding-top: 8px;
+  margin-top: 4px;
+}
+
+/* An author's sentence. */
+.aa-quote {
+  margin: 6px 0;
+  padding: 6px 10px;
+  border-left: 3px solid var(--aa-accent);
+  background: color-mix(in srgb, var(--aa-accent-soft) 60%, transparent);
+  border-radius: 0 6px 6px 0;
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 0.92rem;
+  line-height: 1.45;
+}
+.aa-quote cite {
+  display: block;
+  margin-top: 3px;
+  font-family: var(--to-font, system-ui);
+  font-style: normal;
+  font-size: 0.78rem;
+  color: var(--to-ink-3, #777);
+}
+.aa-quote mark,
+.aa-paragraph mark {
+  background: color-mix(in srgb, var(--aa-accent) 25%, transparent);
+  color: inherit;
+  border-radius: 2px;
+}
+
+/* Cards. */
+.aa-card {
+  border: 1px solid var(--to-border, #ddd);
+  border-radius: var(--to-radius, 10px);
+  padding: 10px 12px;
+  margin: 10px 0;
+  background: var(--to-surface, #fff);
+}
+.aa-card h3,
+.aa-card h4 {
+  margin: 0 0 6px;
+}
+.aa-section {
+  margin: 18px 0 4px;
+}
+.aa-count {
+  margin-left: 8px;
+  font-size: 0.8rem;
+  padding: 0 7px;
+  border-radius: 999px;
+  background: var(--to-surface-2, #eee);
+  font-weight: 500;
+}
+.aa-scorecard {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.aa-ring {
+  flex: none;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.aa-ring span {
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--to-surface, #fff);
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.aa-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.aa-chip {
+  font: inherit;
+  font-size: 0.85rem;
+  border: 1px solid var(--to-border-strong, #bbb);
+  border-radius: 999px;
+  padding: 2px 10px;
+  background: var(--to-surface, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+.aa-chip-never {
+  border-color: var(--aa-never);
+}
+.aa-chip-form {
+  border-color: var(--aa-form);
+}
+.aa-chip-alt {
+  color: var(--to-ink-3, #777);
+}
+.aa-advice header {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
+.aa-sev {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--to-surface-2, #eee);
+}
+.aa-sev-fix .aa-sev {
+  background: color-mix(in srgb, var(--aa-never) 18%, transparent);
+  color: var(--aa-never);
+}
+.aa-sev-consider .aa-sev {
+  background: var(--aa-accent-soft);
+  color: var(--aa-accent);
+}
+.aa-why {
+  font-size: 0.85rem;
+  color: var(--to-ink-2, #555);
+}
+.aa-proposal {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  padding: 6px 10px;
+  border: 1px dashed var(--aa-accent);
+  border-radius: 6px;
+}
+
+/* Style. */
+.aa-measure header {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.aa-bar {
+  position: relative;
+  height: 10px;
+  margin: 8px 0 4px;
+  border-radius: 999px;
+  background: var(--to-surface-2, #eee);
+}
+.aa-bar-yours {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 999px;
+  background: var(--aa-accent);
+}
+.aa-bar-mark {
+  position: absolute;
+  top: -4px;
+  width: 3px;
+  height: 18px;
+  background: var(--to-ink, #222);
+  border-radius: 2px;
+}
+.aa-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+.aa-table td,
+.aa-table th {
+  text-align: left;
+  padding: 3px 6px;
+  border-bottom: 1px solid var(--to-border, #ddd);
+}
+
+/* Explore. */
+.aa-search {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.aa-search .aa-input {
+  flex: 1;
+}
+.aa-word-head {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: 1.5rem;
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.aa-work {
+  display: grid;
+  grid-template-columns: 11em 1fr 3em;
+  gap: 6px;
+  align-items: center;
+  font-size: 0.85rem;
+}
+.aa-work-bar {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--aa-accent);
+  opacity: 0.75;
+}
+
+/* The citation's paragraph. */
+.aa-dialog {
+  max-width: min(640px, calc(100vw - 32px));
+  border: 1px solid var(--to-border, #ddd);
+  border-radius: var(--to-radius, 10px);
+  background: var(--to-surface, #fff);
+  color: inherit;
+}
+.aa-paragraph {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  line-height: 1.6;
+}
+
+/* Home. */
+.aa-landing {
+  max-width: 880px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+.aa-hero h1 {
+  font-family: 'IBM Plex Serif', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 16px 0 8px;
+}
+.aa-hero p {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--to-ink-2, #444);
+}
+.aa-samples {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 10px;
+}
+.aa-sample {
+  font: inherit;
+  text-align: left;
+  display: grid;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid var(--to-border, #ddd);
+  border-radius: var(--to-radius, 10px);
+  background: var(--to-surface, #fff);
+  color: inherit;
+  cursor: pointer;
+}
+.aa-sample:hover {
+  border-color: var(--aa-accent);
+}
+.aa-sample span {
+  font-size: 0.85rem;
+  color: var(--to-ink-3, #777);
+}
+.aa-docs {
+  padding-left: 1.2em;
+}
+.aa-docs li {
+  margin: 4px 0;
+}
+
+/* The editor's own bar scrolls within its column rather than running under the margin. */
+.aa-editor {
+  overflow-x: clip;
+  position: relative;
+}
+.aa-editor to-bar,
+.aa-editor .to-bar {
+  max-width: 100%;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
