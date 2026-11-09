@@ -11,6 +11,7 @@ import type { DocBlock } from './doc.ts';
 import type { AuthorModel, Citation } from './model.ts';
 import { cap, pronounsOf } from '../corpus/sources.ts';
 import { CONTRACTIONS, lmKey, syllables } from './profile.ts';
+import { findFigures } from './figures.ts';
 
 export type FlagKind = 'never' | 'form' | 'name' | 'rare';
 
@@ -94,6 +95,8 @@ export interface Report {
 export interface Analysis {
   author: { id: string; name: string; short: string; advisor: string };
   words: WordFlag[];
+  /** Figures of speech in the writer's draft, as recognized by form: what the writer already does, named. */
+  figures: { block: number; start: number; end: number; term: string; name: string; gloss: string; text: string }[];
   /** Two nouns together that the author never put together, though each is hers: "ice cream", "coffee shop". */
   compounds: { block: number; start: number; end: number; text: string }[];
   sentences: SentenceInfo[];
@@ -240,7 +243,14 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
     }
   }
 
-  // 3. Runs of short sentences in narration, which the author would have joined.
+  // 3. The figures of speech the writer already makes.
+  const figures: Analysis['figures'] = [];
+  blocks.forEach((b, bi) => {
+    if (b.kind === 'title' || b.kind === 'heading' || b.kind === 'other' || !b.text.trim()) return;
+    for (const f of findFigures(m, b.text)) figures.push({ block: bi, start: f.start, end: f.end, term: f.term, name: f.name, gloss: f.gloss, text: f.text });
+  });
+
+  // 4. Runs of short sentences in narration, which the author would have joined.
   advice.push(...joinShortRuns(m, work, blocks));
 
   // 4. The document as a whole.
@@ -256,6 +266,7 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
     author: { id: m.author.id, name: m.author.name, short, advisor: m.author.advisor },
     words,
     compounds,
+    figures,
     sentences: sentenceInfos,
     advice,
     report,

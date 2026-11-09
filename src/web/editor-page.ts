@@ -157,6 +157,7 @@ export async function editorPage(root: HTMLElement, docId: string) {
       onApply: applyAdvice,
       onShow: showAdvice,
       onWord: (f) => { showWord(f); },
+      onFigure: (f) => showFigure(f),
       onCite: openCitation,
       onAustenize: () => void austenizeHere(),
       onRewrite: (instr) => void rewriteHere(instr),
@@ -223,13 +224,17 @@ export async function editorPage(root: HTMLElement, docId: string) {
     }, delay);
   }
 
-  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-phrase', 'advisor-focus'];
+  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-phrase', 'advisor-figure', 'advisor-focus'];
   function highlight(focus?: { block: number; start: number; end: number }) {
     if (!words || !analysis || !('highlights' in CSS)) return;
-    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-phrase': [], 'advisor-focus': [] };
+    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-phrase': [], 'advisor-figure': [], 'advisor-focus': [] };
     for (const f of analysis.words) {
       const r = rangeAt(words, f.block, f.start, f.end);
       if (r) groups[`advisor-${f.kind === 'rare' ? 'form' : f.kind}`]!.push(r);
+    }
+    for (const f of analysis.figures ?? []) {
+      const r = rangeAt(words, f.block, f.start, f.end);
+      if (r) groups['advisor-figure']!.push(r);
     }
     for (const c of analysis.compounds ?? []) {
       const r = rangeAt(words, c.block, c.start, c.end);
@@ -257,7 +262,55 @@ export async function editorPage(root: HTMLElement, docId: string) {
     }
     return null;
   }
+  type Fig = Analysis['figures'][number];
+  function figureAt(x: number, y: number): Fig | null {
+    if (!words || !analysis) return null;
+    const p = posAt(words, x, y);
+    if (!p) return null;
+    return (analysis.figures ?? []).find((f) => f.block === p.block && p.offset >= f.start && p.offset <= f.end) ?? null;
+  }
+  let figFor: Fig | null = null;
+  async function showFigurePop(f: Fig) {
+    clearTimeout(hideTimer);
+    if (figFor === f && !pop.hidden) return;
+    figFor = f;
+    popFor = null;
+    const r = words && rangeAt(words, f.block, f.start, Math.min(f.end, f.start + 40));
+    const rect = r?.getBoundingClientRect();
+    const list = h('div', {}, h('p', { class: 'aa-muted aa-small' }, `Finding ${author.short}’s…`));
+    pop.replaceChildren(
+      h(
+        'div',
+        { class: 'aa-pop-in' },
+        h('div', { class: 'aa-pop-head' }, h('strong', {}, f.name), h('span', { class: 'aa-kind aa-kind-figure' }, 'figure of speech')),
+        h('p', { class: 'aa-pop-note' }, f.gloss),
+        h('p', { class: 'aa-pop-sub' }, `${author.short}’s own:`),
+        list,
+      ),
+    );
+    pop.hidden = false;
+    if (rect) {
+      const w = Math.min(380, window.innerWidth - 24);
+      pop.style.width = `${w}px`;
+      pop.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - w - 12))}px`;
+      pop.style.top = `${rect.bottom + 8}px`;
+    }
+    try {
+      const info = await get<{ examples: Citation[] }>(`/api/figure?author=${author.id}&term=${f.term}&near=${encodeURIComponent(f.text.slice(0, 300))}&limit=2`);
+      if (figFor === f) list.replaceChildren(...info.examples.map((c) => quoteEl(c, openCitation)));
+    } catch {
+      list.replaceChildren();
+    }
+  }
+  function showFigure(f: Fig) {
+    tab = 'explore';
+    renderSide();
+    showAdvice({ block: f.block, start: f.start, end: f.end } as Advice);
+    void explore.showFigure(f.term, f.text);
+  }
+
   function showPop(f: WordFlag) {
+    figFor = null;
     clearTimeout(hideTimer);
     if (popFor === f && !pop.hidden) return;
     popFor = f;
@@ -451,7 +504,9 @@ export async function editorPage(root: HTMLElement, docId: string) {
           cancelAnimationFrame(raf);
           raf = requestAnimationFrame(() => {
             const f = flagAt(e.clientX, e.clientY);
+            const g = f ? null : figureAt(e.clientX, e.clientY);
             if (f && f.alternatives.length + (f.kind === 'name' ? 0 : 1) > 0) showPop(f);
+            else if (g) showFigurePop(g);
             else if (!pop.matches(':hover')) hidePop();
           });
         });

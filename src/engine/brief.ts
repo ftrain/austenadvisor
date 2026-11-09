@@ -6,6 +6,7 @@
 import { cap, pronounsOf } from '../corpus/sources.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 import { analyze } from './analyze.ts';
+import { FIGURES } from './figures.ts';
 import type { DocBlock } from './doc.ts';
 import type { AuthorModel, Citation, Register } from './model.ts';
 
@@ -107,6 +108,9 @@ export function craftOf(m: AuthorModel): string {
     ...(m.author.moves ?? []).map((x) => `- ${x.id}: ${x.name}. ${x.does}`),
     '',
     ...(m.author.craftNotes ?? []).map((x) => `- ${x}`),
+    '',
+    'Figures of speech the engine recognizes by their form, and names in what it tells the writer (a note may name one by its term):',
+    ...Object.entries(FIGURES).map(([k, f]) => `- ${k}: ${f.name}. ${f.gloss}`),
   ].join('\n');
 }
 

@@ -64,156 +64,179 @@ Each judge scored only the pair it compared. Judges 2 and 3 scored round 2 a lit
 - **The judge can be wrong too.** Opus proposed "ices" for ice cream, and the engine showed Austen never wrote it.
 - **Patterns must see text as typed.** A run failed five times on `"…," said she` because the move pattern wanted curly quotes. The gate now reads straight quotes as curly.
 
-## Round 3: the rewrites, every sentence with its reason and its model
+**Round 4: same prompt, stricter template.** Sonnet ran the round-3 fixes. Opus judged the prose a modest improvement:
+
+- sentences are shorter and more natural;
+- no clauses were invented;
+- the ironies now comment on what is there ("a diversion in which I could not be expected to join").
+
+It found the links no better: several still matched on an incidental word ("yesterday", "paid"). There was also a false irony tag, and the reasons hid deletions as "removes".
+
+Two gate bugs surfaced in Sonnet's runs:
+
+- the litotes check refused genuine litotes ("not intolerable") because its pattern knew only "un-";
+- the "said she" check failed on typed straight quotes.
+
+Both are fixed, and litotes is now recognized by principle (strip the negative prefix; is what's left a quality-word of hers?).
+
+**Then figures of speech.** At the writer's request, a recognizer for classical figures (litotes, periphrasis, antithesis, tricolon, polysyndeton, anaphora, parenthesis, inversion, hyperbole, the ironic generalization and aside, free indirect discourse) now drives three things:
+
+- **The reasons.** Each one names the figures a sentence gained, and what became of each word she never wrote: replaced, rendered by periphrasis, rephrased, or dropped. Irony is credited only with a vehicle.
+- **The links.** A link is chosen by the figure's own detector, not by a shared word.
+- **The gate.** It refuses a dropped thing the writer named.
+
+The round-4 texts below are rendered with it.
+
+## Round 4: the rewrites, every sentence with its reason and its model
 
 Each reason is one sentence, written by the engine from a template (never by the language model), and each link is a sentence of Austen's from the corpus.
 
-### A Trip to the Store (15 → 86 on the engine's score)
+### A Trip to the Store (15 → 92 on the engine's score)
 
-> I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it. A man was standing in the very heart of the passage, talking to someone far away, and stopping the way of every body else.
+> I was in want of milk, and having caught up my keys, I drove to the shop, where I found it extremely crowded, and the whole passage stopped up by a man who stood conversing with some absent person.
 >
-> I was unwilling to be rude, and said that I begged his pardon, as civilly as I could; but he took no very great notice of me, and it was some time before he thought proper to move, and I might get my milk. I then saw a lady with whom I had formerly been intimate standing at the counter, and was essentially alarmed.
+> I was not at all disposed to be rude, and begged him to excuse me; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk. I then perceived, at the counter, a lady who had once been something more to me than a stranger, and was thrown into a flutter of spirits.
 >
-> "It is a long time since we met," said she, "and you look remarkably well."
+> She addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well; to which I replied with thanks, and the same compliment, in as few words as civility allowed.
 >
-> "I thank you," said I, "and you the same;" and I paid and left the shop as quickly as I could, having passed, I believe, the most awkward ten minutes of my week, which was a very sufficient allowance for a meeting of so little consequence.
+> I paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.
 
-- **I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it.**  
-  This sentence uses her “clauses balanced in one period”, joins three sentences (3, 10, 4 words) into one of 34, and removes “grabbed”, “super” (never in Austen), modelled on Pride and Prejudice, ch. 43, ¶ 4.  
-  > They descended the hill, crossed the bridge, and drove to the door; and, while examining the nearer aspect of the house, all her apprehensions of meeting its owner returned.  
-  > — *Pride and Prejudice, ch. 43, ¶ 4*
-- **A man was standing in the very heart of the passage, talking to someone far away, and stopping the way of every body else.**  
-  This sentence removes “guy”, “hoodie”, “blocking”, “aisle” (never in Austen), modelled on Pride and Prejudice, ch. 18, ¶ 74.  
-  > Mr. Bingley and Jane were standing together, a little detached from the rest, and talked only to each other.  
-  > — *Pride and Prejudice, ch. 18, ¶ 74*
-- **I was unwilling to be rude, and said that I begged his pardon, as civilly as I could; but he took no very great notice of me, and it was some time before he thought proper to move, and I might get my milk.**  
-  This sentence uses her “speech reported”, “understatement and litotes”, joins four sentences (6, 4, 4, 8 words) into one of 44, and removes “ignored” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 17.  
-  > She began then to be afraid of appearing rude and impatient; and walked to meet them with a great anxiety to avoid the suspicion.  
-  > — *Mansfield Park, ch. 7, ¶ 17*
-- **I then saw a lady with whom I had formerly been intimate standing at the counter, and was essentially alarmed.**  
-  This sentence removes “ex”, “checkout”, “basically”, “panicked” (never in Austen) and brings in her “counter”, modelled on Sense and Sensibility, ch. 33, ¶ 3.  
-  > All that could be done was, to sit down at that end of the counter which seemed to promise the quickest succession; one gentleman only was standing there, and it is probable that Elinor was not without hope of exciting his politeness to a quicker despatch.  
-  > — *Sense and Sensibility, ch. 33, ¶ 3*
-- **"It is a long time since we met," said she, "and you look remarkably well."**  
-  This sentence uses her “speech tagged after its first clause” and joins three sentences (3, 4, 3 words) into one of 15, modelled on Pride and Prejudice, ch. 1, ¶ 5.  
-  > “But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.”  
-  > — *Pride and Prejudice, ch. 1, ¶ 5*
-- **"I thank you," said I, "and you the same;" and I paid and left the shop as quickly as I could, having passed, I believe, the most awkward ten minutes of my week, which was a very sufficient allowance for a meeting of so little consequence.**  
-  This sentence uses her “ironic verdict”, “judgement in abstract nouns” and joins four sentences (3, 2, 9, 11 words) into one of 46, modelled on Northanger Abbey, ch. 25, ¶ 13.  
-  > Nothing further was said for a few minutes; and then speaking through her tears, she added, “I do not think I shall ever wish for a letter again!”  
-  > — *Northanger Abbey, ch. 25, ¶ 13*
+- **I was in want of milk, and having caught up my keys, I drove to the shop, where I found it extremely crowded, and the whole passage stopped up by a man who stood conversing with some absent person.**  
+  This sentence joins four sentences (3, 10, 4, 16 words) into one of 39, replaces “grabbed” with “caught”, “super” with “extremely”, “guy” with “man” (never in Austen), and brings in her “conversing”, modelled on Sense and Sensibility, ch. 11, ¶ 7.  
+  > Colonel Brandon, unfortunately for himself, had no such encouragement to think only of Marianne, and in conversing with Elinor he found the greatest consolation for the indifference of her sister.  
+  > — *Sense and Sensibility, ch. 11, ¶ 7*
+- **I was not at all disposed to be rude, and begged him to excuse me; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk.**  
+  This sentence makes a polysyndeton, uses her “clauses balanced in one period”, and joins four sentences (6, 4, 4, 8 words) into one of 37, modelled on Sense and Sensibility, ch. 44, ¶ 40.  
+  > In that point, however, I undervalued my own magnanimity, as the event declared; for I went, I saw her, and saw her miserable, and left her miserable—and left her hoping never to see her again.”  
+  > — *Sense and Sensibility, ch. 44, ¶ 40*
+- **I then perceived, at the counter, a lady who had once been something more to me than a stranger, and was thrown into a flutter of spirits.**  
+  This sentence uses her “judgement in abstract nouns”, replaces “checkout” with “counter” (never in Austen), and rephrases “basically”, “ex” (never in Austen), modelled on Mansfield Park, ch. 32, ¶ 45.  
+  > His hopes from both gentleman and lady suffered a small depression in consequence; but when he looked at his niece, and saw the state of feature and complexion which her crying had brought her into, he thought there might be as much lost as gained by an immediate interview.  
+  > — *Mansfield Park, ch. 32, ¶ 45*
+- **She addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well; to which I replied with thanks, and the same compliment, in as few words as civility allowed.**  
+  This sentence uses her “speech reported”, “clauses balanced in one period” and joins five sentences (3, 4, 3, 3, 2 words) into one of 40, modelled on Northanger Abbey, ch. 16, ¶ 16.  
+  > Catherine, without hesitation, replied that she was very sure Miss Thorpe did not mean to dance at all.  
+  > — *Northanger Abbey, ch. 16, ¶ 16*
+- **I paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.**  
+  This sentence makes a parenthesis (“, I must say,”), uses her “clauses balanced in one period”, and joins two sentences (9, 11 words) into one of 25, modelled on Sense and Sensibility, ch. 44, ¶ 2.  
+  > “Miss Dashwood, for half an hour—for ten minutes—I entreat you to stay.”  
+  > — *Sense and Sensibility, ch. 44, ¶ 2*
 
-Moves to practise (the notes, each with a sentence of hers that shows the move):
+Moves to practise (the notes, each with a sentence of hers that shows the move; ⚠ where the engine could not confirm it):
 
-- *Clauses balanced in one period*: “I needed milk.” → “I was in want of milk, and therefore took up my keys and drove to the shop; but the place was extremely crowded, and the difficulty of my errand was not lessened by it.”  
+- *Clauses balanced in one period*: “I paid and left as fast as I could.” → “I paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.”  
   > She then sat still five minutes longer; but unable to waste such a precious occasion, she suddenly got up, and saying to Kitty, “Come here, my love, I want to speak to you,” took her out of the room. — *Pride and Prejudice, ch. 55, ¶ 13*
-- *Speech tagged after its first clause*: “"Hey," she said.” → “"It is a long time since we met," said she, "and you look remarkably well."”  
-  > “But it is,” returned she; “for Mrs. Long has just been here, and she told me all about it.” — *Pride and Prejudice, ch. 1, ¶ 5*
-- *Speech reported*: “I said excuse me.” → “said that I begged his pardon, as civilly as I could”  
+- *Speech reported*: “"Hey," she said. "Long time no see. You look great."” → “She addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well”  
   > In a few minutes the servant returned, and with a look which did not quite confirm his words, said he had been mistaken, for that Miss Tilney had walked out. — *Northanger Abbey, ch. 12, ¶ 3*
-- *Understatement and litotes*: “He totally ignored me.” → “he took no very great notice of me”  
-  > In a few moments Catherine, with unaffected pleasure, assured her that she need not be longer uneasy, as the gentlemen had just left the Pump Room. — *Northanger Abbey, ch. 6, ¶ 36*
-- *Ironic verdict*: “Honestly, it was the most awkward ten minutes of my week.” → “which was a very sufficient allowance for a meeting of so little consequence”  
+- *Judgement in abstract nouns*: “I basically panicked.” → “was thrown into a flutter of spirits”  
+  > They remained but a few minutes together, as Miss Woodhouse must not be kept waiting; and Harriet then came running to her with a smiling face, and in a flutter of spirits, which Miss Woodhouse hoped very soon to compose. — *Emma, ch. 4, ¶ 28*
+- *Ironic verdict*: “Honestly, it was the most awkward ten minutes of my week.” → “and it was, I must say, the most awkward ten minutes of my week.”  
   > In short, Catherine, everything has gone wrong, but it is now all happily settled. — *Lady Susan, ch. 24, ¶ 3*
 
-### Letter Home from Camp (18 → 88 on the engine's score)
+### Letter Home from Camp (18 → 90 on the engine's score)
 
 > My dear Mother and Father,
 >
-> Camp is, I suppose, all right; the food is not to be borne, and the friend who shares my cabin snores beyond all reason. Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.
+> Camp is, I suppose, not intolerable; the food is disagreeable, and my neighbour's breathing by night is past bearing. Yesterday we went on the water in a small boat, and I overturned it, and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.
 >
-> There is, however, a girl of the name of Kayla, who is really fine company; she is from Ohio, and knows a great deal of horses. We walk down to the lake after dinner, and talk of nothing in particular; I think she likes me, though I am not certain of it, which is the usual condition of such discoveries.
+> There is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.
 >
-> Will you send me more refreshments? and the device which keeps me within your call, which I have entirely forgotten. The persons set over us are not a little strict, though in general tolerable.
+> Would you be so good as to send more refreshments, and the line that gives power to my instrument, which I quite forgot? The persons set over us are rather strict, but in general not disagreeable.
 >
-> Your affectionate Jake.
+> Yours affectionately,
+Jake
 >
-> P.S. I beg you will not let Max use my room.
+> P.S. Pray do not suffer Max to make use of my room.
 
 - **My dear Mother and Father,**  
   This sentence puts the writer’s sense into her diction, modelled on Lady Susan, ch. 18, ¶ 3.  
   > I think, my dear mother, you would not disapprove of her as a daughter.  
   > — *Lady Susan, ch. 18, ¶ 3*
-- **Camp is, I suppose, all right; the food is not to be borne, and the friend who shares my cabin snores beyond all reason.**  
-  This sentence joins two sentences (5, 10 words) into one of 24, removes “okay”, “bunkmate”, “crazy” (never in Austen), and brings in her “shares”, modelled on Persuasion, ch. 22, ¶ 23.  
-  > It is very fit they should have daughters’ shares; and I am sure he has always been a very kind, liberal father to me.  
-  > — *Persuasion, ch. 22, ¶ 23*
-- **Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.**  
-  This sentence uses her “clauses balanced in one period”, “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 25, and removes “canoeing”, “flipped”, “canoe” (never in Austen), modelled on Persuasion, ch. 18, ¶ 11.  
+- **Camp is, I suppose, not intolerable; the food is disagreeable, and my neighbour's breathing by night is past bearing.**  
+  This sentence makes a parenthesis (“, I suppose,”) and a litotes (“not intolerable”), joins two sentences (5, 10 words) into one of 19, and rephrases “okay”, “crazy”, “bunkmate” (never in Austen), modelled on Emma, ch. 35, ¶ 17.  
+  > “You are very obliging; but as to all that, I am very indifferent; it would be no object to me to be with the rich; my mortifications, I think, would only be the greater; I should suffer more from comparison.  
+  > — *Emma, ch. 35, ¶ 17*
+- **Yesterday we went on the water in a small boat, and I overturned it, and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.**  
+  This sentence uses her “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 33, and replaces “canoeing” with “boat”, “canoe” with “boat” (never in Austen), modelled on Pride and Prejudice, ch. 53, ¶ 56.  
+  > When the gentlemen rose to go away, Mrs. Bennet was mindful of her intended civility, and they were invited and engaged to dine at Longbourn in a few days’ time.  
+  > — *Pride and Prejudice, ch. 53, ¶ 56*
+- **There is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.**  
+  This sentence makes a polysyndeton, uses her “clauses balanced in one period”, and joins four sentences (9, 10, 12, 9 words) into one of 49, modelled on Persuasion, ch. 18, ¶ 11.  
   > She and the Harvilles came on Tuesday very safely, and in the evening we went to ask her how she did, when we were rather surprised not to find Captain Benwick of the party, for he had been invited as well as the Harvilles; and what do you think was the reason?  
   > — *Persuasion, ch. 18, ¶ 11*
-- **There is, however, a girl of the name of Kayla, who is really fine company; she is from Ohio, and knows a great deal of horses.**  
-  This sentence joins two sentences (9, 10 words) into one of 26, writes out “there’s”, “who’s”, and brings in her “company”, modelled on Persuasion, ch. 16, ¶ 16.  
-  > “My idea of good company, Mr. Elliot, is the company of clever, well-informed people, who have a great deal of conversation; that is what I call good company.”  
-  > — *Persuasion, ch. 16, ¶ 16*
-- **We walk down to the lake after dinner, and talk of nothing in particular; I think she likes me, though I am not certain of it, which is the usual condition of such discoveries.**  
-  This sentence uses her “ironic verdict”, “clauses balanced in one period”, joins two sentences (12, 9 words) into one of 34, and writes out “I’m”, modelled on Mansfield Park, ch. 43, ¶ 2.  
-  > You should listen to me till you were tired, and advise me till you were still tired more; but it is impossible to put a hundredth part of my great mind on paper, so I will abstain altogether, and leave you to guess what you like.  
-  > — *Mansfield Park, ch. 43, ¶ 2*
-- **Will you send me more refreshments? and the device which keeps me within your call, which I have entirely forgotten.**  
-  This sentence joins two sentences (5, 8 words) into one of 20, removes “snacks”, “phone”, “charger” (never in Austen), and brings in her “refreshments”, modelled on Sense and Sensibility, ch. 36, ¶ 18.  
-  > The dining parlour will admit eighteen couple with ease; card-tables may be placed in the drawing-room; the library may be open for tea and other refreshments; and let the supper be set out in the saloon.’  
-  > — *Sense and Sensibility, ch. 36, ¶ 18*
-- **The persons set over us are not a little strict, though in general tolerable.**  
-  This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Pride and Prejudice, ch. 10, ¶ 37.  
-  > But in general and ordinary cases between friend and friend, where one of them is desired by the other to change a resolution of no very great moment, should you think ill of that person for complying with the desire, without waiting to be argued into it?”  
-  > — *Pride and Prejudice, ch. 10, ¶ 37*
-- **Your affectionate Jake.**  
-  This sentence brings in her “affectionate”, modelled on Lady Susan, ch. 1, ¶ 5.  
-  > Your most obliged and affectionate sister,  
-  > — *Lady Susan, ch. 1, ¶ 5*
-- **P.S. I beg you will not let Max use my room.**  
-  This sentence writes out “don’t” and brings in her “beg”, modelled on Pride and Prejudice, ch. 19, ¶ 3.  
-  > I beg you will not go.  
-  > — *Pride and Prejudice, ch. 19, ¶ 3*
+- **Would you be so good as to send more refreshments, and the line that gives power to my instrument, which I quite forgot?**  
+  This sentence renders “phone” (“the line that gives power to my instrument”) by periphrasis, joins two sentences (5, 8 words) into one of 23, and replaces “snacks” with “refreshments” (never in Austen), modelled on Emma, ch. 15, ¶ 14.  
+  > I could change my shoes, you know, the moment I got home; and it is not the sort of thing that gives me cold.”  
+  > — *Emma, ch. 15, ¶ 14*
+- **The persons set over us are rather strict, but in general not disagreeable.**  
+  This sentence renders “counselors” (“The persons set over us are rather strict”) by periphrasis and makes a litotes (“not disagreeable”), modelled on Emma, ch. 12, ¶ 36.  
+  > It is a dreadful thing to have you forced to live there! so far off!—and the air so bad!”  
+  > — *Emma, ch. 12, ¶ 36*
+- **Yours affectionately,
+Jake**  
+  This sentence brings in her “affectionately”, modelled on Persuasion, ch. 21, ¶ 59.  
+  > He described one Miss Elliot, and I thought very affectionately of the other.”  
+  > — *Persuasion, ch. 21, ¶ 59*
+- **P.S. Pray do not suffer Max to make use of my room.**  
+  This sentence writes out “don’t” and brings in her “suffer”, modelled on Emma, ch. 46, ¶ 50.  
+  > To suffer her to engage herself—to suffer her even to think of such a measure!”  
+  > — *Emma, ch. 46, ¶ 50*
 
-Moves to practise (the notes, each with a sentence of hers that shows the move):
+Moves to practise (the notes, each with a sentence of hers that shows the move; ⚠ where the engine could not confirm it):
 
-- *Clauses balanced in one period*: “Yesterday we went canoeing and I flipped the canoe and everybody laughed.” → “Yesterday we went upon the water in a narrow boat, which I overturned; and the whole party was diverted, to my own very considerable mortification.”  
+- *Clauses balanced in one period*: “There's this girl named Kayla who's really cool.” → “There is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.”  
   > Good bye,” he added, shaking my hand with earnestness; “I do not know when you will see me again; but remember what I tell you of Frederica; you MUST make it your business to see justice done her. — *Lady Susan, ch. 23, ¶ 3*
-- *Judgement in abstract nouns*: “It was so embarrassing.” → “my own very considerable mortification”  
+- *Judgement in abstract nouns*: “It was so embarrassing.” → “and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.”  
   > I will tell you why she is out of spirits. — *Persuasion, ch. 6, ¶ 27*
-- *Understatement and litotes*: “The counselors are kind of strict but mostly fine.” → “not a little strict”  
+- *Understatement and litotes*: “Camp is okay I guess.” → “Camp is, I suppose, not intolerable”  
   > “Oh! very well,” exclaimed Miss Bates, “then I need not be uneasy. — *Emma, ch. 43, ¶ 24*
-- *Ironic verdict*: “I think she likes me but I'm not sure.” → “which is the usual condition of such discoveries”  
-  > If I did not believe that she had some regard for me, of course I should not say this, but I do believe it. — *Mansfield Park, ch. 44, ¶ 2*
+- *Ironic verdict* ⚠: “everybody laughed.” → “a diversion in which I could not be expected to join.”  
+  > We have delightful Rides round us, I have a Charming horse, am uncommonly fond of the Amusement, replied I quite recovered from my Confusion, and in short I ride a great deal.” — *Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 2*
 
-### The Breakup (27 → 86 on the engine's score)
+### The Breakup (27 → 85 on the engine's score)
 
-> Ryan wrote to me at midnight, to say that we must talk; and I understood at once what such a request meant.
+> Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.
 >
-> We met the next day at a shop where coffee was served, and I found him there before me, busy with the instrument in his hand, and looking not a little nervous; he said that he was not ready for anything serious, and that the fault was not mine but his own.
+> We met the next day at a place of refreshment in the town, where he was before me, and looked not a little uneasy. He said that he was not ready for anything serious, and that the fault was not mine but his own.
 >
-> I wished to cry, but did not; I only nodded, and said that it was all very well, and walked home in the rain, and ate a whole pint of ice, which was mostly cream.
+> I wished to cry, but did not; I only nodded, and said it was all very well. My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.
 >
-> My friend, who shared my room, thought that I made too much of it; and perhaps I did, but it hurt me still, as a grief pronounced unreasonable commonly does.
+> My friend thought I made too much of it; and perhaps I did, though it hurt me still.
 
-- **Ryan wrote to me at midnight, to say that we must talk; and I understood at once what such a request meant.**  
-  This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 22, and removes “texted” (never in Austen), modelled on Pride and Prejudice, ch. 55, ¶ 11.  
-  > Elizabeth would not observe her; and when at last Kitty did, she very innocently said, “What is the matter, mamma?  
-  > — *Pride and Prejudice, ch. 55, ¶ 11*
-- **We met the next day at a shop where coffee was served, and I found him there before me, busy with the instrument in his hand, and looking not a little nervous; he said that he was not ready for anything serious, and that the fault was not mine but his own.**  
-  This sentence uses her “speech reported”, “understatement and litotes”, joins five sentences (10, 8, 3, 8, 8 words) into one of 52, and removes “downtown”, “scrolling”, “phone” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 33.  
-  > Her own gentle voice speaking from the other end of the room, which was a very long one, told them that she was on the sofa.  
-  > — *Mansfield Park, ch. 7, ¶ 33*
-- **I wished to cry, but did not; I only nodded, and said that it was all very well, and walked home in the rain, and ate a whole pint of ice, which was mostly cream.**  
-  This sentence uses her “feeling shown by conduct”, “speech reported”, joins three sentences (7, 6, 15 words) into one of 35, and removes “okay” (never in Austen), modelled on Northanger Abbey, ch. 25, ¶ 10.  
-  > They went to breakfast directly; but Catherine could hardly eat anything.  
-  > — *Northanger Abbey, ch. 25, ¶ 10*
-- **My friend, who shared my room, thought that I made too much of it; and perhaps I did, but it hurt me still, as a grief pronounced unreasonable commonly does.**  
-  This sentence uses her “clauses balanced in one period”, “ironic verdict”, joins three sentences (6, 3, 4 words) into one of 30, and removes “roommate”, “overreacting” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.  
+- **Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.**  
+  This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 20, and rephrases “texted” (never in Austen), modelled on Sense and Sensibility, ch. 17, ¶ 49.  
+  > Elinor looked surprised at his emotion; but trying to laugh off the subject, she said to him, “Do not you know my sister well enough to understand what she means?  
+  > — *Sense and Sensibility, ch. 17, ¶ 49*
+- **We met the next day at a place of refreshment in the town, where he was before me, and looked not a little uneasy.**  
+  This sentence makes a litotes (“not a little”), joins three sentences (10, 8, 3 words) into one of 24, and rephrases “downtown”, “scrolling”, “phone” (never in Austen), modelled on Pride and Prejudice, ch. 42, ¶ 17.  
+  > Accordingly, when she retired at night, she asked the chambermaid whether Pemberley were not a very fine place, what was the name of its proprietor, and with no little alarm, whether the family were down for the summer.  
+  > — *Pride and Prejudice, ch. 42, ¶ 17*
+- **He said that he was not ready for anything serious, and that the fault was not mine but his own.**  
+  This sentence makes an antithesis (“not mine but his own”), uses her “speech reported”, and joins two sentences (8, 8 words) into one of 20, modelled on Emma, ch. 38, ¶ 3.  
+  > Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening.  
+  > — *Emma, ch. 38, ¶ 3*
+- **I wished to cry, but did not; I only nodded, and said it was all very well.**  
+  This sentence uses her “feeling shown by conduct”, “speech reported”, joins two sentences (7, 6 words) into one of 17, and rephrases “okay” (never in Austen), modelled on Mansfield Park, ch. 41, ¶ 16.  
+  > She turned away, and wished he would not say such things.  
+  > — *Mansfield Park, ch. 41, ¶ 16*
+- **My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.**  
+  This sentence makes an ironic aside (“, which was at least consistent with the occasion”) and brings in her “consoled”, modelled on Sanditon (Fragment of a Novel), ch. 6, ¶ 11.  
+  > Charlotte was fully consoled for the loss of her walk, by finding herself in company with those, whom the conversation of the morng had given her a great curiosity to see.  
+  > — *Sanditon (Fragment of a Novel), ch. 6, ¶ 11*
+- **My friend thought I made too much of it; and perhaps I did, though it hurt me still.**  
+  This sentence uses her “clauses balanced in one period”, joins three sentences (6, 3, 4 words) into one of 18, and replaces “roommate” with “friend” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.  
   > Elizabeth would wonder, and probably would blame her; and though her resolution was not to be shaken, her feelings must be hurt by such disapprobation.  
   > — *Pride and Prejudice, ch. 22, ¶ 3*
 
-Moves to practise (the notes, each with a sentence of hers that shows the move):
+Moves to practise (the notes, each with a sentence of hers that shows the move; ⚠ where the engine could not confirm it):
 
-- *Speech reported*: “He said it wasn't me, it was him.” → “he said that he was not ready for anything serious, and that the fault was not mine but his own”  
-  > It was his business, however, to say that he did, and he said it very prettily. — *Sense and Sensibility, ch. 49, ¶ 23*
-- *Understatement and litotes*: “He looked nervous.” → “looking not a little nervous”  
+- *Clauses balanced in one period*: “Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.” → “Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.”  
+  > Elizabeth would not observe her; and when at last Kitty did, she very innocently said, “What is the matter, mamma? — *Pride and Prejudice, ch. 55, ¶ 11*
+- *Understatement and litotes*: “He looked nervous.” → “looked not a little uneasy”  
   > I dare say she will not be in good humour again this month; but I am determined I will not be cross; it is not a little matter that puts me out of temper.” — *Northanger Abbey, ch. 15, ¶ 4*
-- *Clauses balanced in one period*: “My roommate thought I was overreacting. Maybe I was. But it still hurt.” → “thought that I made too much of it; and perhaps I did, but it hurt me still”  
-  > “No, but I wrote to him—I did indeed, I got up this morning before it was light, and was two hours about it; and when my letter was done I thought I never should have courage to give it. — *Lady Susan, ch. 24, ¶ 3*
-- *Feeling shown by conduct*: “I just nodded and said okay.” → “I only nodded, and said that it was all very well”  
+- *Speech reported*: “He said he wasn't ready for something serious.” → “He said that he was not ready for anything serious, and that the fault was not mine but his own.”  
+  > Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening. — *Emma, ch. 38, ¶ 3*
+- *Feeling shown by conduct*: “I wanted to cry but I didn't. I just nodded and said okay.” → “I wished to cry, but did not; I only nodded, and said it was all very well.”  
   > Emma recollected, blushed, was sorry, but tried to laugh it off. — *Emma, ch. 43, ¶ 57*
-- *Ironic verdict*: “But it still hurt.” → “as a grief pronounced unreasonable commonly does”  
+- *Ironic verdict*: “Then I walked home in the rain and ate a whole pint of ice cream.” → “My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.”  
   > In time, of course, Mr. Knightley would be forgotten, that is, supplanted; but this could not be expected to happen very early. — *Emma, ch. 51, ¶ 38*

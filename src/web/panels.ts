@@ -23,6 +23,8 @@ export interface AdvisorPanelOpts {
   onCite(c: Citation): void;
   onAustenize(): void;
   onRewrite(instructions: string): void;
+  /** A figure of speech in the draft: shown in the text, with the author's examples of it. */
+  onFigure(f: Analysis['figures'][number]): void;
 }
 
 const SEV: Record<string, string> = { fix: 'Fix', consider: 'Consider', note: 'Note' };
@@ -82,6 +84,26 @@ export function renderAdvisor(o: AdvisorPanelOpts): HTMLElement {
         : h('p', { class: 'aa-muted' }, `Every word here is one ${author.short} used.`),
       h('div', { class: 'aa-chips' }, ...flagged.map((f) => h('button', { class: `aa-chip aa-chip-${f.kind}`, onclick: () => o.onWord(f), title: f.note }, f.word, f.alternatives[0] ? h('span', { class: 'aa-chip-alt' }, ` → ${f.alternatives[0].text}`) : null))),
       names.length ? h('p', { class: 'aa-muted aa-small' }, `Names ${author.pronouns.subject} never used: ${[...new Set(names.map((n) => n.word))].join(', ')}.`) : null,
+    ),
+  );
+  // The figures of speech the writer already makes, named, each with the author's examples a click away.
+  const figs = a.figures ?? [];
+  el.append(
+    h(
+      'section',
+      { class: 'aa-card aa-figures' },
+      h('h3', {}, 'Figures of speech', h('span', { class: 'aa-count' }, String(figs.length))),
+      figs.length
+        ? h('p', { class: 'aa-muted aa-small' }, `Rhetorical constructions in your draft, recognized by their form and underlined in violet. Click one for ${author.short}’s own.`)
+        : h('p', { class: 'aa-muted aa-small' }, `None yet. ${author.short}’s favourites: litotes (“not unwilling”), antithesis (“not X, but Y”), the ironic generalization, the tricolon. Search one in Explore.`),
+      ...figs.map((f) =>
+        h(
+          'button',
+          { class: 'aa-figure', onclick: () => o.onFigure(f), title: f.gloss },
+          h('strong', {}, f.name),
+          h('span', { class: 'aa-figure-text' }, `“${f.text.length > 90 ? f.text.slice(0, 87) + '…' : f.text}”`),
+        ),
+      ),
     ),
   );
   const items = a.advice;

@@ -27,18 +27,19 @@
     "Camp is okay I guess.",
     "The food is gross and my bunkmate snores like crazy."
    ],
-   "why": "This sentence joins two sentences (5, 10 words) into one of 24, removes “okay”, “bunkmate”, “crazy” (never in Austen), and brings in her “shares”, modelled on Persuasion, ch. 22, ¶ 23.",
+   "why": "This sentence makes a parenthesis (“, I suppose,”) and a hyperbole (“beyond all reason”), joins two sentences (5, 10 words) into one of 24, and replaces “bunkmate” with “friend” (never in Austen), modelled on Emma, ch. 49, ¶ 37.",
    "model": {
-    "id": 30956,
-    "work": "persuasion",
-    "title": "Persuasion",
-    "year": 1817,
-    "chapter": 22,
-    "chapterTitle": "XXII",
-    "paragraph": 23,
-    "sentence": 5,
-    "text": "It is very fit they should have daughters’ shares; and I am sure he has always been a very kind, liberal father to me.",
-    "cite": "Persuasion, ch. 22, ¶ 23"
+    "id": 23849,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 49,
+    "chapterTitle": "XLIX",
+    "paragraph": 37,
+    "sentence": 2,
+    "text": "But you know what I am.—You hear nothing but truth from me.—I have blamed you, and lectured you, and you have borne it as no other woman in England would have borne it.—Bear with the truths I would tell you now, dearest Emma, as well as you have borne with them.",
+    "cite": "Emma, ch. 49, ¶ 37",
+    "sim": 0.6217693727077668
    }
   },
   {
@@ -47,7 +48,7 @@
     "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
     "It was so embarrassing."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 25, and removes “canoeing”, “flipped”, “canoe” (never in Austen), modelled on Persuasion, ch. 18, ¶ 11.",
+   "why": "This sentence uses her “clauses balanced in one period”, “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 25, and replaces “canoeing” with “boat”, “canoe” with “boat” (never in Austen), modelled on Persuasion, ch. 18, ¶ 11.",
    "model": {
     "id": 30013,
     "work": "persuasion",
@@ -87,7 +88,7 @@
     "We hang out at the lake after dinner and talk about stuff.",
     "I think she likes me but I'm not sure."
    ],
-   "why": "This sentence uses her “ironic verdict”, “clauses balanced in one period”, joins two sentences (12, 9 words) into one of 34, and writes out “I’m”, modelled on Mansfield Park, ch. 43, ¶ 2.",
+   "why": "This sentence makes a generalization (gnomic statement) (“which is the usual condition of such discoveries”), uses her “clauses balanced in one period”, and joins two sentences (12, 9 words) into one of 34, modelled on Mansfield Park, ch. 43, ¶ 2.",
    "model": {
     "id": 16542,
     "work": "mansfield",
@@ -107,18 +108,19 @@
     "Can you send more snacks?",
     "And my phone charger, which I totally forgot."
    ],
-   "why": "This sentence joins two sentences (5, 8 words) into one of 20, removes “snacks”, “phone”, “charger” (never in Austen), and brings in her “refreshments”, modelled on Sense and Sensibility, ch. 36, ¶ 18.",
+   "why": "This sentence makes a periphrasis (“the device which keeps me within your call”), joins two sentences (5, 8 words) into one of 20, and replaces “snacks” with “refreshments”, “phone” with “call”, “charger” with “device” (never in Austen), modelled on Northanger Abbey, ch. 14, ¶ 48.",
    "model": {
-    "id": 3314,
-    "work": "sense",
-    "title": "Sense and Sensibility",
-    "year": 1811,
-    "chapter": 36,
-    "chapterTitle": "XXXVI",
-    "paragraph": 18,
-    "sentence": 7,
-    "text": "The dining parlour will admit eighteen couple with ease; card-tables may be placed in the drawing-room; the library may be open for tea and other refreshments; and let the supper be set out in the saloon.’",
-    "cite": "Sense and Sensibility, ch. 36, ¶ 18"
+    "id": 26075,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 14,
+    "chapterTitle": "XIV",
+    "paragraph": 48,
+    "sentence": 3,
+    "text": "But I do assure you that he must be entirely misunderstood, if he can ever appear to say an unjust thing of any woman at all, or an unkind one of me.”",
+    "cite": "Northanger Abbey, ch. 14, ¶ 48",
+    "sim": 0.39238096541971595
    }
   },
   {
@@ -126,19 +128,19 @@
    "before": [
     "The counselors are kind of strict but mostly fine."
    ],
-   "why": "This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Pride and Prejudice, ch. 10, ¶ 37.",
+   "why": "This sentence renders “counselors” (“The persons set over us are not a little strict”) by periphrasis and makes a litotes (“not a little”), modelled on Emma, ch. 35, ¶ 27.",
    "model": {
-    "id": 5695,
-    "work": "pride",
-    "title": "Pride and Prejudice",
-    "year": 1813,
-    "chapter": 10,
-    "chapterTitle": "X",
-    "paragraph": 37,
-    "sentence": 5,
-    "text": "But in general and ordinary cases between friend and friend, where one of them is desired by the other to change a resolution of no very great moment, should you think ill of that person for complying with the desire, without waiting to be argued into it?”",
-    "cite": "Pride and Prejudice, ch. 10, ¶ 37",
-    "sim": 0.3133620561223478
+    "id": 21927,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 35,
+    "chapterTitle": "XXXV",
+    "paragraph": 27,
+    "sentence": 4,
+    "text": "But it is an excellent thing to have Frank among us again, so near as town.",
+    "cite": "Emma, ch. 35, ¶ 27",
+    "sim": 0.3169785367858153
    }
   },
   {

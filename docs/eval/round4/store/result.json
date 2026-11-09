@@ -9,7 +9,7 @@
     "It was super crowded.",
     "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
    ],
-   "why": "This sentence joins four sentences (3, 10, 4, 16 words) into one of 39, removes “grabbed”, “super”, “guy”, “hoodie” (never in Austen), and brings in her “conversing”, modelled on Sense and Sensibility, ch. 11, ¶ 7.",
+   "why": "This sentence joins four sentences (3, 10, 4, 16 words) into one of 39, replaces “grabbed” with “caught”, “super” with “extremely”, “guy” with “man” (never in Austen), and brings in her “conversing”, modelled on Sense and Sensibility, ch. 11, ¶ 7.",
    "model": {
     "id": 679,
     "work": "sense",
@@ -31,19 +31,19 @@
     "He totally ignored me.",
     "Finally he moved and I got the milk."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins four sentences (6, 4, 4, 8 words) into one of 37, and removes “ignored” (never in Austen), modelled on Sense and Sensibility, ch. 40, ¶ 26.",
+   "why": "This sentence makes a polysyndeton, uses her “clauses balanced in one period”, and joins four sentences (6, 4, 4, 8 words) into one of 37, modelled on Sense and Sensibility, ch. 44, ¶ 40.",
    "model": {
-    "id": 3799,
+    "id": 4218,
     "work": "sense",
     "title": "Sense and Sensibility",
     "year": 1811,
-    "chapter": 40,
-    "chapterTitle": "XL",
-    "paragraph": 26,
-    "sentence": 5,
-    "text": "Whether he had asked her pardon for his intrusion on first coming into the room, he could not recollect; but determining to be on the safe side, he made his apology in form as soon as he could say anything, after taking a chair.",
-    "cite": "Sense and Sensibility, ch. 40, ¶ 26",
-    "sim": 0.35663208164263005
+    "chapter": 44,
+    "chapterTitle": "XLIV",
+    "paragraph": 40,
+    "sentence": 16,
+    "text": "In that point, however, I undervalued my own magnanimity, as the event declared; for I went, I saw her, and saw her miserable, and left her miserable—and left her hoping never to see her again.”",
+    "cite": "Sense and Sensibility, ch. 44, ¶ 40",
+    "sim": 0.3419532623029989
    }
   },
   {
@@ -51,7 +51,7 @@
    "before": [
     "Then I saw my ex at the checkout and I basically panicked."
    ],
-   "why": "This sentence uses her “judgement in abstract nouns” and removes “ex”, “checkout”, “basically”, “panicked” (never in Austen), modelled on Mansfield Park, ch. 32, ¶ 45.",
+   "why": "This sentence uses her “judgement in abstract nouns”, replaces “checkout” with “counter” (never in Austen), and rephrases “basically”, “ex” (never in Austen), modelled on Mansfield Park, ch. 32, ¶ 45.",
    "model": {
     "id": 15181,
     "work": "mansfield",
@@ -95,18 +95,19 @@
     "I paid and left as fast as I could.",
     "Honestly, it was the most awkward ten minutes of my week."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, “ironic verdict” and joins two sentences (9, 11 words) into one of 25, modelled on Emma, ch. 43, ¶ 3.",
+   "why": "This sentence makes a parenthesis (“, I must say,”), uses her “clauses balanced in one period”, and joins two sentences (9, 11 words) into one of 25, modelled on Sense and Sensibility, ch. 44, ¶ 2.",
    "model": {
-    "id": 22927,
-    "work": "emma",
-    "title": "Emma",
-    "year": 1815,
-    "chapter": 43,
-    "chapterTitle": "XLIII",
-    "paragraph": 3,
-    "sentence": 2,
-    "text": "Every distinguishing attention that could be paid, was paid to her.",
-    "cite": "Emma, ch. 43, ¶ 3"
+    "id": 4109,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 44,
+    "chapterTitle": "XLIV",
+    "paragraph": 2,
+    "sentence": 1,
+    "text": "“Miss Dashwood, for half an hour—for ten minutes—I entreat you to stay.”",
+    "cite": "Sense and Sensibility, ch. 44, ¶ 2",
+    "sim": 0.5429607218850376
    }
   }
  ],

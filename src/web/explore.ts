@@ -1,7 +1,7 @@
 // Explore the author: any word or phrase, how often and where she used it, the words nearest it in her usage, the
 // words found beside it, and her sentences, each cited and opening into its paragraph.
 
-import { cap, get, h, quoteEl, type Citation, type Kwic, type Pronouns, type WordProfile } from './api.ts';
+import { cap, get, h, quoteEl, type Citation, type FigureInfo, type Kwic, type Pronouns, type WordProfile } from './api.ts';
 
 type Who = { id: string; short: string; pronouns: Pronouns };
 
@@ -16,16 +16,35 @@ export class ExplorePanel {
   constructor(author: () => Who, onCite: (c: Citation) => void) {
     this.author = author;
     this.onCite = onCite;
-    this.input = h('input', { class: 'aa-input', type: 'search', placeholder: 'A word or a phrase: “tolerable”, “at last”…', 'aria-label': 'Search the works' }) as HTMLInputElement;
+    this.input = h('input', { class: 'aa-input', type: 'search', placeholder: 'A word, a phrase, or a figure: “tolerable”, “at last”, “litotes”…', 'aria-label': 'Search the works' }) as HTMLInputElement;
     const form = h('form', { class: 'aa-search', onsubmit: (e: Event) => { e.preventDefault(); void this.search(this.input.value); } }, this.input, h('button', { class: 'aa-btn' }, 'Search'));
     this.body = h('div', { class: 'aa-explore-body' }, h('p', { class: 'aa-muted' }, `Select a word in your text, or search, to see how ${author().short} used it. Every sentence here is ${author().short}’s, with where to find it.`));
     this.el = h('div', { class: 'aa-explore' }, form, this.body);
+  }
+
+  /** A figure of speech: what it is, and the author's sentences that show it. */
+  async showFigure(term: string, near = '') {
+    const n = ++this.seq;
+    this.body.replaceChildren(h('p', { class: 'aa-muted' }, 'Finding her examples…'));
+    const f = await get<FigureInfo>(`/api/figure?author=${this.author().id}&term=${encodeURIComponent(term)}&near=${encodeURIComponent(near.slice(0, 400))}&limit=6`);
+    if (n !== this.seq) return;
+    this.body.replaceChildren(
+      h('h3', { class: 'aa-word-head' }, f.name),
+      h('p', {}, f.gloss),
+      near ? h('p', { class: 'aa-muted aa-small' }, `Yours: “${near}”`) : '',
+      h('h4', {}, `${cap(this.author().pronouns.possessive)} ${f.name.toLowerCase()}`),
+      f.examples.length ? this.kwic(f.examples, '') : h('p', { class: 'aa-muted' }, 'None found near this.'),
+    );
   }
 
   async search(q: string) {
     const text = q.trim();
     if (!text) return;
     this.input.value = text;
+    // A figure of speech by its term or name: litotes, periphrasis, tricolon…
+    const figs = await get<Record<string, { name: string }>>('/api/figures');
+    const key = Object.keys(figs).find((k) => k === text.toLowerCase() || figs[k]!.name.toLowerCase().startsWith(text.toLowerCase()));
+    if (key && text.length > 3) return this.showFigure(key);
     const words = text.split(/\s+/);
     if (words.length === 1) return this.showWord(text);
     const n = ++this.seq;
@@ -70,6 +89,7 @@ export class ExplorePanel {
   }
 
   private kwic(cites: Citation[], q: string): HTMLElement {
+    if (!q) return h('div', { class: 'aa-kwic' }, ...cites.map((c) => quoteEl(c, this.onCite)));
     const re = new RegExp(`(${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/'/g, "['’]").replace(/\s+/g, '[\\s\\W]+')})`, 'i');
     return h(
       'div',

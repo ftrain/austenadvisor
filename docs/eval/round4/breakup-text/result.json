@@ -8,7 +8,7 @@
     "He said we needed to talk.",
     "I knew right away what that meant."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 20, and removes “texted” (never in Austen), modelled on Sense and Sensibility, ch. 17, ¶ 49.",
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 20, and rephrases “texted” (never in Austen), modelled on Sense and Sensibility, ch. 17, ¶ 49.",
    "model": {
     "id": 1300,
     "work": "sense",
@@ -30,7 +30,7 @@
     "He was already there, scrolling on his phone.",
     "He looked nervous."
    ],
-   "why": "This sentence uses her “understatement and litotes”, joins three sentences (10, 8, 3 words) into one of 24, and removes “downtown”, “scrolling”, “phone” (never in Austen), modelled on Pride and Prejudice, ch. 42, ¶ 17.",
+   "why": "This sentence makes a litotes (“not a little”), joins three sentences (10, 8, 3 words) into one of 24, and rephrases “downtown”, “scrolling”, “phone” (never in Austen), modelled on Pride and Prejudice, ch. 42, ¶ 17.",
    "model": {
     "id": 8350,
     "work": "pride",
@@ -51,7 +51,7 @@
     "He said he wasn't ready for something serious.",
     "He said it wasn't me, it was him."
    ],
-   "why": "This sentence uses her “speech reported”, joins two sentences (8, 8 words) into one of 20, and writes out “wasn’t”, modelled on Emma, ch. 38, ¶ 3.",
+   "why": "This sentence makes an antithesis (“not mine but his own”), uses her “speech reported”, and joins two sentences (8, 8 words) into one of 20, modelled on Emma, ch. 38, ¶ 3.",
    "model": {
     "id": 22167,
     "work": "emma",
@@ -71,7 +71,7 @@
     "I wanted to cry but I didn't.",
     "I just nodded and said okay."
    ],
-   "why": "This sentence uses her “feeling shown by conduct”, “speech reported”, joins two sentences (7, 6 words) into one of 17, and removes “okay” (never in Austen), modelled on Mansfield Park, ch. 41, ¶ 16.",
+   "why": "This sentence uses her “feeling shown by conduct”, “speech reported”, joins two sentences (7, 6 words) into one of 17, and rephrases “okay” (never in Austen), modelled on Mansfield Park, ch. 41, ¶ 16.",
    "model": {
     "id": 16415,
     "work": "mansfield",
@@ -91,18 +91,18 @@
    "before": [
     "Then I walked home in the rain and ate a whole pint of ice cream."
    ],
-   "why": "This sentence uses her “ironic verdict”, modelled on Emma, ch. 35, ¶ 23.",
+   "why": "This sentence makes an ironic aside (“, which was at least consistent with the occasion”) and brings in her “consoled”, modelled on Sanditon (Fragment of a Novel), ch. 6, ¶ 11.",
    "model": {
-    "id": 21914,
-    "work": "emma",
-    "title": "Emma",
-    "year": 1815,
-    "chapter": 35,
-    "chapterTitle": "XXXV",
-    "paragraph": 23,
+    "id": 34016,
+    "work": "sanditon",
+    "title": "Sanditon (Fragment of a Novel)",
+    "year": 1817,
+    "chapter": 6,
+    "chapterTitle": "CHAPTER 6.",
+    "paragraph": 11,
     "sentence": 2,
-    "text": "He had returned to a late dinner, and walked to Hartfield as soon as it was over.",
-    "cite": "Emma, ch. 35, ¶ 23"
+    "text": "Charlotte was fully consoled for the loss of her walk, by finding herself in company with those, whom the conversation of the morng had given her a great curiosity to see.",
+    "cite": "Sanditon (Fragment of a Novel), ch. 6, ¶ 11"
    }
   },
   {
@@ -112,7 +112,7 @@
     "Maybe I was.",
     "But it still hurt."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (6, 3, 4 words) into one of 18, and removes “roommate”, “overreacting” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.",
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (6, 3, 4 words) into one of 18, and replaces “roommate” with “friend” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.",
    "model": {
     "id": 6700,
     "work": "pride",

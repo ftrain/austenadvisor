@@ -19,6 +19,7 @@ import { blocksOfText, type DocBlock } from '../engine/doc.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
 import { CONTRACTIONS } from '../engine/profile.ts';
 import { explainSentence } from '../engine/explain.ts';
+import { FIGURES, findFigures } from '../engine/figures.ts';
 import { checkPassage, runTool, TOOL_SPECS } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 
@@ -94,7 +95,7 @@ export const SUBMIT = {
         items: {
           type: 'object',
           properties: {
-            move: { type: 'string', description: 'The id of the move you made, from the brief’s <moves>.' },
+            move: { type: 'string', description: 'The id of the move you made (the brief’s <moves>), or the term of the figure of speech (litotes, periphrasis, antithesis, tricolon…).' },
             before: { type: 'string', description: 'The writer’s words, exactly.' },
             after: { type: 'string', description: 'Yours, exactly.' },
             model: { type: 'string', description: 'The id of a sentence of the author’s that shows this very move (from the brief’s <moves> or find_example): “S12345”.' },
@@ -206,14 +207,23 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const bad = s.notes.filter((n) => !m.cite(idOf(n.model)));
   if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}. Use ids from the brief or a tool result.`);
   const words = (t: string) => tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm);
-  const moves = new Map((m.author.moves ?? []).map((x) => [x.id, x]));
+  // A note names one of the author's moves, or a figure of speech by its term.
+  const moves = new Map<string, { id: string; name: string; does: string; pattern?: string }>([
+    ...Object.entries(FIGURES).map(([id, f]): [string, { id: string; name: string; does: string }] => [id, { id, name: f.name, does: f.gloss }]),
+    ...(m.author.moves ?? []).map((x): [string, typeof x] => [x.id, x]),
+  ]);
   for (const n of s.notes) {
     const mv = moves.get(n.move);
     const c = m.cite(idOf(n.model));
     if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
     else if (c && !m.shows(mv, c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
     // The writer is to see the move in your words too (irony has no pattern a machine can trust).
-    else if (mv.id !== 'irony' && n.after && !m.shows(mv, curl(n.after)))
+    else if (mv.id === 'irony' && n.after) {
+      // Irony has no form of its own; its usual vehicles do. The sentence that holds the note's words must show one.
+      const holder = s.paragraphs.flatMap((p) => p.sentences).find((x) => x.text.includes(n.after.trim().replace(/[.,;]$/, '')))?.text ?? n.after;
+      // Irony is open-ended: a note claiming it without a vehicle the engine knows is let stand, shown unconfirmed.
+      void holder;
+    } else if (n.after && !m.shows(mv, curl(n.after)))
       problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. ${mv.name}: ${mv.does} Quote the part of your rewrite that makes the move, or name the move it does make.`);
     if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
   }
@@ -247,6 +257,13 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
         problems.push(`“${t.text}” (sentence ${x.from.join(', ')}) is lost: keep what the writer named, in ${short}’s words if hers differ.`);
       });
     }
+  // Things the writer named, dropped: neither put in her words nor rendered by a periphrasis.
+  for (const p of s.paragraphs)
+    for (const x of p.sentences) {
+      const before = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
+      const lost = explainSentence(m, before, x.text, null, brief.register === 'letter' ? 'letter' : undefined).dropped;
+      if (lost.length) problems.push(`Dropped: ${lost.map((w) => `“${w}”`).join(', ')} (sentence ${x.from.join(', ')}). Render what the writer named in ${short}’s words, or by a short periphrasis, rather than leave it out.`);
+    }
   // A sentence left as it was is not yet rewritten.
   for (const p of s.paragraphs)
     for (const x of p.sentences) {
@@ -277,8 +294,11 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
     explanation: s.explanation,
     notes: s.notes.map((n) => {
       const c: Citation | null = m.cite(idOf(n.model));
-      const mv = m.author.moves?.find((x) => x.id === n.move);
-      return { technique: mv?.name ?? n.move, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c && !!mv && m.shows(mv, c.text) };
+      const mv = m.author.moves?.find((x) => x.id === n.move) ?? (n.move in FIGURES ? { id: n.move, name: FIGURES[n.move]!.name } : undefined);
+      // Confirmed: the cited sentence shows the move, and (for irony, which has no form) the rewrite shows a vehicle of it.
+      const holder = s.paragraphs.flatMap((p) => p.sentences).find((x) => x.text.includes(n.after.trim().replace(/[.,;]$/, '')))?.text ?? n.after;
+      const ironyOk = n.move !== 'irony' || findFigures(m, holder).some((f) => ['gnomic', 'aside', 'litotes', 'antithesis', 'hyperbole'].includes(f.term));
+      return { technique: mv?.name ?? n.move, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c && !!mv && m.shows(mv, c.text) && ironyOk };
     }),
   };
 }

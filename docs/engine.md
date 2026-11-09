@@ -141,6 +141,34 @@ The patterns power `find_example`, the brief's exemplars, the gate's check that 
 
 **Testing without a key.** `npm run cli -- brief <file> <dir>` writes the exact system and user prompts. `npm run cli -- tool <name> '<json>'` answers as the tools do. `npm run cli -- submit <dir> <submission.json>` runs the gate and renders the result. Any model, including an agent in a terminal, can then run the protocol end to end. [rewrite-eval.md](rewrite-eval.md) is such a run: Sonnet rewriting, Opus judging.
 
+## Figures of speech (`src/engine/figures.ts`)
+
+Classical rhetoric's figures are recognized by their form: the words, their tags and their order. Each is named with its standard term and glossed in a line:
+
+- **Litotes,** by principle rather than by list: a negative before a word whose negative prefix, taken off, leaves a quality-word of hers ("not unwilling", "not intolerable", but not "not understand" or "not … indeed"), or "no small" and its kind.
+- **Periphrasis:** a thing named by a generic head and what it does ("the instrument in his hand", "a shop where coffee was served", "the persons set over us").
+- **The generalization laid over a case** (the gnomic statement, the usual vehicle of her irony), and **the ironic aside** (", which was at least consistent with the occasion").
+- **Free indirect discourse:** a question or exclamation in the narration (not in a letter, which is direct address).
+- **Patterns of the sentence:**
+  - antithesis;
+  - tricolon;
+  - polysyndeton;
+  - anaphora;
+  - parenthesis;
+  - inversion (anastrophe);
+  - hyperbole.
+
+Irony itself has no form. It is credited only where the rewriter's note claims it *and* one of its vehicles is there; otherwise the note is shown unconfirmed.
+
+The figures are pointed out everywhere:
+
+- **Your draft:** a Figures card in the Advisor panel and a violet underline, with a hover that shows the figure's gloss and her own examples.
+- **The rewrites:** each sentence's one-line reason names the figures it gained ("makes a litotes (“not disagreeable”)"). It also says what became of each word she never wrote: replaced (with which word), rendered by periphrasis (quoted), rephrased, or dropped.
+- **Explore:** every Austen sentence shown carries chips naming its figures, and searching a figure's name ("tricolon") lists her examples.
+- **The AI rewrite:** the brief gives the vocabulary, a note may name a figure, and the gate refuses a dropped thing the writer named.
+
+An example offered for a figure is always confirmed by that figure's detector (`figureExamples`): the nearest sentences first, then the whole corpus sifted by a cheap sign of the figure.
+
 ## Shared editing
 
 The page is Tiny Little Office's Word Processor (`mount('write', …)`). Each edit is a group of the kernel's ops. The server rebases a group over what came since its base (`rebase`) and applies it. It keeps the ops, the text and a version per author in SQLite, and tells everyone. Each page keeps one group in flight and the rest waiting, and carries the server's ops over both (`cross`). See `src/server/room.ts`, `src/web/sync.ts`, and `test/sync.test.ts` for two writers and Advisor converging.

@@ -8,7 +8,7 @@
     "He said we needed to talk.",
     "I knew right away what that meant."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 22, and removes “texted” (never in Austen), modelled on Pride and Prejudice, ch. 55, ¶ 11.",
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 22, and rephrases “texted” (never in Austen), modelled on Pride and Prejudice, ch. 55, ¶ 11.",
    "model": {
     "id": 9919,
     "work": "pride",
@@ -32,19 +32,19 @@
     "He said he wasn't ready for something serious.",
     "He said it wasn't me, it was him."
    ],
-   "why": "This sentence uses her “speech reported”, “understatement and litotes”, joins five sentences (10, 8, 3, 8, 8 words) into one of 52, and removes “downtown”, “scrolling”, “phone” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 33.",
+   "why": "This sentence renders “phone” (“the instrument in his hand”) by periphrasis, makes a polysyndeton, a litotes (“not a little”), and an antithesis (“not mine but his own”), and uses her “speech reported”, “clauses balanced in one period”, modelled on Northanger Abbey, ch. 3, ¶ 1.",
    "model": {
-    "id": 11658,
-    "work": "mansfield",
-    "title": "Mansfield Park",
-    "year": 1814,
-    "chapter": 7,
-    "chapterTitle": "VII",
-    "paragraph": 33,
+    "id": 24655,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 3,
+    "chapterTitle": "III",
+    "paragraph": 1,
     "sentence": 1,
-    "text": "Her own gentle voice speaking from the other end of the room, which was a very long one, told them that she was on the sofa.",
-    "cite": "Mansfield Park, ch. 7, ¶ 33",
-    "sim": 0.30684061995609585
+    "text": "Every morning now brought its regular duties—shops were to be visited; some new part of the town to be looked at; and the Pump Room to be attended, where they paraded up and down for an hour, looking at everybody and speaking to no one.",
+    "cite": "Northanger Abbey, ch. 3, ¶ 1",
+    "sim": 0.4393649409015182
    }
   },
   {
@@ -54,19 +54,19 @@
     "I just nodded and said okay.",
     "Then I walked home in the rain and ate a whole pint of ice cream."
    ],
-   "why": "This sentence uses her “feeling shown by conduct”, “speech reported”, joins three sentences (7, 6, 15 words) into one of 35, and removes “okay” (never in Austen), modelled on Northanger Abbey, ch. 25, ¶ 10.",
+   "why": "This sentence makes a polysyndeton, uses her “feeling shown by conduct”, “speech reported”, and joins three sentences (7, 6, 15 words) into one of 35, modelled on Northanger Abbey, ch. 5, ¶ 2.",
    "model": {
-    "id": 27333,
+    "id": 24775,
     "work": "northanger",
     "title": "Northanger Abbey",
     "year": 1817,
-    "chapter": 25,
-    "chapterTitle": "XXV",
-    "paragraph": 10,
-    "sentence": 3,
-    "text": "They went to breakfast directly; but Catherine could hardly eat anything.",
-    "cite": "Northanger Abbey, ch. 25, ¶ 10",
-    "sim": 0.431415100481038
+    "chapter": 5,
+    "chapterTitle": "V",
+    "paragraph": 2,
+    "sentence": 1,
+    "text": "As soon as divine service was over, the Thorpes and Allens eagerly joined each other; and after staying long enough in the Pump Room to discover that the crowd was insupportable, and that there was not a genteel face to be seen, which everybody discovers every Sunday throughout the season, they hastened away to the Crescent, to breathe the fresh air of better company.",
+    "cite": "Northanger Abbey, ch. 5, ¶ 2",
+    "sim": 0.3870383764584022
    }
   },
   {
@@ -76,7 +76,7 @@
     "Maybe I was.",
     "But it still hurt."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, “ironic verdict”, joins three sentences (6, 3, 4 words) into one of 30, and removes “roommate”, “overreacting” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.",
+   "why": "This sentence makes a generalization (gnomic statement) (“as a grief pronounced unreasonable commonly does”), uses her “clauses balanced in one period”, and joins three sentences (6, 3, 4 words) into one of 30, modelled on Pride and Prejudice, ch. 22, ¶ 3.",
    "model": {
     "id": 6700,
     "work": "pride",

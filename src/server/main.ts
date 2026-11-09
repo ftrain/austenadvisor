@@ -14,7 +14,8 @@ import { analyze, type Advice } from '../engine/analyze.ts';
 import { austenize } from '../engine/austenize.ts';
 import { blocksOfText, blocksOfTlo, tloOfBlocks } from '../engine/doc.ts';
 import { AuthorModel } from '../engine/model.ts';
-import { concordance, styleSummary, wordProfile } from '../engine/tools.ts';
+import { concordance, styleSummary, withFigures, wordProfile } from '../engine/tools.ts';
+import { FIGURES, figureExamples } from '../engine/figures.ts';
 import { pronounsOf, readAuthor } from '../corpus/sources.ts';
 import { answerThread, applyAdvice, austenizeBlocks, rewriteBlocks, type AdvisorDeps } from './advisor.ts';
 import { aiAvailable, MODEL } from './rewrite.ts';
@@ -143,6 +144,14 @@ route('POST', '/api/similar', async (req, res) => {
   const m = model(String(b.author ?? 'austen'));
   send(res, 200, m.similarSentences(String(b.text ?? ''), Math.min(20, Number(b.limit ?? 6)), { minWords: b.minWords }));
 });
+route('GET', '/api/figure', (_q, res, _p, url) => {
+  const m = model(url.searchParams.get('author') ?? 'austen');
+  const term = url.searchParams.get('term') ?? '';
+  if (!(term in FIGURES)) return send(res, 404, { error: `no figure “${term}”`, figures: FIGURES });
+  const ex = figureExamples(m, term, url.searchParams.get('near') ?? '', Math.min(8, Number(url.searchParams.get('limit') ?? 3)));
+  send(res, 200, { term, ...FIGURES[term], examples: ex.map((c) => withFigures(m, c)) });
+});
+route('GET', '/api/figures', (_q, res) => send(res, 200, FIGURES));
 route('GET', '/api/style', (_q, res, _p, url) => {
   const m = model(url.searchParams.get('author') ?? 'austen');
   send(res, 200, { summary: styleSummary(m), profile: m.profile });

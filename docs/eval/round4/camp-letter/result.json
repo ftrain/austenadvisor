@@ -27,19 +27,19 @@
     "Camp is okay I guess.",
     "The food is gross and my bunkmate snores like crazy."
    ],
-   "why": "This sentence uses her “understatement and litotes”, joins two sentences (5, 10 words) into one of 19, and removes “okay”, “bunkmate”, “crazy” (never in Austen), modelled on Pride and Prejudice, ch. 43, ¶ 68.",
+   "why": "This sentence makes a parenthesis (“, I suppose,”) and a litotes (“not intolerable”), joins two sentences (5, 10 words) into one of 19, and rephrases “okay”, “crazy”, “bunkmate” (never in Austen), modelled on Emma, ch. 35, ¶ 17.",
    "model": {
-    "id": 8546,
-    "work": "pride",
-    "title": "Pride and Prejudice",
-    "year": 1813,
-    "chapter": 43,
-    "chapterTitle": "XLIII",
-    "paragraph": 68,
+    "id": 21892,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 35,
+    "chapterTitle": "XXXV",
+    "paragraph": 17,
     "sentence": 1,
-    "text": "“There is something a little stately in him to be sure,” replied her aunt, “but it is confined to his air, and is not unbecoming.",
-    "cite": "Pride and Prejudice, ch. 43, ¶ 68",
-    "sim": 0.31247746630004153
+    "text": "“You are very obliging; but as to all that, I am very indifferent; it would be no object to me to be with the rich; my mortifications, I think, would only be the greater; I should suffer more from comparison.",
+    "cite": "Emma, ch. 35, ¶ 17",
+    "sim": 0.40444619376139473
    }
   },
   {
@@ -48,18 +48,19 @@
     "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
     "It was so embarrassing."
    ],
-   "why": "This sentence uses her “judgement in abstract nouns”, “ironic verdict”, joins two sentences (12, 4 words) into one of 33, and removes “canoeing”, “flipped”, “canoe” (never in Austen), modelled on Pride and Prejudice, ch. 46, ¶ 5.",
+   "why": "This sentence uses her “judgement in abstract nouns”, joins two sentences (12, 4 words) into one of 33, and replaces “canoeing” with “boat”, “canoe” with “boat” (never in Austen), modelled on Pride and Prejudice, ch. 53, ¶ 56.",
    "model": {
-    "id": 8725,
+    "id": 9800,
     "work": "pride",
     "title": "Pride and Prejudice",
     "year": 1813,
-    "chapter": 46,
-    "chapterTitle": "XLVI",
-    "paragraph": 5,
-    "sentence": 4,
-    "text": "Colonel Forster came yesterday, having left Brighton the day before, not many hours after the express.",
-    "cite": "Pride and Prejudice, ch. 46, ¶ 5"
+    "chapter": 53,
+    "chapterTitle": "LIII",
+    "paragraph": 56,
+    "sentence": 1,
+    "text": "When the gentlemen rose to go away, Mrs. Bennet was mindful of her intended civility, and they were invited and engaged to dine at Longbourn in a few days’ time.",
+    "cite": "Pride and Prejudice, ch. 53, ¶ 56",
+    "sim": 0.38183775081810883
    }
   },
   {
@@ -70,7 +71,7 @@
     "We hang out at the lake after dinner and talk about stuff.",
     "I think she likes me but I'm not sure."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins four sentences (9, 10, 12, 9 words) into one of 49, and writes out “there’s”, “who’s”, modelled on Persuasion, ch. 18, ¶ 11.",
+   "why": "This sentence makes a polysyndeton, uses her “clauses balanced in one period”, and joins four sentences (9, 10, 12, 9 words) into one of 49, modelled on Persuasion, ch. 18, ¶ 11.",
    "model": {
     "id": 30013,
     "work": "persuasion",
@@ -90,18 +91,19 @@
     "Can you send more snacks?",
     "And my phone charger, which I totally forgot."
    ],
-   "why": "This sentence joins two sentences (5, 8 words) into one of 23, removes “snacks”, “phone”, “charger” (never in Austen), and brings in her “refreshments”, modelled on Sense and Sensibility, ch. 36, ¶ 18.",
+   "why": "This sentence renders “phone” (“the line that gives power to my instrument”) by periphrasis, joins two sentences (5, 8 words) into one of 23, and replaces “snacks” with “refreshments” (never in Austen), modelled on Emma, ch. 15, ¶ 14.",
    "model": {
-    "id": 3314,
-    "work": "sense",
-    "title": "Sense and Sensibility",
-    "year": 1811,
-    "chapter": 36,
-    "chapterTitle": "XXXVI",
-    "paragraph": 18,
-    "sentence": 7,
-    "text": "The dining parlour will admit eighteen couple with ease; card-tables may be placed in the drawing-room; the library may be open for tea and other refreshments; and let the supper be set out in the saloon.’",
-    "cite": "Sense and Sensibility, ch. 36, ¶ 18"
+    "id": 19288,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 15,
+    "chapterTitle": "XV",
+    "paragraph": 14,
+    "sentence": 4,
+    "text": "I could change my shoes, you know, the moment I got home; and it is not the sort of thing that gives me cold.”",
+    "cite": "Emma, ch. 15, ¶ 14",
+    "sim": 0.3721638551234586
    }
   },
   {
@@ -109,19 +111,19 @@
    "before": [
     "The counselors are kind of strict but mostly fine."
    ],
-   "why": "This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Northanger Abbey, ch. 27, ¶ 2.",
+   "why": "This sentence renders “counselors” (“The persons set over us are rather strict”) by periphrasis and makes a litotes (“not disagreeable”), modelled on Emma, ch. 12, ¶ 36.",
    "model": {
-    "id": 27537,
-    "work": "northanger",
-    "title": "Northanger Abbey",
-    "year": 1817,
-    "chapter": 27,
-    "chapterTitle": "XXVII",
-    "paragraph": 2,
-    "sentence": 12,
-    "text": "I will not say all that I could of the family you are with, because I would not be ungenerous, or set you against those you esteem; but it is very difficult to know whom to trust, and young men never know their minds two days together.",
-    "cite": "Northanger Abbey, ch. 27, ¶ 2",
-    "sim": 0.4524256346103109
+    "id": 18993,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 12,
+    "chapterTitle": "XII",
+    "paragraph": 36,
+    "sentence": 3,
+    "text": "It is a dreadful thing to have you forced to live there! so far off!—and the air so bad!”",
+    "cite": "Emma, ch. 12, ¶ 36",
+    "sim": 0.41905833325045877
    }
   },
   {
@@ -195,7 +197,7 @@
    "after": "a diversion in which I could not be expected to join.",
    "austen": "We have delightful Rides round us, I have a Charming horse, am uncommonly fond of the Amusement, replied I quite recovered from my Confusion, and in short I ride a great deal.”",
    "cite": "Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 2",
-   "verified": true
+   "verified": false
   }
  ],
  "scoreBefore": 18,

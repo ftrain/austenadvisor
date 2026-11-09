@@ -96,5 +96,13 @@ export function quoteEl(c: Citation, onOpen?: (c: Citation) => void): HTMLElemen
     { class: 'aa-quote' },
     h('span', { class: 'aa-quote-text' }, c.text),
     h('cite', {}, onOpen ? h('button', { class: 'aa-link', onclick: () => onOpen(c), title: 'Read it in its paragraph' }, c.cite) : c.cite),
+    c.figures?.length ? h('span', { class: 'aa-figs' }, ...c.figures.map((f) => h('span', { class: 'aa-fig-chip', title: 'A figure of speech in this sentence' }, f))) : null,
   );
+}
+
+export interface FigureInfo {
+  term: string;
+  name: string;
+  gloss: string;
+  examples: import('../engine/model.ts').Citation[];
 }

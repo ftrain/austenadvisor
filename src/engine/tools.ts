@@ -7,9 +7,15 @@ import { alternatives } from './alternatives.ts';
 import { analyze } from './analyze.ts';
 import { blocksOfText } from './doc.ts';
 import type { AuthorModel, Citation, Register } from './model.ts';
+import { FIGURES, findFigures } from './figures.ts';
 
 /** One of the author's sentences as a tool gives it: its id first, to cite it by. */
 const line = (c: Citation) => `S${c.id}: ${c.text} (${c.cite})`;
+
+/** An author's sentence with the figures of speech it shows, named. */
+export function withFigures<C extends Citation>(m: AuthorModel, c: C): C & { figures: string[] } {
+  return { ...c, figures: [...new Set(findFigures(m, c.text).map((f) => FIGURES[f.term]!.name))] };
+}
 import { lmKey } from './profile.ts';
 
 export interface WordProfile {
@@ -62,7 +68,7 @@ export function wordProfile(m: AuthorModel, word: string, opts: { context?: stri
     forms: [...forms.values()].sort((a, b) => b.count - a.count).slice(0, 10),
     neighbours: m.neighbours(w, 12).map((n) => n.word),
     collocates: info ? m.collocates(w, 12).map(({ word, together }) => ({ word, together })) : [],
-    examples: info ? m.search([w], { prefer: ctxWords, limit: opts.examples ?? 6, minWords: 5, maxWords: 60 }) : [],
+    examples: info ? m.search([w], { prefer: ctxWords, limit: opts.examples ?? 6, minWords: 5, maxWords: 60 }).map((c) => withFigures(m, c)) : [],
     alternatives: alts,
     note: info
       ? `${short} wrote “${w}” ${info.count.toLocaleString()} times (${Math.round(m.rate(w))} per million words).`
@@ -81,7 +87,7 @@ export function concordance(m: AuthorModel, query: string, limit = 20): { left: 
     let i = lower.search(new RegExp(`\\b${q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/ /g, '[\\s\\W]+')}\\b`));
     if (i < 0) i = lower.indexOf(words[0]!);
     const end = i < 0 ? 0 : i + (lower.slice(i).match(new RegExp(`^${words.map((w) => w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('[\\s\\W]+')}`))?.[0].length ?? words[0]!.length);
-    return { left: c.text.slice(0, Math.max(0, i)), match: c.text.slice(Math.max(0, i), end), right: c.text.slice(end), cite: c };
+    return { left: c.text.slice(0, Math.max(0, i)), match: c.text.slice(Math.max(0, i), end), right: c.text.slice(end), cite: withFigures(m, c) };
   });
 }
 
@@ -95,6 +101,7 @@ export function checkPassage(m: AuthorModel, text: string) {
       .map((w) => ({ word: w.word, note: w.note, alternatives: w.alternatives.slice(0, 5).map((x) => `${x.text} (${x.source}, ${x.count}×)`) })),
     names: a.words.filter((w) => w.kind === 'name').map((w) => w.word),
     compounds: a.compounds.map((c) => c.text),
+    figures: a.figures.map((f) => `${f.name}: “${f.text}”`),
     rarePairs: unattestedPairs(m, text),
     advice: a.advice.map((x) => ({ severity: x.severity, title: x.title, message: x.message, why: x.why, suggestion: x.replacements?.[0]?.text })),
     measures: a.report.measures.map((x) => `${x.label}: yours ${x.yours}${x.unit === '%' ? '%' : ''}, ${m.author.short} ${x.author}${x.unit === '%' ? '%' : ''}`),
@@ -193,7 +200,7 @@ export const TOOL_SPECS = [
     input_schema: {
       type: 'object' as const,
       properties: {
-        move: { type: 'string', description: 'The move’s id, as listed in the brief’s <moves>.' },
+        move: { type: 'string', description: 'A move’s id, as listed in the brief’s <moves>, or a figure of speech’s term from the brief’s <figures> (litotes, periphrasis, antithesis…).' },
         near: { type: 'string', description: 'Your sentence, or the writer’s, to find examples near it.' },
         limit: { type: 'integer' },
       },
@@ -224,7 +231,7 @@ export function runTool(m: AuthorModel, name: string, input: Record<string, unkn
         .map(line);
     case 'find_example': {
       const ex = m.moveExamples(String(input.move ?? ''), String(input.near ?? ''), Math.min(8, Number(input.limit ?? 4)));
-      if (!ex.length) return `No move "${input.move}". Moves: ${(m.author.moves ?? []).map((x) => x.id).join(', ')}.`;
+      if (!ex.length) return `No move or figure "${input.move}". Moves: ${(m.author.moves ?? []).map((x) => x.id).join(', ')}. Figures: ${Object.keys(FIGURES).join(', ')}.`;
       return ex.map(line);
     }
     default:

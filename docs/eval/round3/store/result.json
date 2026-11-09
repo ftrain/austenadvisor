@@ -8,7 +8,7 @@
     "So I grabbed my keys and drove to the store.",
     "It was super crowded."
    ],
-   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (3, 10, 4 words) into one of 34, and removes “grabbed”, “super” (never in Austen), modelled on Pride and Prejudice, ch. 43, ¶ 4.",
+   "why": "This sentence makes a polysyndeton, uses her “clauses balanced in one period”, and joins three sentences (3, 10, 4 words) into one of 34, modelled on Pride and Prejudice, ch. 43, ¶ 4.",
    "model": {
     "id": 8363,
     "work": "pride",
@@ -27,7 +27,7 @@
    "before": [
     "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
    ],
-   "why": "This sentence removes “guy”, “hoodie”, “blocking”, “aisle” (never in Austen), modelled on Pride and Prejudice, ch. 18, ¶ 74.",
+   "why": "This sentence replaces “guy” with “man”, “blocking” with “stopping”, “aisle” with “passage” (never in Austen) and rephrases “hoodie”, “phone” (never in Austen), modelled on Pride and Prejudice, ch. 18, ¶ 74.",
    "model": {
     "id": 6427,
     "work": "pride",
@@ -49,7 +49,7 @@
     "He totally ignored me.",
     "Finally he moved and I got the milk."
    ],
-   "why": "This sentence uses her “speech reported”, “understatement and litotes”, joins four sentences (6, 4, 4, 8 words) into one of 44, and removes “ignored” (never in Austen), modelled on Mansfield Park, ch. 7, ¶ 17.",
+   "why": "This sentence makes a polysyndeton, uses her “speech reported”, “clauses balanced in one period”, and joins four sentences (6, 4, 4, 8 words) into one of 44, modelled on Mansfield Park, ch. 7, ¶ 17.",
    "model": {
     "id": 11612,
     "work": "mansfield",
@@ -68,7 +68,7 @@
    "before": [
     "Then I saw my ex at the checkout and I basically panicked."
    ],
-   "why": "This sentence removes “ex”, “checkout”, “basically”, “panicked” (never in Austen) and brings in her “counter”, modelled on Sense and Sensibility, ch. 33, ¶ 3.",
+   "why": "This sentence replaces “checkout” with “counter”, “basically” with “essentially” (never in Austen), rephrases “ex” (never in Austen), and brings in her “counter”, modelled on Sense and Sensibility, ch. 33, ¶ 3.",
    "model": {
     "id": 2934,
     "work": "sense",
@@ -111,18 +111,19 @@
     "I paid and left as fast as I could.",
     "Honestly, it was the most awkward ten minutes of my week."
    ],
-   "why": "This sentence uses her “ironic verdict”, “judgement in abstract nouns” and joins four sentences (3, 2, 9, 11 words) into one of 46, modelled on Northanger Abbey, ch. 25, ¶ 13.",
+   "why": "This sentence makes a polysyndeton and a parenthesis (“, I believe,”), uses her “judgement in abstract nouns”, and joins four sentences (3, 2, 9, 11 words) into one of 46, modelled on Mansfield Park, ch. 23, ¶ 61.",
    "model": {
-    "id": 27349,
-    "work": "northanger",
-    "title": "Northanger Abbey",
-    "year": 1817,
-    "chapter": 25,
-    "chapterTitle": "XXV",
-    "paragraph": 13,
-    "sentence": 1,
-    "text": "Nothing further was said for a few minutes; and then speaking through her tears, she added, “I do not think I shall ever wish for a letter again!”",
-    "cite": "Northanger Abbey, ch. 25, ¶ 13"
+    "id": 13850,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 23,
+    "chapterTitle": "XXIII",
+    "paragraph": 61,
+    "sentence": 8,
+    "text": "Seven hundred a year is a fine thing for a younger brother; and as of course he will still live at home, it will be all for his menus plaisirs; and a sermon at Christmas and Easter, I suppose, will be the sum total of sacrifice.”",
+    "cite": "Mansfield Park, ch. 23, ¶ 61",
+    "sim": 0.4489654548407595
    }
   }
  ],

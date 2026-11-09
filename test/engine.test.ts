@@ -10,6 +10,7 @@ import { concordance, wordProfile } from '../src/engine/tools.ts';
 import { buildBrief } from '../src/engine/brief.ts';
 import { gate, render, type Submission } from '../src/server/rewrite.ts';
 import { explainSentence } from '../src/engine/explain.ts';
+import { figureExamples, findFigures } from '../src/engine/figures.ts';
 
 const built = existsSync(authorDbPath('austen'));
 
@@ -103,7 +104,7 @@ describe.skipIf(!built)('the Austen engine', () => {
       expect(a.why.split(/(?<=\.)\s+(?=[A-Z])/).length).toBe(1);
       expect(m.cite(a.model.id)!.text).toBe(a.model.text);
     }
-    expect(r.aligned[1]!.why).toMatch(/^This sentence uses her “judgement in abstract nouns”, joins two sentences \(4, 4 words\) into one of 14, and removes “grabbed”, “super” \(never in Austen\), modelled on .+, ¶ \d+\.$/);
+    expect(r.aligned[1]!.why).toMatch(/^This sentence uses her “judgement in abstract nouns”, joins two sentences \(4, 4 words\) into one of 14, and replaces “grabbed” with “caught”, “super” with “extremely” \(never in Austen\), modelled on .+, ¶ \d+\.$/);
   });
 
   it('explains a rewritten sentence by what changed, and links the move it makes', () => {
@@ -111,6 +112,32 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(w.why).toMatch(/^This sentence .*(turns quoted speech into reported speech|“speech reported”).*, modelled on .+, ¶ \d+\.$/);
     expect(w.moves).toContain('reported');
     expect(new RegExp(m.author.moves!.find((x) => x.id === 'reported')!.pattern, 'i').test(w.model.text)).toBe(true);
+  });
+
+  it('recognizes figures of speech by their form, in her sentences and in a writer’s', () => {
+    const terms = (t: string) => findFigures(m, t).map((f) => f.term);
+    expect(terms('It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.')).toContain('gnomic');
+    expect(terms('She was not unwilling to go, and it was a matter of no small consequence.')).toEqual(['litotes', 'litotes']);
+    expect(terms('“Not they indeed,” cried Thorpe.')).not.toContain('litotes');
+    expect(terms('He was busy with the instrument in his hand.')).toContain('periphrasis');
+    expect(terms('Small heart had Harriet for visiting.')).toContain('inversion');
+    expect(terms('She had been wrong, not in her judgement of him, but in her own.')).toContain('antithesis');
+    expect(terms('They had walked, and talked, and laughed, and been happy together.')).toContain('polysyndeton');
+    expect(terms('It was, I believe, the most awkward ten minutes of my life.')).toEqual(expect.arrayContaining(['parenthesis', 'hyperbole']));
+    expect(terms('How could she have been so blind!')).toContain('fid');
+    expect(terms('Will you send me my books?')).toContain('fid');
+    expect(findFigures(m, 'Will you send me my books?', { letter: true }).map((f) => f.term)).not.toContain('fid');
+    // Every example offered for a figure shows it.
+    for (const t of ['litotes', 'antithesis', 'tricolon', 'gnomic']) for (const c of figureExamples(m, t, 'a quiet evening at home', 2)) expect(terms(c.text)).toContain(t);
+  });
+
+  it('names what a rewrite did with each word she never wrote: replaced, rendered by periphrasis, or dropped', () => {
+    const w = explainSentence(m, ['He talked on his phone and wore a hoodie.'], 'He was busy with the instrument in his hand.', null);
+    expect(w.why).toMatch(/renders “phone” \(“the instrument in his hand”\) by periphrasis/);
+    expect(w.why).toMatch(/drops “hoodie”/);
+    expect(w.dropped).toEqual(['hoodie']);
+    const l = explainSentence(m, ['Camp is okay.'], 'Camp is not intolerable.', null);
+    expect(l.why).toMatch(/makes a litotes \(“not intolerable”\)/);
   });
 
   it('reads a page quickly once warm', () => {

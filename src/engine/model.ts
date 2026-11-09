@@ -9,6 +9,7 @@ import { Tagger, type TaggerModel } from '../nlp/tagger.ts';
 import { normWord, tokenize } from '../nlp/tokenize.ts';
 import { WordNet, type WnPos } from '../nlp/wordnet.ts';
 import { readAuthor, type AuthorConfig } from '../corpus/sources.ts';
+import { FIGURES, figureExamples, findFigures } from './figures.ts';
 import type { StyleProfile } from './profile.ts';
 
 /** How a sentence is told: in narration, in speech, or in a letter. */
@@ -36,6 +37,8 @@ export interface Citation {
   text: string;
   /** "Pride and Prejudice, ch. 3, ¶ 12" */
   cite: string;
+  /** The figures of speech it shows, named, where they were looked for. */
+  figures?: string[];
 }
 
 export interface Form {
@@ -350,25 +353,21 @@ export class AuthorModel {
    * word whose negative prefix, taken off, leaves a word of the author's (“not intolerable”: tolerable; “not
    * disagreeable”: agreeable; but not “not understand”).
    */
-  shows(move: { id: string; pattern: string }, text: string): boolean {
+  shows(move: { id: string; pattern?: string }, text: string): boolean {
     const t = text.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
-    if (new RegExp(move.pattern, 'i').test(t)) return true;
-    if (move.id !== 'litotes') return false;
-    const ws = t.toLowerCase().match(/[\p{L}’-]+/gu) ?? [];
-    for (let i = 0; i < ws.length; i++) {
-      if (!['not', 'no', 'never', 'nor'].includes(ws[i]!)) continue;
-      for (const w of ws.slice(i + 1, i + 4)) {
-        const m = /^(un|in|im|il|ir|dis)(.{4,})$/.exec(w);
-        if (m && this.word(m[2]!) && (this.word(m[2]!)!.count >= 3)) return true;
-        if (['small', 'little', 'slight', 'trifling', 'inconsiderable'].includes(w) && ['no', 'not'].includes(ws[i]!)) return true;
-      }
+    // A figure of speech is found by its own detector; the author's other moves by their pattern.
+    if (move.id in FIGURES) {
+      const want = move.id === 'irony' ? ['gnomic', 'aside'] : [move.id];
+      if (findFigures(this, t).some((f) => want.includes(f.term))) return true;
     }
-    return false;
+    return !!move.pattern && new RegExp(move.pattern, 'i').test(t);
   }
 
   /** The author's sentences that show a move (its pattern matched, in its register), nearest a passage first. */
   moveExamples(moveId: string, near: string, k = 4): (Citation & { sim: number })[] {
     const move = this.author.moves?.find((x) => x.id === moveId);
+    // A figure of speech with no move of the author's by its name: by its detector.
+    if (!move && moveId in FIGURES) return figureExamples(this, moveId, near, k).map((c) => ({ ...c, sim: 0 }));
     if (!move) return [];
     const opts = {
       minWords: 6,
