@@ -345,15 +345,35 @@ export class AuthorModel {
     return this.sif;
   }
 
+  /**
+   * Whether words show a move: its pattern, and for understatement the principled test as well, a negative before a
+   * word whose negative prefix, taken off, leaves a word of the author's (“not intolerable”: tolerable; “not
+   * disagreeable”: agreeable; but not “not understand”).
+   */
+  shows(move: { id: string; pattern: string }, text: string): boolean {
+    const t = text.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
+    if (new RegExp(move.pattern, 'i').test(t)) return true;
+    if (move.id !== 'litotes') return false;
+    const ws = t.toLowerCase().match(/[\p{L}’-]+/gu) ?? [];
+    for (let i = 0; i < ws.length; i++) {
+      if (!['not', 'no', 'never', 'nor'].includes(ws[i]!)) continue;
+      for (const w of ws.slice(i + 1, i + 4)) {
+        const m = /^(un|in|im|il|ir|dis)(.{4,})$/.exec(w);
+        if (m && this.word(m[2]!) && (this.word(m[2]!)!.count >= 3)) return true;
+        if (['small', 'little', 'slight', 'trifling', 'inconsiderable'].includes(w) && ['no', 'not'].includes(ws[i]!)) return true;
+      }
+    }
+    return false;
+  }
+
   /** The author's sentences that show a move (its pattern matched, in its register), nearest a passage first. */
   moveExamples(moveId: string, near: string, k = 4): (Citation & { sim: number })[] {
     const move = this.author.moves?.find((x) => x.id === moveId);
     if (!move) return [];
-    const re = new RegExp(move.pattern, 'i');
     const opts = {
       minWords: 6,
       maxWords: 60,
-      test: (t: string, reg: Register) => re.test(t) && (move.register === 'any' || reg === move.register || (move.register === 'narration' && reg === 'letter')),
+      test: (t: string, reg: Register) => this.shows(move, t) && (move.register === 'any' || reg === move.register || (move.register === 'narration' && reg === 'letter')),
     };
     const near1 = near ? this.similarSentences(near, k, opts) : [];
     // Words the author never used give no meaning to be near: then near the move itself.

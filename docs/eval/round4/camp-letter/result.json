@@ -1,0 +1,203 @@
+{
+ "text": "My dear Mother and Father,\n\nCamp is, I suppose, not intolerable; the food is disagreeable, and my neighbour's breathing by night is past bearing. Yesterday we went on the water in a small boat, and I overturned it, and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.\n\nThere is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.\n\nWould you be so good as to send more refreshments, and the line that gives power to my instrument, which I quite forgot? The persons set over us are rather strict, but in general not disagreeable.\n\nYours affectionately,\nJake\n\nP.S. Pray do not suffer Max to make use of my room.",
+ "aligned": [
+  {
+   "after": "My dear Mother and Father,",
+   "before": [
+    "Dear Mom and Dad,"
+   ],
+   "why": "This sentence puts the writer’s sense into her diction, modelled on Lady Susan, ch. 18, ¶ 3.",
+   "model": {
+    "id": 31882,
+    "work": "susan",
+    "title": "Lady Susan",
+    "year": 1794,
+    "chapter": 18,
+    "chapterTitle": "XVIII",
+    "paragraph": 3,
+    "sentence": 7,
+    "text": "I think, my dear mother, you would not disapprove of her as a daughter.",
+    "cite": "Lady Susan, ch. 18, ¶ 3",
+    "sim": 0.7243561492681472
+   }
+  },
+  {
+   "after": "Camp is, I suppose, not intolerable; the food is disagreeable, and my neighbour's breathing by night is past bearing.",
+   "before": [
+    "Camp is okay I guess.",
+    "The food is gross and my bunkmate snores like crazy."
+   ],
+   "why": "This sentence uses her “understatement and litotes”, joins two sentences (5, 10 words) into one of 19, and removes “okay”, “bunkmate”, “crazy” (never in Austen), modelled on Pride and Prejudice, ch. 43, ¶ 68.",
+   "model": {
+    "id": 8546,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 43,
+    "chapterTitle": "XLIII",
+    "paragraph": 68,
+    "sentence": 1,
+    "text": "“There is something a little stately in him to be sure,” replied her aunt, “but it is confined to his air, and is not unbecoming.",
+    "cite": "Pride and Prejudice, ch. 43, ¶ 68",
+    "sim": 0.31247746630004153
+   }
+  },
+  {
+   "after": "Yesterday we went on the water in a small boat, and I overturned it, and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.",
+   "before": [
+    "Yesterday we went canoeing and I flipped the canoe and everybody laughed.",
+    "It was so embarrassing."
+   ],
+   "why": "This sentence uses her “judgement in abstract nouns”, “ironic verdict”, joins two sentences (12, 4 words) into one of 33, and removes “canoeing”, “flipped”, “canoe” (never in Austen), modelled on Pride and Prejudice, ch. 46, ¶ 5.",
+   "model": {
+    "id": 8725,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 46,
+    "chapterTitle": "XLVI",
+    "paragraph": 5,
+    "sentence": 4,
+    "text": "Colonel Forster came yesterday, having left Brighton the day before, not many hours after the express.",
+    "cite": "Pride and Prejudice, ch. 46, ¶ 5"
+   }
+  },
+  {
+   "after": "There is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.",
+   "before": [
+    "But there's this girl named Kayla who's really cool.",
+    "She's from Ohio and she knows a ton about horses.",
+    "We hang out at the lake after dinner and talk about stuff.",
+    "I think she likes me but I'm not sure."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins four sentences (9, 10, 12, 9 words) into one of 49, and writes out “there’s”, “who’s”, modelled on Persuasion, ch. 18, ¶ 11.",
+   "model": {
+    "id": 30013,
+    "work": "persuasion",
+    "title": "Persuasion",
+    "year": 1817,
+    "chapter": 18,
+    "chapterTitle": "XVIII",
+    "paragraph": 11,
+    "sentence": 8,
+    "text": "She and the Harvilles came on Tuesday very safely, and in the evening we went to ask her how she did, when we were rather surprised not to find Captain Benwick of the party, for he had been invited as well as the Harvilles; and what do you think was the reason?",
+    "cite": "Persuasion, ch. 18, ¶ 11"
+   }
+  },
+  {
+   "after": "Would you be so good as to send more refreshments, and the line that gives power to my instrument, which I quite forgot?",
+   "before": [
+    "Can you send more snacks?",
+    "And my phone charger, which I totally forgot."
+   ],
+   "why": "This sentence joins two sentences (5, 8 words) into one of 23, removes “snacks”, “phone”, “charger” (never in Austen), and brings in her “refreshments”, modelled on Sense and Sensibility, ch. 36, ¶ 18.",
+   "model": {
+    "id": 3314,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 36,
+    "chapterTitle": "XXXVI",
+    "paragraph": 18,
+    "sentence": 7,
+    "text": "The dining parlour will admit eighteen couple with ease; card-tables may be placed in the drawing-room; the library may be open for tea and other refreshments; and let the supper be set out in the saloon.’",
+    "cite": "Sense and Sensibility, ch. 36, ¶ 18"
+   }
+  },
+  {
+   "after": "The persons set over us are rather strict, but in general not disagreeable.",
+   "before": [
+    "The counselors are kind of strict but mostly fine."
+   ],
+   "why": "This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Northanger Abbey, ch. 27, ¶ 2.",
+   "model": {
+    "id": 27537,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 27,
+    "chapterTitle": "XXVII",
+    "paragraph": 2,
+    "sentence": 12,
+    "text": "I will not say all that I could of the family you are with, because I would not be ungenerous, or set you against those you esteem; but it is very difficult to know whom to trust, and young men never know their minds two days together.",
+    "cite": "Northanger Abbey, ch. 27, ¶ 2",
+    "sim": 0.4524256346103109
+   }
+  },
+  {
+   "after": "Yours affectionately,\nJake",
+   "before": [
+    "Love, Jake"
+   ],
+   "why": "This sentence brings in her “affectionately”, modelled on Persuasion, ch. 21, ¶ 59.",
+   "model": {
+    "id": 30686,
+    "work": "persuasion",
+    "title": "Persuasion",
+    "year": 1817,
+    "chapter": 21,
+    "chapterTitle": "XXI",
+    "paragraph": 59,
+    "sentence": 8,
+    "text": "He described one Miss Elliot, and I thought very affectionately of the other.”",
+    "cite": "Persuasion, ch. 21, ¶ 59"
+   }
+  },
+  {
+   "after": "P.S. Pray do not suffer Max to make use of my room.",
+   "before": [
+    "P.S. Please don't let Max use my room."
+   ],
+   "why": "This sentence writes out “don’t” and brings in her “suffer”, modelled on Emma, ch. 46, ¶ 50.",
+   "model": {
+    "id": 23461,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 46,
+    "chapterTitle": "XLVI",
+    "paragraph": 50,
+    "sentence": 4,
+    "text": "To suffer her to engage herself—to suffer her even to think of such a measure!”",
+    "cite": "Emma, ch. 46, ¶ 50"
+   }
+  }
+ ],
+ "explanation": "Austen's letters join clauses in long balanced periods, so the short run of statements about Kayla becomes one sentence held together by semicolons. Embarrassment is named by a noun of judgement, mortification, and the writer's hedged praise of the counselors becomes understatement.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "There's this girl named Kayla who's really cool.",
+   "after": "There is, however, a girl named Kayla, from Ohio, a very agreeable sort of girl, and she knows a great deal about horses; we walk by the lake after dinner, and talk of nothing in particular; and I think she likes me, though I am not certain of it.",
+   "austen": "Good bye,” he added, shaking my hand with earnestness; “I do not know when you will see me again; but remember what I tell you of Frederica; you MUST make it your business to see justice done her.",
+   "cite": "Lady Susan, ch. 23, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Judgement in abstract nouns",
+   "before": "It was so embarrassing.",
+   "after": "and had the mortification of seeing everybody laugh, a diversion in which I could not be expected to join.",
+   "austen": "I will tell you why she is out of spirits.",
+   "cite": "Persuasion, ch. 6, ¶ 27",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "Camp is okay I guess.",
+   "after": "Camp is, I suppose, not intolerable",
+   "austen": "“Oh! very well,” exclaimed Miss Bates, “then I need not be uneasy.",
+   "cite": "Emma, ch. 43, ¶ 24",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "everybody laughed.",
+   "after": "a diversion in which I could not be expected to join.",
+   "austen": "We have delightful Rides round us, I have a Charming horse, am uncommonly fond of the Amusement, replied I quite recovered from my Confusion, and in short I ride a great deal.”",
+   "cite": "Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 2",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 18,
+ "scoreAfter": 90
+}

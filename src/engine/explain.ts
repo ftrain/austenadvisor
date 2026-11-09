@@ -58,9 +58,8 @@ export function explainSentence(
   // The author's moves made here and not in the writer's words: those the notes credit, then those the patterns find.
   const all = m.author.moves ?? [];
   const found = all.filter((mv) => {
-    const re = new RegExp(mv.pattern, 'i');
     const look = mv.id === 'saidshe' ? curly : narration;
-    return re.test(look(after)) && !re.test(look(src));
+    return m.shows(mv, look(after)) && !m.shows(mv, look(src));
   });
   const moves = [...noted.map((id) => all.find((x) => x.id === id)).filter((x): x is NonNullable<typeof x> => !!x), ...found].filter(
     (x, i, a) => a.findIndex((y) => y.id === x.id) === i,
@@ -94,7 +93,7 @@ export function explainSentence(
   const id = typeof named === 'number' ? named : Number(/^S?(\d+)$/.exec(String(named ?? '').trim())?.[1] ?? NaN);
   let model: Citation | null = Number.isFinite(id) ? m.cite(id) : null;
   if (!linkable(model)) model = null;
-  const shows = (c: Citation, mv: (typeof all)[number]) => new RegExp(mv.pattern, 'i').test(mv.id === 'saidshe' ? curly(c.text) : narration(c.text));
+  const shows = (c: Citation, mv: (typeof all)[number]) => m.shows(mv, mv.id === 'saidshe' ? curly(c.text) : narration(c.text));
   if (model && moves.length && !moves.some((mv) => mv.id === 'irony' || shows(model!, mv))) model = null;
   if (model && !moves.length && !brought.some((w) => words(model!.text).some((t) => t.norm === w))) model = null;
   // 2. the nearest sentence of hers that shows a move made here;

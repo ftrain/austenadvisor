@@ -211,9 +211,10 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
     const mv = moves.get(n.move);
     const c = m.cite(idOf(n.model));
     if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
-    else if (c && !new RegExp(mv.pattern, 'i').test(c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
+    else if (c && !m.shows(mv, c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
     // The writer is to see the move in your words too (irony has no pattern a machine can trust).
-    else if (mv.id !== 'irony' && n.after && !new RegExp(mv.pattern, 'i').test(curl(n.after))) problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. Quote the part of your rewrite that makes the move, or name the move it does make.`);
+    else if (mv.id !== 'irony' && n.after && !m.shows(mv, curl(n.after)))
+      problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. ${mv.name}: ${mv.does} Quote the part of your rewrite that makes the move, or name the move it does make.`);
     if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
   }
   if (moves.has('irony') && brief.sentences.length >= 6 && !s.notes.some((n) => n.move === 'irony'))
@@ -277,7 +278,7 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
     notes: s.notes.map((n) => {
       const c: Citation | null = m.cite(idOf(n.model));
       const mv = m.author.moves?.find((x) => x.id === n.move);
-      return { technique: mv?.name ?? n.move, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c && !!mv && new RegExp(mv.pattern, 'i').test(c.text) };
+      return { technique: mv?.name ?? n.move, before: n.before, after: n.after, austen: c?.text ?? '', cite: c?.cite ?? n.model, verified: !!c && !!mv && m.shows(mv, c.text) };
     }),
   };
 }

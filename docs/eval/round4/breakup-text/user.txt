@@ -1,0 +1,149 @@
+<brief register="narrative" person="first" sentences="14">
+<targets>
+Narration: Austen’s sentences have a median of 24 words; half fall between 13 and 41. Speech: median 13.
+About one sentence in three has a semicolon; 1.8 commas a sentence. Contractions only in speech, and rarely.
+These are ranges to write within, not scores to raise: a sentence padded to length is worse than a short one.
+</targets>
+<paragraph n="1">
+<sentence n="1" register="narration" words="5">
+Ryan texted me at midnight.
+  <never word="texted">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <model id="S34038">Oh! pray, let us have none of the Tribe at Sanditon. (Sanditon (Fragment of a Novel), ch. 6, ¶ 25)</model>
+  <model id="S13798">She could not wish him to stay, and would much rather not have him speak to her. (Mansfield Park, ch. 23, ¶ 48)</model>
+</sentence>
+<sentence n="2" register="narration" words="6">
+He said we needed to talk.
+  <model id="S13444">“Oh! don’t talk so, don’t talk so,” cried Fanny, distressed by more feelings than he was aware of; but seeing that she was distressed, he had done with the subject, and only added more seriously— (Mansfield Park, ch. 21, ¶ 9)</model>
+  <model id="S22860">He was not in his best spirits, but seemed trying to improve them; and, at last, made himself talk nonsense very agreeably. (Emma, ch. 42, ¶ 59)</model>
+</sentence>
+<sentence n="3" register="narration" words="7">
+I knew right away what that meant.
+  <model id="S16243">Nobody was in their right place, nothing was done as it ought to be. (Mansfield Park, ch. 39, ¶ 3)</model>
+  <model id="S16032">She knew so much already, that she must know everything. (Mansfield Park, ch. 37, ¶ 26)</model>
+</sentence>
+</paragraph>
+<paragraph n="2">
+<sentence n="4" register="narration" words="10">
+The next day we met at a coffee shop downtown.
+  <never word="downtown">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <model id="S16375">He had reached it late the night before, was come for a day or two, was staying at the Crown, had accidentally met with a navy officer or two of his acquaintance since his arrival, but had no object of that kind in coming. (Mansfield Park, ch. 41, ¶ 7)</model>
+  <model id="S29086">They were, consequently, to stay the night there, and not to be expected back till the next day’s dinner. (Persuasion, ch. 11, ¶ 8)</model>
+</sentence>
+<sentence n="5" register="narration" words="8">
+He was already there, scrolling on his phone.
+  <never word="scrolling">Austen never wrote it. Hers: moving (more general than ‘move through text or graphics in order to display parts that do not fit on the screen’; 43×)</never>
+  <never word="phone">Austen never wrote it. Hers: sound (‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 73×); extension (a kind of ‘electronic equipment that converts sound into electrical signals that can be transmitted over distances and then converts received signals back into sounds’; 4×); vowel (a kind of ‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 1×)</never>
+  <model id="S16032">She knew so much already, that she must know everything. (Mansfield Park, ch. 37, ¶ 26)</model>
+  <model id="S17086">His having been in the same neighbourhood Fanny already knew. (Mansfield Park, ch. 47, ¶ 8)</model>
+</sentence>
+<sentence n="6" register="narration" words="3">
+He looked nervous.
+  <model id="S21554">Her father was growing nervous, and could not understand her. (Emma, ch. 32, ¶ 61)</model>
+  <model id="S28590">“It is over! it is over!” she repeated to herself again and again, in nervous gratitude. (Persuasion, ch. 7, ¶ 26)</model>
+</sentence>
+<sentence n="7" register="narration" words="8">
+He said he wasn't ready for something serious.
+  <never word="wasn't">Austen never wrote it. Hers: was not (written out, as Austen wrote it; 9316×)</never>
+  <model id="S14993">Everything might be possible rather than serious attachment, or serious approbation of it toward her. (Mansfield Park, ch. 31, ¶ 27)</model>
+  <model id="S11884">Fanny coloured and looked at Edmund, but felt too angry for speech; and he needed a little recollection before he could say, “Your lively mind can hardly be serious even on serious subjects. (Mansfield Park, ch. 9, ¶ 16)</model>
+</sentence>
+<sentence n="8" register="narration" words="8">
+He said it wasn't me, it was him.
+  <never word="wasn't">Austen never wrote it. Hers: was not (written out, as Austen wrote it; 9316×)</never>
+  <model id="S18714">Mr. Elton certainly did not very well know what to say. (Emma, ch. 9, ¶ 108)</model>
+  <model id="S19179">She could not but suppose it to be a match that everybody who knew them must think of. (Emma, ch. 14, ¶ 5)</model>
+</sentence>
+</paragraph>
+<paragraph n="3">
+<sentence n="9" register="narration" words="7">
+I wanted to cry but I didn't.
+  <never word="didn't">Austen never wrote it. Hers: did not (written out, as Austen wrote it; 1611×)</never>
+  <model id="S16001">But Mrs. Norris wanted to persuade her that Fanny could be very well spared—she being ready to give up all her own time to her as requested—and, in short, could not really be wanted or missed. (Mansfield Park, ch. 37, ¶ 15)</model>
+  <model id="S17123">She thought he did, but she wanted to be assured of it. (Mansfield Park, ch. 47, ¶ 16)</model>
+</sentence>
+<sentence n="10" register="narration" words="6">
+I just nodded and said okay.
+  <never word="okay">Austen never wrote it. Hers: all right (‘being satisfactory or in satisfactory condition’; 355×); countenance (more general than ‘an endorsement’; 164×); fine (‘being satisfactory or in satisfactory condition’; 238×); cool (‘being satisfactory or in satisfactory condition’; 26×)</never>
+  <model id="S18792">Harriet could just answer, “Oh! dear, yes,” before the gentleman joined them. (Emma, ch. 10, ¶ 31)</model>
+  <model id="S15196">There was comfort, too, in his words, as well as his manner, for he began with, “Mr. Crawford is gone: he has just left me. (Mansfield Park, ch. 32, ¶ 47)</model>
+</sentence>
+<sentence n="11" register="narration" words="15">
+Then I walked home in the rain and ate a whole pint of ice cream.
+  <model id="S21914">He had returned to a late dinner, and walked to Hartfield as soon as it was over. (Emma, ch. 35, ¶ 23)</model>
+  <model id="S5750">She then ran gaily off, rejoicing as she rambled about, in the hope of being at home again in a day or two. (Pride and Prejudice, ch. 10, ¶ 66)</model>
+</sentence>
+</paragraph>
+<paragraph n="4">
+<sentence n="12" register="narration" words="6">
+My roommate thought I was overreacting.
+  <never word="roommate">Austen never wrote it. Hers: friend (more general than ‘an associate who shares a room with you’; 623×); roomy (‘an associate who shares a room with you’; 2×)</never>
+  <never word="overreacting">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <model id="S22287">She must not flatter herself that he thought of her dancing, but if he were criticising her behaviour, she did not feel afraid. (Emma, ch. 38, ¶ 29)</model>
+  <model id="S19373">How she could have been so deceived!—He protested that he had never thought seriously of Harriet—never! (Emma, ch. 16, ¶ 3)</model>
+</sentence>
+<sentence n="13" register="narration" words="3">
+Maybe I was.
+  <model id="S9574">He had, to be sure, done much—she was ashamed to think how much. (Pride and Prejudice, ch. 52, ¶ 5)</model>
+  <model id="S22839">Emma had not been thinking of him, she had forgotten to think of him—but she was very glad to see him. (Emma, ch. 42, ¶ 53)</model>
+</sentence>
+<sentence n="14" register="narration" words="4">
+But it still hurt.
+  <model id="S6700">Elizabeth would wonder, and probably would blame her; and though her resolution was not to be shaken, her feelings must be hurt by such disapprobation. (Pride and Prejudice, ch. 22, ¶ 3)</model>
+  <model id="S1802">Elinor, though greatly shocked, still felt unable to believe it. (Sense and Sensibility, ch. 22, ¶ 21)</model>
+</sentence>
+</paragraph>
+<advice>
+3 short sentences in a row: Yours run 5, 6, 7 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+Short paragraphs of narration: Your narrative paragraphs run a median 28 words; Austen’s 69 (a quarter of hers are under 30).
+You lean on “said”: Rates per 1,000 words over all Austen’s works.
+You lean on “away”: Rates per 1,000 words over all Austen’s works.
+You lean on “day”: Rates per 1,000 words over all Austen’s works.
+You lean on “thought”: Rates per 1,000 words over all Austen’s works.
+5 short sentences in a row: Yours run 10, 8, 3, 8, 8 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+2 short sentences in a row: Yours run 7, 6 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+3 short sentences in a row: Yours run 6, 3, 4 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+</advice>
+<measures score="27">
+Words Austen used: the writer’s 89.5, Austen’s 100
+Narrative sentence length: the writer’s 7, Austen’s 24
+Semicolons per sentence: the writer’s 0, Austen’s 0.32
+Commas per sentence: the writer’s 0.14, Austen’s 1.79
+-ly adverbs per 1,000 words: the writer’s 0, Austen’s 14.1
+Contractions in narration per 1,000 words: the writer’s 31.3, Austen’s 0.2
+Words in speech: the writer’s 0, Austen’s 14
+Narrative paragraph length: the writer’s 28, Austen’s 69
+Flesch–Kincaid grade: the writer’s 1.2, Austen’s 10.1
+</measures>
+<moves>
+<move id="balance" name="Clauses balanced in one period">
+  <example id="S32079">“No, but I wrote to him—I did indeed, I got up this morning before it was light, and was two hours about it; and when my letter was done I thought I never should have courage to give it. (Lady Susan, ch. 24, ¶ 3)</example>
+  <example id="S9919">Elizabeth would not observe her; and when at last Kitty did, she very innocently said, “What is the matter, mamma? (Pride and Prejudice, ch. 55, ¶ 11)</example>
+</move>
+<move id="judgement" name="Judgement in abstract nouns">
+  <example id="S24387">She was in dancing, singing, exclaiming spirits; and till she had moved about, and talked to herself, and laughed and reflected, she could be fit for nothing rational. (Emma, ch. 54, ¶ 37)</example>
+  <example id="S18434">Mr. Perry could not quite understand him, but he was very sure there must be a lady in the case, and he told him so; and Mr. Elton only looked very conscious and smiling, and rode off in great spirits. (Emma, ch. 8, ¶ 58)</example>
+</move>
+<move id="litotes" name="Understatement and litotes">
+  <example id="S26108">I dare say she will not be in good humour again this month; but I am determined I will not be cross; it is not a little matter that puts me out of temper.” (Northanger Abbey, ch. 15, ¶ 4)</example>
+  <example id="S1604">However, I dare say we should have seen a great deal of him in Somersetshire, if it had not happened very unluckily that we should never have been in the country together. (Sense and Sensibility, ch. 20, ¶ 44)</example>
+</move>
+<move id="reported" name="Speech reported">
+  <example id="S22167">Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening. (Emma, ch. 38, ¶ 3)</example>
+  <example id="S30003">“I am sorry to say that I am very far from well; and Jemima has just told me that the butcher says there is a bad sore-throat very much about. (Persuasion, ch. 18, ¶ 9)</example>
+</move>
+<move id="saidshe" name="Speech tagged after its first clause">
+  <example id="S10957">“I shall be very sorry to go away,” said she, with a faltering voice. (Mansfield Park, ch. 3, ¶ 11)</example>
+  <example id="S1512">“I am so glad to see you!” said she, seating herself between Elinor and Marianne, “for it is so bad a day I was afraid you might not come, which would be a shocking thing, as we go away again tomorrow. (Sense and Sensibility, ch. 20, ¶ 2)</example>
+</move>
+<move id="conduct" name="Feeling shown by conduct">
+  <example id="S23097">Emma recollected, blushed, was sorry, but tried to laugh it off. (Emma, ch. 43, ¶ 57)</example>
+  <example id="S16415">She turned away, and wished he would not say such things. (Mansfield Park, ch. 41, ¶ 16)</example>
+</move>
+<move id="irony" name="Ironic verdict">
+  <example id="S30468">He began by speaking of the concert gravely, more like the Captain Wentworth of Uppercross; owned himself disappointed, had expected better singing; and in short, must confess that he should not be sorry when it was over. (Persuasion, ch. 20, ¶ 47)</example>
+  <example id="S24058">In time, of course, Mr. Knightley would be forgotten, that is, supplanted; but this could not be expected to happen very early. (Emma, ch. 51, ¶ 38)</example>
+</move>
+</moves>
+</brief>
+
+Rewrite the passage in the brief (the text before and after is context only). Then call submit_rewrite.

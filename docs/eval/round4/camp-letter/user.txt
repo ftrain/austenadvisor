@@ -1,0 +1,157 @@
+<brief register="letter" person="first" sentences="14">
+<targets>
+Narration: Austen’s sentences have a median of 24 words; half fall between 13 and 41. Speech: median 13.
+About one sentence in three has a semicolon; 1.8 commas a sentence. Contractions only in speech, and rarely.
+These are ranges to write within, not scores to raise: a sentence padded to length is worse than a short one.
+</targets>
+<paragraph n="1">
+<sentence n="1" register="letter" words="4">
+Dear Mom and Dad,
+  <model id="S16541">My dear, dear Fanny, if I had you here, how I would talk to you! (Mansfield Park, ch. 43, ¶ 2)</model>
+  <model id="S33689">“Oh! the dear Creature, cried I, how passionately he loves me! (Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 41)</model>
+</sentence>
+</paragraph>
+<paragraph n="2">
+<sentence n="2" register="letter" words="5">
+Camp is okay I guess.
+  <never word="okay">Austen never wrote it. Hers: all right (‘being satisfactory or in satisfactory condition’; 355×); fine (‘being satisfactory or in satisfactory condition’; 238×); cool (‘being satisfactory or in satisfactory condition’; 26×); satisfactory (near ‘being satisfactory or in satisfactory condition’; 30×)</never>
+  <model id="S31562">You may guess, therefore, my dear madam, with what feelings I look forward to her arrival. (Lady Susan, ch. 3, ¶ 3)</model>
+  <model id="S9006">I am going to Gretna Green, and if you cannot guess with who, I shall think you a simpleton, for there is but one man in the world I love, and he is an angel. (Pride and Prejudice, ch. 47, ¶ 61)</model>
+</sentence>
+<sentence n="3" register="letter" words="10">
+The food is gross and my bunkmate snores like crazy.
+  <never word="bunkmate">Austen never wrote it. Hers: friend (more general than ‘someone who occupies the same sleeping quarters as yourself’; 623×); acquaintance (more general than ‘someone who occupies the same sleeping quarters as yourself’; 363×)</never>
+  <never word="crazy">Austen never wrote it. Hers: sick (‘affected with madness or insanity’; 43×); mad (‘affected with madness or insanity’; 20×); insane (near ‘affected with madness or insanity’; 1×); wild (‘intensely enthusiastic about or preoccupied with’; 39×)</never>
+  <model id="S29999">We see nothing of them, and this is really an instance of gross inattention. (Persuasion, ch. 18, ¶ 7)</model>
+  <model id="S31598">The house is a good one, the furniture fashionable, and everything announces plenty and elegance. (Lady Susan, ch. 5, ¶ 4)</model>
+</sentence>
+<sentence n="4" register="letter" words="12">
+Yesterday we went canoeing and I flipped the canoe and everybody laughed.
+  <never word="canoeing">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <never word="flipped">Austen never wrote it. Hers: turned (more general than ‘lightly throw to see which side comes up’; 197×); turned out (a kind of ‘cause to go on or to be engaged or set in operation’; 197×); turned off (a kind of ‘cause to go on or to be engaged or set in operation’; 197×); turned on (a kind of ‘cause to go on or to be engaged or set in operation’; 197×)</never>
+  <never word="canoe">Austen never wrote it. No word of hers is near: rephrase.</never>
+  <model id="S30013">She and the Harvilles came on Tuesday very safely, and in the evening we went to ask her how she did, when we were rather surprised not to find Captain Benwick of the party, for he had been invited as well as the Harvilles; and what do you think was the reason? (Persuasion, ch. 18, ¶ 11)</model>
+  <model id="S8725">Colonel Forster came yesterday, having left Brighton the day before, not many hours after the express. (Pride and Prejudice, ch. 46, ¶ 5)</model>
+</sentence>
+<sentence n="5" register="letter" words="4">
+It was so embarrassing.
+  <model id="S31614">I am sorry it is so, for what is this but deceit? (Lady Susan, ch. 6, ¶ 3)</model>
+  <model id="S30003">“I am sorry to say that I am very far from well; and Jemima has just told me that the butcher says there is a bad sore-throat very much about. (Persuasion, ch. 18, ¶ 9)</model>
+</sentence>
+</paragraph>
+<paragraph n="3">
+<sentence n="6" register="letter" words="9">
+But there's this girl named Kayla who's really cool.
+  <never word="who's">Austen never wrote it. Hers: who is (written out, as Austen wrote it; 1701×)</never>
+  <model id="S33002">“Dear Eloisa (said I) there’s no occasion for your crying so much about such a trifle. (Love and Freindship, “Lesley Castle”, ¶ 4)</model>
+  <model id="S33309">Whether innocent or guilty, he did not reign long in peace, for Henry Tudor E. of Richmond as great a villain as ever lived, made a great fuss about getting the Crown and having killed the King at the battle of Bosworth, he succeeded to it. (Love and Freindship, “The History Of England”, ¶ 12)</model>
+</sentence>
+<sentence n="7" register="letter" words="10">
+She's from Ohio and she knows a ton about horses.
+  <never word="She's">Austen never wrote it. Hers: She is (written out, as Austen wrote it; 5465×)</never>
+  <model id="S32034">Send him away immediately; he is only a fool: but what her mother can mean, Heaven only knows! (Lady Susan, ch. 23, ¶ 3)</model>
+  <model id="S33301">One of Edward’s Mistresses was Jane Shore, who has had a play written about her, but it is a tragedy and therefore not worth reading. (Love and Freindship, “The History Of England”, ¶ 8)</model>
+</sentence>
+<sentence n="8" register="letter" words="12">
+We hang out at the lake after dinner and talk about stuff.
+  <model id="S33410">Why should this last disappointment hang so heavily on my spirits? (Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 1)</model>
+  <model id="S16542">You should listen to me till you were tired, and advise me till you were still tired more; but it is impossible to put a hundredth part of my great mind on paper, so I will abstain altogether, and leave you to guess what you like. (Mansfield Park, ch. 43, ¶ 2)</model>
+</sentence>
+<sentence n="9" register="letter" words="9">
+I think she likes me but I'm not sure.
+  <model id="S32560">“I’m glad of it (cried my Father) for I long to know who it is.” (Love and Freindship, “Letter 5th Laura To Marianne”, ¶ 6)</model>
+  <model id="S33620">“I am glad you think so replied she, for he is distractedly in love with you.” (Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 8)</model>
+</sentence>
+</paragraph>
+<paragraph n="4">
+<sentence n="10" register="letter" words="5">
+Can you send more snacks?
+  <never word="snacks">Austen never wrote it. Hers: meals (more general than ‘a light informal meal’; 3×); refreshments (a kind of ‘a light informal meal’; 4×)</never>
+  <model id="S9175">Send back your answer as soon as you can, and be careful to write explicitly. (Pride and Prejudice, ch. 49, ¶ 18)</model>
+  <model id="S32034">Send him away immediately; he is only a fool: but what her mother can mean, Heaven only knows! (Lady Susan, ch. 23, ¶ 3)</model>
+</sentence>
+<sentence n="11" register="letter" words="8">
+And my phone charger, which I totally forgot.
+  <never word="phone">Austen never wrote it. Hers: sound (‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 73×); extension (a kind of ‘electronic equipment that converts sound into electrical signals that can be transmitted over distances and then converts received signals back into sounds’; 4×); vowel (a kind of ‘(phonetics) an individual sound unit of speech without concern as to whether or not it is a phoneme of some language’; 1×)</never>
+  <never word="charger">Austen never wrote it. Hers: device (more general than ‘a device that can hold a rechargeable battery by means of an electrical cable’; 4×)</never>
+  <model id="S33174">Never to be sure were there two more different Dispositions in the World. (Love and Freindship, “Lesley Castle”, ¶ 50)</model>
+  <model id="S31884">Though totally without accomplishments, she is by no means so ignorant as one might expect to find her, being fond of books and spending the chief of her time in reading. (Lady Susan, ch. 18, ¶ 3)</model>
+</sentence>
+<sentence n="12" register="letter" words="9">
+The counselors are kind of strict but mostly fine.
+  <never word="counselors">Austen never wrote it. Hers: advisers (more general than ‘someone who gives advice about problems’; 1×); counsels (‘a lawyer who pleads cases in court’; 3×); lawyers (more general than ‘a lawyer who pleads cases in court’; 1×); attorneys (more general than ‘a lawyer who pleads cases in court’; 1×)</never>
+  <model id="S32244">Silly woman to expect constancy from so charming a man! but she always was silly—intolerably so in marrying him at all, she the heiress of a large fortune and he without a shilling: one title, I know, she might have had, besides baronets. (Lady Susan, ch. 26, ¶ 3)</model>
+  <model id="S31698">We are advancing now to some kind of confidence, and in short are likely to be engaged in a sort of platonic friendship. (Lady Susan, ch. 10, ¶ 3)</model>
+</sentence>
+</paragraph>
+<paragraph n="5">
+<sentence n="13" register="letter" words="2">
+Love, Jake
+  <model id="S33624">“I wish it may be true said I, for that is the only kind of love I would give a farthing for—There is some sense in being in love at first sight.” (Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 11)</model>
+  <model id="S32625">“And did you then never feel the pleasing Pangs of Love, Augusta? (Love and Freindship, “Letter 7th Laura To Marianne”, ¶ 11)</model>
+</sentence>
+</paragraph>
+<paragraph n="6">
+<sentence n="14" register="letter" words="9">
+P.S. Please don't let Max use my room.
+  <model id="S32100">I said; “you will find Mr. Vernon in his own room.” (Lady Susan, ch. 24, ¶ 3)</model>
+  <model id="S33704">My Aunt is calling me to come and make the pies, so adeiu my dear freind, and beleive me yours etc—H. Halton. (Love and Freindship, “Letter The Fifth From A Young Lady Very Much In Love To Her Freind”, ¶ 49)</model>
+</sentence>
+</paragraph>
+<advice>
+Short paragraphs of narration: Your narrative paragraphs run a median 22 words; Austen’s 69 (a quarter of hers are under 30).
+You lean on “about”: Rates per 1,000 words over all Austen’s works.
+You lean on “like”: Rates per 1,000 words over all Austen’s works.
+You lean on “but”: Rates per 1,000 words over all Austen’s works.
+You lean on “sure”: Rates per 1,000 words over all Austen’s works.
+4 short sentences in a row: Yours run 5, 10, 12, 4 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+An unusual opening: Under 0.0% of Austen’s narrative sentences open with adverbial noun (home, today) (NR); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).
+4 short sentences in a row: Yours run 9, 10, 12, 9 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+An unusual opening: Under 0.0% of Austen’s narrative sentences open with he / she / it + is (PPS+BEZ); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).
+An unusual opening: Under 0.4% of Austen’s narrative sentences open with modal (could, must) (MD); hers most often open with he / she / it (22%), proper name (16%), article (11%), preposition (7%).
+2 short sentences in a row: Yours run 8, 9 words. Half of Austen’s narrative sentences are 24 words or more; a quarter are 41 or more. She joins clauses with “, and” 10,813 times and “; and” 4,156 times.
+</advice>
+<measures score="18">
+Words Austen used: the writer’s 88.2, Austen’s 100
+Narrative sentence length: the writer’s 9, Austen’s 24
+Semicolons per sentence: the writer’s 0, Austen’s 0.32
+Commas per sentence: the writer’s 0.21, Austen’s 1.79
+-ly adverbs per 1,000 words: the writer’s 27.8, Austen’s 14.1
+Contractions in narration per 1,000 words: the writer’s 46.3, Austen’s 0.2
+Words in speech: the writer’s 0, Austen’s 14
+Narrative paragraph length: the writer’s 22, Austen’s 69
+Flesch–Kincaid grade: the writer’s 2.4, Austen’s 10.1
+</measures>
+<moves>
+<move id="balance" name="Clauses balanced in one period">
+  <example id="S32035">Good bye,” he added, shaking my hand with earnestness; “I do not know when you will see me again; but remember what I tell you of Frederica; you MUST make it your business to see justice done her. (Lady Susan, ch. 23, ¶ 3)</example>
+  <example id="S30003">“I am sorry to say that I am very far from well; and Jemima has just told me that the butcher says there is a bad sore-throat very much about. (Persuasion, ch. 18, ¶ 9)</example>
+</move>
+<move id="judgement" name="Judgement in abstract nouns">
+  <example id="S28479">I will tell you why she is out of spirits. (Persuasion, ch. 6, ¶ 27)</example>
+  <example id="S28477">I am come on to give you notice, that papa and mamma are out of spirits this evening, especially mamma; she is thinking so much of poor Richard! (Persuasion, ch. 6, ¶ 27)</example>
+</move>
+<move id="litotes" name="Understatement and litotes">
+  <example id="S22991">“Oh! very well,” exclaimed Miss Bates, “then I need not be uneasy. (Emma, ch. 43, ¶ 24)</example>
+  <example id="S27806">“If so, my dear, I dare say you will meet again some time or other; do not be uneasy. (Northanger Abbey, ch. 29, ¶ 17)</example>
+</move>
+<move id="reported" name="Speech reported">
+  <example id="S20249">Mrs. Weston laughed, and said he did not know what he was talking about. (Emma, ch. 24, ¶ 43)</example>
+  <example id="S1478">Mrs. Palmer laughed, and said it would not do her any harm. (Sense and Sensibility, ch. 19, ¶ 30)</example>
+</move>
+<move id="saidshe" name="Speech tagged after its first clause">
+  <example id="S1536">“Oh, don’t be so sly before us,” said Mrs. Palmer; “for we know all about it, I assure you; and I admire your taste very much, for I think he is extremely handsome. (Sense and Sensibility, ch. 20, ¶ 12)</example>
+  <example id="S23157">“I am afraid Jane is not very well,” said she, “but I do not know; they tell me she is well. (Emma, ch. 44, ¶ 6)</example>
+</move>
+<move id="conduct" name="Feeling shown by conduct">
+  <example id="S33559">She sighed—“You seem unhappy my dear Miss Grenville—Is it in my power to soften your Misfortunes?” (Love and Freindship, “Letter The Fourth From A Young Lady Rather Impertinent To Her Freind”, ¶ 11)</example>
+  <example id="S868">Marianne coloured, and replied very hastily, “Where, pray?” (Sense and Sensibility, ch. 13, ¶ 62)</example>
+</move>
+<move id="irony" name="Ironic verdict">
+  <example id="S33435">We have delightful Rides round us, I have a Charming horse, am uncommonly fond of the Amusement, replied I quite recovered from my Confusion, and in short I ride a great deal.” (Love and Freindship, “Letter The Second From A Young Lady Crossed In Love To Her Freind”, ¶ 2)</example>
+  <example id="S16639">If I did not believe that she had some regard for me, of course I should not say this, but I do believe it. (Mansfield Park, ch. 44, ¶ 2)</example>
+</move>
+</moves>
+</brief>
+
+Rewrite the passage in the brief (the text before and after is context only). Then call submit_rewrite.

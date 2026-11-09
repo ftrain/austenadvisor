@@ -1,0 +1,150 @@
+{
+ "text": "I was in want of milk, and having caught up my keys, I drove to the shop, where I found it extremely crowded, and the whole passage stopped up by a man who stood conversing with some absent person.\n\nI was not at all disposed to be rude, and begged him to excuse me; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk. I then perceived, at the counter, a lady who had once been something more to me than a stranger, and was thrown into a flutter of spirits.\n\nShe addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well; to which I replied with thanks, and the same compliment, in as few words as civility allowed.\n\nI paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.",
+ "aligned": [
+  {
+   "after": "I was in want of milk, and having caught up my keys, I drove to the shop, where I found it extremely crowded, and the whole passage stopped up by a man who stood conversing with some absent person.",
+   "before": [
+    "I needed milk.",
+    "So I grabbed my keys and drove to the store.",
+    "It was super crowded.",
+    "A guy in a hoodie was blocking the whole aisle while he talked on his phone."
+   ],
+   "why": "This sentence joins four sentences (3, 10, 4, 16 words) into one of 39, removes “grabbed”, “super”, “guy”, “hoodie” (never in Austen), and brings in her “conversing”, modelled on Sense and Sensibility, ch. 11, ¶ 7.",
+   "model": {
+    "id": 679,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 11,
+    "chapterTitle": "XI",
+    "paragraph": 7,
+    "sentence": 4,
+    "text": "Colonel Brandon, unfortunately for himself, had no such encouragement to think only of Marianne, and in conversing with Elinor he found the greatest consolation for the indifference of her sister.",
+    "cite": "Sense and Sensibility, ch. 11, ¶ 7"
+   }
+  },
+  {
+   "after": "I was not at all disposed to be rude, and begged him to excuse me; but he disregarded me entirely, and it was not till some time had passed that he moved, and I obtained my milk.",
+   "before": [
+    "I didn't want to be rude.",
+    "I said excuse me.",
+    "He totally ignored me.",
+    "Finally he moved and I got the milk."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins four sentences (6, 4, 4, 8 words) into one of 37, and removes “ignored” (never in Austen), modelled on Sense and Sensibility, ch. 40, ¶ 26.",
+   "model": {
+    "id": 3799,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 40,
+    "chapterTitle": "XL",
+    "paragraph": 26,
+    "sentence": 5,
+    "text": "Whether he had asked her pardon for his intrusion on first coming into the room, he could not recollect; but determining to be on the safe side, he made his apology in form as soon as he could say anything, after taking a chair.",
+    "cite": "Sense and Sensibility, ch. 40, ¶ 26",
+    "sim": 0.35663208164263005
+   }
+  },
+  {
+   "after": "I then perceived, at the counter, a lady who had once been something more to me than a stranger, and was thrown into a flutter of spirits.",
+   "before": [
+    "Then I saw my ex at the checkout and I basically panicked."
+   ],
+   "why": "This sentence uses her “judgement in abstract nouns” and removes “ex”, “checkout”, “basically”, “panicked” (never in Austen), modelled on Mansfield Park, ch. 32, ¶ 45.",
+   "model": {
+    "id": 15181,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 32,
+    "chapterTitle": "XXXII",
+    "paragraph": 45,
+    "sentence": 2,
+    "text": "His hopes from both gentleman and lady suffered a small depression in consequence; but when he looked at his niece, and saw the state of feature and complexion which her crying had brought her into, he thought there might be as much lost as gained by an immediate interview.",
+    "cite": "Mansfield Park, ch. 32, ¶ 45",
+    "sim": 0.382488153918711
+   }
+  },
+  {
+   "after": "She addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well; to which I replied with thanks, and the same compliment, in as few words as civility allowed.",
+   "before": [
+    "\"Hey,\" she said.",
+    "\"Long time no see.",
+    "You look great.\"",
+    "\"Thanks,\" I said.",
+    "\"You too.\""
+   ],
+   "why": "This sentence uses her “speech reported”, “clauses balanced in one period” and joins five sentences (3, 4, 3, 3, 2 words) into one of 40, modelled on Northanger Abbey, ch. 16, ¶ 16.",
+   "model": {
+    "id": 26324,
+    "work": "northanger",
+    "title": "Northanger Abbey",
+    "year": 1817,
+    "chapter": 16,
+    "chapterTitle": "XVI",
+    "paragraph": 16,
+    "sentence": 4,
+    "text": "Catherine, without hesitation, replied that she was very sure Miss Thorpe did not mean to dance at all.",
+    "cite": "Northanger Abbey, ch. 16, ¶ 16"
+   }
+  },
+  {
+   "after": "I paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.",
+   "before": [
+    "I paid and left as fast as I could.",
+    "Honestly, it was the most awkward ten minutes of my week."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, “ironic verdict” and joins two sentences (9, 11 words) into one of 25, modelled on Emma, ch. 43, ¶ 3.",
+   "model": {
+    "id": 22927,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 43,
+    "chapterTitle": "XLIII",
+    "paragraph": 3,
+    "sentence": 2,
+    "text": "Every distinguishing attention that could be paid, was paid to her.",
+    "cite": "Emma, ch. 43, ¶ 3"
+   }
+  }
+ ],
+ "explanation": "The passage is joined into a few balanced periods; the greeting is reported, the panic hedged as the writer hedged it, and the hoodie dropped as texture.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "I paid and left as fast as I could.",
+   "after": "I paid, and left the place as fast as I could; and it was, I must say, the most awkward ten minutes of my week.",
+   "austen": "She then sat still five minutes longer; but unable to waste such a precious occasion, she suddenly got up, and saying to Kitty, “Come here, my love, I want to speak to you,” took her out of the room.",
+   "cite": "Pride and Prejudice, ch. 55, ¶ 13",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported",
+   "before": "\"Hey,\" she said. \"Long time no see. You look great.\"",
+   "after": "She addressed me with perfect ease, said that it was a long while since we had met, and that I looked extremely well",
+   "austen": "In a few minutes the servant returned, and with a look which did not quite confirm his words, said he had been mistaken, for that Miss Tilney had walked out.",
+   "cite": "Northanger Abbey, ch. 12, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Judgement in abstract nouns",
+   "before": "I basically panicked.",
+   "after": "was thrown into a flutter of spirits",
+   "austen": "They remained but a few minutes together, as Miss Woodhouse must not be kept waiting; and Harriet then came running to her with a smiling face, and in a flutter of spirits, which Miss Woodhouse hoped very soon to compose.",
+   "cite": "Emma, ch. 4, ¶ 28",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "Honestly, it was the most awkward ten minutes of my week.",
+   "after": "and it was, I must say, the most awkward ten minutes of my week.",
+   "austen": "In short, Catherine, everything has gone wrong, but it is now all happily settled.",
+   "cite": "Lady Susan, ch. 24, ¶ 3",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 15,
+ "scoreAfter": 92
+}

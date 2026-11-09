@@ -1,0 +1,175 @@
+{
+ "text": "Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.\n\nWe met the next day at a place of refreshment in the town, where he was before me, and looked not a little uneasy. He said that he was not ready for anything serious, and that the fault was not mine but his own.\n\nI wished to cry, but did not; I only nodded, and said it was all very well. My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.\n\nMy friend thought I made too much of it; and perhaps I did, though it hurt me still.",
+ "aligned": [
+  {
+   "after": "Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.",
+   "before": [
+    "Ryan texted me at midnight.",
+    "He said we needed to talk.",
+    "I knew right away what that meant."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (5, 6, 7 words) into one of 20, and removes “texted” (never in Austen), modelled on Sense and Sensibility, ch. 17, ¶ 49.",
+   "model": {
+    "id": 1300,
+    "work": "sense",
+    "title": "Sense and Sensibility",
+    "year": 1811,
+    "chapter": 17,
+    "chapterTitle": "XVII",
+    "paragraph": 49,
+    "sentence": 1,
+    "text": "Elinor looked surprised at his emotion; but trying to laugh off the subject, she said to him, “Do not you know my sister well enough to understand what she means?",
+    "cite": "Sense and Sensibility, ch. 17, ¶ 49",
+    "sim": 0.5041226179589066
+   }
+  },
+  {
+   "after": "We met the next day at a place of refreshment in the town, where he was before me, and looked not a little uneasy.",
+   "before": [
+    "The next day we met at a coffee shop downtown.",
+    "He was already there, scrolling on his phone.",
+    "He looked nervous."
+   ],
+   "why": "This sentence uses her “understatement and litotes”, joins three sentences (10, 8, 3 words) into one of 24, and removes “downtown”, “scrolling”, “phone” (never in Austen), modelled on Pride and Prejudice, ch. 42, ¶ 17.",
+   "model": {
+    "id": 8350,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 42,
+    "chapterTitle": "XLII",
+    "paragraph": 17,
+    "sentence": 1,
+    "text": "Accordingly, when she retired at night, she asked the chambermaid whether Pemberley were not a very fine place, what was the name of its proprietor, and with no little alarm, whether the family were down for the summer.",
+    "cite": "Pride and Prejudice, ch. 42, ¶ 17",
+    "sim": 0.5203237815552089
+   }
+  },
+  {
+   "after": "He said that he was not ready for anything serious, and that the fault was not mine but his own.",
+   "before": [
+    "He said he wasn't ready for something serious.",
+    "He said it wasn't me, it was him."
+   ],
+   "why": "This sentence uses her “speech reported”, joins two sentences (8, 8 words) into one of 20, and writes out “wasn’t”, modelled on Emma, ch. 38, ¶ 3.",
+   "model": {
+    "id": 22167,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 38,
+    "chapterTitle": "XXXVIII",
+    "paragraph": 3,
+    "sentence": 1,
+    "text": "Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening.",
+    "cite": "Emma, ch. 38, ¶ 3"
+   }
+  },
+  {
+   "after": "I wished to cry, but did not; I only nodded, and said it was all very well.",
+   "before": [
+    "I wanted to cry but I didn't.",
+    "I just nodded and said okay."
+   ],
+   "why": "This sentence uses her “feeling shown by conduct”, “speech reported”, joins two sentences (7, 6 words) into one of 17, and removes “okay” (never in Austen), modelled on Mansfield Park, ch. 41, ¶ 16.",
+   "model": {
+    "id": 16415,
+    "work": "mansfield",
+    "title": "Mansfield Park",
+    "year": 1814,
+    "chapter": 41,
+    "chapterTitle": "XLI",
+    "paragraph": 16,
+    "sentence": 1,
+    "text": "She turned away, and wished he would not say such things.",
+    "cite": "Mansfield Park, ch. 41, ¶ 16",
+    "sim": 0.5119875354497362
+   }
+  },
+  {
+   "after": "My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.",
+   "before": [
+    "Then I walked home in the rain and ate a whole pint of ice cream."
+   ],
+   "why": "This sentence uses her “ironic verdict”, modelled on Emma, ch. 35, ¶ 23.",
+   "model": {
+    "id": 21914,
+    "work": "emma",
+    "title": "Emma",
+    "year": 1815,
+    "chapter": 35,
+    "chapterTitle": "XXXV",
+    "paragraph": 23,
+    "sentence": 2,
+    "text": "He had returned to a late dinner, and walked to Hartfield as soon as it was over.",
+    "cite": "Emma, ch. 35, ¶ 23"
+   }
+  },
+  {
+   "after": "My friend thought I made too much of it; and perhaps I did, though it hurt me still.",
+   "before": [
+    "My roommate thought I was overreacting.",
+    "Maybe I was.",
+    "But it still hurt."
+   ],
+   "why": "This sentence uses her “clauses balanced in one period”, joins three sentences (6, 3, 4 words) into one of 18, and removes “roommate”, “overreacting” (never in Austen), modelled on Pride and Prejudice, ch. 22, ¶ 3.",
+   "model": {
+    "id": 6700,
+    "work": "pride",
+    "title": "Pride and Prejudice",
+    "year": 1813,
+    "chapter": 22,
+    "chapterTitle": "XXII",
+    "paragraph": 3,
+    "sentence": 14,
+    "text": "Elizabeth would wonder, and probably would blame her; and though her resolution was not to be shaken, her feelings must be hurt by such disapprobation.",
+    "cite": "Pride and Prejudice, ch. 22, ¶ 3"
+   }
+  }
+ ],
+ "explanation": "Short sentences are joined by semicolons and balanced clauses; speech is reported; the modern texture (phone, coffee shop) is rendered plainly or dropped, and the whole pint of ice stays.",
+ "notes": [
+  {
+   "technique": "Clauses balanced in one period",
+   "before": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.",
+   "after": "Ryan sent me word at midnight that we must talk; and I knew very well what such a summons meant.",
+   "austen": "Elizabeth would not observe her; and when at last Kitty did, she very innocently said, “What is the matter, mamma?",
+   "cite": "Pride and Prejudice, ch. 55, ¶ 11",
+   "verified": true
+  },
+  {
+   "technique": "Understatement and litotes",
+   "before": "He looked nervous.",
+   "after": "looked not a little uneasy",
+   "austen": "I dare say she will not be in good humour again this month; but I am determined I will not be cross; it is not a little matter that puts me out of temper.”",
+   "cite": "Northanger Abbey, ch. 15, ¶ 4",
+   "verified": true
+  },
+  {
+   "technique": "Speech reported",
+   "before": "He said he wasn't ready for something serious.",
+   "after": "He said that he was not ready for anything serious, and that the fault was not mine but his own.",
+   "austen": "Frank Churchill seemed to have been on the watch; and though he did not say much, his eyes declared that he meant to have a delightful evening.",
+   "cite": "Emma, ch. 38, ¶ 3",
+   "verified": true
+  },
+  {
+   "technique": "Feeling shown by conduct",
+   "before": "I wanted to cry but I didn't. I just nodded and said okay.",
+   "after": "I wished to cry, but did not; I only nodded, and said it was all very well.",
+   "austen": "Emma recollected, blushed, was sorry, but tried to laugh it off.",
+   "cite": "Emma, ch. 43, ¶ 57",
+   "verified": true
+  },
+  {
+   "technique": "Ironic verdict",
+   "before": "Then I walked home in the rain and ate a whole pint of ice cream.",
+   "after": "My walk home lay through the rain, which was at least consistent with the occasion, and I consoled myself with a whole pint of ice.",
+   "austen": "In time, of course, Mr. Knightley would be forgotten, that is, supplanted; but this could not be expected to happen very early.",
+   "cite": "Emma, ch. 51, ¶ 38",
+   "verified": true
+  }
+ ],
+ "scoreBefore": 27,
+ "scoreAfter": 85
+}
