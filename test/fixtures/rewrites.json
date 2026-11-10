@@ -1,0 +1,323 @@
+[
+ {
+  "id": "sister-car",
+  "voice": "austen",
+  "text": "My sister borrowed my car without asking. She brought it back with an empty tank. Then I went home.",
+  "submission": {
+   "paragraphs": [
+    {
+     "sentences": [
+      {
+       "text": "My sister had taken my car without asking, which she had done without the least ceremony of asking, and brought it back with the tank quite empty; a circumstance which a sister's thoughtlessness could alone excuse.",
+       "from": [
+        1,
+        2
+       ],
+       "model": ""
+      },
+      {
+       "text": "I then went home.",
+       "from": [
+        3
+       ],
+       "model": ""
+      }
+     ]
+    }
+   ],
+   "notes": [
+    {
+     "move": "balance",
+     "before": "My sister borrowed my car without asking. She brought it back with an empty tank.",
+     "after": "My sister had taken my car without asking, which she had done without the least ceremony of asking, and brought it back with the tank quite empty; a circumstance which a sister's thoughtlessness could alone excuse.",
+     "model": ""
+    }
+   ],
+   "liberties": [
+    {
+     "after": "which she had done without the least ceremony of asking",
+     "why": "the voice frames the borrow as an offence by naming the want of propriety, the judgement the passage invites but does not say"
+    },
+    {
+     "after": "a circumstance which a sister's thoughtlessness could alone excuse",
+     "why": "a deflating clause that turns the empty tank into a verdict on the sister, within the passage's own irritation"
+    }
+   ],
+   "sense": [],
+   "explanation": "Your three short sentences name the facts plainly; Austen would hold them in one balanced period, with the greater injury closing the sentence, and let the narrator's dry judgement fall at the end. Notice how \"without the least ceremony of asking\" turns the offence into a want of propriety, and how \"a circumstance which a sister's thoughtlessness could alone excuse\" says more than it says. Practise joining your facts into one period with \"and\", and ending with a short verdict sentence like \"I then went home\" only when the matter is done."
+  }
+ },
+ {
+  "id": "sister-car-short",
+  "voice": "austen",
+  "text": "My sister borrowed my car without asking. She brought it back with an empty tank.",
+  "submission": {
+   "paragraphs": [
+    {
+     "sentences": [
+      {
+       "text": "My sister took the carriage without asking my leave, and brought it home again with no more in it than she had found; not without adding to the injury the neglect of returning it no fuller than she had found it.",
+       "from": [
+        1,
+        2
+       ],
+       "model": ""
+      }
+     ]
+    }
+   ],
+   "notes": [
+    {
+     "move": "balance",
+     "before": "My sister borrowed my car without asking. She brought it back with an empty tank.",
+     "after": "My sister took the carriage without asking my leave, and brought it home again with no more in it than she had found",
+     "model": ""
+    },
+    {
+     "move": "litotes",
+     "before": "with an empty tank",
+     "after": "with no more in it than she had found",
+     "model": ""
+    }
+   ],
+   "liberties": [
+    {
+     "after": "not without adding to the injury the neglect of returning it no fuller than she had found it",
+     "why": "the voice frames the writer's bare facts as an injury and a neglect, naming what the two plain sentences imply but do not say; a verdict in the narrator's own abstract nouns, sparing and dry"
+    }
+   ],
+   "sense": [],
+   "explanation": "The writer's two short sentences state two facts; her manner gathers both into one balanced period whose main point, the empty return, arrives last and lands hardest. Where the writer says \"borrowed... without asking,\" I use her judgement-word \"took... without asking my leave,\" which names the liberty taken; and instead of \"empty tank\" I render the empty vessel by litotes, \"with no more in it than she had found,\" so the complaint is felt rather than inventoried. Practise joining cause and consequence in a single sentence and letting a dry last clause carry the verdict."
+  }
+ },
+ {
+  "id": "team-email",
+  "voice": "shakespeare",
+  "text": "Hi team,\n\nQuick update: the launch is moving from Tuesday to Thursday. Legal still hasn't signed off on the pricing page, and I don't want us shipping without it.\n\nPlease have your sections of the deck done by Wednesday at noon. If you're blocked, tell me today, not tomorrow.\n\nThanks, Sam",
+  "submission": {
+   "paragraphs": [
+    {
+     "sentences": [
+      {
+       "text": "Full. Good even, all.",
+       "from": [
+        1
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "Hear it in brief: the setting forth, that was for Tuesday, stands now for Thursday.",
+       "from": [
+        2
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "The lawyers have not yet subscribed their hand to the page of prices, and I would not set up us forth without it.",
+       "from": [
+        3
+       ],
+       "model": ""
+      },
+      {
+       "text": "Wherefore I pray you, let each man have his part of the book done by Wednesday at the stroke of noon.",
+       "from": [
+        4
+       ],
+       "model": ""
+      },
+      {
+       "text": "And if any be stayed in his labour, say so today, not tomorrow.",
+       "from": [
+        5
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "My thanks. Sam.",
+       "from": [
+        6
+       ],
+       "model": ""
+      }
+     ]
+    }
+   ],
+   "notes": [],
+   "liberties": [
+    {
+     "after": "Full. Good even, all.",
+     "why": "The bare greeting 'Hi team' becomes a hail befitting a company addressed by one who must move them to a new time; the voice adds the note of command that the matter of a deadline implies."
+    }
+   ],
+   "sense": [],
+   "explanation": "Your note told the team what to do in the plainest office manner; his manner turns the same matter into the speech of a captain moving his men to a new muster. Where you wrote \"the launch is moving from Tuesday to Thursday,\" I set the two days as an antithesis, \"that was for Tuesday, stands now for Thursday,\" because a change is felt as a contrast before it is taken as a fact. Where you wrote \"tell me today, not tomorrow,\" I kept the urgent thing against its opposite, \"say so today, not tomorrow,\" so the deadline lands like an oath. Practise naming a change by its two sides set against each other, and a command by what it forbids."
+  }
+ },
+ {
+  "id": "camp-letter",
+  "voice": "shakespeare",
+  "text": "Dear Mom and Dad,\n\nCamp is okay I guess. The food is gross and my bunkmate snores like crazy. Yesterday we went canoeing and I flipped the canoe and everybody laughed. It was so embarrassing.\n\nBut there's this girl named Kayla who's really cool. She's from Ohio and she knows a ton about horses. We hang out at the lake after dinner and talk about stuff. I think she likes me but I'm not sure.\n\nCan you send more snacks? And my phone charger, which I totally forgot. The counselors are kind of strict but mostly fine.\n\nLove, Jake\n\nP.S. Please don't let Max use my room.",
+  "submission": {
+   "paragraphs": [
+    {
+     "sentences": [
+      {
+       "text": "Dear Mother and Father,",
+       "from": [
+        1
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "Camp is well enough, I think.",
+       "from": [
+        2
+       ],
+       "model": ""
+      },
+      {
+       "text": "The food is foul, and my bedfellow snores like a whole herd.",
+       "from": [
+        3
+       ],
+       "model": ""
+      },
+      {
+       "text": "Yesterday we went upon the water in a small boat, and I threw it over, and all the company laughed at me as one made a jest of.",
+       "from": [
+        4
+       ],
+       "model": ""
+      },
+      {
+       "text": "It shamed me sorely, I tell you.",
+       "from": [
+        5
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "Yet there is a girl named Kayla, and she is passing fine.",
+       "from": [
+        6
+       ],
+       "model": ""
+      },
+      {
+       "text": "She is of Ohio, and she knows more of horses than any in the camp.",
+       "from": [
+        7
+       ],
+       "model": ""
+      },
+      {
+       "text": "After supper we walk down to the lake and talk of this and that.",
+       "from": [
+        8
+       ],
+       "model": ""
+      },
+      {
+       "text": "I think she likes me; but of that I am not certain.",
+       "from": [
+        9
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "Can you send me more bites to eat?",
+       "from": [
+        10
+       ],
+       "model": ""
+      },
+      {
+       "text": "And my charger also, which I wholly forgot.",
+       "from": [
+        11
+       ],
+       "model": ""
+      },
+      {
+       "text": "The counsellors are somewhat strict, yet for the most part fair.",
+       "from": [
+        12
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "Your loving son, Jake",
+       "from": [
+        13
+       ],
+       "model": ""
+      }
+     ]
+    },
+    {
+     "sentences": [
+      {
+       "text": "P. S.",
+       "from": [
+        14
+       ],
+       "model": ""
+      },
+      {
+       "text": "Let not Max use my room.",
+       "from": [
+        14
+       ],
+       "model": ""
+      }
+     ]
+    }
+   ],
+   "notes": [
+    {
+     "move": "image",
+     "before": "my bunkmate snores like crazy",
+     "after": "my bedfellow snores like a whole herd",
+     "model": ""
+    }
+   ],
+   "liberties": [
+    {
+     "after": "as one made a jest of",
+     "why": "The voice gives the crowd's laughter its quality — mock-shouting — to carry the embarrassment the writer only names."
+    }
+   ],
+   "sense": [],
+   "explanation": "Your passage is a quick, plain note; Shakespeare would give each turn its own weight, setting complaint against comfort and doubt against hope. I turned your \"but\" contrasts into antithesis (\"somewhat strict, yet for the most part fair\") and your plain \"snores like crazy\" into an image carried through (\"like a whole herd\"); the moved question of the heart (\"I think she likes me; but of that I am not certain\") is the engine of a soliloquy. Practise giving every contrast two balanced halves, and letting one plain image stand for a whole feeling."
+  }
+ }
+]

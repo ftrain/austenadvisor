@@ -77,6 +77,56 @@ function makeClient(): Anthropic {
   return new Anthropic();
 }
 
+/** The model's answer to one writing call: its blocks (the tool calls carry the rewrite), why it stopped, the tokens. */
+export interface WriterAnswer {
+  content: Anthropic.Beta.BetaContentBlock[];
+  stop_reason: string | null;
+  usage?: { input_tokens?: number; output_tokens?: number; cache_read_input_tokens?: number; cache_creation_input_tokens?: number };
+}
+
+/**
+ * The writer. One method: the system prompt, the conversation so far (the brief, then any redraft asked for) and the
+ * tools go in; the model's answer comes out. The default sends the call to the provider. A test passes a fake.
+ */
+export interface WriterClient {
+  call(system: string, user: Anthropic.Beta.BetaMessageParam[], tools: Anthropic.Beta.BetaTool[]): Promise<WriterAnswer>;
+}
+
+/** The provider's writer. It keeps its Anthropic client for the reader and the proofreader, which only it can run. */
+export interface ProviderWriter extends WriterClient {
+  anthropic: Anthropic;
+}
+
+export function providerWriter(anthropic: Anthropic = makeClient()): ProviderWriter {
+  return {
+    anthropic,
+    call: (system, user, tools) =>
+      writerCall(anthropic, {
+        model: MODEL,
+        max_tokens: 16000,
+        system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
+        thinking: THINKING ? { type: 'adaptive' } : { type: 'disabled' },
+        output_config: { effort: EFFORT },
+        tools,
+        messages: user,
+        ...(PROVIDER === 'anthropic' ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {}),
+      }) as Promise<WriterAnswer>,
+  };
+}
+
+let injectedWriter: WriterClient | null = null;
+/** Puts a writer in place of the provider's for every rewrite until it is cleared with null. For tests. */
+export function useWriter(client: WriterClient | null): void {
+  injectedWriter = client;
+}
+/** The writer a rewrite uses when none is passed: the injected one, or the provider's. */
+export const defaultWriter = (): WriterClient => injectedWriter ?? providerWriter();
+
+/** An answer that submits a rewrite, as a fake writer gives it. */
+export function submitted(input: Record<string, unknown>, id = `toolu_${Math.random().toString(36).slice(2, 10)}`): WriterAnswer {
+  return { content: [{ type: 'tool_use', id, name: SUBMIT.name, input } as Anthropic.Beta.BetaToolUseBlock], stop_reason: 'tool_use', usage: { input_tokens: 0, output_tokens: 0 } };
+}
+
 /** How far the rewrite goes: `full` renders the passage as a page of the author's; `light` tidies the writer's own. */
 export type Strength = 'full' | 'light';
 
@@ -796,15 +846,18 @@ export async function rewriteWithAI(
   passage: string | DocBlock[],
   context: { before?: string; after?: string; instructions?: string; strength?: Strength; editor?: EditorNote[]; reading?: Reading } = {},
   onProgress: (what: string, progress: RewriteProgress) => void = () => {},
+  writer: WriterClient = defaultWriter(),
 ): Promise<RewriteResult> {
   const strength = context.strength ?? 'full';
   const tell = (what: string) => onProgress(what, { what, calls: toolCalls.length, draft: rounds, problems: problems.length });
   const blocks = typeof passage === 'string' ? blocksOfText(passage) : passage;
   const brief = buildBrief(m, blocks);
-  const client = makeClient();
+  // The reader and the proofreader need the provider's client; with any other writer they are skipped.
+  const client = (writer as Partial<ProviderWriter>).anthropic;
   // An editor reads for sense while the first draft is written (one pass that both writes and reads misses what does
   // not agree); what it finds goes back with the engine's check, as a redraft. A passage with no fault costs nothing.
-  if (PASSES === 1 && strength === 'full' && !context.editor && !context.reading) {
+  if (!client && !context.editor && !context.reading) context = { ...context, editor: [] };
+  if (client && PASSES === 1 && strength === 'full' && !context.editor && !context.reading) {
     onProgress('reading it first', { what: 'reading it first', calls: 0, draft: 0, problems: 0 });
     const read = await readForSense(m, blocks.map((b) => b.text).join('\n\n'), readerClient(client)).catch(() => NO_READING);
     context = { ...context, editor: read.sense };
@@ -824,17 +877,7 @@ export async function rewriteWithAI(
   const usage = { input: 0, cached: 0, cacheWrite: 0, output: 0 };
   for (let turn = 0; turn < 18 && !accepted; turn++) {
     tell(turn === 0 ? (MODE === 'oneshot' ? 'writing the rewrite, in one go' : 'reading the brief') : rounds && problems.length ? `drafting again (draft ${rounds + 1})` : 'consulting the works');
-    const params = {
-      model: MODEL,
-      max_tokens: 16000,
-      system: [{ type: 'text', text: systemPrompt(m, strength), cache_control: { type: 'ephemeral' } }],
-      thinking: THINKING ? { type: 'adaptive' } : { type: 'disabled' },
-      output_config: { effort: EFFORT },
-      tools,
-      messages,
-      ...(PROVIDER === 'anthropic' ? { betas: ['server-side-fallback-2026-07-01'], fallbacks: 'default' } : {}),
-    };
-    const response = await writerCall(client, params);
+    const response = await writer.call(systemPrompt(m, strength), messages, tools);
     const u = ((response as unknown as { usage?: Record<string, number> }).usage ?? {}) as Record<string, number>;
     usage.input += u.input_tokens ?? 0;
     usage.cached += u.cache_read_input_tokens ?? 0;
@@ -890,7 +933,7 @@ export async function rewriteWithAI(
   const sub = accepted ?? last;
   if (!sub) throw new Error('The model gave no rewrite.');
   repairWords(m, brief, sub);
-  if (PASSES === 1 && strength === 'full' && process.env.ADVISOR_PROOF === 'on') {
+  if (client && PASSES === 1 && strength === 'full' && process.env.ADVISOR_PROOF === 'on') {
     tell('proofreading against yours');
     const proof = await proofread(m, brief, sub, client).catch(() => null);
     if (proof) applyProof(sub, proof);
