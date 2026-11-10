@@ -1,0 +1,2065 @@
+[
+ {
+  "voice": "austen",
+  "case": "breakup",
+  "ms": 175849,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "Ryan wrote to me at midnight, and said that we must talk; and I knew in a moment what he meant, for that is a sentence which nobody, I believe, ever speaks as the prelude to any thing agreeable.\n\nWe met the next day at a coffee-house in the town. He was already there, and so intent upon what he held in his hand that he did not at first observe me; and he looked nervous. He said that he was not ready for any thing serious, and that the fault was not in me but in himself.\n\nI was not far from tears, but did not cry; I only nodded, and said that it was all right; and then I walked home in the rain, and ate a whole pint of ice cream.\n\nThe friend who shared my room thought that I made too much of it; and perhaps I did, but it still gave me pain.",
+  "rows": [
+   {
+    "text": "Ryan wrote to me at midnight, and said that we must talk; and I knew in a moment what he meant, for that is a sentence which nobody, I believe, ever speaks as the prelude to any thing agreeable.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "Ryan wrote to me at midnight, and said that we must talk; and I knew in a moment what he meant, for that is a sentence which nobody, I believe, ever speaks as the prelude to any thing agreeable.",
+      "cite": "Emma, ch. 23, ¶ 28",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The narrator's dry backward glance over her own story; the generalization is invited by 'I knew what that meant,' and turns a plain statement into the irony the moment asks for. It is the one liberty the voice takes.",
+      "after": "for that is a sentence which nobody, I believe, ever speaks as the prelude to any thing agreeable",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "We met the next day at a coffee-house in the town. He was already there, and so intent upon what he held in his hand that he did not at first observe me; and he looked nervous. He said that he was not ready for any thing serious, and that the fault was not in me but in himself.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Speech reported",
+      "after": "He said that he was not ready for any thing serious, and that the fault was not in me but in himself.",
+      "cite": "Persuasion, ch. 18, ¶ 9",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I was not far from tears, but did not cry; I only nodded, and said that it was all right; and then I walked home in the rain, and ate a whole pint of ice cream.",
+    "notes": []
+   },
+   {
+    "text": "The friend who shared my room thought that I made too much of it; and perhaps I did, but it still gave me pain.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "The chief difference is that your sentences come one short fact at a time, where hers gather a whole turn of the matter into one balanced period and let the narrator's dry judgement fall on it. I joined your first three sentences into 'Ryan wrote to me at midnight... the prelude to any thing agreeable,' and turned his words into reported speech, 'that the fault was not in me but in himself,' so the reader feels the narrator's composure as a kind of irony. Practise joining short sentences with '; and' and 'for,' and understating the strongest feeling, as in 'I was not far from tears,' which works because the refusal to name the tears shows them the more.\""
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "event",
+     "gist": "Ryan sends word at midnight that they must talk"
+    },
+    {
+     "role": "premonition",
+     "gist": "she knows at once what it means"
+    },
+    {
+     "role": "setting",
+     "gist": "they meet the next day at a coffee-house in the town"
+    },
+    {
+     "role": "scene",
+     "gist": "he is there before her, absorbed, nervous"
+    },
+    {
+     "role": "the words",
+     "gist": "he says he is not ready, that the fault is not hers"
+    },
+    {
+     "role": "reaction",
+     "gist": "near tears but composed; nods, says it is all right"
+    },
+    {
+     "role": "aftermath",
+     "gist": "walks home in the rain, eats a whole pint of ice cream"
+    },
+    {
+     "role": "verdict",
+     "gist": "her friend says she made too much of it; perhaps she did; it still pains her"
+    }
+   ],
+   "plan": [
+    {
+     "role": "summons",
+     "gist": "the midnight message, her instant reading of it, closed with a dry aside",
+     "why": "one period gathers three short sentences; the aside is the irony the moment invites, and lands the meaning at once."
+    },
+    {
+     "role": "scene",
+     "gist": "the meeting: he is there before her, absorbed and nervous, then his words reported",
+     "why": "showing him by conduct before his speech makes the words fall the harder; reported speech keeps the narrator's evenness."
+    },
+    {
+     "role": "reaction",
+     "gist": "near tears but composed; nods, says it is all right; walks home and eats a whole pint of ice cream",
+     "why": "her composure by understatement and conduct; the excess of the ice cream is left to speak for the feeling."
+    },
+    {
+     "role": "verdict",
+     "gist": "her friend's judgement, her own half-agreement, and the pain that remains",
+     "why": "the closing turn lands hardest last: the friend's rebuke, then the small confession, then the pain understated."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 91,
+   "scoreYours": 27,
+   "never": [
+    "coffee-house"
+   ],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 4,
+   "notes": 3,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "so intent upon what he held in his hand that he did not at first observe me",
+     "why": "The writer says only that he was already there, scrolling on his phone. 'Did not at first observe me' is a new incident, and 'intent upon' changes idle scrolling into absorption. The notes do not report either change."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "I was not far from tears, but did not cry",
+     "why": "The writer's 'I wanted to cry but I didn't' is a plain wish. 'Not far from tears' shifts it to a physical near-state and softens the degree of feeling a little."
+    },
+    {
+     "kind": "voice",
+     "quote": "and ate a whole pint of ice cream",
+     "why": "The modern 'pint of ice cream' sits oddly beside 'coffee-house' and 'any thing', so the period diction slips. The paragraph's sentence also keeps the writer's flat rhythm instead of becoming a balanced Austen period."
+    },
+    {
+     "kind": "voice",
+     "quote": "Ryan wrote to me at midnight",
+     "why": "Austen is almost entirely third-person narration, so the first-person memoir narrator is not her natural mode. 'Wrote to me' and 'for that is a sentence which nobody, I believe…' read as Austen in costume more than as her ironic narrator."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Emma, ch. 23, ¶ 28",
+     "why": "The chapter and paragraph citations for Emma and Persuasion look precise but are doubtful and cannot be verified. The sources do not clearly show the claimed move, so they are not apt."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 3:\n  (no notes)\nParagraph 4:\n  (no notes)",
+     "why": "Real changes go unreported in paragraphs 3 and 4: 'roommate' became 'the friend who shared my room', 'overreacting' became 'made too much of it', and 'wanted to cry' was reworked. The notes also claim 'one liberty' while the added 'did not at first observe me' goes unmentioned."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise joining short sentences with '; and' and 'for,' and understating the strongest feeling",
+     "why": "The lesson is thin, with essentially one idea (join sentences, understate). It ends with a stray closing quotation mark. It says nothing about the paragraph 4 verdict or about showing a character's conduct before his speech, which the outline names."
+    }
+   ],
+   "verdict": "A competent, mostly faithful Austenian rewrite with a good opening period and sound structure. It adds an unreported incident ('did not at first observe me'), leaves the ice cream anachronism jarring, and its notes are sparse with doubtful citations. The lesson is useful but narrow."
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "neighbors",
+  "ms": 255155,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "A new family took possession of the house next door on the Saturday last, and came attended by a cart of uncommon size and by two young children, so that the whole neighbourhood was at once furnished with matter for observation. The father, as far as a first sight could determine, was a very good sort of man; the lady of the party, who was known to be his sister, was rather reserved in her manners than otherwise.\n\nMy mother, who never suffered a new neighbour to remain a day without some token of civility, lost no time in carrying them a dish of biscuits. Her object, however, was not mere civility; she meant to learn everything that could be learnt, of the place they came from, of their means of living, and of their going to church.\n\nIt soon appeared, however, that the father was a lawyer, and a single man; or, more properly, that he had been married, and was now parted from his wife. My mother, on hearing it, had a look which I understood at once, for I knew exactly what was passing in her mind. She had been trying these many years to see me married; and now, as if on purpose, a single man, and a lawyer, had come to the very door.",
+  "rows": [
+   {
+    "text": "A new family took possession of the house next door on the Saturday last, and came attended by a cart of uncommon size and by two young children, so that the whole neighbourhood was at once furnished with matter for observation. The father, as far as a first sight could determine, was a very good sort of man; the lady of the party, who was known to be his sister, was rather reserved in her manners than otherwise.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your second paragraph gives the new family a mother (“The mom is kind of standoffish”), but your last says the father is single and divorced; one household cannot be both. I made the standoffish lady the father's sister, who lives with him and has the care of the children, as Bingley's unmarried sisters live with him in Pride and Prejudice; the narrator knows her for a sister from the first, and the single state of the father remains the discovery.",
+      "after": "the lady of the party, who was known to be his sister, was rather reserved in her manners than otherwise.",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The voice frames the arrival through its general effect on the neighbourhood — the very curiosity the passage goes on to show in the narrator's mother.",
+      "after": "so that the whole neighbourhood was at once furnished with matter for observation",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "My mother, who never suffered a new neighbour to remain a day without some token of civility, lost no time in carrying them a dish of biscuits. Her object, however, was not mere civility; she meant to learn everything that could be learnt, of the place they came from, of their means of living, and of their going to church.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Judgement in abstract nouns",
+      "after": "Her object, however, was not mere civility; she meant to learn everything that could be learnt, of the place they came from, of their means of living, and of their going to church.",
+      "cite": "Sense and Sensibility, ch. 6, ¶ 6",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The voice gives the mother a standing character in one general clause, so her biscuits read as habit rather than single impulse, and her later motive is the more pointed.",
+      "after": "who never suffered a new neighbour to remain a day without some token of civility",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "It soon appeared, however, that the father was a lawyer, and a single man; or, more properly, that he had been married, and was now parted from his wife. My mother, on hearing it, had a look which I understood at once, for I knew exactly what was passing in her mind. She had been trying these many years to see me married; and now, as if on purpose, a single man, and a lawyer, had come to the very door.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "The mother's eagerness to marry her child to a single man newly come into the neighbourhood echoes the opening of Pride and Prejudice, and Mrs. Bennet's designs on her daughters. I let the close ring the echo quietly — a single man, and a lawyer, at the very door — rather than copy the sentence itself.",
+      "after": "She had been trying these many years to see me married; and now, as if on purpose, a single man, and a lawyer, had come to the very door.",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The narrator's dry aside on the coincidence, saying more than it says: the man's arrival is read through the mother's scheme, which the narrator does not share.",
+      "after": "as if on purpose",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "The chief difference is the sentence: yours run seven or eight words and read like notes, while the author's run near twice a dozen and arrive at their point late. I joined yours into balanced periods \\u2014 \\u201ccame attended by a cart of uncommon size and by two young children, so that the whole neighbourhood was at once furnished with matter for observation\\u201d \\u2014 so that each sentence carries a clause of description and a clause of consequence, and the short sentence is saved for a turn. I also let the narrator judge and understate rather than report: the standoffish lady is \\u201crather reserved in her manners than otherwise\\u201d (litotes), and the mother's scheme is left to land last, where \\u201cas if on purpose\\u201d says more than it says. Practise naming motive in abstract nouns of judgement (\\u201cher object, however, was not mere civility\\u201d) and giving feeling by conduct (\\u201chad a look which I understood at once\\u201d) instead of stating it."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "setting",
+     "gist": "A new family moves in next door."
+    },
+    {
+     "role": "description",
+     "gist": "Their cart, their children; the father seems nice, the lady standoffish."
+    },
+    {
+     "role": "event",
+     "gist": "The narrator's mother at once bakes them biscuits."
+    },
+    {
+     "role": "motive",
+     "gist": "She wants to find out everything about them — whence they came, their work, their churchgoing."
+    },
+    {
+     "role": "turn",
+     "gist": "The father turns out a lawyer, and single — divorced."
+    },
+    {
+     "role": "feeling",
+     "gist": "The mother gets a look, which the narrator reads exactly."
+    },
+    {
+     "role": "verdict",
+     "gist": "She has been trying to set the narrator up for years."
+    }
+   ],
+   "plan": [
+    {
+     "role": "setting",
+     "gist": "The arrival, and the neighbourhood furnished at once with matter for observation.",
+     "why": "The voice opens with the event and its general effect, so that the curiosity the passage goes on to show is already framed as the neighbourhood's, not merely the mother's."
+    },
+    {
+     "role": "description",
+     "gist": "Father and lady judged together in one balanced period.",
+     "why": "Judgement and litotes in the same breath characterize the family without effusion, and the lady is quietly fixed as a sister so the later discovery does not contradict."
+    },
+    {
+     "role": "event and motive",
+     "gist": "The mother's prompt biscuits, then her true object stated plainly.",
+     "why": "Civility first, curiosity second, so the irony of her kindness is prepared and the list of her inquiries lands as design."
+    },
+    {
+     "role": "turn",
+     "gist": "The discovery, in a period that corrects itself.",
+     "why": "The single state of the father is the point on which everything turns; the voice lets the sentence amend itself, as gossip does."
+    },
+    {
+     "role": "feeling and verdict",
+     "gist": "The mother's look, the narrator's reading of it, and the dry closing observation.",
+     "why": "Feeling is given by conduct, not named, and the irony is kept for last, where a single man at the very door is all the answer the mother needs."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 97,
+   "scoreYours": 30,
+   "never": [],
+   "paragraphsYours": 3,
+   "paragraphsHers": 3
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 3,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "who was known to be his sister",
+     "why": "The sister is invented. The mending is reported, but the draft says \"the mom\", and the rewrite turns her into a different relation. The mending is defensible, but 'known to be' adds a fact the writer never gave."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "so that the whole neighbourhood was at once furnished with matter for observation",
+     "why": "Adds an event: the whole neighbourhood's reaction. The writer's passage has no such thing. The note calls it a liberty, but it is invented content."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a cart of uncommon size",
+     "why": "A 'huge truck' becomes a cart, which is an anachronistic substitution. 'Cart' also loses the sense of a moving truck."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "It soon appeared, however, that the father was a lawyer",
+     "why": "'however' is misplaced and repeated. It already appears in the previous paragraph, and nothing here contrasts with what came before."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "now, as if on purpose, a single man, and a lawyer, had come to the very door.",
+     "why": "Adds the narrator's ironic comment and a 'coincidence' that the draft lacks. The writer's wry reluctance ('I knew exactly what she was thinking') is shifted, and the blunt closing verdict is lost."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a dish of biscuits",
+     "why": "'Cookies' becomes 'biscuits', which is acceptable. But the 'right away' urgency is rendered as a general habit ('never suffered a new neighbour to remain a day'), a character trait the writer did not give."
+    },
+    {
+     "kind": "voice",
+     "quote": "had a look which I understood at once, for I knew exactly what was passing in her mind",
+     "why": "Redundant: 'understood at once' and 'knew exactly' say the same thing. The sentence is clumsy and un-Austenian in its repetition."
+    },
+    {
+     "kind": "voice",
+     "quote": "to see me married",
+     "why": "Fine, but the draft's narrator is an unspecified gender and age. Austen's heroine voice or Mrs. Bennet-like mother ironies are borrowed rather than built. The prose lacks Austen's free indirect discourse."
+    },
+    {
+     "kind": "natural",
+     "quote": "of their going to church",
+     "why": "Awkward: 'their going to church' reads stiffly and loses the sense of whether they were churchgoers."
+    },
+    {
+     "kind": "natural",
+     "quote": "on the Saturday last",
+     "why": "Odd idiom for 'last weekend'. It is not period-natural and narrows 'weekend' to one day."
+    },
+    {
+     "kind": "notes",
+     "quote": "as Bingley's unmarried sisters live with him in Pride and Prejudice",
+     "why": "The comparison is loosely apt but the sisters are in the household for different reasons. The notes also claim a quotation 'cites Sense and Sensibility, ch. 6, ¶ 6' for a sentence that is the rewriter's own, which is a dubious citation."
+    },
+    {
+     "kind": "notes",
+     "quote": "the mother's scheme is left to land last, where \"as if on purpose\" says more than it says",
+     "why": "The 'says more than it says' phrase is a muddled formulation, and the lesson talks of 'near twice a dozen' words, which is vague and rhetorical, not concrete."
+    },
+    {
+     "kind": "sense",
+     "quote": "or, more properly, that he had been married, and was now parted from his wife",
+     "why": "Mostly mends 'single, well, divorced', but 'single man' then contradicts 'married' wording: the correction is the draft's own and fine, though 'single' in the last sentence glosses over it."
+    }
+   ],
+   "verdict": "A competent Austen pastiche that catches the contradiction in the draft and mends it with a reported sister, but it adds invented content (the neighbourhood, the mother's habit), repeats 'however', and has some stiff or redundant phrasing. The teaching is decent but includes a shaky citation and a vague number."
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "paris",
+  "ms": 93798,
+  "yours": "I've never been to Paris. The last time I was there it rained the whole week, and my brother lost his passport on the second day.\n\nWe spent most of the trip at the embassy. He still says it was the best vacation he ever had.",
+  "rewrite": "I have never been to Paris; and on the only visit I ever made to it, it rained the whole week, and my brother lost his passport on the second day.\n\nWe spent the greater part of our stay at the consul's office; and he still declares that it was the pleasantest journey he ever made.",
+  "rows": [
+   {
+    "text": "I have never been to Paris; and on the only visit I ever made to it, it rained the whole week, and my brother lost his passport on the second day.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first sentence says you have never been to Paris; your second says 'the last time I was there,' which on the face of it means you have been. I read the second as meaning the one occasion, and wrote 'the only visit I ever made,' so the two agree without altering your meaning.",
+      "after": "I have never been to Paris; and on the only visit I ever made to it, it rained the whole week",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "I have never been to Paris; and on the only visit I ever made to it, it rained the whole week, and my brother lost his passport on the second day.",
+      "cite": "Pride and Prejudice, ch. 2, ¶ 1",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "We spent the greater part of our stay at the consul's office; and he still declares that it was the pleasantest journey he ever made.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "The chief difference is that your four short plain sentences become two balanced periods in which the denial is qualified at once and the brother's contrary verdict is reported rather than quoted. The irony does its work in the dry word \"still\" before \"declares that it was the pleasantest journey he ever made,\" because the narrator's judgement is implied by precision rather than announced. Practise folding a claim and its exception into one period, and letting reported speech carry the joke."
+  ],
+  "reading": {
+   "kind": "story (brief first-person reminiscence)",
+   "outline": [
+    {
+     "role": "claim",
+     "gist": "I have never been to Paris"
+    },
+    {
+     "role": "circumstance",
+     "gist": "the one visit: rain all week, brother's passport lost the second day"
+    },
+    {
+     "role": "consequence",
+     "gist": "most of the stay spent at the embassy"
+    },
+    {
+     "role": "verdict",
+     "gist": "the brother still calls it the best vacation he ever had"
+    }
+   ],
+   "plan": [
+    {
+     "role": "assertion qualified at once",
+     "gist": "the denial and its single exception joined in one balanced period, the misfortune arriving last",
+     "why": "the voice does not leave a bare denial standing; she folds the exception into the same breath so the circumstance and the ill-luck close the period."
+    },
+    {
+     "role": "consequence and contrary judgement",
+     "gist": "the stay at the office and the brother's verdict joined with a semicolon, his words reported",
+     "why": "reporting his speech lets the narrator's dry 'still' carry the whole irony, and the verdict lands last where it tells hardest."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 85,
+   "scoreYours": 40,
+   "never": [
+    "consul's"
+   ],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 2,
+   "voice": 3,
+   "sense": 2,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 2,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "at the consul's office",
+     "why": "The writer said 'embassy'. A consul's office is a different institution, so a stated fact was changed and the change is not reported."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "the pleasantest journey he ever made",
+     "why": "The writer said 'best vacation'. A journey is not a holiday, and a lost passport plus a week at an office is no 'journey', so the point of the joke shifts."
+    },
+    {
+     "kind": "sense",
+     "quote": "I have never been to Paris; and on the only visit I ever made to it",
+     "why": "The contradiction is not mended. 'Never been' and 'the only visit I ever made' still clash in one sentence, and the semicolon makes the clash more glaring. The known fault stays in place."
+    },
+    {
+     "kind": "notes",
+     "quote": "so the two agree without altering your meaning",
+     "why": "This claims the mending works, but the rewrite still contradicts itself. The note also does not consider the more plausible readings (a joke, or never having seen Paris beyond the office)."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Pride and Prejudice, ch. 2, ¶ 1",
+     "why": "The cited paragraph is not an apt model for this balanced period. The move is also credited to a source loosely, as though Austen had written this sentence."
+    },
+    {
+     "kind": "notes",
+     "quote": "(no notes)",
+     "why": "Paragraph 2 changed 'embassy' to 'consul's office' and 'vacation' to 'journey', and none of this is reported."
+    },
+    {
+     "kind": "teaching",
+     "quote": "the brother's contrary verdict is reported rather than quoted",
+     "why": "The original already reported his words indirectly ('He still says'), so this claimed change did not happen. The lesson also credits the irony to 'still', which the writer already had."
+    },
+    {
+     "kind": "voice",
+     "quote": "We spent the greater part of our stay",
+     "why": "This is competent but thin Austen, with little of her characteristic judgement or ironic framing beyond a few formal word swaps ('declares', 'pleasantest')."
+    }
+   ],
+   "verdict": "The diction is lightly Austenian and the structure is kept, but the central contradiction is left standing while the note claims it was fixed. 'Embassy' became 'consul's office' and 'vacation' became 'journey' without being reported, and the lesson misdescribes what changed."
+  }
+ },
+ {
+  "voice": "kjv",
+  "case": "breakup",
+  "ms": 95049,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "And it came to pass at midnight, that Ryan sent word unto me, saying, We must speak together: and I knew straightway what this thing meant.\n\nAnd on the morrow we met at a coffee shop in the city: and he was there before me, and his eyes were upon his phone; and his countenance was troubled. And he said unto me, I am not ready for a weighty thing: and he said, The fault is not in thee, but it is in me.\n\nAnd I would have wept, but I wept not: and I inclined my head, and said, It is well: then I went home in the rain, and did eat a whole pot of ice cream.\n\nAnd the friend that dwelt with me thought that I made more of the matter than was meet: and perhaps it was so; but it grieved me still.",
+  "rows": [
+   {
+    "text": "And it came to pass at midnight, that Ryan sent word unto me, saying, We must speak together: and I knew straightway what this thing meant.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "And it came to pass",
+      "after": "And it came to pass at midnight, that Ryan sent word unto me",
+      "cite": "2 Samuel 7:4",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Unto, thereof, wherefore",
+      "after": "Ryan sent word unto me",
+      "cite": "Ezekiel 6:1",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "And on the morrow we met at a coffee shop in the city: and he was there before me, and his eyes were upon his phone; and his countenance was troubled. And he said unto me, I am not ready for a weighty thing: and he said, The fault is not in thee, but it is in me.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Speech brought in by “said unto”",
+      "after": "And he said unto me, I am not ready for a weighty thing",
+      "cite": "John 7:6",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Clauses laid side by side with “and”",
+      "after": "and he was there before me, and his eyes were upon his phone",
+      "cite": "Zechariah 1:18",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "And I would have wept, but I wept not: and I inclined my head, and said, It is well: then I went home in the rain, and did eat a whole pot of ice cream.",
+    "notes": []
+   },
+   {
+    "text": "And the friend that dwelt with me thought that I made more of the matter than was meet: and perhaps it was so; but it grieved me still.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your passage is made of short, separate sentences with contractions; the Authorized Version joins clause to clause with 'and' and lets each sentence breathe at twenty words and more, so the one thing flows out of the other instead of being reported piece by piece. Where you wrote 'Ryan texted me at midnight', the voice opens 'And it came to pass at midnight, that Ryan sent word unto me', announcing the turn of the story as it turns; and where you wrote 'I wanted to cry but I didn't', the voice gives the feeling by its sign, 'I would have wept, but I wept not', which carries the withheld grief more plainly than the denial alone. Practise laying clause beside clause with 'and', and giving each feeling by the thing the body does."
+  ],
+  "reading": {
+   "kind": "story (first-person personal narrative)",
+   "outline": [
+    {
+     "role": "setting / event",
+     "gist": "Ryan sends word at midnight that they must speak; the narrator knows what it means"
+    },
+    {
+     "role": "event",
+     "gist": "they meet the next day; Ryan is already there, uneasy"
+    },
+    {
+     "role": "turn",
+     "gist": "Ryan breaks it off: not ready, the fault is his"
+    },
+    {
+     "role": "reaction",
+     "gist": "the narrator withholds weeping, assents, goes home in the rain and eats ice cream"
+    },
+    {
+     "role": "verdict",
+     "gist": "the friend thinks it too much; perhaps so, but it still grieves"
+    }
+   ],
+   "plan": [
+    {
+     "role": "opening turn",
+     "gist": "And it came to pass at midnight that Ryan sent word, saying, We must speak together",
+     "why": "the voice opens each new turn of the story with 'And it came to pass,' so the midnight message is announced as a thing that befell, not merely reported"
+    },
+    {
+     "role": "scene",
+     "gist": "the meeting the next day, Ryan already there and troubled",
+     "why": "the voice lays the setting and the man's countenance side by side with 'and,' so the unease is seen before the words are spoken"
+    },
+    {
+     "role": "the breaking off",
+     "gist": "Ryan's two sayings brought in by 'said unto me'",
+     "why": "speech is brought in plainly and in full, and the second saying balances the first, the fault set not in thee but in me"
+    },
+    {
+     "role": "reaction",
+     "gist": "the withheld weeping, the assent, the walk in the rain and the ice cream",
+     "why": "feeling is given by its sign, clause beside clause, so the grief is carried in the body and the going home"
+    },
+    {
+     "role": "verdict",
+     "gist": "the friend's judgment, the narrator's half-agreement, and the lingering hurt",
+     "why": "the voice ends on the point that lands hardest, the grief that abides in spite of the judgment"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 97,
+   "scoreYours": 33,
+   "never": [
+    "coffee",
+    "shop",
+    "phone",
+    "cream"
+   ],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 4,
+   "sense": 4,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "and he said, The fault is not in thee, but it is in me.",
+     "why": "The writer's 'it wasn't me, it was him' is kept, but 'I am not ready for a weighty thing' softens 'something serious' into an odd, vague abstraction; the breakup sense is blurred."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "Ryan sent word unto me, saying, We must speak together",
+     "why": "The writer's 'texted' and 'He said we needed to talk' are conflated, and 'I knew right away what that meant' is kept. 'Sent word' loses the text-message medium, though that is acceptable; the 'He said' is merged into 'saying'."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "his eyes were upon his phone; and his countenance was troubled",
+     "why": "'Scrolling' is lost, and 'He looked nervous' becomes 'troubled', which shifts the feeling from nervous to distressed."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a whole pot of ice cream",
+     "why": "The writer wrote 'pint'; 'pot' changes the measure and sounds odd, not Biblical."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "And I would have wept, but I wept not",
+     "why": "'I wanted to cry but I didn't' is rendered as 'would have wept'; this is an acceptable shift, but 'I wept not' sits awkwardly after 'would have wept' and is a slight loss of 'wanted'."
+    },
+    {
+     "kind": "natural",
+     "quote": "made more of the matter than was meet",
+     "why": "'Overreacting' is rendered in a stilted, near-Elizabethan phrase; 'meet' is used in the KJV, but the whole line feels forced. 'The friend that dwelt with me' is acceptable, though 'roommate' is dropped to a vaguer 'friend'."
+    },
+    {
+     "kind": "natural",
+     "quote": "and he was there before me",
+     "why": "The writer says only that he was already there. 'Before me' is idiomatic, but the 'and... and... and' chain in this sentence becomes monotonous."
+    },
+    {
+     "kind": "natural",
+     "quote": "then I went home in the rain, and did eat",
+     "why": "'Then' with colon-spliced clauses breaks the otherwise consistent 'And' pattern; 'did eat' is emphatic-do usage not used in KJV narrative like this."
+    },
+    {
+     "kind": "voice",
+     "quote": "We must speak together",
+     "why": "'Speak together' is slightly unnatural; the KJV would say 'commune' or 'we must talk' in some such form, and 'together' is an invented idiom."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites 2 Samuel 7:4",
+     "why": "The citation is for 'and it came to pass that night', which is plausible but is only loosely applicable and unverified; it misses the more usual 'And it came to pass at midnight' (Exodus 12:29) precisely."
+    },
+    {
+     "kind": "notes",
+     "quote": "Unto, thereof, wherefore: “Ryan sent word unto me” — cites Ezekiel 6:1",
+     "why": "The label lists 'thereof, wherefore' but neither appears in the rewrite; the note is inaccurate about what changed. The citation is also generic."
+    },
+    {
+     "kind": "notes",
+     "quote": "(no notes)",
+     "why": "Paragraphs 3 and 4 have no notes, though they contain the most distinctive changes ('I would have wept, but I wept not', 'meet', 'grieved me still'); the lesson refers to the first of these but the notes do not."
+    },
+    {
+     "kind": "notes",
+     "quote": "Clauses laid side by side with “and”: “and he was there before me, and his eyes were upon his phone” — cites Zechariah 1:18",
+     "why": "The cited verse ('Then lifted I up mine eyes') is not a clear example of parataxis with 'and'; the citation is weakly matched."
+    },
+    {
+     "kind": "teaching",
+     "quote": "which carries the withheld grief more plainly than the denial alone",
+     "why": "The lesson's claim is mostly assertion; 'I would have wept, but I wept not' is hardly a bodily sign but a restated denial, so the 'feeling by its sign' lesson contradicts the example."
+    },
+    {
+     "kind": "structure",
+     "quote": "And I would have wept, but I wept not: and I inclined my head",
+     "why": "The writer's short paragraph rhythm is kept, but the rewrite uses colons throughout, which flattens the rhythm; the ending ('but it grieved me still') is kept but the verdict is not shaped to the voice's close."
+    }
+   ],
+   "verdict": "A broadly faithful, recognisably Biblical rewrite that keeps the story's order and feeling, but with a few slips ('pot', 'weighty thing', 'speak together'), some strained phrasing, and notes that are thin, partly inaccurate, and missing for the last two paragraphs. The lesson is useful in places but contradicts itself on 'feeling by its sign'."
+  }
+ },
+ {
+  "voice": "kjv",
+  "case": "neighbors",
+  "ms": 181703,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "And it came to pass in the week that is past, that a new family came to dwell in the house next unto us: and they had a great truck and two little children. And the father seemed a good man, and his sister stood aloof.\n\nAnd my mother straightway baked cakes for them: for she desired to learn all things concerning them; whence they came, and what work they did, and whether they went to church.\n\nAnd it came to pass that the father was a lawyer, and that he was unmarried: nay, but he had put away his wife. And there came a look upon the face of my mother, and I knew well what she thought: for these many years hath she sought to find me a spouse.",
+  "rows": [
+   {
+    "text": "And it came to pass in the week that is past, that a new family came to dwell in the house next unto us: and they had a great truck and two little children. And the father seemed a good man, and his sister stood aloof.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first paragraph gives the new family a mother, 'The mom is kind of standoffish,' and your last says the father is single, divorced. She cannot be his wife, nor his former wife, since she moved in with the household. I made the standoffish woman his sister, who came with the household to help with the children; she stays standoffish, and the father stays single and divorced.",
+      "after": "and his sister stood aloof",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "And it came to pass",
+      "after": "And it came to pass in the week that is past, that a new family came to dwell in the house next unto us",
+      "cite": "1 Chronicles 17:3",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Clauses laid side by side with “and”",
+      "after": "and the father seemed a good man, and his sister stood aloof",
+      "cite": "Leviticus 21:2",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "And my mother straightway baked cakes for them: for she desired to learn all things concerning them; whence they came, and what work they did, and whether they went to church.",
+    "notes": []
+   },
+   {
+    "text": "And it came to pass that the father was a lawyer, and that he was unmarried: nay, but he had put away his wife. And there came a look upon the face of my mother, and I knew well what she thought: for these many years hath she sought to find me a spouse.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "The genitive with “of”",
+      "after": "there came a look upon the face of my mother",
+      "cite": "Daniel 4:13",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Thou and thee, -eth and -est",
+      "after": "for these many years hath she sought to find me a spouse",
+      "cite": "Song of Solomon 3:1",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "Your chief difference from the voice is length and joining: you wrote eight-word sentences one after another, where the Bible lays clause beside clause with 'and' until the sentence holds a whole turn ('and they had a great truck and two little children: and the father seemed a good man, and his sister stood aloof'). Practise opening each new turn with 'And it came to pass,' and giving feeling by its outward sign rather than its name ('there came a look upon the face of my mother' for 'got this look on her face'). The 'and'-chain works because each clause lands with its own weight, and the reader is carried from one fact to the next without stopping."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "setting",
+     "gist": "a new family moves in next door"
+    },
+    {
+     "role": "description",
+     "gist": "their truck and two children; the father good, the woman standoffish"
+    },
+    {
+     "role": "action",
+     "gist": "my mother bakes cakes and wants to learn all about them"
+    },
+    {
+     "role": "discovery",
+     "gist": "the father is a lawyer, single, divorced"
+    },
+    {
+     "role": "turn",
+     "gist": "my mother's look; I know she has been matchmaking for years"
+    }
+   ],
+   "plan": [
+    {
+     "role": "setting",
+     "gist": "the coming of the new family, opened with 'And it came to pass'",
+     "why": "the voice opens each new turn so, and a new household arriving is a turn"
+    },
+    {
+     "role": "description",
+     "gist": "their truck and children, the father good, his sister aloof, joined with 'and'",
+     "why": "clause laid beside clause is the voice's natural rhythm, not short separate sentences"
+    },
+    {
+     "role": "action",
+     "gist": "the baking and the questioning in one sentence",
+     "why": "the mother's welcome and her curiosity are one matter, one movement"
+    },
+    {
+     "role": "discovery",
+     "gist": "the father a lawyer and divorced, then the mother's look and the narrator's knowledge",
+     "why": "the news must land hard, and the look answers it at once to close the piece"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 90,
+   "scoreYours": 32,
+   "never": [
+    "truck"
+   ],
+   "paragraphsYours": 3,
+   "paragraphsHers": 3
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "it came to pass that the father was a lawyer",
+     "why": "The writer's \"It turns out\" marks a discovery. \"It came to pass\" means an event happened, so the sense of learning something is lost."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "in the week that is past",
+     "why": "The writer said \"last weekend\". The rewrite blurs this into a vague week."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "his sister stood aloof",
+     "why": "\"Kind of standoffish\" is hedged and casual, and the rewrite drops the hedge. The sister is also an invented person, though it is a reported mending."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "sought to find me a spouse",
+     "why": "\"Set me up\" means arranging dates or introductions. \"Find me a spouse\" is a stronger aim than the writer's wry tone suggests."
+    },
+    {
+     "kind": "sense",
+     "quote": "who came with the household to help with the children",
+     "why": "The note invents a role for the sister that the rewrite never states. It adds a fact beyond the mending. The two children's mother is also left unaccounted for, since the divorce is mentioned only later."
+    },
+    {
+     "kind": "voice",
+     "quote": "whether they went to church",
+     "why": "\"Church\" and \"went to church\" are modern idiom. The KJV would say something like \"worshipped in the house of the Lord\"."
+    },
+    {
+     "kind": "voice",
+     "quote": "a great truck",
+     "why": "\"Truck\" is a modern word with no KJV register, so it reads as costume. No period substitute such as \"wain\" or \"cart\" was tried."
+    },
+    {
+     "kind": "natural",
+     "quote": "And it came to pass in the week that is past, that a new family came to dwell",
+     "why": "\"It came to pass\" is used twice, and the second use is mechanical rather than apt. The first sentence is also wordy. The phrase fits a narrated event, not a report that someone turned out to be a lawyer."
+    },
+    {
+     "kind": "natural",
+     "quote": "he was unmarried: nay, but he had put away his wife",
+     "why": "The \"nay, but\" correction is slightly awkward because \"unmarried\" is then contradicted. \"Put away\" is good KJV, but the sentence feels stitched together."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Leviticus 21:2",
+     "why": "Leviticus 21:2 is about kin a priest may defile himself for. It is not a clear example of paratactic \"and\" chains, so the source is weak or inapt."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Daniel 4:13",
+     "why": "Daniel 4:13 is not an apt example of \"a look upon the face of\" or of the genitive with \"of\". The citation seems loosely attached."
+    },
+    {
+     "kind": "notes",
+     "quote": "Thou and thee, -eth and -est: “for these many years hath she sought to find me a spouse” — cites Song of Solomon 3:1",
+     "why": "The sentence has only one archaic verb form, \"hath\", and no thou/thee. The label overstates the move, and Song 3:1's \"sought\" is a thin match."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 2:\n  (no notes)",
+     "why": "Paragraph 2 has real changes (\"straightway\", \"whence\", the semicolon series, \"cakes\") that go unnamed."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise opening each new turn with 'And it came to pass,'",
+     "why": "This is a formulaic, overused tic the rewrite itself misuses. It is weak transferable advice, and the lesson does not say when the phrase would be wrong."
+    }
+   ],
+   "verdict": "A competent KJV pastiche that catches the contradiction and reports its mending. It slips by using \"it came to pass\" for \"it turns out\", keeping modern words like \"church\" and \"truck\", and flattening some of the writer's tone. Several citations are weak or mislabeled, and the lesson leans on a mechanical tic."
+  }
+ },
+ {
+  "voice": "kjv",
+  "case": "paris",
+  "ms": 114600,
+  "yours": "I've never been to Paris. The last time I was there it rained the whole week, and my brother lost his passport on the second day.\n\nWe spent most of the trip at the embassy. He still says it was the best vacation he ever had.",
+  "rewrite": "And I have never seen Paris: for the last time that I was there, the rain fell all the week, and on the second day my brother lost his pass.\n\nAnd it came to pass that we spent the most part of the journey in the house of the ambassador. And, behold, he saith even unto this day that it was the best leisure that ever he had.",
+  "rows": [
+   {
+    "text": "And I have never seen Paris: for the last time that I was there, the rain fell all the week, and on the second day my brother lost his pass.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first sentence says you have never been to Paris; your second says you were there. The rest of the passage makes the point: rain all week, the ambassador's house, so the visit never became a real seeing of the city. I read 'been to' as 'truly seen Paris' - you went, but you never saw Paris itself.",
+      "after": "And I have never seen Paris",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Clauses laid side by side with “and”",
+      "after": "the rain fell all the week, and on the second day my brother lost his pass",
+      "cite": "Ezra 10:9",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "And it came to pass that we spent the most part of the journey in the house of the ambassador. And, behold, he saith even unto this day that it was the best leisure that ever he had.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "And it came to pass",
+      "after": "And it came to pass that we spent the most part of the journey in the house of the ambassador.",
+      "cite": "Ezekiel 33:21",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "The genitive with “of”",
+      "after": "the house of the ambassador",
+      "cite": "2 Chronicles 7:11",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Unto, thereof, wherefore",
+      "after": "he saith even unto this day",
+      "cite": "John 8:25",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Behold, lo, verily",
+      "after": "And, behold, he saith even unto this day that it was the best leisure that ever he had.",
+      "cite": "2 Samuel 16:3",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "The chief difference is that your four short sentences become two or three long ones built of balanced clauses joined by 'and' and 'for.' I opened with 'And I have never seen Paris: for the last time that I was there...' so the verdict stands first and the visit explains it, and I turned the matter with 'And it came to pass.' Practise laying clause beside clause with 'and' ('the rain fell all the week, and on the second day my brother lost his pass') and the genitive with 'of' ('the house of the ambassador'), which slow the reader and give each fact its own weight.\""
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "verdict",
+     "gist": "never truly seen Paris"
+    },
+    {
+     "role": "event",
+     "gist": "the last visit: rain all week, brother lost his pass on the second day"
+    },
+    {
+     "role": "event",
+     "gist": "spent most of the journey at the ambassador's house"
+    },
+    {
+     "role": "turn",
+     "gist": "the brother still calls it the best leisure he ever had"
+    }
+   ],
+   "plan": [
+    {
+     "role": "verdict",
+     "gist": "I have never seen Paris",
+     "why": "the verdict stands first, and the visit explains it"
+    },
+    {
+     "role": "event",
+     "gist": "the last time I was there it rained all week, and on the second day my brother lost his pass",
+     "why": "the reason for the verdict, laid beside it with 'for'"
+    },
+    {
+     "role": "event",
+     "gist": "we spent most of the journey in the house of the ambassador",
+     "why": "the consequence of the lost pass, opened with 'and it came to pass' to turn the matter"
+    },
+    {
+     "role": "turn",
+     "gist": "the brother still saith it was the best leisure he ever had",
+     "why": "the irony lands last, in the brother's own saying"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 80,
+   "scoreYours": 40,
+   "never": [],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 2,
+   "voice": 3,
+   "sense": 3,
+   "natural": 2,
+   "notes": 2,
+   "teaching": 2,
+   "structure": 3,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "in the house of the ambassador",
+     "why": "The writer said 'the embassy', an institution or office. 'The house of the ambassador' turns it into a residence, which changes the place."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "lost his pass",
+     "why": "'Pass' is ambiguous (a mountain pass, a safe-conduct) and weakens 'passport'. It reads as a riddle, and the 'pass' repeats with 'came to pass'."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "the best leisure that ever he had",
+     "why": "'Vacation' becomes 'leisure', which changes the sense. A KJV voice would not call a trip 'leisure', and the comic force of the line is blunted."
+    },
+    {
+     "kind": "sense",
+     "quote": "And I have never seen Paris: for the last time that I was there",
+     "why": "The mending changes 'been to' into 'seen', which is reasonable. But the rewrite's 'for' makes the clause the cause of the verdict, and 'never seen... the last time I was there' still reads as contradictory. The mending is thin and the note is hedged ('I read...')."
+    },
+    {
+     "kind": "natural",
+     "quote": "the most part of the journey",
+     "why": "The archaic 'the most part' is semi-idiomatic, but 'journey' for 'trip' is odd and loses the holiday sense. The sentence reads as costume."
+    },
+    {
+     "kind": "natural",
+     "quote": "And, behold, he saith even unto this day",
+     "why": "'Behold' is dropped in mechanically, and 'saith even unto this day' is a stacked pastiche. The humor of 'He still says' is flattened. The piece also opens with 'And' twice, which feels mechanical."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites 2 Samuel 16:3",
+     "why": "The citation is offered for 'behold' generally and has no verified link to this construction. Several citations (Ezra 10:9, 2 Chronicles 7:11, John 8:25) are loosely or doubtfully matched to the moves claimed. 'Unto, thereof, wherefore' is named, but 'thereof' and 'wherefore' are not used."
+    },
+    {
+     "kind": "notes",
+     "quote": "Clauses laid side by side with “and”: “the rain fell all the week, and on the second day my brother lost his pass”",
+     "why": "The notes do not report the changes of 'embassy' to 'house of the ambassador' or 'vacation' to 'leisure', nor 'passport' to 'pass'."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise laying clause beside clause with 'and'",
+     "why": "The lesson is generic and does not teach why the verdict-first order works or how to handle the contradiction in a person's own draft. A stray closing quotation mark also appears."
+    },
+    {
+     "kind": "structure",
+     "quote": "the verdict stands first, and the visit explains it",
+     "why": "The claim that the brother's irony 'lands last' is fine, but the explanation makes the paradox a causal 'for' that the text does not support."
+    }
+   ],
+   "verdict": "The rewrite catches the contradiction and keeps the order, but it changes facts ('embassy' to the ambassador's house, 'passport' to 'pass', 'vacation' to 'leisure') and uses pastiche KJV phrases that are sometimes riddling. The notes cite loosely and the lesson is generic."
+  }
+ },
+ {
+  "voice": "obama",
+  "case": "breakup",
+  "ms": 178986,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "Ryan sent me a message at midnight, and he said that we needed to talk. I knew right away what that meant, because some messages don't need explaining.\n\nThe next day, we met at a diner downtown, and he was already there, looking at his phone. He looked nervous. He told me he wasn't ready for something serious, and he said it wasn't me, it was him.\n\nI wanted to cry, but I didn't, and I just said okay. Then I walked home in the rain and had a whole carton of ice cream.\n\nMy roommate thought I was making too much of it, and maybe I was. But it still hurt.",
+  "rows": [
+   {
+    "text": "Ryan sent me a message at midnight, and he said that we needed to talk. I knew right away what that meant, because some messages don't need explaining.",
+    "notes": [
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "A gnomic generalization the matter invites: the narrator knew what the message meant without being told, so the voice frames that particular with a general truth, the way he lets one detail speak to a wider truth.",
+      "after": "because some messages don't need explaining",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "The next day, we met at a diner downtown, and he was already there, looking at his phone. He looked nervous. He told me he wasn't ready for something serious, and he said it wasn't me, it was him.",
+    "notes": []
+   },
+   {
+    "text": "I wanted to cry, but I didn't, and I just said okay. Then I walked home in the rain and had a whole carton of ice cream.",
+    "notes": []
+   },
+   {
+    "text": "My roommate thought I was making too much of it, and maybe I was. But it still hurt.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "The chief difference is sentence length: your lines run a median of seven words and fall flat one after another, while Obama joins short clauses into longer, balanced sentences and saves a short line only for a turn or a verdict, as in \"He looked nervous\" and \"But it still hurt.\" Practise joining with \", and\" the way \"I wanted to cry, but I didn't, and I just said okay\" joins three small beats into one steady breath, and keep the one small true detail—the rain, the carton of ice cream—because that is what lets one person's hurt stand for everyone's."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "event",
+     "gist": "A midnight message asks to talk; she knows what it means."
+    },
+    {
+     "role": "scene",
+     "gist": "The meeting at the diner; his nerves; the breakup words."
+    },
+    {
+     "role": "reaction",
+     "gist": "Holding back tears, agreeing, the walk home and the ice cream."
+    },
+    {
+     "role": "aftermath",
+     "gist": "The roommate's doubt, the narrator's concession, the hurt that remains."
+    }
+   ],
+   "plan": [
+    {
+     "role": "event",
+     "gist": "A midnight message asks to talk; she knows what it means.",
+     "why": "Join the message and its meaning, so the reader gets the news and its weight at once, and close the paragraph on a short verdict."
+    },
+    {
+     "role": "scene",
+     "gist": "The meeting at the diner; his nerves; the breakup words.",
+     "why": "Set the place and his manner before his words, then land the words plainly, keeping the 'not me, but him' turn."
+    },
+    {
+     "role": "reaction",
+     "gist": "Holding back tears, agreeing, the walk home and the ice cream.",
+     "why": "Keep the quiet restraint first, then the one small true detail that carries the whole feeling."
+    },
+    {
+     "role": "aftermath",
+     "gist": "The roommate's doubt, the narrator's concession, the hurt that remains.",
+     "why": "Concede in the longer sentence, then close short on the honest truth."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 59,
+   "scoreYours": 36,
+   "never": [
+    "messages",
+    "explaining",
+    "carton"
+   ],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 2,
+   "sense": 3,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 2,
+   "structure": 3,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "a diner downtown",
+     "why": "The writer said a coffee shop. The place is changed, and the change is not reported in the notes."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a whole carton of ice cream",
+     "why": "The writer wrote a pint. The detail is altered, and the lesson praises this detail as the one to keep."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "sent me a message",
+     "why": "The writer said texted. This is a small flattening of a specific detail."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "looking at his phone",
+     "why": "The writer said scrolling. The specific action is lost."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "making too much of it",
+     "why": "The writer wrote overreacting. This is a paraphrase that blurs the roommate's judgment."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "because some messages don't need explaining",
+     "why": "This added generalization is not an Obama move in this form. It reads like a stock aphorism and also weakens the writer's flat 'I knew right away'."
+    },
+    {
+     "kind": "voice",
+     "quote": "I wanted to cry, but I didn't, and I just said okay.",
+     "why": "This is mostly the writer's sentences joined with commas. There is no Obama cadence, no balanced clause, no reflective turn, and no characteristic vocabulary. It reads as lightly reworded plain prose rather than his voice."
+    },
+    {
+     "kind": "voice",
+     "quote": "He looked nervous.",
+     "why": "The lesson cites this as an Obama short line, but it is the writer's own sentence left untouched. The rewrite changed little of the writer's text."
+    },
+    {
+     "kind": "notes",
+     "quote": "(no notes)",
+     "why": "Paragraphs 2 to 4 have no notes, though the rewrite changed the place, the ice cream measure, the verbs, and the sentence joins. The only note covers a single added clause."
+    },
+    {
+     "kind": "notes",
+     "quote": "Liberty taken: A gnomic generalization the matter invites",
+     "why": "The note cites no actual Obama text as a source. It also claims the move is characteristic when the line is generic."
+    },
+    {
+     "kind": "teaching",
+     "quote": "your lines run a median of seven words",
+     "why": "The lesson advises joining with ', and', but the rewrite barely does this. Most sentences are unchanged, and the lesson praises the carton of ice cream the rewrite itself altered."
+    },
+    {
+     "kind": "structure",
+     "quote": "Join the message and its meaning, so the reader gets the news and its weight at once, and close the paragraph on a short verdict.",
+     "why": "The outline claims a closing short verdict, but the paragraph now ends on an added aphorism that blunts the writer's own stark 'I knew right away what that meant'."
+    }
+   ],
+   "verdict": "The rewrite is close to the original text with small unreported factual swaps (coffee shop to diner, pint to carton) and one generic added aphorism. It barely sounds like Obama, and its notes and lesson overstate what changed."
+  }
+ },
+ {
+  "voice": "obama",
+  "case": "neighbors",
+  "ms": 170608,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "A new family moved in next door last weekend, with a huge truck and two little kids. The dad seems nice, but the woman who came with them — his sister — keeps to herself.\n\nShe wanted to find out everything about them — where they came from, what they did for work, whether they went to church. And that’s why she was over there right away with a plate of something sweet, still warm from the oven.\n\nIt turns out the dad’s a lawyer, and he’s single — well, separated. My mom got this look on her face, and I knew exactly what she was thinking. She’s been trying to set me up for years.",
+  "rows": [
+   {
+    "text": "A new family moved in next door last weekend, with a huge truck and two little kids. The dad seems nice, but the woman who came with them — his sister — keeps to herself.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first paragraph gives the new family a mother (“The mom is kind of standoffish”), and your last says the father is single and divorced. A separated father with a live-in wife cannot both be true. I made the standoffish woman the father’s sister, come along with the household — so there is still a woman who keeps to herself, but the father is free to be single, which is the very thing your mother seizes on.",
+      "after": "the woman who came with them — his sister — keeps to herself",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "She wanted to find out everything about them — where they came from, what they did for work, whether they went to church. And that’s why she was over there right away with a plate of something sweet, still warm from the oven.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "From what happened to what we do",
+      "after": "She wanted to find out everything about them — where they came from, what they did for work, whether they went to church. And that’s why she was over there right away with a plate of something sweet, still warm from the oven.",
+      "cite": "Weekly Address, 13 April 2013, ¶ 5",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The voice turns her eagerness into purpose: the plate was the way to the questions, and ‘that’s why’ is his usual turn from what happened to what it was for.",
+      "after": "And that’s why she was over there right away",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "It turns out the dad’s a lawyer, and he’s single — well, separated. My mom got this look on her face, and I knew exactly what she was thinking. She’s been trying to set me up for years.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your passage told the facts in short, flat sentences; Obama tells one family's story with a few telling details and then turns each fact toward what it means. I joined your short sentences, turned her eagerness into purpose (\"And that's why she was over there right away...\"), and let the last line land as the punchline (\"She's been trying to set me up for years.\"). Practise that \"that's why\" turn: give the detail, then say what it was for."
+  ],
+  "reading": {
+   "kind": "story (short first-person anecdote)",
+   "outline": [
+    {
+     "role": "setting",
+     "gist": "new neighbors: truck, two kids, nice dad, standoffish woman"
+    },
+    {
+     "role": "event",
+     "gist": "mother bakes cookies and wants to find out everything"
+    },
+    {
+     "role": "turn and punchline",
+     "gist": "dad is a single lawyer; mother’s look; years of matchmaking"
+    }
+   ],
+   "plan": [
+    {
+     "role": "setting",
+     "gist": "one fact, then the household in one picture",
+     "why": "the voice opens with the plain fact, then one family’s particular detail standing for the whole"
+    },
+    {
+     "role": "purpose",
+     "gist": "the mother’s motive first, then the means",
+     "why": "the voice turns her action into purpose with ‘that’s why’"
+    },
+    {
+     "role": "turn",
+     "gist": "what they learned, the look, the short punchline",
+     "why": "the voice lands the shortest sentence last as the verdict"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 62,
+   "scoreYours": 41,
+   "never": [
+    "plate",
+    "oven",
+    "dad’s"
+   ],
+   "paragraphsYours": 3,
+   "paragraphsHers": 3
+  },
+  "judge": {
+   "fidelity": 2,
+   "voice": 2,
+   "sense": 2,
+   "natural": 2,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 3,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "he’s single — well, separated",
+     "why": "The writer said divorced. Separated changes the fact, and it also leaves the father legally married, so the contradiction the rewrite set out to fix comes back."
+    },
+    {
+     "kind": "sense",
+     "quote": "She wanted to find out everything about them",
+     "why": "The paragraph before ends on the sister, so 'She' reads as the sister. The mother is never named here, and the rewrite introduces an unclear-person fault the original did not have."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a plate of something sweet, still warm from the oven",
+     "why": "The writer's cookies became a vague 'something sweet', and 'still warm from the oven' is an invented detail. The plain fact that the mother baked cookies is lost."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "And that’s why she was over there right away",
+     "why": "The writer's mother 'baked them cookies right away'. The rewrite turns that into a motive-then-action sequence, which is reasonable. But 'over there' with a plate makes the visit an added event and drops the baking."
+    },
+    {
+     "kind": "notes",
+     "quote": "A separated father with a live-in wife cannot both be true.",
+     "why": "The note says the draft says 'divorced', yet the rewrite itself says 'separated'. The note never admits or explains that change, and its description does not match the rewritten text."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Weekly Address, 13 April 2013, ¶ 5",
+     "why": "The citation looks fabricated or unverifiable. Nothing in that address is shown to contain this 'that's why' turn, so the source does not support the move."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 3:\n  (no notes)",
+     "why": "Paragraph 3 changed: 'divorced' became 'separated', sentences were joined, and 'has been' became contractions. None of this is reported, including the factual change."
+    },
+    {
+     "kind": "voice",
+     "quote": "My mom got this look on her face, and I knew exactly what she was thinking. She’s been trying to set me up for years.",
+     "why": "This is almost the writer's own text with sentences joined and contractions added. It has little of Obama's cadence: no rhetorical triplet, no wry aside, no 'Now' or 'Look' pivot. The voice reads as light costume."
+    },
+    {
+     "kind": "natural",
+     "quote": "keeps to herself",
+     "why": "The softer phrase loses the mild judgment of 'kind of standoffish', and it is a small, unflagged shift in feeling."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise that \"that's why\" turn: give the detail, then say what it was for.",
+     "why": "This is the only transferable lesson, and the rewrite's own execution of it creates the ambiguity. The lesson does not point to the punchline structure or the sense mending as reusable moves."
+    }
+   ],
+   "verdict": "The rewrite catches the draft's contradiction and reports it, but it changes 'divorced' to 'separated' without comment. That brings back the contradiction, and the new 'She' pronoun is ambiguous. The Obama voice is thin, and the notes include a dubious citation and skip paragraph 3 entirely."
+  }
+ },
+ {
+  "voice": "obama",
+  "case": "paris",
+  "ms": 164670,
+  "yours": "I've never been to Paris. The last time I was there it rained the whole week, and my brother lost his passport on the second day.\n\nWe spent most of the trip at the embassy. He still says it was the best vacation he ever had.",
+  "rewrite": "I've never really seen Paris. The last time I was there, the rain came down the whole week, my brother lost his travel papers on the second day, and we spent most of the trip at the embassy.\n\nHere's the thing — it wasn't the trip he planned, but to this day, he says it was the best vacation he ever had.",
+  "rows": [
+   {
+    "from": [
+     1,
+     2
+    ],
+    "text": "I've never really seen Paris. The last time I was there, the rain came down the whole week, my brother lost his travel papers on the second day, and we spent most of the trip at the embassy.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first line says you've never been to Paris; your second says the last time you were there it rained all week. The two cannot both be true, and the rest of the passage — the embassy, the lost papers, the vacation — shows the trip really happened. I read the first line as meaning you never really saw the city, since the trip you go on to describe was spent at the embassy rather than sightseeing, so the two lines agree.",
+      "after": "I've never really seen Paris.",
+      "verified": true
+     },
+     {
+      "kind": "structure",
+      "technique": "Structure",
+      "text": "Brings together your paragraphs 1 and 2.",
+      "after": "",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "from": [
+     2
+    ],
+    "text": "Here's the thing — it wasn't the trip he planned, but to this day, he says it was the best vacation he ever had.",
+    "notes": [
+     {
+      "kind": "structure",
+      "technique": "Structure",
+      "text": "The rest of your paragraph 2, given a paragraph of its own.",
+      "after": "",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Plain talk to the listener",
+      "after": "Here's the thing — it wasn't the trip he planned...",
+      "cite": "Weekly Address, 31 December 2016, ¶ 5",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "Obama turns to the listener before the verdict; it frames what follows as the point of the story.",
+      "after": "Here's the thing",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "the story invites this verdict — the trip went wrong — and Obama's manner states the contrary before the turn, so the landing means more.",
+      "after": "it wasn't the trip he planned",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "The chief difference is that your four flat statements become one accumulating build and one turn: the three troubles are gathered into a single sentence (\"the rain came down the whole week, my brother lost his travel papers... and we spent most of the trip at the embassy\") so they gain weight together, and the piece lands on an antithesis (\"it wasn't the trip he planned, but... the best vacation he ever had\") that finds the meaning in what went wrong. Practise those two things in your own voice: building a list that gathers weight, and turning a hard or failed thing on its opposite to find what it was worth."
+  ],
+  "reading": {
+   "kind": "story (a short first-person anecdote)",
+   "outline": [
+    {
+     "role": "setup",
+     "gist": "confession: never really seen Paris"
+    },
+    {
+     "role": "event",
+     "gist": "last time there: rain all week, brother lost passport"
+    },
+    {
+     "role": "event",
+     "gist": "spent the trip at the embassy"
+    },
+    {
+     "role": "verdict",
+     "gist": "brother still calls it the best vacation"
+    }
+   ],
+   "plan": [
+    {
+     "role": "opening confession",
+     "gist": "never really seen Paris",
+     "why": "Obama opens with the plain personal truth, plainly stated, before the story."
+    },
+    {
+     "role": "one accumulating sentence",
+     "gist": "rain all week, lost papers, the embassy",
+     "why": "he lets the three troubles build in one breath, as a list that gathers weight, instead of scattering them."
+    },
+    {
+     "role": "the turn",
+     "gist": "not the trip he planned, but the best vacation",
+     "why": "he lands on the antithesis that finds the meaning in what went wrong, and holds the whole second paragraph for it."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 61,
+   "scoreYours": 46,
+   "never": [],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 2,
+   "sense": 4,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 3,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "my brother lost his travel papers on the second day",
+     "why": "The writer said \"passport\"; \"travel papers\" is vaguer and changes a concrete fact. It also hides why the embassy matters."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "it wasn't the trip he planned, but to this day, he says",
+     "why": "\"it wasn't the trip he planned\" is a new claim the writer never made. The notes admit it as a liberty but do not flag it as an addition. \"To this day\" also changes the writer's \"still\"."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "I've never really seen Paris.",
+     "why": "This mends the contradiction by softening it, but the writer's deadpan hook is lost, and \"The last time I was there\" now implies several visits, which the writer never said. The mend leaves that tension."
+    },
+    {
+     "kind": "voice",
+     "quote": "Here's the thing — it wasn't the trip he planned",
+     "why": "The em dash and \"Here's the thing\" read as generic modern casual prose. Obama's \"Now, here's the thing\" or \"Let me tell you\" usually opens a point, not a punchline. The citation to a specific Weekly Address paragraph looks unverifiable."
+    },
+    {
+     "kind": "voice",
+     "quote": "the rain came down the whole week, my brother lost his travel papers on the second day, and we spent most of the trip at the embassy.",
+     "why": "The rewrite is flat and nearly identical to the draft. There is little of Obama's cadence, such as triads with rhetorical build, self-deprecating humor, or a \"Michelle and I\" style aside. It is a light reshuffle, not a voice."
+    },
+    {
+     "kind": "notes",
+     "quote": "Liberty taken: the story invites this verdict — the trip went wrong — and Obama's manner states the contrary before the turn, so the landing means more.",
+     "why": "This is muddled and says the rewrite states the contrary before the turn. It does not. The note also duplicates the previous liberty and adds a rationale that does not match the text."
+    },
+    {
+     "kind": "notes",
+     "quote": "Plain talk to the listener: “Here's the thing — it wasn't the trip he planned...” — cites Weekly Address, 31 December 2016, ¶ 5",
+     "why": "The source is dubious and not clearly apt. The note also does not admit that \"it wasn't the trip he planned\" is new content."
+    },
+    {
+     "kind": "form",
+     "quote": "Brings together your paragraphs 1 and 2.",
+     "why": "The structure notes are mechanical. The rewrite merges the troubles into one sentence, which dilutes the writer's deadpan beat of \"We spent most of the trip at the embassy\" as a separate short line. The sentence is also long and loses the comic timing."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "he says it was the best vacation he ever had",
+     "why": "The punchline is kept, but because the preceding clause already adds \"wasn't the trip he planned,\" it explains the irony the writer left implicit."
+    }
+   ],
+   "verdict": "The rewrite mends the contradiction and reports it, but it is a thin reshuffle with generic casual phrasing, one added claim (\"wasn't the trip he planned\"), and a softened \"passport.\" The notes are muddled and cite a dubious source, and the lesson overstates the gains."
+  }
+ },
+ {
+  "voice": "twain",
+  "case": "breakup",
+  "ms": 112603,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "Ryan sent me word at midnight, and said we needed to talk, and I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown, and he was already there, fooling with his telephone, and he looked nervous. And then he said he wasn't ready for something serious, and that it wasn't me, it was him—which I judged was his way of saying it was me.\n\nI wanted to cry, but I didn't; I just nodded and said all right, and then I walked home in the rain and ate a whole pint of ice cream, which comforted me about as much as the rain did.\n\nMy roommate said I was making too much of it, and maybe I was; but it hurt all the same.",
+  "rows": [
+   {
+    "text": "Ryan sent me word at midnight, and said we needed to talk, and I knew right away what that meant.",
+    "notes": []
+   },
+   {
+    "text": "The next day we met at a coffee shop downtown, and he was already there, fooling with his telephone, and he looked nervous. And then he said he wasn't ready for something serious, and that it wasn't me, it was him—which I judged was his way of saying it was me.",
+    "notes": [
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The voice punctures the old cliché the man leans on, and gives the narrator a wry, unshown reading of what he really meant; the judgment is the passage's own hurt, turned flat.",
+      "after": "which I judged was his way of saying it was me",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I wanted to cry, but I didn't; I just nodded and said all right, and then I walked home in the rain and ate a whole pint of ice cream, which comforted me about as much as the rain did.",
+    "notes": [
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "A deadpan verdict that the ice cream did not mend anything, left at the end of the sentence so the joke lands and is never explained.",
+      "after": "which comforted me about as much as the rain did",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "My roommate said I was making too much of it, and maybe I was; but it hurt all the same.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "The chief difference is that your page tells the breakup in short, bare sentences, where Twain would let one clause run into the next on 'and' until it turns on a joke at the very end. Practise the cumulative sentence—'Ryan sent me word at midnight, and said we needed to talk, and I knew right away what that meant'—and the deadpan punch that lands last and is never explained, as in 'which comforted me about as much as the rain did.' The voice stays plain and spoken ('sent me word,' 'all right' in place of 'texted,' 'okay'), because the humor lives in how flatly the thing is said."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "news",
+     "gist": "Midnight word from Ryan, the request to talk, and what the narrator knows it means."
+    },
+    {
+     "role": "event",
+     "gist": "The coffee-shop meeting: he is there first, nervous, and gives his reasons."
+    },
+    {
+     "role": "feeling",
+     "gist": "Her stoic reaction: no tears, a nod, a walk in the rain, a pint of ice cream."
+    },
+    {
+     "role": "verdict",
+     "gist": "The roommate's doubt, her own doubt, and the hurt that stays."
+    }
+   ],
+   "plan": [
+    {
+     "role": "news",
+     "gist": "The midnight word, the request to talk, and its meaning.",
+     "why": "State the plain fact first and let the meaning fall last, where it lands hardest."
+    },
+    {
+     "role": "scene",
+     "gist": "The shop, him there first, nervous, then his speech.",
+     "why": "Set the place and show the man before his words, so the speech comes from a person already seen."
+    },
+    {
+     "role": "reaction",
+     "gist": "Her understatement, then the deadpan comfort that was none.",
+     "why": "The stoic 'all right' earns the dry line about the ice cream, which lands the joke and never explains it."
+    },
+    {
+     "role": "verdict",
+     "gist": "The roommate's doubt, her own doubt, the hurt that remains.",
+     "why": "The point where it hurts most goes last; the short close lands on the feeling."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 82,
+   "scoreYours": 37,
+   "never": [],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 3,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "which I judged was his way of saying it was me",
+     "why": "Adds a new interpretation the writer never made. The writer's feeling was plain hurt, and this turns it into a sardonic claim about his motive. It is commentary, but it asserts what he meant."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "which comforted me about as much as the rain did",
+     "why": "Adds a joke that the ice cream failed to comfort. The writer gave no such attitude, and it slightly mocks her own grief. It also implies the rain was a comfort, which contradicts the walk home as misery."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "My roommate said I was making too much of it",
+     "why": "The writer said the roommate 'thought' I was overreacting. 'Said' turns a belief into an utterance, which is a small change of fact."
+    },
+    {
+     "kind": "voice",
+     "quote": "fooling with his telephone",
+     "why": "Twain would not have a telephone being fooled with in this modern way. It reads as costume. 'Sent me word' for a text is also an awkward anachronistic blend, since a text is not sent word."
+    },
+    {
+     "kind": "voice",
+     "quote": "I wanted to cry, but I didn't; I just nodded and said all right",
+     "why": "This is mostly the original in plain form. There is little Twainian texture such as hyperbole, a vernacular simile, or a digressive aside. Only the 'and' chaining and one joke carry the voice, so it is thin."
+    },
+    {
+     "kind": "natural",
+     "quote": "And then he said he wasn't ready for something serious, and that it wasn't me, it was him",
+     "why": "The 'And then... and that' chain is clumsy. The 'and' sequence feels mechanical rather than natural spoken cadence."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 1: (no notes)",
+     "why": "The first paragraph changed several things (texted to 'sent me word', the sentences merged with 'and'), yet no note names them. The same goes for paragraph 4, where 'said' and the semicolon were changed. The notes cover only two liberties."
+    },
+    {
+     "kind": "notes",
+     "quote": "the judgment is the passage's own hurt, turned flat",
+     "why": "This claims the added line is the writer's own hurt. In fact it adds a cynical reading the writer did not express, so the note excuses an invention."
+    },
+    {
+     "kind": "teaching",
+     "quote": "The voice stays plain and spoken ('sent me word,' 'all right' in place of 'texted,' 'okay')",
+     "why": "'Sent me word' is hardly plain speech. The lesson offers little on Twain's real techniques such as understatement, exaggeration, or the vernacular simile. The outline's reasons are also generic."
+    }
+   ],
+   "verdict": "A clean, faithful-ish rewrite with a pleasing chained opening, but the voice is thin, and it adds two inventions (the 'his way of saying it was me' reading and the ice-cream joke) that the notes do not honestly report as additions. The notes miss the smaller changes, and the lesson is only moderately useful."
+  }
+ },
+ {
+  "voice": "twain",
+  "case": "neighbors",
+  "ms": 136942,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "The other day a new family moved into the house next door, and they brought a man and a woman and two little children, and a truck so big it looked like it could have moved the house along with the rest of the load. The man seemed nice. The woman, that I took for his wife, was kind of offish.\n\nMy mother baked them some cakes right away, and she wanted to find out everything about them—where they came from, what they did for work, and whether they went to church.\n\nIt turns out the man is a lawyer, and single. Well, divorced—and the woman, it seems, is his sister. My mother got a look on her face then, and I knew exactly what she was thinking. She has been trying to marry me off for years now.",
+  "rows": [
+   {
+    "text": "The other day a new family moved into the house next door, and they brought a man and a woman and two little children, and a truck so big it looked like it could have moved the house along with the rest of the load. The man seemed nice. The woman, that I took for his wife, was kind of offish.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Cumulative sentence",
+      "after": "and they brought a man and a woman and two little children, and a truck so big it looked like it could have moved the house along with the rest of the load",
+      "cite": "Adventures of Huckleberry Finn, ch. 21, ¶ 42",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "the writer's 'huge' invites it; the voice sizes the truck into a straight-faced tall-tale image, as a teller of such things would, rather than leaving the bare adjective to do the work.",
+      "after": "a truck so big it looked like it could have moved the house along with the rest of the load",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "My mother baked them some cakes right away, and she wanted to find out everything about them—where they came from, what they did for work, and whether they went to church.",
+    "notes": []
+   },
+   {
+    "text": "It turns out the man is a lawyer, and single. Well, divorced—and the woman, it seems, is his sister. My mother got a look on her face then, and I knew exactly what she was thinking. She has been trying to marry me off for years now.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "The draft gives the new family a 'mom' in sentence 4, and then says the dad is single and divorced in sentences 8-9; a wife and a single divorced man cannot both be true of the same household. I made the offish woman his sister, not his wife: the narrator first takes her for the wife, and the discovery corrects that, which agrees with everything else said of her.",
+      "after": "The woman, that I took for his wife, was kind of offish. ... It turns out the man is a lawyer, and single. Well, divorced—and the woman, it seems, is his sister.",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "The chief difference is the telling: the writer's short bare sentences become a narrator talking it through, so the discovery drops deadpan (\"Well, divorced—and the woman, it seems, is his sister\") and the matchmaking punch line (\"trying to marry me off for years now\") is left to land last, unexplained. Practise the cumulative \"and…and…\" sentence for piling up plain facts, and the deadpan correction for the joke: the reader does the laughing, and the narrator never does."
+  ],
+  "reading": {
+   "kind": "story (a short comic anecdote)",
+   "outline": [
+    {
+     "role": "setting",
+     "gist": "a new family moves in next door, with a truck and two children"
+    },
+    {
+     "role": "character",
+     "gist": "the man seems nice, the woman is offish"
+    },
+    {
+     "role": "action",
+     "gist": "the mother bakes cakes to find out everything about them"
+    },
+    {
+     "role": "discovery",
+     "gist": "the man is a lawyer, single, divorced"
+    },
+    {
+     "role": "reaction / punch line",
+     "gist": "the mother's look, and her years of matchmaking"
+    }
+   ],
+   "plan": [
+    {
+     "role": "setting",
+     "gist": "a new family moves in next door, with a truck and two children",
+     "why": "name the scene plainly first, and let the truck's size be told flat so the exaggeration sits as fact"
+    },
+    {
+     "role": "character",
+     "gist": "the man seems nice, the woman is offish",
+     "why": "set the nice/offish contrast early, so it pays off when the woman turns out not to be his wife"
+    },
+    {
+     "role": "action",
+     "gist": "the mother bakes cakes to find out everything about them",
+     "why": "the cake-baking is the reconnaissance that produces the discovery, so give it in one run"
+    },
+    {
+     "role": "discovery",
+     "gist": "the man is a lawyer, single, divorced",
+     "why": "drop the correction deadpan, 'Well, divorced,' and never explain it"
+    },
+    {
+     "role": "reaction / punch line",
+     "gist": "the mother's look, and her years of matchmaking",
+     "why": "save the matchmaking for the last line, where the joke lands and the narrator never laughs"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 77,
+   "scoreYours": 40,
+   "never": [],
+   "paragraphsYours": 3,
+   "paragraphsHers": 3
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 3,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "My mother baked them some cakes right away",
+     "why": "The writer said cookies. Changing the baked good alters a fact and is not reported anywhere in the notes."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "The other day a new family moved into the house next door",
+     "why": "The writer's 'last weekend' is a specific time. Replacing it with a vague phrase drops a detail without comment."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "She has been trying to marry me off for years now.",
+     "why": "The writer's 'set me up' means arranging dates. 'Marry me off' is a stronger claim and shifts the degree of the joke, with no note."
+    },
+    {
+     "kind": "natural",
+     "quote": "a new family moved into the house next door, and they brought a man and a woman and two little children",
+     "why": "The 'family' is then said to bring the man, woman and children who make it up. This is redundant and reads as a clumsy attempt at Twain's piling-up."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "a truck so big it looked like it could have moved the house along with the rest of the load",
+     "why": "This is an added hyperbolic image where the writer only said 'huge'. It is reported as a liberty, but it makes the narrator's description go beyond the draft."
+    },
+    {
+     "kind": "voice",
+     "quote": "My mother baked them some cakes right away, and she wanted to find out everything about them—where they came from, what they did for work, and whether they went to church.",
+     "why": "This paragraph is nearly the draft unchanged, in modern phrasing ('did for work') with no Twain texture such as dry understatement or a comic gloss. The notes mark it 'no notes', so the voice is applied unevenly."
+    },
+    {
+     "kind": "voice",
+     "quote": "My mother got a look on her face then, and I knew exactly what she was thinking.",
+     "why": "This is the draft's modern wording lightly reordered, not Twain's cadence. The closing joke lands flatly and lacks the sly elaboration he would give it."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Adventures of Huckleberry Finn, ch. 21, ¶ 42",
+     "why": "The paragraph-level citation looks falsely precise and is not clearly apt for this sentence. The notes name only one move, and paragraph 2 and the final sentences get none."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise the cumulative \"and…and…\" sentence for piling up plain facts",
+     "why": "The lesson is thin and partly generic. It does not explain why Twain's polysyndeton works, and the one example it rests on is awkward in the rewrite."
+    }
+   ],
+   "verdict": "The rewrite catches and mends the mom/single-dad contradiction and reports it, but it quietly swaps cookies for cakes and drops 'last weekend'. The voice is only lightly Twain, and the opening sentence is clumsy. The notes and lesson are thin."
+  }
+ },
+ {
+  "voice": "twain",
+  "case": "paris",
+  "ms": 112394,
+  "yours": "I've never been to Paris. The last time I was there it rained the whole week, and my brother lost his passport on the second day.\n\nWe spent most of the trip at the embassy. He still says it was the best vacation he ever had.",
+  "rewrite": "I never was in Paris but the once, and I judge that was enough; and it rained the whole week we were there, and my brother lost his passport the second day.\n\nWe spent most of the trip at the embassy, and he says to this day it was the best vacation he ever had.",
+  "rows": [
+   {
+    "text": "I never was in Paris but the once, and I judge that was enough; and it rained the whole week we were there, and my brother lost his passport the second day.",
+    "notes": [
+     {
+      "kind": "sense",
+      "technique": "Sense",
+      "text": "Your first line says you have never been to Paris, and your very next sentence says you were there; the two cannot both stand. The rain, the embassy, and the lost passport all make the trip real, so I kept the visit and made the first line admit one visit only — 'but the once' — and dropped 'last,' since there was but the one.",
+      "after": "I never was in Paris but the once, and I judge that was enough; and it rained the whole week we were there, and my brother lost his passport the second day.",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Cumulative sentence",
+      "after": "I never was in Paris but the once, and I judge that was enough; and it rained the whole week we were there, and my brother lost his passport the second day.",
+      "cite": "Pudd’nhead Wilson, ch. 12, ¶ 1",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "The narrator’s aside",
+      "after": "I judge that was enough",
+      "cite": "A Connecticut Yankee in King Arthur’s Court, ch. 37, ¶ 47",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "the deadpan narrator sizes up his own experience before he tells it; the trip's miseries already point that way, so the voice says it straight instead of leaving it to be inferred.",
+      "after": "I judge that was enough",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "We spent most of the trip at the embassy, and he says to this day it was the best vacation he ever had.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your draft states the facts flat, one after another, with no voice carrying them; Twain's narrator talks it, stringing the miseries into one long run ('I never was in Paris but the once, and I judge that was enough; and it rained...') and letting the brother's verdict fall at the very end where it lands. Practise the deadpan — say the absurd thing straight and never explain it ('he says to this day it was the best vacation he ever had') — and the cumulative sentence that piles 'and...and...' toward a turn, with the punch line last."
+  ],
+  "reading": {
+   "kind": "anecdote (story)",
+   "outline": [
+    {
+     "role": "opening claim",
+     "gist": "never really been to Paris"
+    },
+    {
+     "role": "evidence",
+     "gist": "rain all week, brother's passport lost"
+    },
+    {
+     "role": "consequence",
+     "gist": "stuck at the embassy"
+    },
+    {
+     "role": "turn / verdict",
+     "gist": "brother calls it the best vacation ever"
+    }
+   ],
+   "plan": [
+    {
+     "role": "frame",
+     "gist": "the one visit, and a verdict on it up front",
+     "why": "the voice sizes up the trip before telling it, so the joke has a rail to run on"
+    },
+    {
+     "role": "the miseries",
+     "gist": "rain and the lost passport, piled in one long run",
+     "why": "a cumulative run lets each misfortune land and keeps the teller sounding like a man talking it over"
+    },
+    {
+     "role": "consequence",
+     "gist": "most of the trip at the embassy",
+     "why": "the consequence follows the cause, plain, no comment"
+    },
+    {
+     "role": "turn",
+     "gist": "the brother's verdict, last and flat",
+     "why": "the deadpan punch lands hardest at the end, and is never explained"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 91,
+   "scoreYours": 47,
+   "never": [],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 3,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 4,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "and I judge that was enough",
+     "why": "This is an added opinion that is not in the draft. The note calls it a 'liberty', but it adds a feeling (the trip was unpleasant), and that sits oddly against the brother's 'best vacation' and softens the closing irony."
+    },
+    {
+     "kind": "sense",
+     "quote": "I never was in Paris but the once",
+     "why": "The mending is reasonable, but it discards the draft's 'never been' and the possible joke that he never really saw Paris because he was stuck at the embassy. The 'known' note suggests that reading, and the rewrite does not consider it."
+    },
+    {
+     "kind": "voice",
+     "quote": "I judge that was enough; and it rained the whole week we were there, and my brother lost his passport the second day.",
+     "why": "The sentence is stitched together with semicolons and 'and's. It sounds like a generic folksy dialect, not Twain's controlled deadpan. 'I judge' is a stock Southern tag, and little else distinguishes the voice."
+    },
+    {
+     "kind": "voice",
+     "quote": "he says to this day it was the best vacation he ever had",
+     "why": "This is lightly period-flavored, and the second paragraph is almost unchanged from the draft. There is little Twain texture, such as a concrete exaggeration or a mock-solemn qualifier."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Pudd’nhead Wilson, ch. 12, ¶ 1",
+     "why": "The cited sources are precise-looking but doubtful as exemplars of a cumulative sentence. The paragraph-level citations are unverifiable and probably overconfident."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites A Connecticut Yankee in King Arthur’s Court, ch. 37, ¶ 47",
+     "why": "The 'I judge' aside is attributed to a specific paragraph that does not clearly show the move, so the citation looks fabricated or inapt."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 2:\n  (no notes)",
+     "why": "The second paragraph was changed ('and he says to this day'), but nothing is noted. The note on the first-line fix also says 'dropped last', which is fine, but the change to 'to this day' goes unreported."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise the deadpan — say the absurd thing straight and never explain it",
+     "why": "The lesson claims the rewrite does not explain, yet it inserted 'I judge that was enough', which explains the joke in advance. The lesson therefore contradicts what the rewrite does."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "the second day",
+     "why": "A tiny shift: 'on the second day' became a bare adverbial, which is fine, but 'the whole week we were there' adds 'we', a harmless change."
+    }
+   ],
+   "verdict": "The rewrite catches and mends the contradiction, but the rewrite adds an opinion ('I judge that was enough') that pre-empts the brother's punchline, and the voice is thin Twain pastiche, with the second paragraph barely changed. The notes' citations look shaky and the lesson contradicts the rewrite's own insertion."
+  }
+ }
+]

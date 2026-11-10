@@ -1,0 +1,1099 @@
+[
+ {
+  "voice": "austen",
+  "case": "breakup",
+  "ms": 39548,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "Ryan sent me word at midnight that we must talk; and I understood at once, without taking to be told, what such a message must mean.\n\nWe met the next day at a coffee-house in the town, where I found him already arrived, and occupied with the little instrument in his hand. He looked nervous; and he said that he was not ready for anything serious, and that the fault was not in me, but in himself.\n\nI wanted to cry, but did not; I only nodded, and said that it was all very well; and then I walked home in the rain, and ate a whole pint of ice cream, which was, I believe, the most rational thing I did that day.\n\nThe friend with whom I lodged thought I made a great deal too much of it, and perhaps I did; but it was not the less painful for that.",
+  "rows": [
+   {
+    "text": "Ryan sent me word at midnight that we must talk; and I understood at once, without taking to be told, what such a message must mean.",
+    "notes": []
+   },
+   {
+    "text": "We met the next day at a coffee-house in the town, where I found him already arrived, and occupied with the little instrument in his hand. He looked nervous; and he said that he was not ready for anything serious, and that the fault was not in me, but in himself.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Speech reported",
+      "after": "he said that he was not ready for anything serious, and that the fault was not in me, but in himself",
+      "cite": "Emma, ch. 16, ¶ 3",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I wanted to cry, but did not; I only nodded, and said that it was all very well; and then I walked home in the rain, and ate a whole pint of ice cream, which was, I believe, the most rational thing I did that day.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Feeling shown by conduct",
+      "after": "I only nodded, and said that it was all very well",
+      "cite": "Sense and Sensibility, ch. 17, ¶ 17",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The narrator looking back allows herself one dry closing clause, as the voice does. It mocks her own consolation and adds no new fact.",
+      "after": "which was, I believe, the most rational thing I did that day",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "The friend with whom I lodged thought I made a great deal too much of it, and perhaps I did; but it was not the less painful for that.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your draft is all short separate sentences. Austen joins related things into one period and saves the point for the end, as in \"and I understood at once... what such a message must mean.\" Practise reporting a speaker's stock phrases in your own syntax (\"the fault was not in me, but in himself\") so the reader hears how worn they are, and give the pain by understatement, \"not the less painful for that.\" Saying less makes it land harder."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "setting",
+     "gist": "Ryan's midnight message asking to talk"
+    },
+    {
+     "role": "feeling",
+     "gist": "she knows at once what it means"
+    },
+    {
+     "role": "event",
+     "gist": "the meeting at the coffee shop; he is nervous, not ready, 'not you, me'"
+    },
+    {
+     "role": "feeling",
+     "gist": "she holds back tears, nods, says okay"
+    },
+    {
+     "role": "event",
+     "gist": "walks home in rain, eats a pint of ice cream"
+    },
+    {
+     "role": "verdict",
+     "gist": "roommate thinks she overreacts; maybe so, but it hurt"
+    }
+   ],
+   "plan": [
+    {
+     "role": "setting and foreknowledge",
+     "gist": "the message and what she knew, in one period",
+     "why": "Austen gives the summons and its meaning together, so the knowing arrives late, at the end of the sentence"
+    },
+    {
+     "role": "scene",
+     "gist": "the meeting, his manner, his speech reported",
+     "why": "his excuses are worth more told in her syntax than quoted; the narrator's syntax shows how worn they are"
+    },
+    {
+     "role": "conduct",
+     "gist": "her restraint, her reply, the walk and the ice cream",
+     "why": "feeling shown by what she did, closed by one dry aside"
+    },
+    {
+     "role": "verdict",
+     "gist": "the friend's view, her own concession, the hurt",
+     "why": "the antithesis of 'perhaps I did; but' lets the pain stand last"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 95,
+   "scoreYours": 27,
+   "never": [
+    "coffee-house"
+   ],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "neighbors",
+  "ms": 25578,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "austen",
+  "case": "email",
+  "ms": 36241,
+  "yours": "Hi team,\n\nQuick update: the launch is moving from Tuesday to Thursday. Legal still hasn't signed off on the pricing page, and I don't want us shipping without it.\n\nPlease have your sections of the deck done by Wednesday at noon. If you're blocked, tell me today, not tomorrow.\n\nThanks,\nSam",
+  "rewrite": "My dear friends,\n\nI must give you notice that our undertaking is put off from Tuesday to Thursday; for the lawyers have not yet given their approval to the paper of terms, and I would by no means have us send anything abroad without it.\n\nI must beg you, therefore, to have your several parts of the papers finished by Wednesday at noon; and if anything should hinder you, pray let me know of it today, and not tomorrow, when the knowledge of it could be of no very great use.\n\nWith many thanks, Sam",
+  "rows": [
+   {
+    "text": "My dear friends,",
+    "notes": []
+   },
+   {
+    "text": "I must give you notice that our undertaking is put off from Tuesday to Thursday; for the lawyers have not yet given their approval to the paper of terms, and I would by no means have us send anything abroad without it.",
+    "notes": []
+   },
+   {
+    "text": "I must beg you, therefore, to have your several parts of the papers finished by Wednesday at noon; and if anything should hinder you, pray let me know of it today, and not tomorrow, when the knowledge of it could be of no very great use.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "I must beg you, therefore, to have your several parts of the papers finished by Wednesday at noon; and if anything should hinder you, pray let me know of it today, and not tomorrow, when the knowledge of it could be of no very great use.",
+      "cite": "Mansfield Park, ch. 43, ¶ 2",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Understatement and litotes",
+      "after": "when the knowledge of it could be of no very great use",
+      "cite": "Emma, ch. 14, ¶ 13",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The writer's 'today, not tomorrow' already implies that tomorrow would be too late. The voice says that outright, in understatement, so the urgency reads as a dry verdict and not as an order.",
+      "after": "when the knowledge of it could be of no very great use",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "With many thanks, Sam",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your email gives its news in short, separate bursts. Austen would join each piece of news to its reason: \"is put off from Tuesday to Thursday; for the lawyers have not yet given their approval\", so the reader takes in the delay and its cause together. Practise ending a request on understatement, as in \"of no very great use\". It makes your point firmly without sounding like a command."
+  ],
+  "reading": {
+   "kind": "email",
+   "outline": [
+    {
+     "role": "greeting",
+     "gist": "Hi team"
+    },
+    {
+     "role": "news",
+     "gist": "launch moves from Tuesday to Thursday"
+    },
+    {
+     "role": "reason",
+     "gist": "Legal hasn't approved the pricing page; won't ship without it"
+    },
+    {
+     "role": "request",
+     "gist": "deck sections done by Wednesday noon; report blockers today"
+    },
+    {
+     "role": "close",
+     "gist": "Thanks, Sam"
+    }
+   ],
+   "plan": [
+    {
+     "role": "greeting",
+     "gist": "a plain salutation to the whole party",
+     "why": "Her letters always open by naming whom they address."
+    },
+    {
+     "role": "news and reason",
+     "gist": "the delay, and why, in one period",
+     "why": "She puts the news first and lets the reason follow after a semicolon, so the reason explains the news rather than standing alone as a complaint."
+    },
+    {
+     "role": "request",
+     "gist": "the deadline, then the warning about hindrances, joined",
+     "why": "Both are a single request, so she would join them in one sentence. The 'today, not tomorrow' contrast is placed at the end, where it lands hardest."
+    },
+    {
+     "role": "close",
+     "gist": "thanks and the name",
+     "why": "The letter keeps its form and finishes with a close."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 94,
+   "scoreYours": 31,
+   "never": [],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 5,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "our undertaking is put off from Tuesday to Thursday",
+     "why": "“Undertaking” can cover a project, but it does not specifically retain that the delayed event is a launch. The original’s operational fact is made more general."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "the paper of terms",
+     "why": "A “pricing page” is reduced to a vague “paper of terms.” Pricing is not necessarily equivalent to contractual terms, and “page” is not retained."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "have your several parts of the papers finished",
+     "why": "“Sections of the deck” means portions of a presentation; “parts of the papers” is broader and can suggest documents generally. This loses a concrete work-email fact."
+    },
+    {
+     "kind": "voice",
+     "quote": "the lawyers have not yet given their approval to the paper of terms",
+     "why": "The phrasing is generically old-fashioned rather than distinctly Austenian. “Paper of terms” sounds like a costume-period substitution, not the precise social or domestic language characteristic of her letters and novels."
+    },
+    {
+     "kind": "natural",
+     "quote": "send anything abroad without it",
+     "why": "Though historically intelligible as sending something out for publication or circulation, it is an awkward equivalent for shipping a launch in this workplace context. “Anything” also makes the intended product or launch oddly indefinite."
+    },
+    {
+     "kind": "natural",
+     "quote": "our undertaking is put off",
+     "why": "The passive phrasing is intelligible, but it makes an ordinary scheduling update sound ceremonious enough to risk unintended comedy in a team email."
+    },
+    {
+     "kind": "notes",
+     "quote": "Paragraph 3:",
+     "why": "The cited rewrite sentence beginning “I must beg you” appears in the second body paragraph, not paragraph 3. The note’s location is inaccurate."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Mansfield Park, ch. 43, ¶ 2",
+     "why": "A chapter-and-paragraph citation is not reliably verifiable across editions, and the note does not identify a comparable Austen sentence or explain what exact syntactic feature the source demonstrates."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Emma, ch. 14, ¶ 13",
+     "why": "As with the other citation, the paragraph reference is edition-dependent and the note gives no quoted source passage. It therefore does little to establish that the claimed litotic move is specifically Austen’s."
+    },
+    {
+     "kind": "notes",
+     "quote": "The voice says that outright",
+     "why": "The liberty note overstates the change: “when the knowledge of it could be of no very great use” is an indirect implication, not a statement outright that tomorrow is too late. It also does not acknowledge the shift from a direct operational instruction to a more diffuse formulation."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Your email gives its news in short, separate bursts.",
+     "why": "This inaccurately characterizes the draft. Its first sentence already combines the schedule change with the reason that Legal has not signed off, and its second sentence combines the deadline with the reporting instruction. The lesson starts from a faulty diagnosis."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Practise ending a request on understatement",
+     "why": "This is a usable exercise, but it does not warn that understatement can weaken clarity in a work email with a real deadline. It also does not teach how to preserve concrete nouns such as “pricing page” and “deck” while borrowing Austen’s sentence shape."
+    },
+    {
+     "kind": "form",
+     "quote": "a plain salutation to the whole party; why: Her letters always open by naming whom they address.",
+     "why": "“Always” is too absolute, and “My dear friends” is not a plain team salutation. The structural explanation is therefore both overgeneralized and imprecise."
+    }
+   ],
+   "verdict": "The rewrite preserves the essential schedule, approval dependency, deadline, and escalation instruction, and its overall email order is sound. Its main weaknesses are vague period substitutions for concrete workplace objects, only moderately convincing Austen diction, and notes that are inaccurately located and insufficiently supported."
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "oped",
+  "ms": 42470,
+  "yours": "Our town should close Main Street to cars on weekends. Parking downtown is a nightmare and the sidewalks are too narrow for strollers. Other towns have done this and their shops are doing better than ever.\n\nSome business owners will complain that customers can't get to them. But they'll get used to it. Honestly, most people walk from the garage anyway.\n\nWe should try it this summer.",
+  "rewrite": "Our town ought to shut Main Street against all carriages on a Saturday and a Sunday; for to find a place where a carriage may be left in the middle of the town is a perfect misery, and the pavements are too narrow for a nursery-maid with a child in its little carriage. Other places have done the same, and their shops were never in so flourishing a way as they are now.\n\nSome of those who keep shops will complain, I dare say, that nobody who wishes to buy of them can reach their doors; but they will soon be used to it, as people are soon used to most things which they have declared they could never bear; and, to say the truth, the greater part of those who come into the town already leave their carriages at the inn, and walk from thence.\n\nWe ought to make the trial this summer.",
+  "rows": [
+   {
+    "text": "Our town ought to shut Main Street against all carriages on a Saturday and a Sunday; for to find a place where a carriage may be left in the middle of the town is a perfect misery, and the pavements are too narrow for a nursery-maid with a child in its little carriage. Other places have done the same, and their shops were never in so flourishing a way as they are now.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "Our town ought to shut Main Street against all carriages on a Saturday and a Sunday; for to find a place where a carriage may be left in the middle of the town is a perfect misery, and the pavements are too narrow for a nursery-maid with a child in its little carriage.",
+      "cite": "Mansfield Park, ch. 38, ¶ 6",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "Some of those who keep shops will complain, I dare say, that nobody who wishes to buy of them can reach their doors; but they will soon be used to it, as people are soon used to most things which they have declared they could never bear; and, to say the truth, the greater part of those who come into the town already leave their carriages at the inn, and walk from thence.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Speech reported",
+      "after": "Some of those who keep shops will complain, I dare say, that nobody who wishes to buy of them can reach their doors",
+      "cite": "Northanger Abbey, ch. 13, ¶ 28",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "Your 'they'll get used to it' asks to be made into a general truth. She lays a dry observation over the particular case, and that answers the objection better than a flat assurance does.",
+      "after": "as people are soon used to most things which they have declared they could never bear",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "We ought to make the trial this summer.",
+    "notes": []
+   }
+  ],
+  "lessons": [
+   "Your draft gives each point a short sentence of its own. She joins a claim to its grounds, as in \"; for to find a place where a carriage may be left… is a perfect misery\", so the reader takes the argument as one train of thought. Try answering an objection in the same sentence that reports it (\"will complain… that nobody… can reach their doors; but they will soon be used to it\"), and save your short sentence for the closing call."
+  ],
+  "reading": {
+   "kind": "argument",
+   "outline": [
+    {
+     "role": "claim",
+     "gist": "close Main Street to cars on weekends"
+    },
+    {
+     "role": "reason",
+     "gist": "parking is bad, sidewalks too narrow for strollers"
+    },
+    {
+     "role": "evidence",
+     "gist": "other towns did it and their shops thrive"
+    },
+    {
+     "role": "objection",
+     "gist": "shop owners will say customers can't reach them"
+    },
+    {
+     "role": "answer",
+     "gist": "they'll get used to it; most people walk from the garage anyway"
+    },
+    {
+     "role": "proposal",
+     "gist": "try it this summer"
+    }
+   ],
+   "plan": [
+    {
+     "role": "claim with reasons",
+     "gist": "the proposal and its two reasons in one period",
+     "why": "She states the point and hangs its grounds on it with a semicolon and 'for', so the reader takes the claim and its reasons as one thought."
+    },
+    {
+     "role": "evidence",
+     "gist": "other places, flourishing shops",
+     "why": "The example gets a sentence of its own, as the proof the reasons call for."
+    },
+    {
+     "role": "objection and answer",
+     "gist": "the shopkeepers' complaint, reported, then answered",
+     "why": "The objection and both answers go into one long period, so the answer comes hard on the heels of the complaint."
+    },
+    {
+     "role": "proposal",
+     "gist": "make the trial this summer",
+     "why": "A short sentence kept for the closing call, where it lands hardest."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 95,
+   "scoreYours": 28,
+   "never": [],
+   "paragraphsYours": 3,
+   "paragraphsHers": 3
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 4,
+   "sense": 4,
+   "natural": 4,
+   "notes": 3,
+   "teaching": 4,
+   "structure": 5,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "already leave their carriages at the inn, and walk from thence",
+     "why": "This replaces the writer's specific practical fact—that people park in a garage—with a different fact about leaving carriages at an inn. It is a plausible period adaptation, but an inn is not simply a garage, and the rewrite thereby changes the evidence supporting the proposal."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "that nobody who wishes to buy of them can reach their doors",
+     "why": "The original says business owners will complain that customers cannot get to them. “Nobody” and “can reach their doors” make the predicted complaint more absolute and literal than the original, which can include difficulty of access rather than total impossibility."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "all carriages",
+     "why": "“All” slightly expands the proposal. The draft seeks to close the street to cars, while this wording emphasizes an unrestricted exclusion of every carriage; the addition is small but unnecessary."
+    },
+    {
+     "kind": "voice",
+     "quote": "shut Main Street",
+     "why": "The period syntax is often Austen-like, but the retained modern American street name and blunt municipal verb make the opening sound partly like contemporary civic prose with period substitutions rather than wholly like Austen's idiom."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Mansfield Park, ch. 38, ¶ 6",
+     "why": "A paragraph number is edition-dependent, so this is not a reliable source locator without naming an edition. The note also does not identify a particular Austenian construction or passage that supports the claimed balancing of clauses."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Northanger Abbey, ch. 13, ¶ 28",
+     "why": "As with the first citation, the paragraph reference is edition-dependent and the note does not explain how the cited passage specifically models this form of reported objection."
+    },
+    {
+     "kind": "notes",
+     "quote": "Liberty taken: Your 'they'll get used to it' asks to be made into a general truth.",
+     "why": "The note explains the added aphorism but does not acknowledge the more consequential period adaptation of “garage” into “inn,” even though that alteration changes a concrete item of supporting evidence."
+    }
+   ],
+   "verdict": "The rewrite is a strong Austen-flavoured argument with an effective preserved structure, but it makes a meaningful unsupported substitution of an inn for a garage and slightly heightens the objection. Its teaching is useful, though the source notes are too imprecise and do not disclose every substantive adaptation."
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "pitch",
+  "ms": 36909,
+  "yours": "I think we should switch to a four-day week. People are burned out and our best engineer just quit. There are studies showing productivity stays the same or goes up. It would also help with hiring.\n\nI know it's risky and clients might not like it. We could try it for three months and see.",
+  "rewrite": "I am of opinion that we ought to work but four days in the week; for our people are worn out, and the ablest of them has just left us. Nor is the measure one of mere indulgence, since it has been shown, by those who have taken the trouble to inquire, that as much work is done in the shorter week as in the longer, and very often more; and it would be of no small consequence to us, besides, in engaging others.\n\nI am aware that the scheme is not without its hazard, and that those who employ us may not like it; but we might make the trial for three months, and judge by the event.",
+  "rows": [
+   {
+    "text": "I am of opinion that we ought to work but four days in the week; for our people are worn out, and the ablest of them has just left us. Nor is the measure one of mere indulgence, since it has been shown, by those who have taken the trouble to inquire, that as much work is done in the shorter week as in the longer, and very often more; and it would be of no small consequence to us, besides, in engaging others.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "I am of opinion that we ought to work but four days in the week; for our people are worn out, and the ablest of them has just left us.",
+      "cite": "Mansfield Park, ch. 39, ¶ 2",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Judgement in abstract nouns",
+      "after": "it would be of no small consequence to us, besides, in engaging others",
+      "cite": "Emma, ch. 38, ¶ 43",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "This answers in advance the charge the studies are meant to meet. It frames the evidence the writer gives and adds no new fact.",
+      "after": "nor is the measure one of mere indulgence",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I am aware that the scheme is not without its hazard, and that those who employ us may not like it; but we might make the trial for three months, and judge by the event.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Understatement and litotes",
+      "after": "the scheme is not without its hazard",
+      "cite": "Pride and Prejudice, ch. 27, ¶ 1",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "Your draft lists its points in short, separate sentences, so each one has to argue for itself. Austen ties a claim to its reason and an objection to its answer in one balanced sentence: \"not without its hazard ... but we might make the trial.\" Granting a doubt mildly, through understatement, before you answer it makes the reader readier to agree, so practise holding the concession and the reply together in one sentence."
+  ],
+  "reading": {
+   "kind": "argument",
+   "outline": [
+    {
+     "role": "claim",
+     "gist": "switch to a four-day week"
+    },
+    {
+     "role": "reason",
+     "gist": "staff worn out; best engineer quit"
+    },
+    {
+     "role": "evidence",
+     "gist": "studies: output same or higher"
+    },
+    {
+     "role": "reason",
+     "gist": "helps hiring"
+    },
+    {
+     "role": "objection",
+     "gist": "risky; clients may dislike it"
+    },
+    {
+     "role": "proposal",
+     "gist": "three-month trial"
+    }
+   ],
+   "plan": [
+    {
+     "role": "claim and reason",
+     "gist": "the proposal joined to its cause",
+     "why": "She lets the cause follow straight on from the claim in one period, so the claim does not stand bare."
+    },
+    {
+     "role": "evidence and further reason",
+     "gist": "studies, then hiring",
+     "why": "The arguments for it are gathered in one sentence, the gain in hiring coming last because it is the newest point."
+    },
+    {
+     "role": "objection and proposal",
+     "gist": "hazard granted, trial offered",
+     "why": "Granting the objection and then answering it with 'but' is her usual balance, and it lets the proposal close the piece."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 95,
+   "scoreYours": 29,
+   "never": [],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 3,
+   "voice": 4,
+   "sense": 4,
+   "natural": 5,
+   "notes": 3,
+   "teaching": 3,
+   "structure": 5,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "“the ablest of them has just left us”",
+     "why": "This drops the specific fact that the departing person was “our best engineer.” Being merely the ablest employee is not the same fact, and “left us” also weakens the original's clear statement that the engineer quit."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "“and very often more”",
+     "why": "The original says that studies show productivity stays the same or rises, but gives no frequency for either result. “Very often” supplies an unsupported quantitative implication about the studies' findings."
+    },
+    {
+     "kind": "sense",
+     "quote": "“the ablest of them has just left us”",
+     "why": "By removing “engineer,” the sentence makes less clear why this departure is especially relevant to the proposed working arrangement and hiring problem."
+    },
+    {
+     "kind": "notes",
+     "quote": "“cites Mansfield Park, ch. 39, ¶ 2”",
+     "why": "The paragraph reference is not usable without an identified edition, since paragraph numbering is not stable across editions. The note should give a stable chapter reference and, ideally, a brief quoted parallel or a more precisely identified passage."
+    },
+    {
+     "kind": "notes",
+     "quote": "“cites Emma, ch. 38, ¶ 43”",
+     "why": "As with the other paragraph citations, “¶ 43” is edition-dependent and does not reliably let the writer inspect the claimed model for the move."
+    },
+    {
+     "kind": "teaching",
+     "quote": "“practise holding the concession and the reply together in one sentence”",
+     "why": "This is a useful exercise, but it is the only concrete transferable lesson. It does not teach the writer how to preserve specific factual precision while compressing—for example, how “best engineer” could remain explicit—or how to use the evidence sentence without adding an unsupported degree such as “very often.”"
+    }
+   ],
+   "verdict": "The rewrite has a persuasive Austen-like cadence and preserves the argument's overall progression, but it loses the engineer detail and adds an unsupported frequency claim. The teaching material offers one solid sentence-level technique, while the source notes need stable, checkable citations."
+  }
+ },
+ {
+  "voice": "austen",
+  "case": "relieved",
+  "ms": 32767,
+  "yours": "When Dana cancelled our dinner I wasn't upset at all. Honestly, I was relieved. I'd been dreading it all week, and I'm not proud of that.\n\nI told her it was fine and we'd do it another time. I don't think we will.",
+  "rewrite": "When Dana sent word that our dinner could not take place, I was so far from being disappointed that, to own the truth, I was relieved; for I had been dreading it the whole week, and I am not proud of having done so.\n\nI told her that it did not signify in the least, and that we would dine together another time; but I do not think that we shall.",
+  "rows": [
+   {
+    "text": "When Dana sent word that our dinner could not take place, I was so far from being disappointed that, to own the truth, I was relieved; for I had been dreading it the whole week, and I am not proud of having done so.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Clauses balanced in one period",
+      "after": "to own the truth, I was relieved; for I had been dreading it the whole week, and I am not proud of having done so",
+      "cite": "Pride and Prejudice, ch. 52, ¶ 5",
+      "verified": true
+     },
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "Your draft doesn't say how Dana cancelled. In her world an engagement is put off by a note or a message, so I named it plainly and added no other detail.",
+      "after": "sent word",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I told her that it did not signify in the least, and that we would dine together another time; but I do not think that we shall.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Speech reported",
+      "after": "I told her that it did not signify in the least, and that we would dine together another time",
+      "cite": "Northanger Abbey, ch. 21, ¶ 9",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "Your draft gives each feeling its own short sentence, and that keeps the reader at a distance. Austen holds them in one period instead, so that \"I was relieved\" comes late and the confession follows straight after it with \"for\". Practise putting your sting in a last clause after \"but\": in \"but I do not think that we shall\", the doubt quietly undoes the polite promise without a single extra word of comment."
+  ],
+  "reading": {
+   "kind": "story",
+   "outline": [
+    {
+     "role": "event",
+     "gist": "Dana cancels their dinner"
+    },
+    {
+     "role": "feeling",
+     "gist": "not upset but relieved; had dreaded it all week, and is not proud of that"
+    },
+    {
+     "role": "event",
+     "gist": "tells Dana it is fine, another time"
+    },
+    {
+     "role": "verdict",
+     "gist": "doubts they ever will"
+    }
+   ],
+   "plan": [
+    {
+     "role": "event and feeling",
+     "gist": "the cancelled dinner, the relief, the week of dread and the small shame, all in one period",
+     "why": "Austen holds an event and the narrator's feeling about it in one balanced sentence, so the relief lands late and the confession is tied to it by 'for'"
+    },
+    {
+     "role": "speech and verdict",
+     "gist": "what she told Dana, then her doubt",
+     "why": "The polite reply is reported, and the doubt comes after 'but' as the last clause, so the courtesy is undone by the narrator's private opinion"
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 93,
+   "scoreYours": 30,
+   "never": [],
+   "paragraphsYours": 2,
+   "paragraphsHers": 2
+  },
+  "judge": {
+   "fidelity": 4,
+   "voice": 4,
+   "sense": 5,
+   "natural": 5,
+   "notes": 3,
+   "teaching": 4,
+   "structure": 5,
+   "faults": [
+    {
+     "kind": "fidelity",
+     "quote": "When Dana sent word that our dinner could not take place",
+     "why": "“Sent word” specifies a mode of cancellation that the original does not supply. It is a small invention, but the brief explicitly permits additions only as voice-commentary or reported repairs to faults of sense; there was no such fault to repair."
+    },
+    {
+     "kind": "notes",
+     "quote": "In her world an engagement is put off by a note or a message, so I named it plainly and added no other detail.",
+     "why": "This note acknowledges an unsupported addition but mislabels it as a harmless clarification. The original already states the relevant fact—Dana cancelled—and does not require a mode of communication. “Her world” is also unclear: it could mean Dana’s world or Austen’s."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Pride and Prejudice, ch. 52, ¶ 5",
+     "why": "The citation is not readily verifiable because paragraph numbering varies by edition, and the note does not identify an edition or quote the Austen passage that supposedly supplies the move. A chapter citation would be more useful with a short source quotation or a stable edition reference."
+    },
+    {
+     "kind": "notes",
+     "quote": "cites Northanger Abbey, ch. 21, ¶ 9",
+     "why": "As with the first citation, the paragraph reference is edition-dependent and does not show what particular Austen syntax or passage is being borrowed. The reported-speech move is accurately named, but the sourcing is not sufficiently precise for teaching use."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Your draft gives each feeling its own short sentence",
+     "why": "This slightly misdescribes the draft: “I'd been dreading it all week, and I'm not proud of that” joins dread and shame in one sentence. The useful lesson about consolidation would be stronger if it identified the actual pattern—three short units of reaction—rather than overstating it."
+    }
+   ],
+   "verdict": "The rewrite is clear, faithful in feeling, and convincingly Austen-like in its balanced reserve. Its principal defect is the unnecessary invented detail of Dana “sent[ing] word,” compounded by notes that defend rather than flag the liberty."
+  }
+ },
+ {
+  "voice": "kjv",
+  "case": "breakup",
+  "ms": 19037,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "kjv",
+  "case": "neighbors",
+  "ms": 16972,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "kjv",
+  "case": "email",
+  "ms": 31210,
+  "yours": "Hi team,\n\nQuick update: the launch is moving from Tuesday to Thursday. Legal still hasn't signed off on the pricing page, and I don't want us shipping without it.\n\nPlease have your sections of the deck done by Wednesday at noon. If you're blocked, tell me today, not tomorrow.\n\nThanks,\nSam",
+  "rewrite": "Unto you my fellowlabourers, greeting.\n\nBehold, I make known unto you in few words, that the launch shall not be on Tuesday, but on Thursday. For the lawyers have not yet given their word upon the pricing page; and I will not that we send forth the work without it.\n\nWherefore let every one of you finish his part of the deck by Wednesday at noon: and if ye be hindered in any thing, tell me this day, and tarry not until the morrow.\n\nI give you thanks. The salutation of me Sam with mine own hand.",
+  "rows": [
+   {
+    "text": "Unto you my fellowlabourers, greeting.",
+    "notes": [
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "The Bible has no word 'team', so I named the readers by the work they share, the way Paul greets his helpers in Philemon.",
+      "after": "Unto you my fellowlabourers, greeting.",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "Behold, I make known unto you in few words, that the launch shall not be on Tuesday, but on Thursday. For the lawyers have not yet given their word upon the pricing page; and I will not that we send forth the work without it.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Behold, lo, verily",
+      "after": "Behold, I make known unto you in few words, that the launch shall not be on Tuesday, but on Thursday.",
+      "cite": "Galatians 1:20",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "Wherefore let every one of you finish his part of the deck by Wednesday at noon: and if ye be hindered in any thing, tell me this day, and tarry not until the morrow.",
+    "notes": [
+     {
+      "kind": "move",
+      "technique": "Unto, thereof, wherefore",
+      "after": "Wherefore let every one of you finish his part of the deck by Wednesday at noon",
+      "cite": "1 Samuel 30:24",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Clauses laid side by side with “and”",
+      "after": "and if ye be hindered in any thing, tell me this day, and tarry not until the morrow.",
+      "cite": "Judges 6:18",
+      "verified": true
+     },
+     {
+      "kind": "move",
+      "technique": "Thou and thee, -eth and -est",
+      "after": "if ye be hindered",
+      "cite": "Luke 11:52",
+      "verified": true
+     }
+    ]
+   },
+   {
+    "text": "I give you thanks. The salutation of me Sam with mine own hand.",
+    "notes": [
+     {
+      "kind": "liberty",
+      "technique": "Liberty taken",
+      "text": "This is the way an epistle signs off (2 Thessalonians 3:17). It stands for the bare name at the foot of the email.",
+      "after": "The salutation of me Sam with mine own hand.",
+      "verified": true
+     }
+    ]
+   }
+  ],
+  "lessons": [
+   "Your email is a string of short, separate orders. The Bible's manner puts each order where it follows from the one before. \"Behold\" calls the team to look at the news, \"For the lawyers have not yet given their word\" gives the reason in the same breath, and \"Wherefore let every one of you\" makes the deadlines the natural result of the delay, not a fresh demand. To practise this, write your news, give your reason with \"for\", and then begin your request with \"so\" or \"wherefore\", so the reader feels each step lead to the next."
+  ],
+  "reading": {
+   "kind": "email",
+   "outline": [
+    {
+     "role": "greeting",
+     "gist": "Hi team"
+    },
+    {
+     "role": "news",
+     "gist": "launch moves from Tuesday to Thursday"
+    },
+    {
+     "role": "reason",
+     "gist": "Legal hasn't approved the pricing page; Sam won't ship without it"
+    },
+    {
+     "role": "request",
+     "gist": "deck sections due Wednesday noon"
+    },
+    {
+     "role": "request",
+     "gist": "if blocked, say so today, not tomorrow"
+    },
+    {
+     "role": "close",
+     "gist": "Thanks, Sam"
+    }
+   ],
+   "plan": [
+    {
+     "role": "greeting",
+     "gist": "Unto the fellowlabourers, greeting",
+     "why": "An epistle opens by naming who it is for and greeting them, all in one line."
+    },
+    {
+     "role": "news and reason",
+     "gist": "behold, the day is moved; for the lawyers have not yet given their word",
+     "why": "The news comes first, called out with 'behold', and the reason follows straight after with 'for', as the Bible's letters do it."
+    },
+    {
+     "role": "request",
+     "gist": "wherefore finish the deck; and if hindered, tell me this day",
+     "why": "'Wherefore' makes the requests follow from the news, and 'and' joins the two requests into one sentence."
+    },
+    {
+     "role": "close",
+     "gist": "thanks, and the salutation in his own hand",
+     "why": "An epistle ends with thanks and the writer's own name."
+    }
+   ],
+   "sense": []
+  },
+  "engine": {
+   "score": 81,
+   "scoreYours": 38,
+   "never": [
+    "pricing",
+    "page"
+   ],
+   "paragraphsYours": 4,
+   "paragraphsHers": 4
+  },
+  "judge": {
+   "fidelity": 4,
+   "voice": 3,
+   "sense": 4,
+   "natural": 3,
+   "notes": 2,
+   "teaching": 3,
+   "structure": 5,
+   "faults": [
+    {
+     "kind": "voice",
+     "quote": "Behold, I make known unto you in few words",
+     "why": "This is a generalized biblical pastiche rather than a strongly KJV-shaped epistolary opening. KJV epistles more characteristically use formulas such as “I would not have you ignorant,” “I certify you,” or “I would have you know,” rather than this assembled phrasing."
+    },
+    {
+     "kind": "natural",
+     "quote": "I give you thanks.",
+     "why": "This is not idiomatic KJV wording for a closing. The KJV commonly has “I thank my God,” “we give thanks,” or a benediction; “I give you thanks” sounds like a literal modern-English substitution and is faintly awkward."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "the lawyers have not yet given their word upon the pricing page",
+     "why": "“Legal” is rendered as “the lawyers,” which is plausible, but “given their word” is less exact than having “signed off”: it can mean merely offering an opinion or promise rather than formally approving the page."
+    },
+    {
+     "kind": "fidelity",
+     "quote": "I will not that we send forth the work without it",
+     "why": "“It” has a potentially unstable antecedent: grammatically it may refer to “the pricing page” rather than Legal’s approval. The source specifically says Sam does not want shipping without Legal’s sign-off."
+    },
+    {
+     "kind": "notes",
+     "quote": "“Behold, I make known unto you in few words, that the launch shall not be on Tuesday, but on Thursday.” — cites Galatians 1:20",
+     "why": "The citation is inapt. Galatians 1:20 reads, “Now the things which I write unto you, behold, before God, I lie not”; it does not support “make known unto you” or “in few words.”"
+    },
+    {
+     "kind": "notes",
+     "quote": "Behold, lo, verily",
+     "why": "The note lists “lo” and “verily,” but neither occurs in the quoted rewrite. It therefore does not accurately name the actual move."
+    },
+    {
+     "kind": "notes",
+     "quote": "“Wherefore let every one of you finish his part of the deck by Wednesday at noon” — cites 1 Samuel 30:24",
+     "why": "1 Samuel 30:24 contains “as his part is that goeth down to the battle, so shall his part be that tarrieth by the stuff,” not a comparable “Wherefore let every one...” exhortation. The citation does not substantiate the claimed syntax."
+    },
+    {
+     "kind": "notes",
+     "quote": "“and if ye be hindered in any thing, tell me this day, and tarry not until the morrow.” — cites Judges 6:18",
+     "why": "Judges 6:18 says “Depart not hence, I pray thee, until I come unto thee,” and is not a good source for the stated paratactic pattern or the wording “tarry ... until the morrow.”"
+    },
+    {
+     "kind": "notes",
+     "quote": "“if ye be hindered” — cites Luke 11:52",
+     "why": "Luke 11:52 does not illustrate this second-person passive form; it concerns lawyers taking away “the key of knowledge.” The source attribution is inaccurate."
+    },
+    {
+     "kind": "teaching",
+     "quote": "Your email is a string of short, separate orders.",
+     "why": "This misdescribes the original. Its launch news and reason are already joined in one sentence, and its two requests are organized as a deadline followed by a contingency. The lesson should identify a real stylistic opportunity rather than characterize the draft unfairly."
+    },
+    {
+     "kind": "teaching",
+     "quote": "“Wherefore let every one of you” makes the deadlines the natural result of the delay",
+     "why": "The lesson overstates the logical relation. The delayed launch may make the Wednesday deadline sensible, but the source does not explicitly present the deck deadline as a consequence of the legal delay. This teaches connective rhetoric at the cost of slightly inventing the argument."
+    }
+   ],
+   "verdict": "The rewrite preserves the email’s essential facts, sequence, requests, and form, and its broad biblical-epistolary manner is serviceable. Its weakest aspect is the instructional apparatus: several claimed sources are wrong or poorly matched, and the lesson inaccurately diagnoses the original’s structure."
+  }
+ },
+ {
+  "voice": "kjv",
+  "case": "oped",
+  "ms": 19660,
+  "yours": "Our town should close Main Street to cars on weekends. Parking downtown is a nightmare and the sidewalks are too narrow for strollers. Other towns have done this and their shops are doing better than ever.\n\nSome business owners will complain that customers can't get to them. But they'll get used to it. Honestly, most people walk from the garage anyway.\n\nWe should try it this summer.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "kjv",
+  "case": "pitch",
+  "ms": 16652,
+  "yours": "I think we should switch to a four-day week. People are burned out and our best engineer just quit. There are studies showing productivity stays the same or goes up. It would also help with hiring.\n\nI know it's risky and clients might not like it. We could try it for three months and see.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "kjv",
+  "case": "relieved",
+  "ms": 15612,
+  "yours": "When Dana cancelled our dinner I wasn't upset at all. Honestly, I was relieved. I'd been dreading it all week, and I'm not proud of that.\n\nI told her it was fine and we'd do it another time. I don't think we will.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "breakup",
+  "ms": 15805,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "neighbors",
+  "ms": 16907,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "email",
+  "ms": 17102,
+  "yours": "Hi team,\n\nQuick update: the launch is moving from Tuesday to Thursday. Legal still hasn't signed off on the pricing page, and I don't want us shipping without it.\n\nPlease have your sections of the deck done by Wednesday at noon. If you're blocked, tell me today, not tomorrow.\n\nThanks,\nSam",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "oped",
+  "ms": 16375,
+  "yours": "Our town should close Main Street to cars on weekends. Parking downtown is a nightmare and the sidewalks are too narrow for strollers. Other towns have done this and their shops are doing better than ever.\n\nSome business owners will complain that customers can't get to them. But they'll get used to it. Honestly, most people walk from the garage anyway.\n\nWe should try it this summer.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "pitch",
+  "ms": 16169,
+  "yours": "I think we should switch to a four-day week. People are burned out and our best engineer just quit. There are studies showing productivity stays the same or goes up. It would also help with hiring.\n\nI know it's risky and clients might not like it. We could try it for three months and see.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "obama",
+  "case": "relieved",
+  "ms": 14630,
+  "yours": "When Dana cancelled our dinner I wasn't upset at all. Honestly, I was relieved. I'd been dreading it all week, and I'm not proud of that.\n\nI told her it was fine and we'd do it another time. I don't think we will.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "breakup",
+  "ms": 17784,
+  "yours": "Ryan texted me at midnight. He said we needed to talk. I knew right away what that meant.\n\nThe next day we met at a coffee shop downtown. He was already there, scrolling on his phone. He looked nervous. He said he wasn't ready for something serious. He said it wasn't me, it was him.\n\nI wanted to cry but I didn't. I just nodded and said okay. Then I walked home in the rain and ate a whole pint of ice cream.\n\nMy roommate thought I was overreacting. Maybe I was. But it still hurt.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "neighbors",
+  "ms": 21628,
+  "yours": "A new family moved in next door last weekend. They have a huge truck and two little kids. The dad seems nice. The mom is kind of standoffish.\n\nMy mother baked them cookies right away. She wanted to find out everything about them. Where they came from, what they did for work, whether they went to church.\n\nIt turns out the dad is a lawyer and he's single. Well, divorced. My mom got this look on her face. I knew exactly what she was thinking. She has been trying to set me up for years.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "email",
+  "ms": 18128,
+  "yours": "Hi team,\n\nQuick update: the launch is moving from Tuesday to Thursday. Legal still hasn't signed off on the pricing page, and I don't want us shipping without it.\n\nPlease have your sections of the deck done by Wednesday at noon. If you're blocked, tell me today, not tomorrow.\n\nThanks,\nSam",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "oped",
+  "ms": 18296,
+  "yours": "Our town should close Main Street to cars on weekends. Parking downtown is a nightmare and the sidewalks are too narrow for strollers. Other towns have done this and their shops are doing better than ever.\n\nSome business owners will complain that customers can't get to them. But they'll get used to it. Honestly, most people walk from the garage anyway.\n\nWe should try it this summer.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "pitch",
+  "ms": 16159,
+  "yours": "I think we should switch to a four-day week. People are burned out and our best engineer just quit. There are studies showing productivity stays the same or goes up. It would also help with hiring.\n\nI know it's risky and clients might not like it. We could try it for three months and see.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ },
+ {
+  "voice": "twain",
+  "case": "relieved",
+  "ms": 15698,
+  "yours": "When Dana cancelled our dinner I wasn't upset at all. Honestly, I was relieved. I'd been dreading it all week, and I'm not proud of that.\n\nI told her it was fine and we'd do it another time. I don't think we will.",
+  "rewrite": "",
+  "rows": [],
+  "lessons": [],
+  "error": "The writer (anthropic/claude-opus-5.5) did not answer: This request would exceed your available credits given your current in-flight requests. Retry after in-flight requests settle, or add credits."
+ }
+]
