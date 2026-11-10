@@ -1,4 +1,4 @@
-// Try it: inside a row, the writer says one of their own sentences again with a move, and the engine checks it in
+// Try it: inside a row, the writer rewrites one of their own sentences with a move, and the engine checks it in
 // about 200 ms. The block has three small columns, like the page: your sentence, your try, and why. A pass goes into
 // Your moves.
 
@@ -31,7 +31,7 @@ export function tryIt(o: TryItOptions): HTMLElement {
     const text = box.value.trim();
     if (!text) return box.focus();
     check.disabled = true;
-    why.replaceChildren(h('p', { class: 'pg-muted' }, 'Reading it…'));
+    why.replaceChildren(h('p', { class: 'pg-muted' }, 'Checking…'));
     try {
       const c = await post<PracticeCheck>('/api/practice', { author: o.voice.id, text, move: o.move });
       const made = c.move ? c.move.made : c.made;
@@ -49,7 +49,7 @@ export function tryIt(o: TryItOptions): HTMLElement {
         ],
       );
     } catch (e) {
-      why.replaceChildren(h('p', { class: 'pg-muted' }, `It could not be checked: ${(e as Error).message}`));
+      why.replaceChildren(h('p', { class: 'pg-muted' }, `Could not check it: ${(e as Error).message}`));
     } finally {
       check.disabled = false;
     }
@@ -63,7 +63,7 @@ export function tryIt(o: TryItOptions): HTMLElement {
     'div',
     { class: 'pg-tryit', role: 'group', 'aria-label': `Try it: ${o.name}` },
     h('div', { class: 'pg-try-col' }, h('p', { class: 'pg-label' }, 'Yours'), h('p', { class: 'pg-try-yours' }, o.sentence)),
-    h('div', { class: 'pg-try-col' }, h('label', { class: 'pg-label', for: id }, `Your try: say it again with ${o.name.toLowerCase()}`), box, h('div', { class: 'pg-try-buttons' }, check, close)),
+    h('div', { class: 'pg-try-col' }, h('label', { class: 'pg-label', for: id }, `Your try: write it again with ${o.name.toLowerCase()}`), box, h('div', { class: 'pg-try-buttons' }, check, close)),
     h('div', { class: 'pg-try-col' }, h('p', { class: 'pg-label' }, 'Why'), why),
   );
 }

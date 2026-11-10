@@ -194,9 +194,9 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
       let text = '';
       if (ps.length > 1) text = `Brings together your paragraphs ${list(ps.map(numberOf))}.`;
       else if (split.length) text = seen.has(ps[0]!) ? `The rest of your paragraph ${numberOf(ps[0]!)}, given a paragraph of its own.` : `Begins your paragraph ${numberOf(ps[0]!)}, which the next paragraph finishes.`;
-      // Moved: told after a paragraph of the writer's that came after it.
-      else if (ps[0]! < latest) text = `Your paragraph ${numberOf(ps[0]!)}, told after your paragraph ${numberOf(latest)}: the telling reaches it later.`;
-      else if (k === 0 && ps[0]! > 1) text = `Your paragraph ${numberOf(ps[0]!)}, told first.`;
+      // Moved: placed after a paragraph of the writer's that came after it.
+      else if (ps[0]! < latest) text = `Your paragraph ${numberOf(ps[0]!)}, moved after your paragraph ${numberOf(latest)}.`;
+      else if (k === 0 && ps[0]! > 1) text = `Your paragraph ${numberOf(ps[0]!)}, moved to the front.`;
       for (const p of ps) seen.set(p, k);
       latest = Math.max(latest, ...ps);
       structure[k] = text;

@@ -1,6 +1,6 @@
 // What Advisor says about a document: every word the author never used, flagged, with the author's own words in its
 // place; sentences, paragraphs and chapters measured against the author's; and the whole compared, word habit by
-// word habit, so a writer sees not only what to change but how the author wrote. Every suggestion carries the
+// word habit, so a writer sees how the author wrote as well as what to change. Every suggestion carries the
 // numbers it rests on and sentences from the works, cited.
 
 import { createHash } from 'node:crypto';

@@ -89,7 +89,7 @@
     {
       "id": "slang",
       "name": "The street word",
-      "does": "The crime slang of the 1920s, used by the people in the story: rod, racket, dick, bulls. A marker of the voice, not a structure to copy.",
+      "does": "The crime slang of the 1920s, spoken by the people in the story: rod, racket, dick, bulls.",
       "pattern": "\\b(dick|gunman|gunmen|bulls?|bump(ed)? off|rod|gat|sap|dope|yeah|okay|sweetheart|precious|angel|swell|hooch|hood|crook|graft|racket|frame-up|framed|copper|shamus)\\b",
       "register": "speech",
       "hint": "Give one speaker one street word where it fits: “the bulls”, “a racket”."

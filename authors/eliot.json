@@ -2,7 +2,7 @@
   "id": "eliot",
   "name": "George Eliot",
   "title": "George Eliot",
-  "tagline": "Sympathy, the wide narrator, the long view",
+  "tagline": "A narrator who understands everyone",
   "epigraph": {
     "text": "We are all of us born in moral stupidity, taking the world as an udder to feed our supreme selves.",
     "cite": "Middlemarch, ch. 21"
@@ -67,7 +67,7 @@
     {
       "id": "moral",
       "name": "Moral nouns",
-      "does": "The moral weather named in abstract nouns: duty, egoism, sympathy, vanity, conscience, ardour.",
+      "does": "The moral question named in an abstract noun: duty, egoism, sympathy, vanity, conscience.",
       "pattern": "\\b(duty|egoism|sympathy|vanity|conscience|ardour|resignation|self-|scruple|motive|piety|fellow-feeling)\\b",
       "register": "any",
       "hint": "Name the moral quality at stake in one noun: duty, vanity, sympathy."

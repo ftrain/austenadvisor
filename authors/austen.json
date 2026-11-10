@@ -4,7 +4,7 @@
   "advisor": "Austen Advisor",
   "short": "Austen",
   "title": "Jane Austen",
-  "tagline": "Irony, balanced periods, judgement in a word",
+  "tagline": "Irony in long, balanced sentences",
   "epigraph": {
     "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
     "cite": "Pride and Prejudice, ch. 1"
@@ -45,8 +45,8 @@
   "moves": [
     {
       "id": "balance",
-      "name": "Clauses balanced in one period",
-      "does": "Clauses held in one sentence by “, and”, “; and”, “; but”, “, which”, the main point arriving late; a short sentence kept only for a turn or a verdict.",
+      "name": "Balanced clauses in one long sentence",
+      "does": "Two or more clauses held in one sentence by “, and”, “; but” or “, which”, with the main point at the end. A short sentence is kept for a turn or a verdict.",
       "pattern": "(;\\s+(and|but|for|yet)\\b)|(,\\s+and\\b.*;)",
       "register": "narration",
       "hint": "Join two clauses with “, and” or “; but”, and save the main point for the end of the sentence."
@@ -54,7 +54,7 @@
     {
       "id": "judgement",
       "name": "Judgement in abstract nouns",
-      "does": "Feeling and character named by abstract nouns of judgement rather than things described: civility, propriety, composure, mortification, felicity, indifference, consequence, spirits.",
+      "does": "Feeling and character named by abstract nouns of judgement: civility, propriety, composure, mortification, indifference.",
       "pattern": "\\b(civility|propriety|composure|mortification|felicity|indifference|consequence|spirits|vexation|solicitude|complacency|imprudence|delicacy|sensibility|esteem|regard|discretion)\\b",
       "register": "any",
       "hint": "Name the feeling with one noun of judgement: “her mortification”, “his civility”."
@@ -62,7 +62,7 @@
     {
       "id": "litotes",
       "name": "Understatement and litotes",
-      "does": "The verdict implied by understatement: “not unwelcome”, “no very great”, “not a little”, “rather too much”.",
+      "does": "A judgement made by saying less than is meant: “not unwelcome”, “not a little”, “rather too much”.",
       "pattern": "\\b(not\\s+(\\w+\\s+){0,3}un(?!der|til|less)\\w{3,}|no\\s+very\\s+\\w+|not\\s+a\\s+little|not\\s+without\\s+\\w+|not\\s+ill|rather\\s+too\\s+\\w+|not\\s+the\\s+least\\s+\\w+|not\\s+all\\s+(I|she|he)\\s+could\\s+wish)\\b",
       "register": "any",
       "hint": "Say less than you mean with a negative: “not unwelcome”, “no small trouble”."
@@ -70,7 +70,7 @@
     {
       "id": "reported",
       "name": "Speech reported",
-      "does": "Speech reported rather than quoted, in the narrator’s syntax: “He said that he was not ready…”.",
+      "does": "Speech given in the narrator’s words instead of quoted: “He said that he was not ready.”",
       "pattern": "\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+that\\b|\\b(said|replied|declared|observed|owned|protested|answered|added|explained|confessed)\\s+(he|she|it|they|I|we|there)\\s+(was|were|had|would|could|should|did|must|might|is|am|are|knew|thought|meant|wished|hoped|might|will|shall|need|could)\\b|\\b(told|assured|informed)\\s+(him|her|them|me|us)\\s+(that|of|how|what)\\b",
       "register": "narration",
       "hint": "Turn a quotation into reported speech: “He said that he could not stay.”"
@@ -78,7 +78,7 @@
     {
       "id": "saidshe",
       "name": "Speech tagged after its first clause",
-      "does": "Quoted speech that shows character, the speaker named after the first clause, often inverted: “—,” said she, “—.”",
+      "does": "A quotation broken after its first clause by the speaker’s name, often as “said she”: “I cannot,” said she, “stay any longer.”",
       "pattern": "[,!?]”\\s+(said|cried|replied|returned)\\s+(she|he|[A-Z][a-z]+)",
       "register": "any",
       "hint": "Break a quotation after its first clause: “I cannot,” said she, “stay any longer.”"
@@ -86,7 +86,7 @@
     {
       "id": "conduct",
       "name": "Feeling shown by conduct",
-      "does": "Feeling given by its effect on conduct or countenance, not named outright: “she could hardly keep her countenance”, “coloured”.",
+      "does": "Feeling shown by what a person does or how the face changes, never named: “she coloured”, “she could hardly keep her countenance”.",
       "pattern": "\\b(could\\s+(hardly|scarcely|not\\s+help)|coloured|blushed|countenance|her\\s+colour|his\\s+colour|smiled|nodded|bowed|sighed|wept|trembled|turned\\s+away|looked\\s+down|could\\s+not\\s+speak|in\\s+tears)\\b",
       "register": "narration",
       "hint": "Show the feeling by what the person does: “she coloured”, “he looked at the floor”."
@@ -94,7 +94,7 @@
     {
       "id": "irony",
       "name": "Ironic verdict",
-      "does": "The narrator’s dry verdict on the situation or on the speaker, implied by precision rather than announced; often a generalization (“It is a truth…”, “as is usual…”) or a deflating last clause.",
+      "does": "The narrator’s dry judgement, implied and never announced, often in a general truth (“It is a truth…”, “as is usual…”) or a deflating last clause.",
       "pattern": "\\b(it\\s+is\\s+a\\s+truth|as\\s+is\\s+(usual|often)|a\\s+(very|most)\\s+\\w+\\s+(thing|circumstance)|perhaps\\s+not|in\\s+short|of\\s+course|however\\s+little|it\\s+was\\s+not\\s+to\\s+be)\\b",
       "register": "narration",
       "hint": "End on a dry general truth: “as is usual in such cases, …”."

@@ -17,7 +17,7 @@ export function guessCard(terms: Definer): GuessView {
   let dealt = '';
   let asking: AbortController | null = null;
   const body = h('div', { class: 'pg-guess-body', 'aria-live': 'polite' });
-  const el = h('section', { class: 'pg-guess', hidden: true, 'aria-label': 'Whose sentence is this?' }, h('p', { class: 'pg-guess-head' }, 'While you wait, or to warm up: whose sentence is this?'), body);
+  const el = h('section', { class: 'pg-guess', hidden: true, 'aria-label': 'Guess the writer' }, h('p', { class: 'pg-guess-head' }, 'Guess whose sentence this is.'), body);
 
   const name = (id: string) => names[id] ?? id;
   const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
@@ -84,7 +84,7 @@ export function guessCard(terms: Definer): GuessView {
           draw();
         })
         .catch(() => {
-          /* the card is extra: without rounds it stays hidden */
+          /* Without rounds the card stays hidden. */
         });
     },
   };

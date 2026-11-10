@@ -99,7 +99,7 @@
     {
       "id": "all",
       "name": "The sweeping word",
-      "does": "Claims made for everything at once, with “all”, “every”, “always”, “never” and “nothing”: the voice of a law, never of a guess.",
+      "does": "Claims made for everything at once with “all”, “every”, “always”, “never” or “nothing”, stated as laws.",
       "pattern": "^(\\S+ ){0,3}(all|every|always|never|nothing|everything|no man|each)\\b[^.?!]{3,80}[.!]$",
       "register": "any",
       "hint": "Begin a short sentence with “All”, “Every” or “Nothing”, and state it as a law."

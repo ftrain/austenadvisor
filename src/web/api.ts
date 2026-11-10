@@ -23,7 +23,7 @@ export const post = <T>(path: string, body: unknown, signal?: AbortSignal) =>
 
 /** A server message fit to show: never the name of a setting on the server. */
 export function plain(message: string): string {
-  return /\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/.test(message) ? 'The server could not do that just now.' : message;
+  return /\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/.test(message) ? 'The server could not do that. Try again later.' : message;
 }
 
 export interface Pronouns {

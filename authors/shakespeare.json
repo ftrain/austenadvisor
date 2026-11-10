@@ -2,7 +2,7 @@
   "id": "shakespeare",
   "name": "William Shakespeare",
   "title": "William Shakespeare",
-  "tagline": "Blank verse, the image, the soliloquy",
+  "tagline": "Images in blank verse",
   "epigraph": {
     "text": "All the world’s a stage, And all the men and women merely players.",
     "cite": "As You Like It 2.7"
@@ -55,7 +55,7 @@
     {
       "id": "thou",
       "name": "Thou and thee",
-      "does": "The intimate or contemptuous singular, and its verbs: thou art, thou hast, thy, thine.",
+      "does": "The singular “thou” for someone close or someone scorned, with its verbs: thou art, thou hast, thy, thine.",
       "pattern": "\\b(thou|thee|thy|thine|art thou|hast|dost|wilt|shalt|hath|doth)\\b",
       "register": "any",
       "hint": "Speak to one person as “thou”: “thou art”, “thy face”."
@@ -79,7 +79,7 @@
     {
       "id": "question",
       "name": "The question turned over",
-      "does": "The speaker puts a question to himself or the hearer and answers it: the soliloquy’s engine.",
+      "does": "The speaker asks a question of himself or the hearer, and answers it.",
       "pattern": "\\?\\s+\\S",
       "register": "any",
       "hint": "Ask yourself a question, then answer it."

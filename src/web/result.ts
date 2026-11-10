@@ -17,9 +17,9 @@ export interface Run {
   /** The writer's role for each paragraph, by part. */
   roles: Map<number, string[]>;
   done: boolean;
-  /** The rewrite did not come back. */
+  /** Why the rewrite failed. */
   failed?: string;
-  /** No full rewrite: 'resting' (no writer or the day's budget is spent) or 'busy' (another is on its way). */
+  /** No rewrite: 'resting' (no writer, or the day's budget is spent) or 'busy' (another is still running). */
   resting?: 'resting' | 'busy';
   started: number;
   /** Drills from the engine, for a text with no rewrite. */
@@ -115,7 +115,7 @@ export function result(o: ResultOptions): ResultView {
     const top = Math.max(st.voiceBand[1], ...st.lengths, 1);
     const bars = h(
       'span',
-      { class: 'pg-bars', 'aria-hidden': 'true', title: `${v.short}’s middle half runs ${st.voiceBand[0]} to ${st.voiceBand[1]} words` },
+      { class: 'pg-bars', 'aria-hidden': 'true', title: `Half of ${v.short}’s sentences run ${st.voiceBand[0]} to ${st.voiceBand[1]} words` },
       h('span', { class: 'pg-band', style: { bottom: `${(st.voiceBand[0] / top) * 100}%`, height: `${((st.voiceBand[1] - st.voiceBand[0]) / top) * 100}%` } }),
       ...st.lengths.slice(0, 24).map((n) => h('span', { class: 'pg-bar', style: { height: `${Math.max(6, (n / top) * 100)}%` } })),
     );
@@ -131,7 +131,7 @@ export function result(o: ResultOptions): ResultView {
     }
     progressEl.hidden = false;
     progressEl.classList.toggle('pg-bad', !!run.failed);
-    if (run.failed) progressEl.replaceChildren(h('span', {}, 'The rewrite didn’t come back. '), button('Try again', () => o.onRetry()));
+    if (run.failed) progressEl.replaceChildren(h('span', {}, 'The rewrite failed. '), button('Try again', () => o.onRetry()));
     else progressEl.replaceChildren(h('span', { class: 'pg-dotpulse', 'aria-hidden': 'true' }), `${v.short} is writing · about 20 s · ${mmss(Date.now() - run.started)}`);
   }
 
@@ -160,7 +160,7 @@ export function result(o: ResultOptions): ResultView {
     voiceHead.textContent = v.title;
     const run = s.run;
     restingEl.hidden = !(run?.resting || (s.resting && !run?.rows.size));
-    restingEl.textContent = run?.resting === 'busy' ? 'Another rewrite from this page is still on its way. When it is done, try this one again.' : RESTING;
+    restingEl.textContent = run?.resting === 'busy' ? 'Another rewrite from this page is still running. Try this one when it finishes.' : RESTING;
     drawShape(s);
     progress(s);
 
@@ -234,8 +234,8 @@ export function result(o: ResultOptions): ResultView {
     const theirs = h('div', { class: 'pg-cell pg-hers' }, label(v.title, roleHers));
     if (r.hers) theirs.append(h('div', {}, ...r.hers.flatMap((x, i) => [i ? ' ' : '', herSentence(x, row)])));
     else {
-      if (r.resting === 'long') theirs.append(h('p', { class: 'pg-muted' }, 'Only the first 1,200 words are rewritten. This part shows the engine’s view.'));
-      else if (r.error) theirs.append(h('p', { class: 'pg-muted' }, 'This part didn’t come back.'));
+      if (r.resting === 'long') theirs.append(h('p', { class: 'pg-muted' }, 'Only the first 1,200 words are rewritten.'));
+      else if (r.error) theirs.append(h('p', { class: 'pg-muted' }, 'This part could not be rewritten.'));
       theirs.append(sketch(v, reading?.sketch.filter((x) => x.paragraph === idx) ?? []));
     }
     cells.append(theirs);
@@ -317,7 +317,7 @@ export function result(o: ResultOptions): ResultView {
 
   function sketch(v: AuthorInfo, rows: SketchRow[]): HTMLElement {
     const found = rows.filter((x) => x.match);
-    if (!found.length) return h('p', { class: 'pg-muted pg-sketch-none' }, rows.length ? `No sentence of ${v.short}’s is built close enough to these.` : '');
+    if (!found.length) return h('p', { class: 'pg-muted pg-sketch-none' }, rows.length ? `${v.short} has no sentence built like these.` : '');
     return h(
       'div',
       { class: 'pg-sketch' },

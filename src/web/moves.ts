@@ -1,6 +1,6 @@
-// Your moves: a commonplace book of the sentences in which the writer made a move, kept on this device. It holds no
-// counts and no streaks. Each entry is the writer's own sentence and the move it makes; the list saves as plain text.
-// Moves of the voices the writer has used that are not yet in the book are offered as “try next”.
+// Your moves: the sentences in which the writer made a move, kept on this device. It keeps no counts or streaks.
+// Each entry is the writer's own sentence and the move it makes, and the list saves as plain text. Moves of the
+// voices the writer has used that are not yet in the list are offered under “Try next”.
 
 import { button, fill, h, keep, type AuthorInfo, type Definer } from './api.ts';
 
@@ -73,14 +73,14 @@ export function movesBook(voices: AuthorInfo[], terms: Definer): MovesView {
     toggle.textContent = `Your moves (${n})`;
     toggle.setAttribute('aria-expanded', String(open));
     const uniq = [...new Set(book.entries.map((e) => e.name))];
-    names.replaceChildren(...(uniq.length ? terms.defined(uniq.slice(0, 4).join(' · ')) : ['Make a move with Try it, and your sentence is kept here.']));
+    names.replaceChildren(...(uniq.length ? terms.defined(uniq.slice(0, 4).join(' · ')) : ['Sentences you pass with Try it are kept here.']));
     body.hidden = !open;
     const next = tryNext();
     fill(
       body,
       n
         ? h('ol', { class: 'pg-moves-list' }, ...book.entries.map((e) => h('li', {}, h('p', { class: 'pg-moves-sentence' }, e.sentence), h('p', { class: 'pg-moves-meta' }, ...terms.defined(e.name), `, after ${byId.get(e.voice)?.title ?? e.voice}`))))
-        : h('p', { class: 'pg-muted' }, 'No moves yet. Each sentence you pass with Try it is kept here, on this device.'),
+        : h('p', { class: 'pg-muted' }, 'No moves yet. Sentences you pass with Try it are kept here, on this device.'),
       next.length ? h('p', { class: 'pg-moves-next' }, h('span', { class: 'pg-label' }, 'Try next '), ...terms.defined(next.join(' · '))) : null,
       n ? button('Save as text', save) : null,
     );

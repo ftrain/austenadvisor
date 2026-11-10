@@ -123,7 +123,7 @@ describe.skipIf(!voices.length)('notes written by the engine', () => {
     const seen = new Set(['litotes']);
     const again = notesFor(m, [FIXTURES.austen![0]!], { seen });
     expect(again[0]!.some((n) => n.id === 'litotes')).toBe(false);
-    expect(again[0]!.find((n) => n.kind === 'move')!.technique).toBe('Clauses balanced in one period');
+    expect(again[0]!.find((n) => n.kind === 'move')!.technique).toBe('Balanced clauses in one long sentence');
   }, 120_000);
 });
 

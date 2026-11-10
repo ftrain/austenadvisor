@@ -359,8 +359,8 @@ export interface Admission {
   done(): void;
 }
 
-const RESTING = 'Full rewrites of your own text are resting. Every sample is rewritten.';
-const BUSY = 'Your last rewrite is still being written. This one can start when it is done.';
+const RESTING = 'Rewrites of your own text are off for now. Every sample has a rewrite ready.';
+const BUSY = 'Your last rewrite is still running. Start this one when it finishes.';
 
 const busy = new Set<string>();
 

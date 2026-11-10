@@ -4,7 +4,7 @@
   "title": "Ernest Hemingway",
   "advisor": "Hemingway Advisor",
   "short": "Hemingway",
-  "tagline": "Short sentences, plain words, the feeling left out",
+  "tagline": "Short, plain sentences with the feeling left out",
   "epigraph": {
     "text": "Isn’t it pretty to think so?",
     "cite": "The Sun Also Rises, ch. 19"
@@ -71,7 +71,7 @@
     {
       "id": "unsaid",
       "name": "What is not said",
-      "does": "The narrator reports the silence instead of the feeling. Only the visible trace of the omission can be found by its words.",
+      "does": "The narrator reports the silence and leaves the feeling out: “I did not say anything.”",
       "pattern": "\\b(did not|didn[’']t|never|wouldn[’']t|would not) (say|said) anything\\b|\\b(nobody|no one) said anything\\b|\\b(not|n[’']t) (to )?think about (it|that|anything|her|him)\\b|\\bthere was nothing to say\\b|\\bwe did not talk\\b|\\b(don[’']t|do not|didn[’']t|did not) (want to )?talk about (it|that)\\b|\\bsaid nothing\\b|\\b(I|he|she) did not (answer|say)\\b",
       "register": "any",
       "hint": "Instead of the feeling, report the silence: “I did not say anything.”"

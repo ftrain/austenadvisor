@@ -1,8 +1,8 @@
-// The glossary: every term of rhetoric, poetics and grammar that Advisor uses, defined in a line a writer can use.
-// The page defines a term where it uses it (a note's heading, a word in a note or a plan); the CLI and the API look
-// one up. This list is the source; data/glossary.sqlite is built from it (rebuilt whenever the list changes), with a
-// row for every name a term goes by and a full-text index, so that the server, the CLI and a voice's build query one
-// store. Figures the engine recognizes (figures.ts) are terms here too, under the same ids.
+// The glossary: every term of rhetoric, poetics and grammar that Advisor uses, each defined in one sentence with one
+// example. The page defines a term where it uses it, in a note's heading or text; the CLI and the API look one up.
+// This list is the source. data/glossary.sqlite is built from it, and rebuilt when the list changes, with a row for
+// every name a term goes by and a full-text index, so the server, the CLI and a voice's build query one store. The
+// figures the engine recognizes (figures.ts) are terms here too, under the same ids.
 
 import { createHash } from 'node:crypto';
 import { existsSync, readFileSync } from 'node:fs';
@@ -18,10 +18,10 @@ export type TermKind = 'figure' | 'sound' | 'verse' | 'sentence' | 'narrative' |
 
 export interface Term {
   id: string;
-  /** The name as a heading gives it: “Litotes”. */
+  /** The name a heading gives it: “Litotes”. */
   term: string;
   kind: TermKind;
-  /** What it is, in a sentence, for a writer. */
+  /** What it is, in one sentence. */
   definition: string;
   /** A short example; `source` says where it is, when it is a quotation. */
   example?: string;
@@ -36,111 +36,111 @@ const T = (id: string, term: string, kind: TermKind, definition: string, rest: P
 
 const BASE: Term[] = [
   // Figures of speech: the classical names for turns of phrase.
-  T('antithesis', 'Antithesis', 'figure', 'Contrary ideas set against each other in balanced words, so each sharpens the other.', { example: 'It was the best of times, it was the worst of times.', source: 'Dickens, A Tale of Two Cities', also: ['antitheses', 'not this, but that'] }),
+  T('antithesis', 'Antithesis', 'figure', 'Two opposite ideas set side by side in words of the same shape.', { example: 'It was the best of times, it was the worst of times.', source: 'Dickens, A Tale of Two Cities', also: ['antitheses', 'not this, but that'] }),
   T('chiasmus', 'Chiasmus', 'figure', 'Two phrases whose terms come back in reverse order (A B, B A), so the second answers the first.', { example: 'Ask not what your country can do for you—ask what you can do for your country.', source: 'Kennedy, inaugural address', also: ['antimetabole', 'chiastic'] }),
-  // Litotes is a kind of understatement, and a writer needs only one name to look up: one term answers to both.
-  T('litotes', 'Litotes (understatement)', 'figure', 'Saying less than the case warrants, often by denying the opposite, so the reader supplies the rest.', { example: '“not unwilling”, “no small matter”', also: ['understatement', 'understated', 'understatements', 'meiosis', 'understatement and litotes'] }),
+  // Litotes is a kind of understatement. One term answers to both names, so a writer looks up only one.
+  T('litotes', 'Litotes (understatement)', 'figure', 'Saying less than you mean, often by denying the opposite.', { example: '“not unwilling”, “no small matter”', also: ['understatement', 'understated', 'understatements', 'meiosis', 'understatement and litotes'] }),
   T('hyperbole', 'Hyperbole', 'figure', 'Exaggeration not meant to be taken literally, for emphasis or comedy.', { example: '“the most awkward ten minutes of my life”', also: ['exaggeration'] }),
-  T('periphrasis', 'Periphrasis', 'figure', 'Naming a thing by a description of it rather than by its name, to dignify it, distance it or make it strange.', { example: '“the instrument in his hand” for a phone', also: ['circumlocution'] }),
-  T('tricolon', 'Tricolon', 'figure', 'Three parallel words, phrases or clauses in a row, often rising to the last.', { example: 'Emma Woodhouse, handsome, clever, and rich', source: 'Austen, Emma, ch. 1', also: ['tricola', 'rule of three', 'building in threes', 'things in threes'] }),
-  T('polysyndeton', 'Polysyndeton', 'figure', 'Many conjunctions (“and … and … and”) where commas would do, so each item lands on its own.', { example: 'And the rain descended, and the floods came, and the winds blew, and beat upon that house; and it fell not.', source: 'Matthew 7:25' }),
-  T('asyndeton', 'Asyndeton', 'figure', 'The conjunctions left out of a series, for speed or force.', { example: 'I came, I saw, I conquered.', source: 'Julius Caesar, as Plutarch reports him' }),
-  T('anaphora', 'Anaphora', 'figure', 'Successive clauses or sentences opening with the same words.', { example: 'We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets.', source: 'Churchill, 4 June 1940' }),
-  T('epistrophe', 'Epistrophe', 'figure', 'Successive clauses ending with the same words.', { example: 'government of the people, by the people, for the people', source: 'Lincoln, the Gettysburg Address' }),
-  T('parallelism', 'Parallelism', 'figure', 'Like things said in like grammatical form, so the form shows they belong together. In Hebrew poetry, and so in the King James Bible, one thought said twice, the second half echoing the first in other words.', { example: 'Pride goeth before destruction, and an haughty spirit before a fall.', source: 'Proverbs 16:18', also: ['parallel', 'parallels'] }),
-  T('isocolon', 'Isocolon', 'figure', 'Clauses of the same length and build set side by side, so the sentence balances.', { also: ['balance', 'balanced clauses', 'balanced period', 'balanced periods'] }),
-  T('climax', 'Climax', 'figure', 'Words or clauses arranged in rising order of weight, the strongest last.', { also: ['gradatio', 'crescendo'] }),
-  T('anticlimax', 'Anticlimax', 'figure', 'A fall, by design, from the grand to the trivial at the end of a series; called bathos when it is not by design.', { example: 'Here thou, great Anna! whom three realms obey, / Dost sometimes counsel take—and sometimes tea.', source: 'Pope, The Rape of the Lock', also: ['bathos'] }),
-  T('zeugma', 'Zeugma', 'figure', 'One word made to govern two others in different senses, so the sentence turns on it.', { example: 'Or stain her honour, or her new brocade', source: 'Pope, The Rape of the Lock', also: ['syllepsis'] }),
-  T('apostrophe', 'Apostrophe', 'figure', 'Turning to address someone absent or dead, or a thing or an idea, as if it could hear.', { example: 'O death, where is thy sting? O grave, where is thy victory?', source: '1 Corinthians 15:55' }),
-  T('metaphor', 'Metaphor', 'figure', 'Calling one thing another, so it carries the other’s qualities across.', { example: 'All the world’s a stage', source: 'As You Like It 2.7', also: ['metaphorical'] }),
-  T('simile', 'Simile', 'figure', 'A likeness drawn openly, with “like” or “as”.', { example: 'O my luve’s like a red, red rose', source: 'Burns' }),
-  T('conceit', 'Conceit', 'figure', 'A metaphor carried far and followed through, often surprising: two lovers as the legs of a compass.', { source: 'Donne, “A Valediction: Forbidding Mourning”', unless: '(self|his own|her own|my own)[-\\s]$' }),
-  T('image', 'Image', 'figure', 'Words that make the reader see, hear or feel a thing; in Shakespeare, a figure followed out from one phrase to the next.', { example: 'to take arms against a sea of troubles', source: 'Hamlet 3.1', also: ['imagery', 'the image'] }),
-  T('personification', 'Personification', 'figure', 'A thing or an idea given a person’s qualities or acts.', { example: 'But look, the morn, in russet mantle clad, / Walks o’er the dew of yon high eastward hill.', source: 'Hamlet 1.1', also: ['personified', 'prosopopoeia'] }),
+  T('periphrasis', 'Periphrasis', 'figure', 'Naming a thing by a description of it instead of by its name.', { example: '“the instrument in his hand” for a phone', also: ['circumlocution'] }),
+  T('tricolon', 'Tricolon', 'figure', 'Three parallel words, phrases or clauses in a row.', { example: 'Emma Woodhouse, handsome, clever, and rich', source: 'Austen, Emma, ch. 1', also: ['tricola', 'rule of three', 'building in threes', 'things in threes'] }),
+  T('polysyndeton', 'Polysyndeton', 'figure', '“And” repeated between the items of a list where commas would do.', { example: 'And the rain descended, and the floods came, and the winds blew, and beat upon that house; and it fell not.', source: 'Matthew 7:25' }),
+  T('asyndeton', 'Asyndeton', 'figure', 'A list with the joining words (“and”, “or”) left out.', { example: 'I came, I saw, I conquered.', source: 'Julius Caesar, as Plutarch reports him' }),
+  T('anaphora', 'Anaphora', 'figure', 'The same words opening clause after clause.', { example: 'We shall fight on the beaches, we shall fight on the landing grounds, we shall fight in the fields and in the streets.', source: 'Churchill, 4 June 1940' }),
+  T('epistrophe', 'Epistrophe', 'figure', 'The same words closing clause after clause.', { example: 'government of the people, by the people, for the people', source: 'Lincoln, the Gettysburg Address' }),
+  T('parallelism', 'Parallelism', 'figure', 'Like ideas put in like grammatical form; in the King James Bible, one thought said twice in other words.', { example: 'Pride goeth before destruction, and an haughty spirit before a fall.', source: 'Proverbs 16:18', also: ['parallel', 'parallels'] }),
+  T('isocolon', 'Isocolon', 'figure', 'Clauses of the same length and build set side by side.', { example: 'Many are called, but few are chosen.', source: 'Matthew 22:14', also: ['balance', 'balanced clauses', 'balanced period', 'balanced periods'] }),
+  T('climax', 'Climax', 'figure', 'Words or clauses set in rising order of weight, the strongest last.', { example: 'tribulation worketh patience; and patience, experience; and experience, hope', source: 'Romans 5:3–4', also: ['gradatio', 'crescendo'] }),
+  T('anticlimax', 'Anticlimax', 'figure', 'A drop from the grand to the trivial at the end of a series, made on purpose.', { example: 'Here thou, great Anna! whom three realms obey, / Dost sometimes counsel take—and sometimes tea.', source: 'Pope, The Rape of the Lock', also: ['bathos'] }),
+  T('zeugma', 'Zeugma', 'figure', 'One word used with two others in two different senses.', { example: 'Or stain her honour, or her new brocade', source: 'Pope, The Rape of the Lock', also: ['syllepsis'] }),
+  T('apostrophe', 'Apostrophe', 'figure', 'Speaking to someone absent or dead, or to a thing or an idea, as if it could hear.', { example: 'O death, where is thy sting? O grave, where is thy victory?', source: '1 Corinthians 15:55' }),
+  T('metaphor', 'Metaphor', 'figure', 'Calling one thing by the name of another to give it the other’s qualities.', { example: 'All the world’s a stage', source: 'As You Like It 2.7', also: ['metaphorical'] }),
+  T('simile', 'Simile', 'figure', 'A comparison made openly, with “like” or “as”.', { example: 'O my luve’s like a red, red rose', source: 'Burns' }),
+  T('conceit', 'Conceit', 'figure', 'A long, surprising metaphor followed through: two lovers as the two legs of a compass.', { source: 'Donne, “A Valediction: Forbidding Mourning”', unless: '(self|his own|her own|my own)[-\\s]$' }),
+  T('image', 'Image', 'figure', 'Words that make the reader see, hear or feel a thing.', { example: 'to take arms against a sea of troubles', source: 'Hamlet 3.1', also: ['imagery', 'the image'] }),
+  T('personification', 'Personification', 'figure', 'A thing or an idea given the acts or feelings of a person.', { example: 'But look, the morn, in russet mantle clad, / Walks o’er the dew of yon high eastward hill.', source: 'Hamlet 1.1', also: ['personified', 'prosopopoeia'] }),
   T('synecdoche', 'Synecdoche', 'figure', 'A part named for the whole, or the whole for a part: “all hands on deck”.'),
   T('metonymy', 'Metonymy', 'figure', 'A thing named by something closely tied to it: “the Crown” for the monarch, “the pen” for writing.'),
-  T('oxymoron', 'Oxymoron', 'figure', 'Two words of contrary sense joined, so the contradiction says something neither could.', { example: 'O brawling love! O loving hate!', source: 'Romeo and Juliet 1.1' }),
-  T('paradox', 'Paradox', 'figure', 'A statement that seems to contradict itself and yet holds.', { example: 'The Child is father of the Man', source: 'Wordsworth', also: ['paradoxical'] }),
+  T('oxymoron', 'Oxymoron', 'figure', 'Two words of opposite meaning joined.', { example: 'O brawling love! O loving hate!', source: 'Romeo and Juliet 1.1' }),
+  T('paradox', 'Paradox', 'figure', 'A statement that seems to contradict itself and yet is true.', { example: 'The Child is father of the Man', source: 'Wordsworth', also: ['paradoxical'] }),
   T('pun', 'Pun', 'figure', 'A play on two senses of one word, or on two words that sound alike.', { example: 'Now is the winter of our discontent / Made glorious summer by this sun of York', source: 'Richard III 1.1 (sun, son)', also: ['wordplay', 'quibble'] }),
-  T('epigram', 'Epigram', 'figure', 'A short, pointed, witty saying, often turning on a surprise.', { example: 'I can resist everything except temptation.', source: 'Wilde, Lady Windermere’s Fan', also: ['epigrammatic'] }),
+  T('epigram', 'Epigram', 'figure', 'A short, witty saying with a twist.', { example: 'I can resist everything except temptation.', source: 'Wilde, Lady Windermere’s Fan', also: ['epigrammatic'] }),
   T('aphorism', 'Aphorism', 'figure', 'A general truth put briefly enough to remember.', { example: 'Brevity is the soul of wit.', source: 'Hamlet 2.2', also: ['maxim', 'maxims', 'proverb', 'sententia'] }),
-  T('gnomic', 'Generalization (gnomic statement)', 'figure', FIGURES.gnomic!.gloss, { example: 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.', source: 'Austen, Pride and Prejudice, ch. 1', also: ['gnomic', 'gnomic statement', 'generalization', 'general truth'] }),
-  T('irony', 'Irony', 'figure', 'Saying one thing so that another is understood, or a turn of events the reverse of what was meant.', { also: ['ironic', 'ironically', 'ironies'] }),
-  T('ironicverdict', 'Ironic verdict', 'figure', FIGURES.irony!.gloss, { also: ['ironic verdict'] }),
-  T('aside', 'Aside', 'narrative', 'In a play, words spoken to the audience that the others on stage do not hear; in a story, the teller breaking off to comment, confide or correct himself.', { also: ['ironic aside', 'narrator’s aside', 'asides'], unless: '\\b(set|sets|setting|put|puts|putting|lay|laid|lays|cast|casts|brush|brushed|step|stepped|steps|stand|stood|turn|turned|leave|left|leaving|push|pushed|draw|drew|took|take|taking|move|moved|moves|moving|stepped)\\s+((it|them|this|that|him|her|these|those|everything|all)\\s+)?$' }),
-  T('parenthesis', 'Parenthesis', 'sentence', FIGURES.parenthesis!.gloss, { also: ['parenthetical'] }),
-  T('inversion', 'Inversion (anastrophe)', 'sentence', 'The usual order of words turned about, so the word that matters comes first or last.', { example: 'For whom the Lord loveth he chasteneth', source: 'Hebrews 12:6', also: ['anastrophe', 'inverted', 'inverted order'] }),
-  T('rhetoricalquestion', 'Rhetorical question', 'figure', 'A question asked for its effect, its answer taken for granted.', { also: ['rhetorical questions', 'erotema'] }),
-  T('hypophora', 'Hypophora', 'figure', 'The speaker asks a question and answers it, so the hearer follows the thought as it is made.', { example: 'What is a man, / If his chief good and market of his time / Be but to sleep and feed? A beast, no more.', source: 'Hamlet 4.4', also: ['question and answer', 'the question turned over'] }),
+  T('gnomic', 'Generalization (gnomic statement)', 'figure', 'A general truth stated about the case in hand, often to make it ironic.', { example: 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.', source: 'Austen, Pride and Prejudice, ch. 1', also: ['gnomic', 'gnomic statement', 'generalization', 'general truth'] }),
+  T('irony', 'Irony', 'figure', 'Saying one thing so that the reader understands another.', { example: '“What a fine day for a picnic,” said in the pouring rain.', also: ['ironic', 'ironically', 'ironies'] }),
+  T('ironicverdict', 'Ironic verdict', 'figure', 'A narrator’s judgement that means more than, or other than, what it says.', { example: 'The business of her life was to get her daughters married; its solace was visiting and news.', source: 'Austen, Pride and Prejudice, ch. 1', also: ['ironic verdict'] }),
+  T('aside', 'Aside', 'narrative', 'In a play, words the others on stage do not hear; in a story, the narrator breaking off to comment.', { example: '“which, I may say, was a lie”', also: ['ironic aside', 'narrator’s aside', 'asides'], unless: '\\b(set|sets|setting|put|puts|putting|lay|laid|lays|cast|casts|brush|brushed|step|stepped|steps|stand|stood|turn|turned|leave|left|leaving|push|pushed|draw|drew|took|take|taking|move|moved|moves|moving|stepped)\\s+((it|them|this|that|him|her|these|those|everything|all)\\s+)?$' }),
+  T('parenthesis', 'Parenthesis', 'sentence', 'A remark set inside a sentence that interrupts it, between commas, dashes or brackets.', { example: 'The test—I admit it—was fair.', also: ['parenthetical'] }),
+  T('inversion', 'Inversion (anastrophe)', 'sentence', 'Words put out of their usual order, so the one that matters comes first or last.', { example: 'For whom the Lord loveth he chasteneth', source: 'Hebrews 12:6', also: ['anastrophe', 'inverted', 'inverted order'] }),
+  T('rhetoricalquestion', 'Rhetorical question', 'figure', 'A question asked for effect, with the answer taken for granted.', { example: 'Who would not want to be happy?', also: ['rhetorical questions', 'erotema'] }),
+  T('hypophora', 'Hypophora', 'figure', 'Asking a question and then answering it yourself.', { example: 'What is a man, / If his chief good and market of his time / Be but to sleep and feed? A beast, no more.', source: 'Hamlet 4.4', also: ['question and answer', 'the question turned over'] }),
   T('epithet', 'Epithet', 'diction', 'A word or phrase fixed to a name to describe it: “rosy-fingered Dawn”, “the youngest son”.', { also: ['epithets'] }),
 
   // Sound and verse.
-  T('alliteration', 'Alliteration', 'sound', 'Words close together beginning with the same sound.', { example: 'Full fathom five thy father lies', source: 'The Tempest 1.2', also: ['alliterative'] }),
-  T('assonance', 'Assonance', 'sound', 'The same vowel sound repeated in nearby words.'),
-  T('cadence', 'Cadence', 'sound', 'The rise and fall of a sentence’s rhythm, above all as it closes.', { also: ['cadences'] }),
-  T('rhythm', 'Rhythm', 'sound', 'The pattern of stressed and unstressed syllables a sentence or a line makes when read aloud.', { also: ['metre', 'meter'] }),
+  T('alliteration', 'Alliteration', 'sound', 'Words close together that begin with the same sound.', { example: 'Full fathom five thy father lies', source: 'The Tempest 1.2', also: ['alliterative'] }),
+  T('assonance', 'Assonance', 'sound', 'The same vowel sound repeated in nearby words.', { example: 'Hear the mellow wedding bells', source: 'Poe, “The Bells”' }),
+  T('cadence', 'Cadence', 'sound', 'The rise and fall of a sentence’s rhythm, above all at its close.', { example: 'and great was the fall of it.', source: 'Matthew 7:27', also: ['cadences'] }),
+  T('rhythm', 'Rhythm', 'sound', 'The pattern of stressed and unstressed syllables in a sentence or a line read aloud.', { example: 'da-DUM da-DUM da-DUM', also: ['metre', 'meter'] }),
   T('iamb', 'Iamb', 'verse', 'A foot of two syllables, unstressed then stressed: da-DUM, “be-HOLD”.', { also: ['iambic', 'iambs'] }),
-  T('pentameter', 'Iambic pentameter', 'verse', 'A line of five iambs, ten syllables, da-DUM five times: the line of English verse from Chaucer to Wordsworth.', { example: 'But, soft! what light through yonder window breaks?', source: 'Romeo and Juliet 2.2', also: ['iambic pentameter', 'pentameter'] }),
+  T('pentameter', 'Iambic pentameter', 'verse', 'A line of five iambs, ten syllables, da-DUM five times.', { example: 'But, soft! what light through yonder window breaks?', source: 'Romeo and Juliet 2.2', also: ['iambic pentameter', 'pentameter'] }),
   T('blankverse', 'Blank verse', 'verse', 'Unrhymed iambic pentameter: the verse of Shakespeare’s plays and Milton’s Paradise Lost.', { example: 'To be, or not to be: that is the question', source: 'Hamlet 3.1', also: ['blank verse'] }),
-  T('couplet', 'Couplet', 'verse', 'Two lines that rhyme together; Shakespeare closes a scene or a sonnet with one.', { example: 'So long as men can breathe or eyes can see, / So long lives this, and this gives life to thee.', source: 'Sonnet 18', also: ['rhyming couplet', 'couplets'] }),
-  T('sonnet', 'Sonnet', 'verse', 'A poem of fourteen lines; Shakespeare’s are three quatrains of alternating rhyme and a closing couplet, the argument turning near the end.', { also: ['sonnets'] }),
-  T('volta', 'Volta', 'verse', 'The turn in a sonnet, where the argument changes direction.'),
-  T('soliloquy', 'Soliloquy', 'narrative', 'A speech in which a character alone on stage thinks aloud, so we overhear a mind at work.', { example: 'To be, or not to be: that is the question', source: 'Hamlet 3.1', also: ['soliloquies'] }),
-  T('refrain', 'Refrain', 'sound', 'A line or phrase that returns at intervals, in a song, a poem or a speech.', { also: ['refrains'] }),
+  T('couplet', 'Couplet', 'verse', 'Two lines in a row that rhyme.', { example: 'So long as men can breathe or eyes can see, / So long lives this, and this gives life to thee.', source: 'Sonnet 18', also: ['rhyming couplet', 'couplets'] }),
+  T('sonnet', 'Sonnet', 'verse', 'A poem of fourteen lines; Shakespeare’s end on a rhyming couplet.', { example: 'Shall I compare thee to a summer’s day?', source: 'Sonnet 18', also: ['sonnets'] }),
+  T('volta', 'Volta', 'verse', 'The turn in a sonnet, where the argument changes direction.', { example: 'Yet in these thoughts myself almost despising', source: 'Sonnet 29, line 9' }),
+  T('soliloquy', 'Soliloquy', 'narrative', 'A speech in which a character alone on stage thinks aloud.', { example: 'To be, or not to be: that is the question', source: 'Hamlet 3.1', also: ['soliloquies'] }),
+  T('refrain', 'Refrain', 'sound', 'A line or phrase that comes back again and again in a song, a poem or a speech.', { example: 'Nevermore.', source: 'Poe, “The Raven”', also: ['refrains'] }),
   T('formula', 'Formula', 'diction', 'A set phrase that comes back whenever the same moment does: “Once upon a time”, “And it came to pass”, “happily ever after”.', { also: ['formulas', 'formulae', 'formulaic'] }),
 
   // The sentence.
-  T('clause', 'Clause', 'sentence', 'A group of words with its own subject and verb; a sentence is one clause or several joined.', { also: ['clauses'] }),
-  T('mainclause', 'Main clause', 'sentence', 'The clause that can stand alone as a sentence and carries its chief assertion.', { also: ['main clause', 'independent clause'] }),
-  T('subordinateclause', 'Subordinate clause', 'sentence', 'A clause that cannot stand alone, hung on another by “because”, “although”, “which”, “when”.', { also: ['subordinate clause', 'dependent clause', 'subordination', 'subordinate'] }),
-  T('period', 'Period', 'sentence', 'A long sentence of several clauses built as one whole, the sense held until it closes: the unit of Johnson’s and Austen’s thought.', { also: ['periods'], unless: '\\b(time|trial|long|short|brief|same|whole|grace|waiting|holiday|sixty-day|ninety-day|that|this)\\s+$' }),
-  T('periodic', 'Periodic sentence', 'sentence', 'A sentence that holds its main point to the end, after its qualifications, so the reader waits for it.', { also: ['periodic sentence', 'periodic sentences', 'periodic'] }),
-  T('cumulative', 'Cumulative sentence', 'sentence', 'A sentence that states its main clause first and then piles detail after it, “and … and …”, building to a turn.', { also: ['cumulative sentence', 'loose sentence'] }),
-  T('qualifiedperiod', 'The qualified period', 'sentence', 'A long sentence that corrects and qualifies itself as it goes, so the reader sees the thought being refined.', { also: ['qualified period'] }),
-  T('parataxis', 'Parataxis', 'sentence', 'Clauses set side by side as equals, joined by “and” or by nothing, so the reader draws the connections.', { example: 'And God said, Let there be light: and there was light.', source: 'Genesis 1:3', also: ['paratactic', 'clauses laid side by side'] }),
-  T('hypotaxis', 'Hypotaxis', 'sentence', 'Clauses placed one under another (because, although, which), so the sentence itself shows how things depend.', { also: ['hypotactic'] }),
+  T('clause', 'Clause', 'sentence', 'A group of words with its own subject and verb.', { example: '“the bus was late” in “The bus was late, so we walked.”', also: ['clauses'] }),
+  T('mainclause', 'Main clause', 'sentence', 'The clause that could stand alone as a sentence.', { example: '“we walked” in “Because the bus was late, we walked.”', also: ['main clause', 'independent clause'] }),
+  T('subordinateclause', 'Subordinate clause', 'sentence', 'A clause that cannot stand alone and hangs on another by “because”, “although”, “which” or “when”.', { example: '“because the bus was late”', also: ['subordinate clause', 'dependent clause', 'subordination', 'subordinate'] }),
+  T('period', 'Period', 'sentence', 'A long sentence of several clauses built as one whole, its sense complete only at the end.', { example: 'It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.', source: 'Austen, Pride and Prejudice, ch. 1', also: ['periods'], unless: '\\b(time|trial|long|short|brief|same|whole|grace|waiting|holiday|sixty-day|ninety-day|that|this)\\s+$' }),
+  T('periodic', 'Periodic sentence', 'sentence', 'A sentence that holds its main point until the end.', { example: 'Tired, wet and an hour late, we finally reached the house.', also: ['periodic sentence', 'periodic sentences', 'periodic'] }),
+  T('cumulative', 'Cumulative sentence', 'sentence', 'A sentence that states its main clause first and then adds detail after detail.', { example: 'We reached the house, wet through, an hour late, and too tired to speak.', also: ['cumulative sentence', 'loose sentence'] }),
+  T('qualifiedperiod', 'The qualified period', 'sentence', 'A long sentence that corrects and limits itself as it goes.', { example: 'She was happy, or nearly so, though she could not have said why.', also: ['qualified period'] }),
+  T('parataxis', 'Parataxis', 'sentence', 'Clauses set side by side as equals, joined by “and” or by nothing.', { example: 'And God said, Let there be light: and there was light.', source: 'Genesis 1:3', also: ['paratactic', 'clauses laid side by side'] }),
+  T('hypotaxis', 'Hypotaxis', 'sentence', 'Clauses set one under another by “because”, “although” or “which”, so the sentence shows how things depend.', { example: 'Because the bus was late, which it often was, we walked.', also: ['hypotactic'] }),
   T('apposition', 'Apposition', 'sentence', 'A noun phrase set beside another to rename or explain it.', { example: 'Paul, an apostle of Jesus Christ by the will of God', source: 'Ephesians 1:1', also: ['appositive', 'appositives', 'in apposition'] }),
-  T('syntax', 'Syntax', 'sentence', 'The order and arrangement of words in a sentence.', { also: ['syntactic'] }),
-  T('genitive', 'The genitive with “of”', 'sentence', 'Possession or kind given by “of” rather than by “’s”: “the house of the LORD”.', { also: ['genitive'] }),
+  T('syntax', 'Syntax', 'sentence', 'The order and arrangement of words in a sentence.', { example: '“Home they went” and “They went home” differ only in syntax.', also: ['syntactic'] }),
+  T('genitive', 'The genitive with “of”', 'sentence', 'Ownership or kind shown by “of” instead of “’s”: “the house of the LORD”.', { also: ['genitive'] }),
 
   // Words.
-  T('diction', 'Diction', 'diction', 'The choice of words: plain or ornate, Saxon or Latin, old or new.'),
-  T('register', 'Register', 'diction', 'The level of a language suited to an occasion: the words and manner of a sermon, a memo, a text to a friend.', { also: ['registers'], unless: '\\b(cash|the|a)\\s+$' }),
-  T('vernacular', 'Vernacular', 'diction', 'The everyday spoken language of a place and its people, rather than the literary or the formal.'),
-  T('dialect', 'Dialect', 'diction', 'The speech of a region or a group, its words and grammar, often spelled to show how it sounds.', { also: ['dialects'] }),
-  T('archaism', 'Archaism', 'diction', 'A word or form already old when it is used, for solemnity or colour: “thou”, “unto”, “wherefore”.', { also: ['archaic', 'archaisms'] }),
-  T('thou', 'Thou and you', 'diction', 'Early Modern English kept two words for “you”: “thou” for one person close to you, below you, or God, and “you” for a superior or for more than one; the choice says how the speaker stands to the hearer.', { also: ['thou and thee', 'thou-form'] }),
-  T('abstractnoun', 'Abstract noun', 'diction', 'A noun for a quality or a state rather than a thing: civility, propriety, vanity. Austen and Eliot judge with them.', { also: ['abstract noun', 'abstract nouns'] }),
-  T('interjection', 'Interjection', 'diction', 'A word thrown in to express feeling, outside the grammar of the sentence: alas, fie, O.', { also: ['interjections'] }),
+  T('diction', 'Diction', 'diction', 'The choice of words: plain or fancy, old or new.', { example: '“begin” and “commence” differ in diction' }),
+  T('register', 'Register', 'diction', 'The level of language that suits an occasion.', { example: '“Hey” in a text; “Dear Sir” in a letter.', also: ['registers'], unless: '\\b(cash|the|a)\\s+$' }),
+  T('vernacular', 'Vernacular', 'diction', 'The everyday spoken language of a place and its people.', { example: 'You don’t know about me without you have read a book by the name of The Adventures of Tom Sawyer', source: 'Twain, Huckleberry Finn, ch. 1' }),
+  T('dialect', 'Dialect', 'diction', 'The words and grammar of a region or a group, often spelled to show how they sound.', { example: '“I reckon”, “ain’t”', also: ['dialects'] }),
+  T('archaism', 'Archaism', 'diction', 'A word already old when it is used: “thou”, “unto”, “wherefore”.', { also: ['archaic', 'archaisms'] }),
+  T('thou', 'Thou and you', 'diction', 'In Shakespeare’s English, “thou” for one person who is close, lower in rank, or God, and “you” for a superior or for more than one.', { example: 'Thou art more lovely and more temperate', source: 'Sonnet 18', also: ['thou and thee', 'thou-form'] }),
+  T('abstractnoun', 'Abstract noun', 'diction', 'A noun for a quality or a state instead of a thing: civility, vanity, courage.', { also: ['abstract noun', 'abstract nouns'] }),
+  T('interjection', 'Interjection', 'diction', 'A word thrown in to show feeling, outside the grammar of the sentence: alas, oh, wow.', { also: ['interjections'] }),
 
   // Narrative.
-  T('fid', 'Free indirect discourse', 'narrative', 'A character’s thoughts given in the narrator’s sentences, without “she thought” or quotation marks, so the two voices blend.', { example: 'She would not go. Why should she go, only to be laughed at?', also: ['free indirect style', 'free indirect speech', 'free indirect'] }),
-  T('reported', 'Reported speech', 'narrative', 'Speech given in the narrator’s words (“he said that he was not ready”) rather than quoted.', { also: ['reported speech', 'indirect speech', 'speech reported'] }),
-  T('deadpan', 'Deadpan', 'narrative', 'Absurd or comic matter told with a straight face, the teller giving no sign it is funny.'),
-  T('talltale', 'Tall tale', 'narrative', 'A story of impossible feats or numbers told as plain fact.', { also: ['tall tale', 'tall tales'] }),
-  T('frame', 'Frame story', 'narrative', 'A story set inside another, the outer one giving the occasion for the telling.', { also: ['frame story', 'frame narrative', 'frame tale'] }),
-  T('omniscient', 'Omniscient narrator', 'narrative', 'A teller who knows what every character thinks and may comment on all of them.', { also: ['omniscient narrator', 'omniscient'] }),
-  T('narratorwe', 'The narrator’s “we”', 'narrative', 'The narrator stepping back from the case to what is true of us all, and taking the reader along.', { also: ['narrator’s “we”'] }),
-  T('digression', 'Digression', 'narrative', 'A turn away from the matter in hand, and back.', { also: ['digressions', 'digresses'] }),
-  T('catalogue', 'Catalogue', 'narrative', 'A list given at length, for its weight, its music or its comedy.', { also: ['catalog'] }),
-  T('inmediasres', 'In medias res', 'narrative', 'Beginning in the middle of the action, and filling in what came before later.'),
-  T('exemplum', 'Exemplum', 'argument', 'A story told to make a point: one person’s case standing for many.', { also: ['exempla', 'one person standing for many'] }),
+  T('fid', 'Free indirect discourse', 'narrative', 'A character’s thoughts given in the narrator’s sentences, without “she thought” or quotation marks.', { example: 'She would not go. Why should she go, only to be laughed at?', also: ['free indirect style', 'free indirect speech', 'free indirect'] }),
+  T('reported', 'Reported speech', 'narrative', 'Speech given in the narrator’s words instead of quoted: “he said that he was not ready”.', { also: ['reported speech', 'indirect speech', 'speech reported'] }),
+  T('deadpan', 'Deadpan', 'narrative', 'Something absurd told with a straight face.', { example: 'The report of my death was an exaggeration.', source: 'Twain, 1897' }),
+  T('talltale', 'Tall tale', 'narrative', 'A story of impossible feats told as plain fact.', { example: 'It was so cold the words froze as we spoke them.', also: ['tall tale', 'tall tales'] }),
+  T('frame', 'Frame story', 'narrative', 'A story set inside another story.', { example: 'A sailor tells a stranger the tale of his last voyage.', also: ['frame story', 'frame narrative', 'frame tale'] }),
+  T('omniscient', 'Omniscient narrator', 'narrative', 'A narrator who knows what every character thinks.', { example: 'She hoped he would call; he had already decided not to.', also: ['omniscient narrator', 'omniscient'] }),
+  T('narratorwe', 'The narrator’s “we”', 'narrative', 'The narrator stepping back from the story to say what is true of all of us.', { example: 'We are all of us born in moral stupidity.', source: 'Eliot, Middlemarch, ch. 21', also: ['narrator’s “we”'] }),
+  T('digression', 'Digression', 'narrative', 'A turn away from the subject, and back.', { example: 'But I am getting ahead of my story.', also: ['digressions', 'digresses'] }),
+  T('catalogue', 'Catalogue', 'narrative', 'A long list, given for its weight or its comedy.', { example: 'eggs, flour, two lemons, a ladder, my uncle and the dog', also: ['catalog'] }),
+  T('inmediasres', 'In medias res', 'narrative', 'Beginning in the middle of the action and filling in what came before later.', { example: 'The door was already burning when I woke.' }),
+  T('exemplum', 'Exemplum', 'argument', 'A story told to make a point, one person’s case standing for many.', { example: 'Take my neighbour, who worked two jobs and still lost the house.', also: ['exempla', 'one person standing for many'] }),
 
-  // Argument: how a case is built (the parts of a classical oration, and the appeals).
-  T('ethos', 'Ethos', 'argument', 'Persuasion by the speaker’s character: why the hearer should trust the one speaking.'),
-  T('pathos', 'Pathos', 'argument', 'Persuasion by feeling: moving the hearer to care.'),
-  T('logos', 'Logos', 'argument', 'Persuasion by reasoning and evidence.'),
-  T('exordium', 'Exordium', 'argument', 'The opening of a speech or an argument, which wins the hearer’s attention and good will.'),
-  T('narratio', 'Narratio', 'argument', 'The statement of the facts of the case, before the argument about them.'),
-  T('confirmatio', 'Confirmatio', 'argument', 'The proof: the reasons and evidence for the claim.'),
-  T('refutation', 'Refutation', 'argument', 'Answering the other side: taking an objection and showing why it fails.', { also: ['refutatio', 'rebuttal'] }),
-  T('concession', 'Concession', 'argument', 'Granting a point to the other side, the better to carry the larger one.', { also: ['concessions', 'concedes', 'conceding'] }),
-  T('procatalepsis', 'Procatalepsis', 'argument', 'Raising an objection before the hearer can, and answering it.', { also: ['prolepsis', 'anticipating the objection'] }),
-  T('peroration', 'Peroration', 'argument', 'The close of a speech or an argument: the case gathered up and the hearer moved to act.', { also: ['perorations'] }),
-  T('calltoaction', 'Call to action', 'argument', 'What the reader is asked to do, said plainly, usually at the end.', { also: ['call to action'] }),
+  // Argument: the parts of a classical speech, and the three appeals.
+  T('ethos', 'Ethos', 'argument', 'Persuading by the speaker’s character: why the hearer should trust the one speaking.', { example: 'I have coached this team for ten years.' }),
+  T('pathos', 'Pathos', 'argument', 'Persuading by feeling.', { example: 'Picture a child waiting alone at the bus stop.' }),
+  T('logos', 'Logos', 'argument', 'Persuading by reasons and evidence.', { example: 'Half the class failed, so the test was too hard.' }),
+  T('exordium', 'Exordium', 'argument', 'The opening of a speech or an argument, which wins the hearer’s attention.', { example: 'Friends, I will keep this short.' }),
+  T('narratio', 'Narratio', 'argument', 'The facts of the case, set out before the argument about them.', { example: 'On Monday the library closed at noon.' }),
+  T('confirmatio', 'Confirmatio', 'argument', 'The proof: the reasons and evidence for the claim.', { example: 'First, the library is the only quiet room in school.' }),
+  T('refutation', 'Refutation', 'argument', 'Answering the other side by showing why an objection fails.', { example: 'Some say it costs too much; it costs less than the repairs.', also: ['refutatio', 'rebuttal'] }),
+  T('concession', 'Concession', 'argument', 'Granting the other side a point in order to win a larger one.', { example: 'It is true that the plan is slow; but it works.', also: ['concessions', 'concedes', 'conceding'] }),
+  T('procatalepsis', 'Procatalepsis', 'argument', 'Raising an objection before the hearer can, and answering it.', { example: 'You may say we cannot afford it. We cannot afford to wait.', also: ['prolepsis', 'anticipating the objection'] }),
+  T('peroration', 'Peroration', 'argument', 'The close of a speech or an argument, which sums up the case and asks the hearer to act.', { example: 'So vote on Tuesday, and bring a friend.', also: ['perorations'] }),
+  T('calltoaction', 'Call to action', 'argument', 'What the reader is asked to do, said plainly, usually at the end.', { example: 'Sign the petition today.', also: ['call to action'] }),
   T('enthymeme', 'Enthymeme', 'argument', 'An argument with one premise left unsaid for the hearer to supply: “He is a politician, so of course he lied.”'),
-  T('thesis', 'Thesis', 'argument', 'The claim a piece of writing sets out to prove, stated so it could be disputed.'),
+  T('thesis', 'Thesis', 'argument', 'The claim a piece of writing sets out to prove, stated so someone could disagree.', { example: 'School should start an hour later.' }),
 ];
 
 /**

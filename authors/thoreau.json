@@ -92,7 +92,7 @@
     },
     {
       "id": "paradox",
-      "name": "The paradox that wakes",
+      "name": "The backwards truth",
       "does": "A statement that sounds absurd or reversed and makes the reader look again, such as “I have travelled a good deal in Concord” (paradox).",
       "pattern": "\\b(a good deal in concord|the more|rather than|instead of|not (that|because)|in proportion as|the cost of a thing|it is never too late|we do not|nothing is|I would rather|the less|richest|poorest)\\b",
       "register": "any",

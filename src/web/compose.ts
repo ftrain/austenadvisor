@@ -1,7 +1,7 @@
-// COMPOSE: the voice, the text, and the engine's first read of it as the student types. One native select holds
+// COMPOSE: the voice, the text, and the engine's first reading of it as the student types. One native select holds
 // every voice: three suggested for this piece first, then the four families. Under the box are the voice the text
 // already sounds like, the samples by kind, and the guess card. On a phone the select and the Rewrite button sit in
-// a bar at the foot of the screen; it is the same select.
+// a bar at the foot of the screen.
 
 import { button, cap, fill, h, type AuthorInfo, type Boot, type Definer, type Family, type Reading, type Sample } from './api.ts';
 import type { GuessView } from './guesscard.ts';
@@ -11,7 +11,7 @@ const FAMILY_ORDER: Family[] = ['storytellers', 'speakers', 'arguers', 'essayist
 /** The voices in the order the select lists them: within each family, the order a reader meets them. */
 const VOICE_ORDER = ['austen', 'eliot', 'dickens', 'twain', 'hemingway', 'hammett', 'woolf', 'fairy', 'lincoln', 'douglass', 'obama', 'kjv', 'shakespeare', 'federalist', 'johnson', 'gibbon', 'chesterton', 'emerson', 'thoreau', 'wilde'];
 export const KINDS = ['argument', 'story', 'letter', 'speech', 'essay', 'review'];
-export const RESTING = 'Full rewrites of your own text are resting. Every sample is rewritten.';
+export const RESTING = 'Rewrites of your own text are off for now. Every sample has a rewrite ready.';
 
 const lowerFirst = (t: string) => (/^[A-Z][a-z]/.test(t) ? t[0]!.toLowerCase() + t.slice(1) : t);
 export const article = (w: string) => (/^[aeiou]/i.test(w) ? `an ${w}` : `a ${w}`);
@@ -85,7 +85,7 @@ export function compose(o: ComposeOptions): ComposeView {
   const sampleLine = h('p', { class: 'pg-sample-line', 'aria-live': 'polite' });
   const resting = h('p', { class: 'pg-resting', hidden: true }, RESTING);
 
-  // The samples by kind: a tap fills the box with one, a second tap with the next of that kind.
+  // The samples by kind: a tap fills the box with one, and a second tap with the next of that kind.
   const kinds = KINDS.filter((k) => o.boot.samples.some((s) => s.kind === k));
   const turn = new Map<string, number>();
   const pickKind = (k: string) => {
@@ -102,7 +102,7 @@ export function compose(o: ComposeOptions): ComposeView {
   const chips = h(
     'div',
     { class: 'pg-kinds' },
-    h('span', { class: 'pg-kinds-label' }, o.boot.samples.length ? 'Or try one:' : ''),
+    h('span', { class: 'pg-kinds-label' }, o.boot.samples.length ? 'Or try a sample:' : ''),
     ...kinds.map((k) => button(cap(k), () => pickKind(k), { class: 'pg-chip', 'data-kind': k })),
     o.boot.samples.length ? button('Shuffle', shuffle, { class: 'pg-chip pg-chip-quiet' }) : null,
   );

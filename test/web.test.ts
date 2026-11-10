@@ -143,7 +143,7 @@ describe('the page', () => {
     localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: debate }));
     await rewritePage(app());
     app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
-    await vi.waitFor(() => expect(app().querySelector('.pg-progress')!.textContent).toContain('The rewrite didn’t come back.'));
+    await vi.waitFor(() => expect(app().querySelector('.pg-progress')!.textContent).toContain('The rewrite failed.'));
   });
 
   it('shows at most two WHY notes a row, and no move twice', async () => {

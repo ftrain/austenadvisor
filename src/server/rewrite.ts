@@ -28,7 +28,7 @@ import { checkPassage, runTool } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-10.s5';
+export const PROMPT_VERSION = '2026-11-10.plain';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -327,6 +327,7 @@ ${cap(pr.subject)} never wrote a word the engine flags: no such word may stand i
 
 <answer>
 Write the whole rewrite and call submit_rewrite once: the sense first, then the liberties, a short explanation, and the paragraphs. Give each paragraph its role (the work it does: claim, reason, scene, greeting) and, in fifteen words or fewer, why the voice puts it there. The engine checks the rewrite and answers "Accepted" or names what to mend.
+Write the sense notes, the liberties, the explanation and each paragraph's why in your own voice, not the author's, for a student of about fifteen: short plain sentences in the active voice and concrete words. No praise, no exclamation marks, no rhetorical questions. Name a term of rhetoric or grammar only with a few words on what it means.
 </answer>`;
 }
 
