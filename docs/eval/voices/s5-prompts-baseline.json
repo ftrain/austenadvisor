@@ -1,0 +1,13 @@
+{
+ "about": "Characters in the writer's prompts for samples/neighbors.txt (blocksOfText of the whole file) before the writer's diet, measured at commit c0ef36e: userPrompt(m, buildBrief(m, blocksOfText(text))) and systemPrompt(m).",
+ "case": "samples/neighbors.txt",
+ "voices": {
+  "austen": { "user": 14194, "system": 11999 },
+  "eliot": { "user": 12762, "system": 10038 },
+  "fairy": { "user": 13226, "system": 10317 },
+  "kjv": { "user": 13391, "system": 12688 },
+  "obama": { "user": 11132, "system": 10440 },
+  "shakespeare": { "user": 10897, "system": 11119 },
+  "twain": { "user": 11884, "system": 9983 }
+ }
+}

@@ -60,3 +60,47 @@ Claude, through OpenRouter, was refused for most requests ("would exceed your av
 few rewrites, though they agree with an earlier partial run (Opus 3.7, Sonnet 3.6). Claude wants a direct Anthropic key
 or more OpenRouter credit; the code takes either (`.env.example`). Claude refuses a forced tool choice, so the adapter
 offers the tool to Claude rather than requiring it.
+
+## The writer's diet (November 2026)
+
+The writer now makes one call per part, and a second only on a hard failure: a sentence lost, a heading crossed, the
+paragraphs run together, or no rewrite submitted. What changed:
+
+- `submit_rewrite` asks for `sense`, `liberties`, an `explanation` of 40 words or fewer, and `paragraphs`, each with a
+  `role`, a `why` of 15 words or fewer, and its sentences (`text`, `from`). The kind, the outline, the notes and each
+  sentence's model id are gone: the engine reads the structure and writes the notes.
+- The brief keeps one of the voice's sentences beside each of the writer's, not two, and drops `<advice>` and
+  `<measures>`. The voice's moves, one example each, move into the system prompt, which is the same for every rewrite
+  in a voice and is cached.
+- The second pass, the agentic mode, the proofreader and the light rewrite are gone.
+- `PROMPT_VERSION` and `promptFingerprint()` name the prompts a cached rewrite was made under. The fingerprint hashes the
+  prompts and the schema as rendered, so editing a comment leaves it the same.
+- Each voice writes with the model its tier names in `data/tiers.json` (`full` when the voice is not listed).
+
+The prompts for the New Neighbors case, in characters (`s5-prompts-baseline.json` holds the figures from before):
+
+| Voice | User before | User after | Shorter by | System before | System after |
+|---|---|---|---|---|---|
+| austen | 14194 | 6010 | 58% | 11999 | 9330 |
+| eliot | 12762 | 5807 | 54% | 10038 | 7525 |
+| fairy | 13226 | 5627 | 57% | 10317 | 7706 |
+| kjv | 13391 | 5833 | 56% | 12688 | 9871 |
+| obama | 11132 | 4434 | 60% | 10440 | 7401 |
+| shakespeare | 10897 | 5120 | 53% | 11119 | 8106 |
+| twain | 11884 | 5648 | 52% | 9983 | 7082 |
+
+### The reader stays on until the evaluation is run
+
+The reader (a fast model that reads for contradictions before the rewrite) is to go only if the writer alone keeps sense
+and fidelity within 0.3 of the baseline. The baseline is the `final` run on the `diet` set (the sense cases and ten
+more, six voices, 72 rewrites): sense 3.38, fidelity 2.85.
+
+The run after the change has not been made: the session that made the change had no model key. Until it is made,
+`ADVISOR_READER` stays `on` by default. To make it, start the server with `ADVISOR_READER=off`, then:
+
+```
+node scripts/eval-voices.ts diet-no-reader --set diet --compare final
+```
+
+The report gives the change in each mean and says whether both are level; the script exits with 1 if one is not. If
+both are level, make `off` the default in `src/server/rewrite.ts` (`READER_ON`) and record the run here.

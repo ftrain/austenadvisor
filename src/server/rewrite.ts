@@ -1,52 +1,57 @@
-// "Rewrite with AI": Claude rewrites a passage in the author's manner, from the engine's brief and with the engine as
-// its tools.
+// "Rewrite with AI": one model call rewrites a part of the writer's text in the voice's manner, from the engine's
+// brief. Everything else the page shows (notes, shape, style) is the engine's work.
 //
-// The protocol, and why:
-// - In: a numbered brief (engine/brief.ts), sentence by sentence: register, length, every word the author never wrote
-//   with the author's alternatives, and two of the author's sentences nearest it in the same register, by id. The
-//   model works from structure, not from a dump.
-// - Out: sentences, each naming the writer's sentences it renders (`from`), so the writer sees the passage aligned,
-//   and so nothing of theirs is silently dropped; notes naming a technique, the writer's words, the new words, and a
-//   model sentence of the author's by id only. The server renders every quotation from the corpus: a quotation cannot
-//   be invented, only an id, and an id that is not in the corpus is refused.
-// - Gate: the server checks every submission with the engine (words the author never wrote, contractions in
-//   narration, sentences left out, ids unknown) and sends back what it found until it is clean, twice at most.
+// The protocol:
+// - In: a system prompt that is the same for every rewrite in a voice (its manner, its moves with one example each),
+//   and so is cached; then a numbered brief (engine/brief.ts): each sentence with its register, its length, every word
+//   the voice never wrote with the voice's own words for it, and the voice's sentence nearest it.
+// - Out: submit_rewrite, with the faults of sense mended, the liberties taken, a short explanation, and the paragraphs,
+//   each with its role and the writer's sentences each of its sentences renders (`from`), so nothing is lost unseen.
+// - Gate: hardGate finds what is worth one redraft (a sentence lost, a heading crossed, the paragraphs run together);
+//   softFindings finds the rest, which the engine shows or mends itself.
 
+import { createHash } from 'node:crypto';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
 import { cap, pronounsOf } from '../corpus/sources.ts';
-import { buildBrief, contractsFreely, craftOf, renderBrief, type Brief } from '../engine/brief.ts';
+import { DATA } from '../db.ts';
+import { buildBrief, contractsFreely, renderBrief, renderMoves, type Brief } from '../engine/brief.ts';
 import { analyze } from '../engine/analyze.ts';
 import { blocksOfText, type DocBlock } from '../engine/doc.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
 import { CONTRACTIONS } from '../engine/profile.ts';
 import { explainSentence } from '../engine/explain.ts';
 import { FIGURES, findFigures } from '../engine/figures.ts';
-import { checkPassage, runTool, TOOL_SPECS } from '../engine/tools.ts';
+import { readStructure, ROLES, type Role } from '../engine/structure.ts';
+import { checkPassage, runTool } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
 
+/** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
+export const PROMPT_VERSION = '2026-11-10.s5';
+
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
-// (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK, protocol and tools
-// serve both; DeepSeek ignores cache_control and the beta header, and knows nothing of fallbacks.
+// (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
+// DeepSeek ignores cache_control and the beta header.
 const anthropicKey = () => process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN;
 export const PROVIDER: 'anthropic' | 'deepseek' = anthropicKey() ? 'anthropic' : process.env.DEEPSEEK_API_KEY ? 'deepseek' : 'anthropic';
 export const MODEL = process.env.ADVISOR_MODEL ?? (PROVIDER === 'deepseek' ? 'deepseek-v4-pro' : 'claude-opus-5-5');
 /** The writer, where it is not the provider's own model: ADVISOR_WRITER=openrouter:<model> (OPENROUTER_API_KEY), e.g.
- * openrouter:anthropic/claude-opus-5.5. The reader stays the provider's fast model. */
+ * openrouter:anthropic/claude-opus-5.5. */
 export const WRITER = process.env.ADVISOR_WRITER ?? '';
 const viaOpenRouter = WRITER.startsWith('openrouter:') && !!process.env.OPENROUTER_API_KEY;
 export const WRITER_MODEL = viaOpenRouter ? WRITER.slice('openrouter:'.length) : MODEL;
 export const aiAvailable = () => !!(anthropicKey() || process.env.DEEPSEEK_API_KEY);
 export const AI_KEYS = 'ANTHROPIC_API_KEY or DEEPSEEK_API_KEY';
-// Speed against depth: how many drafts the gate may send back before the last is taken (ADVISOR_DRAFTS), the model's
-// effort (ADVISOR_EFFORT: low, medium, high), and whether it thinks before it writes (ADVISOR_THINKING=on: on DeepSeek
-// that took three times as long for no better a rewrite).
-// One transaction (ADVISOR_PASSES=1, the default): the model reads the passage (its people, its kind, its outline, the
-// voice's plan, its faults of sense) and then writes, in one answer; the engine repairs what it can of that answer
-// rather than sending it back. ADVISOR_PASSES=2 adds an editor's read beside the draft and a redraft with the engine's
-// findings: surer, and twice as slow.
-export const PASSES = Number(process.env.ADVISOR_PASSES ?? 1) >= 2 ? 2 : 1;
-/** The reader: a fast model reads the passage for sense and plans its structure before the rewrite (ten seconds, and it
- * notices more than the writing model does in passing). */
+/** One writing call, and one redraft at most. Kept for the callers that still read it. */
+export const PASSES = 1;
+export const EFFORT = process.env.ADVISOR_EFFORT ?? 'high';
+export const THINKING = (process.env.ADVISOR_THINKING ?? 'off') === 'on';
+
+/** The reader: a fast model that reads the passage for faults of sense before the rewrite, at the cost of a second
+ * call. ADVISOR_READER=off leaves the sense check to the writer's own `sense` field. It stays on by default until
+ * eval-voices shows the writer alone keeps sense and fidelity within 0.3 of the baseline (docs/eval/voices/README.md). */
+export const READER_ON = (process.env.ADVISOR_READER ?? 'on') !== 'off';
 export const READER = process.env.ADVISOR_READER_MODEL ?? (process.env.DEEPSEEK_API_KEY ? 'deepseek-flash' : MODEL);
 /** The reader's client: DeepSeek's wherever its key is set, whoever writes. */
 function readerClient(main: Anthropic): Anthropic {
@@ -54,17 +59,26 @@ function readerClient(main: Anthropic): Anthropic {
     ? new Anthropic({ apiKey: process.env.DEEPSEEK_API_KEY, baseURL: process.env.DEEPSEEK_BASE_URL ?? 'https://api.deepseek.com/anthropic' })
     : main;
 }
-export const DRAFTS = Math.max(1, Number(process.env.ADVISOR_DRAFTS ?? (PASSES === 1 ? 1 : 2)));
-export const EFFORT = process.env.ADVISOR_EFFORT ?? 'high';
-export const THINKING = (process.env.ADVISOR_THINKING ?? 'off') === 'on';
-// One prompt, one answer (`oneshot`, the default): the model writes from the brief alone, and the engine checks the
-// result. `agentic` gives it the engine as tools to consult as it writes: slower by minutes, a little surer.
-export const MODE: 'oneshot' | 'agentic' = process.env.ADVISOR_MODE === 'agentic' ? 'agentic' : 'oneshot';
+
+/** A voice's writer tier: `full` writes with the best model, `fast` with the quicker one where eval-voices found it
+ * within 0.3 of the best. Read from data/tiers.json ({"austen": "fast"}); a voice not listed is `full`. */
+export type Tier = 'full' | 'fast';
+export const FAST_MODEL = process.env.ADVISOR_FAST_MODEL ?? (PROVIDER === 'deepseek' ? 'deepseek-flash' : MODEL);
+export function tierOf(voice: string, file = join(DATA, 'tiers.json')): Tier {
+  try {
+    const tiers = JSON.parse(readFileSync(file, 'utf8')) as Record<string, unknown>;
+    return tiers[voice] === 'fast' ? 'fast' : 'full';
+  } catch {
+    return 'full';
+  }
+}
+/** The model a tier writes with. A writer on OpenRouter is one model for every tier. */
+export const modelFor = (tier: Tier): string => (viaOpenRouter ? WRITER_MODEL : tier === 'fast' ? FAST_MODEL : MODEL);
 
 /** Where a rewrite has got to, for the page's progress line. */
 export interface RewriteProgress {
   what: string;
-  /** Calls to the engine so far. */
+  /** Calls to the writer so far. */
   calls: number;
   /** Drafts submitted so far. */
   draft: number;
@@ -77,7 +91,7 @@ function makeClient(): Anthropic {
   return new Anthropic();
 }
 
-/** The model's answer to one writing call: its blocks (the tool calls carry the rewrite), why it stopped, the tokens. */
+/** The model's answer to one writing call: its blocks (the tool call carries the rewrite), why it stopped, the tokens. */
 export interface WriterAnswer {
   content: Anthropic.Beta.BetaContentBlock[];
   stop_reason: string | null;
@@ -85,14 +99,14 @@ export interface WriterAnswer {
 }
 
 /**
- * The writer. One method: the system prompt, the conversation so far (the brief, then any redraft asked for) and the
- * tools go in; the model's answer comes out. The default sends the call to the provider. A test passes a fake.
+ * The writer. The system prompt, the conversation so far (the brief, then any redraft asked for) and the tools go in;
+ * the model's answer comes out. `opts.model` names the model for the voice's tier. A test passes a fake.
  */
 export interface WriterClient {
-  call(system: string, user: Anthropic.Beta.BetaMessageParam[], tools: Anthropic.Beta.BetaTool[]): Promise<WriterAnswer>;
+  call(system: string, user: Anthropic.Beta.BetaMessageParam[], tools: Anthropic.Beta.BetaTool[], opts?: { model?: string }): Promise<WriterAnswer>;
 }
 
-/** The provider's writer. It keeps its Anthropic client for the reader and the proofreader, which only it can run. */
+/** The provider's writer. It keeps its Anthropic client for the reader, which only it can run. */
 export interface ProviderWriter extends WriterClient {
   anthropic: Anthropic;
 }
@@ -100,10 +114,11 @@ export interface ProviderWriter extends WriterClient {
 export function providerWriter(anthropic: Anthropic = makeClient()): ProviderWriter {
   return {
     anthropic,
-    call: (system, user, tools) =>
+    call: (system, user, tools, opts = {}) =>
       writerCall(anthropic, {
-        model: MODEL,
-        max_tokens: 16000,
+        model: opts.model ?? MODEL,
+        max_tokens: 8000,
+        // The system prompt is the voice's own and the same for every rewrite in it: cached.
         system: [{ type: 'text', text: system, cache_control: { type: 'ephemeral' } }],
         thinking: THINKING ? { type: 'adaptive' } : { type: 'disabled' },
         output_config: { effort: EFFORT },
@@ -127,16 +142,26 @@ export function submitted(input: Record<string, unknown>, id = `toolu_${Math.ran
   return { content: [{ type: 'tool_use', id, name: SUBMIT.name, input } as Anthropic.Beta.BetaToolUseBlock], stop_reason: 'tool_use', usage: { input_tokens: 0, output_tokens: 0 } };
 }
 
-/** How far the rewrite goes: `full` renders the passage as a page of the author's; `light` tidies the writer's own. */
-export type Strength = 'full' | 'light';
+/** A rewrite goes the whole way. The type stays for callers that still pass it. */
+export type Strength = 'full';
 
+export interface SubmittedSentence {
+  text: string;
+  from: number[];
+  /** Older submissions named the author's sentence that inspired this one; the schema no longer asks for it. */
+  model?: string;
+}
+export interface SubmittedParagraph {
+  /** The work the paragraph does: claim, reason, scene, greeting… (structure.ts). */
+  role?: string;
+  /** Why the voice puts it here, in 15 words or fewer. */
+  why?: string;
+  sentences: SubmittedSentence[];
+}
 export interface Submission {
-  paragraphs: { sentences: { text: string; from: number[]; model: string }[] }[];
-  notes: { move: string; before: string; after: string; model: string }[];
-  /** The reading written before the rewrite, in one transaction. */
-  kind?: string;
-  outline?: Step[];
-  plan?: Step[];
+  paragraphs: SubmittedParagraph[];
+  /** Older submissions carried notes; the engine writes them now (engine/notes.ts). */
+  notes?: { move: string; before: string; after: string; model: string }[];
   /** What did not hang together in the writer's draft, and how the rewrite mended it. */
   sense?: Sense[];
   /** What the rewrite adds that the writer did not say, and why the voice takes it. */
@@ -166,11 +191,10 @@ export interface RewriteNote {
 
 export interface RewriteResult {
   text: string;
-  /** Each paragraph of the rewrite, and which paragraph of the passage (1-based, counting only paragraphs, quotes
-   * and items) its first sentence renders: how a rewrite of several paragraphs is laid back into the document. */
-  paragraphs: { text: string; source: number | null; sentences: { text: string; source: number | null }[] }[];
-  /** Each new sentence beside the writer's sentences it renders, why it was rewritten (one sentence, from the
-   * engine's template), and the author's sentence that inspired it. */
+  /** Each paragraph of the rewrite, its role and why the voice puts it there, and which paragraph of the passage
+   * (1-based, counting only paragraphs, quotes and items) its first sentence renders. */
+  paragraphs: { text: string; source: number | null; role?: string; why?: string; sentences: { text: string; source: number | null }[] }[];
+  /** Each new sentence beside the writer's sentences it renders, and why it was rewritten (from the engine). */
   aligned: { after: string; before: string[]; from: number[]; why: string; model: Citation; moves: string[] }[];
   /** The writer's sentences as the brief numbered them, with the words in each the author never wrote. */
   source: { n: number; paragraph: number; text: string; never: { word: string; alternatives: string[] }[] }[];
@@ -178,7 +202,7 @@ export interface RewriteResult {
   notes: RewriteNote[];
   sense: Sense[];
   liberties: { after: string; why: string }[];
-  /** The editor's read: the kind of piece, the writer's outline, the voice's plan. */
+  /** How the piece is built: the writer's parts (read by the engine), the voice's (from the rewrite's roles). */
   reading?: Reading;
   /** Tokens the writing calls used: input, input read from the provider's cache, input written to it, output. */
   usage?: { input: number; cached: number; cacheWrite: number; output: number };
@@ -188,42 +212,30 @@ export interface RewriteResult {
   scoreBefore: number;
   scoreAfter: number;
   model: string;
+  tier?: Tier;
+  promptVersion?: string;
 }
 
-/** The reading the writer gives before its rewrite: what the piece is, how it is built, how the voice would build it. */
-const READING_FIELDS = {
-  kind: { type: 'string', description: 'Write this first. What the piece is: story, argument, letter, email, description, or other.' },
-  outline: {
-    type: 'array',
-    description: 'How the writer built it, in the writer’s order: each part by the work it does (an argument: claim, reason, evidence, example, objection, answer, proposal, call; a story: setting, event, turn, feeling, verdict; a letter or email: greeting, news, reason, request, close), with its gist in a few words.',
-    items: { type: 'object', properties: { role: { type: 'string' }, gist: { type: 'string' } }, required: ['role', 'gist'], additionalProperties: false },
-  },
-  plan: {
-    type: 'array',
-    description: 'How the voice would build the same matter, in its order, each part with why the voice puts it there: a lesson in structure for the writer. The same matter only. Keep the writer’s order wherever the voice would. Your rewrite then follows this plan.',
-    items: { type: 'object', properties: { role: { type: 'string' }, gist: { type: 'string' }, why: { type: 'string' } }, required: ['role', 'gist', 'why'], additionalProperties: false },
-  },
-};
+/** The roles a paragraph may take, from the engine's structure reading. */
+const ROLE_IDS = Object.keys(ROLES) as Role[];
 
 export const SUBMIT = {
   name: 'submit_rewrite',
-  description:
-    'Submit the rewrite. The engine checks it at once and answers either "Accepted" or with what still needs revising; revise and submit again until it is accepted.',
+  description: 'Submit the rewrite. The engine checks it and answers "Accepted" or names what must be mended.',
   strict: true,
   input_schema: {
     type: 'object' as const,
     properties: {
-      ...(PASSES === 1 ? READING_FIELDS : {}),
       sense: {
         type: 'array',
-        description: 'Write this first, before the rewrite: each thing in the writer’s draft that does not hang together (a contradiction, an unclear person or time, a missing step), and how the rewrite will mend it; and any scene of the author’s the passage truly echoes. Not style. Usually empty.',
+        description: 'Write this first. Each real fault of sense in the writer’s draft (a contradiction, an unclear person or time, a missing step) and how the rewrite mends it; or a scene of the author’s the passage truly echoes. Not style. Usually empty.',
         items: {
           type: 'object',
           properties: {
-            problem: { type: 'string', description: 'What did not make sense, said plainly to the writer: “Your first paragraph gives the new family a mother; your last says the father is single.”' },
-            resolution: { type: 'string', description: 'How the rewrite mends it, and why that way: “I made the standoffish lady his sister, as Bingley’s sisters are in Pride and Prejudice.”' },
-            before: { type: 'string', description: 'The writer’s words where the problem is, exactly.' },
-            after: { type: 'string', description: 'Yours that mend it, exactly.' },
+            problem: { type: 'string', description: 'The fault, said plainly to the writer: “Your first paragraph gives the new family a mother; your last says the father is single.”' },
+            resolution: { type: 'string', description: 'How the rewrite mends it: “I made the cold lady his sister.”' },
+            before: { type: 'string', description: 'The writer’s words where the fault is, exactly.' },
+            after: { type: 'string', description: 'Your words that mend it, exactly.' },
           },
           required: ['problem', 'resolution', 'before', 'after'],
           additionalProperties: false,
@@ -231,119 +243,89 @@ export const SUBMIT = {
       },
       liberties: {
         type: 'array',
-        description: 'Everything in your rewrite that the writer did not say or plainly imply (a verdict, a generalization, a framing), each with why the voice takes it. Usually one or two, often none. Say them: a liberty not reported is a fault.',
+        description: 'Each thing in your rewrite the writer did not say or plainly imply (a verdict, a generalization), with why the voice takes it. Usually one or none.',
         items: {
           type: 'object',
           properties: {
             after: { type: 'string', description: 'Your words that take the liberty, exactly as in the rewrite.' },
-            why: { type: 'string', description: 'What the voice does here, and why: a lesson for the writer.' },
+            why: { type: 'string', description: 'What the voice does here, in one plain sentence to the writer.' },
           },
           required: ['after', 'why'],
           additionalProperties: false,
         },
       },
+      explanation: { type: 'string', description: 'Forty words or fewer to the writer: how the voice builds this piece differently from theirs, and why that order works on the reader.' },
       paragraphs: {
         type: 'array',
-        description: 'The rewritten passage, paragraph by paragraph, in the order the author would give it.',
+        description: 'The rewrite, paragraph by paragraph, in the order the author would give it.',
         items: {
           type: 'object',
           properties: {
+            role: { type: 'string', enum: ROLE_IDS, description: 'The work this paragraph does in the piece.' },
+            why: { type: 'string', description: 'Fifteen words or fewer: why the voice puts this paragraph here.' },
             sentences: {
               type: 'array',
               items: {
                 type: 'object',
                 properties: {
                   text: { type: 'string', description: 'One sentence of the rewrite.' },
-                  from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders (one, or several joined).' },
-                  model: { type: 'string', description: 'The id of the author’s sentence that most inspired this one (from the brief or a tool result): “S12345”.' },
+                  from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders: one, or several joined.' },
                 },
-                required: ['text', 'from', 'model'],
+                required: ['text', 'from'],
                 additionalProperties: false,
               },
             },
           },
-          required: ['sentences'],
+          required: ['role', 'why', 'sentences'],
           additionalProperties: false,
         },
       },
-      notes: {
-        type: 'array',
-        description: 'Three to six lessons for the writer, each a move you made.',
-        items: {
-          type: 'object',
-          properties: {
-            move: { type: 'string', description: 'The id of the move you made (the brief’s <moves>), or the term of the figure of speech (litotes, periphrasis, antithesis, tricolon…).' },
-            before: { type: 'string', description: 'The writer’s words, exactly.' },
-            after: { type: 'string', description: 'Yours, exactly.' },
-            model: { type: 'string', description: 'The id of a sentence of the author’s that shows this very move (from the brief’s <moves> or find_example): “S12345”.' },
-          },
-          required: ['move', 'before', 'after', 'model'],
-          additionalProperties: false,
-        },
-      },
-      explanation: { type: 'string', description: 'Two or three sentences to the writer: the chief difference between their passage and the author’s manner, and what to practise. Name only moves your rewrite makes, each with its words quoted from your rewrite, and say why it works on the reader: a lesson the writer can use in their own voice.' },
     },
-    required: [...(PASSES === 1 ? ['kind', 'outline', 'plan'] : []), 'sense', 'liberties', 'paragraphs', 'notes', 'explanation'],
+    required: ['sense', 'liberties', 'explanation', 'paragraphs'],
     additionalProperties: false,
   },
 };
 
-export function systemPrompt(m: AuthorModel, strength: Strength = 'full', mode: 'oneshot' | 'agentic' = MODE): string {
+export function systemPrompt(m: AuthorModel): string {
   const a = m.author;
   const pr = pronounsOf(a);
-  const full = strength === 'full';
-  const oneshot = mode === 'oneshot';
-  const manner = full
-    ? `
-<manner>
-${(a.manner?.length ? a.manner : [`Go the whole way. The writer wants the passage to read as a page of ${a.short}'s, not as their own page tidied. A rewrite that keeps their sentences and swaps a few words has failed them.`]).map((x, i) => (i ? `- ${x}` : x)).join('\n')}
-- Every modern thing becomes what it is in ${pr.possessive} world, named plainly in ${pr.possessive} words; every modern turn of phrase goes. Nothing of the writer's idiom survives unless it is also ${pr.possessive}.
-- Keep every fact, in its order, with its speakers, its point of view, its form and its names. The narrator may judge what is there, and may not remember, suppose or add anything that is not: no new incident, motive, history or feeling, however small.
-</manner>
-`
-    : '';
+  // "of hers", "of his"; a voice that is "it" is named.
+  const ofTheirs = pr.possessivePronoun === 'its' ? `${a.short}’s` : pr.possessivePronoun;
+  const manner = (a.manner?.length ? a.manner : [`Go the whole way. The writer wants the passage to read as a page of ${a.short}'s, not as their own page tidied. A rewrite that keeps their sentences and swaps a few words has failed them.`]).map((x, i) => (i ? `- ${x}` : x));
   return `You are ${a.advisor}: a teacher of writing who knows every word of ${a.whole ?? `${a.short}'s complete works`}, working beside a living writer. ${a.persona}
 
-The writer has asked you to show them how ${a.short} would have written a passage of theirs. They are learning to write, and to think like an author; your rewrite is a lesson as much as a text.
+The writer has asked how ${a.short} would have written a passage of theirs. They are learning to write; your rewrite is a lesson as much as a text.
 
 <task>
 Render the passage as ${a.short} would have written it.
-Keep: what happens and in what order; who speaks and what they mean; what each sentence means, and the way each feeling points (embarrassment stays embarrassment, never comfort; a liking stays a liking); the point of view and person (a first-person narrator stays first-person); the form (a letter stays a letter, with its greeting and its close); the writer's names.
+Keep: what happens and in what order; who speaks and what they mean; what each sentence means, and the way each feeling points (embarrassment stays embarrassment); the point of view and person; the form (a letter stays a letter, with its greeting and its close); the writer's names.
 Change: the words, the sentences, how they are joined, what is told and what is shown.
-You may join sentences, split them, reorder them, turn quoted speech into reported speech or back. You may move, merge or split the writer's paragraphs where the author would have ordered the matter otherwise (the news before the complaint, the setting before the scene, the point where it lands hardest), and only then: keep a paragraph for each turn of the matter, as many as the writer gave unless the matter wants otherwise, and never run the whole into one. Every sentence of theirs must still be rendered somewhere, and each of yours names the writer's sentences it renders. A heading in the brief stands where it is and is not yours to render: write nothing for it, join nothing across it, and give each side its own paragraphs. You may not add incidents, people, opinions or feelings the passage does not imply, nor drop any of its sentences without rendering them somewhere. Add no detail, image, outcome, motive, opinion of the narrator's, or degree of feeling the writer did not give: nervous stays nervous, not afraid; a quip the writer did not make is not yours to make. ${full ? "The voice's manner may frame what is there (a verdict in the voice's words on the writer's own matter, a generalization the matter invites), sparingly; every such liberty, and anything else you add, is reported in liberties." : 'Add no clause the writer did not imply.'}
-Keep the writer's tenses consistent (do not slide between past and present). Plain is better than ornate: prefer the voice's most usual way of saying a thing; a phrase the reader would have to puzzle out is wrong.
+You may join sentences, split them, reorder them, and turn quoted speech into reported speech or back. You may move, merge or split paragraphs where the author would order the matter otherwise; keep a paragraph for each turn of the matter, and never run the whole into one. Every sentence of the writer's is rendered somewhere, and each of yours names the brief's sentences it renders. A heading stands where it is: write nothing for it, join nothing across it.
+Add no incident, person, detail, motive or degree of feeling the writer did not give: nervous stays nervous. The voice may frame what is there (a verdict on the writer's own matter), sparingly; report every such liberty.
+Keep the writer's tenses. Prefer the voice's most usual way of saying a thing to an ornate one.
 </task>
 
 <sense>
-Read the passage for sense before you write, as an editor would. Ask of each person: who are they, and does everything said of them agree? Ask of the whole: what is the point of it, and does the telling get there?
-- Where it contradicts itself, mend it so that it truly hangs together: the mending must remove the contradiction, not restate it. Choose the reading the rest of the passage points to, and the smallest change that gets there, in ${pr.possessive} world; then read your mending against every other sentence, and if anything still disagrees, mend again.
-- Where it leaves unclear who is meant or when, or skips a step the reader needs, supply the least that makes it clear.
-- Where the passage echoes a scene of ${pr.possessive} own, recognise it, let the rewrite echo it, and tell the writer which scene it is: that is a lesson in itself.
-Report every mending and every echo in sense, plainly, to the writer, before you write the rewrite; never mend silently, and invent nothing beyond the mending. Sense is for real faults of sense and true echoes only: a matter of style is not one, and most passages need nothing here.${PASSES === 1 ? `\nGive your reading first, as the answer asks (the kind of piece, its outline, ${pr.possessive} plan), then the rewrite, built to your plan.` : ''}
-For example: a draft says a new family moved in with a father, a standoffish mother and two children, and later that the father is single, divorced. The standoffish woman cannot be his wife, nor his former wife, since she came with the household; the mending gives her a place that agrees with everything said of her, such as his sister.${a.echoes?.length ? `\nScenes of ${pr.possessive} that a passage may echo (there are others):\n${a.echoes.map((e) => `- ${e}`).join('\n')}` : ''}
+Read the passage for sense before you write. Where it contradicts itself, mend it with the smallest change the rest of the passage points to, and check the mending against every other sentence. Where it leaves unclear who is meant or when, supply the least that makes it clear. Where it echoes a scene of ${pr.possessive} own, let the rewrite echo it. Report each mending and echo in sense, before the rewrite. Most passages need nothing here.
+For example: a draft says a new family moved in with a father, a cold mother and two children, and later that the father is single. The cold woman cannot be his wife; the mending makes her, say, his sister.${a.echoes?.length ? `\nScenes of ${ofTheirs} that a passage may echo:\n${a.echoes.map((e) => `- ${e}`).join('\n')}` : ''}
 </sense>
-${manner}
-<craft>
-${craftOf(m)}
-</craft>
 
-<the_engine>
-You are given a brief prepared by a statistical engine built from ${a.whole ?? `${a.short}'s complete works`}: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (and ${pr.possessive} words instead, with how often ${pr.subject} used them), and two of ${pr.possessive} sentences nearest it in meaning and register, each with an id like S12345; then ${pr.possessive} moves, each with two sentences of ${pr.possessive} that show it.
-${
-  oneshot
-    ? `The brief is all you need: write from it, in one go. Prefer the words the brief gives you; where a modern thing has no word of ${pr.possessive}, render it by what it does in ${pr.possessive} world, in a short plain phrase of ${pr.possessive} words. Use only words you are sure ${pr.subject} used: the common vocabulary of ${pr.possessive} novels, and the words the brief shows.`
-    : `The engine is also your tools: look a word up (word_profile); confirm a phrase is ${pr.possessive} (concordance); find ${pr.possessive} sentences like yours (similar_sentences, with a register); find ${pr.possessive} sentences that show a move (find_example); check a draft (check_passage). Before submitting, run check_passage on your draft. A compound it lists is a modern thing in old words: find what it would be in ${pr.possessive} world. Its "rare pairs" are only for your judgement: most are fine; change one only if it sounds modern, by choosing another word, never by inverting the phrase. A periphrasis of your own making deserves a concordance check.`
-}
-${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names${a.keepModern ? ', and the writer’s own nouns for modern things, which stand as they are' : ''}. ${a.keepModern ? `A modern thing keeps its own name, set in ${pr.possessive} sentence; never turn it into another thing.` : `A modern thing with no word of ${pr.possessive} is rendered by what it does in ${pr.possessive} world, or by a phrase in ${pr.possessive} words.`}
-</the_engine>
+<manner>
+${manner.join('\n')}
+- Every modern thing becomes what it is in ${pr.possessive} world, named plainly in ${pr.possessive} words.
+</manner>
+${a.craftNotes?.length ? `\n<craft>\n${a.craftNotes.map((x) => `- ${x}`).join('\n')}\n</craft>\n` : ''}
+${cap(pr.possessive)} moves, each with a sentence of ${ofTheirs} that makes it:
+${renderMoves(m)}
 
-<citing>
-Cite ${a.short} only by id (S12345), never by quoting: the writer is shown the sentence from the corpus itself. Each note names one move and cites a sentence of ${pr.possessive} that shows that very move, not one that merely shares a word with yours: take it from the brief's <moves>${oneshot ? '' : ' or from find_example'}. The engine checks that the sentence shows the move.
-</citing>
+<the_brief>
+The brief comes from a statistical engine built on ${a.whole ?? `${a.short}'s complete works`}: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (with ${pr.possessive} words instead), and the sentence of ${ofTheirs} nearest it.
+${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names${a.keepModern ? ', and the writer’s own nouns for modern things, which keep their names' : ''}. ${a.keepModern ? '' : `A modern thing with no word of ${ofTheirs} is rendered by what it does in ${pr.possessive} world, in a short plain phrase.`}
+</the_brief>
 
-<finishing>
-${oneshot ? 'Write the whole rewrite now and call submit_rewrite at once: it is your only tool, and your one answer.' : 'Work fast: make every lookup a draft needs in one turn, calling the tools in parallel, never one word at a time; then write the draft, check it once with check_passage, and submit.'} Call submit_rewrite with the sentences (each naming the brief's sentence numbers it renders, and the id of the sentence of ${pr.possessive} that most inspired it), three to six notes (each a different move, the writer's words and yours exactly as written), and a short explanation. The engine checks the submission and answers "Accepted" or with what remains; revise and submit again until it is accepted.
-</finishing>`;
+<answer>
+Write the whole rewrite and call submit_rewrite once: the sense first, then the liberties, a short explanation, and the paragraphs. Give each paragraph its role (the work it does: claim, reason, scene, greeting) and, in fifteen words or fewer, why the voice puts it there. The engine checks the rewrite and answers "Accepted" or names what to mend.
+</answer>`;
 }
 
 export interface EditorNote {
@@ -357,7 +339,7 @@ export interface Step {
   gist: string;
   why?: string;
 }
-/** The editor's read of a passage: what kind of piece it is, how the writer built it, how the voice would. */
+/** How a piece is built: its kind, the writer's parts, the voice's parts, and any fault of sense the reader found. */
 export interface Reading {
   kind: string;
   outline: Step[];
@@ -371,174 +353,93 @@ const READ = {
   input_schema: {
     type: 'object' as const,
     properties: {
-      people: {
-        type: 'array',
-        description: 'First: every person in the passage, and everything the passage says of each. Then whether it all agrees.',
-        items: { type: 'string' },
-      },
-      kind: { type: 'string', description: 'What the piece is: story, argument, letter, email, description, or other.' },
-      outline: {
-        type: 'array',
-        description: 'How the writer built it, in the writer’s order: each part by the work it does (for an argument: claim, reason, evidence, example, objection, answer, proposal, call; for a story: setting, event, turn, feeling, verdict; for a letter or email: greeting, news, reason, request, close), with its gist in a few words.',
-        items: { type: 'object', properties: { role: { type: 'string' }, gist: { type: 'string' } }, required: ['role', 'gist'] },
-      },
-      plan: {
-        type: 'array',
-        description: 'How the voice would build the same matter, in its order: each part, its gist, and why the voice puts it there (what it does for the reader). The same matter only: no new facts, reasons or evidence. Keep the writer’s order where the voice would.',
-        items: { type: 'object', properties: { role: { type: 'string' }, gist: { type: 'string' }, why: { type: 'string' } }, required: ['role', 'gist', 'why'] },
-      },
+      people: { type: 'array', description: 'Every person in the passage, and everything it says of each.', items: { type: 'string' } },
       sense: {
         type: 'array',
-        description: 'Each real fault of sense (a contradiction, an unclear person or time, a missing step the reader needs) and how to mend it with the least change; and any true echo of a scene of the author’s. Not style. Often empty.',
+        description: 'Each real fault of sense and how to mend it with the least change; and any true echo of a scene of the author’s. Not style. Often empty.',
         items: {
           type: 'object',
           properties: {
-            problem: { type: 'string', description: 'Said plainly to the writer: “Your first paragraph gives the new family a mother; your last says the father is single.”' },
-            resolution: { type: 'string', description: 'The mending, and why that way, or the scene echoed and what the rewrite may take from it.' },
+            problem: { type: 'string', description: 'Said plainly to the writer.' },
+            resolution: { type: 'string', description: 'The mending, or the scene echoed.' },
             quote: { type: 'string', description: 'The writer’s words where it is, exactly.' },
           },
           required: ['problem', 'resolution', 'quote'],
         },
       },
     },
-    required: ['people', 'kind', 'outline', 'plan', 'sense'],
+    required: ['people', 'sense'],
   },
 };
 
-/** An editor's read of the passage for sense alone, before it is rewritten: a short call that only notices. */
-export async function readForSense(m: AuthorModel, passage: string, client: Anthropic = makeClient(), think = process.env.ADVISOR_SENSE_THINKING === 'on', strict = PASSES === 1): Promise<Reading> {
+/** The reader (ADVISOR_READER, on by default for now): a fast model reads the passage for sense alone before it is
+ * rewritten, and what it finds goes to the writer. */
+export async function readForSense(m: AuthorModel, passage: string, client: Anthropic = makeClient()): Promise<EditorNote[]> {
   const a = m.author;
   const pr = pronounsOf(a);
-  const system = `You are an editor. A writer's passage is about to be rewritten in the manner of ${a.title ?? a.name}; before it is, you read it for sense, and for nothing else.
-List every person in it and everything said of each, then ask whether it all agrees. Ask of the whole what its point is, and whether the telling gets there.
-Report each real fault: a contradiction (a family with a mother whose father is then single), a person or time left unclear, a step the reader needs and is not given. For each, the mending with the least change that makes everything agree, chosen as the rest of the passage points: a mending must remove the fault, not restate it, and must agree with every other sentence (a woman who moved in with a single man's household is not his wife nor his former wife; she might be his sister).
-${a.echoes?.length ? `Report too any scene of ${pr.possessive} that the passage truly echoes, and what the rewrite may take from it. Among ${pr.possessive} scenes:
-${a.echoes.map((e) => `- ${e}`).join('\n')}\n` : ''}Style is not sense: say nothing of it. Most passages have no fault; then report none.${strict ? `
-Be strict: report only a contradiction (two statements that cannot both be true of the same person, thing or time) or a true echo; never something merely unclear, unsaid or unusual, which a reader can live with. At most two. Usually none.` : ''}
-Then outline the piece as the writer built it, part by part, and plan how ${a.title ?? a.name} would build the same matter: for an argument, how ${pr.subject} would order the claim, the reasons, the evidence, the objection and its answer, and the close, and why; for a story, a letter or an email, the same for its parts. Keep the writer's order wherever ${pr.subject} would; change it only where it serves the reader, and say why. The plan is for a writer learning to build an argument: make each why a lesson.`;
-  const response = (await client.beta.messages.create({
-    model: READER,
-    max_tokens: think ? 8000 : 3000,
-    system,
-    tools: [READ],
-    // Thinking, which this read needs to notice what does not agree, allows no forced tool: it is asked for instead.
-    ...(think ? { thinking: { type: 'enabled', budget_tokens: 4000 } } : { tool_choice: { type: 'tool', name: READ.name }, thinking: { type: 'disabled' } }),
-    messages: [{ role: 'user', content: `<passage>\n${passage}\n</passage>\n\nRead it, then call ${READ.name}.` }],
-  } as unknown as Anthropic.Beta.MessageCreateParamsNonStreaming)) as Anthropic.Beta.BetaMessage;
-  const use = response.content.find((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
-  const got = (use?.input ?? {}) as Partial<Reading>;
-  const steps = (xs: unknown) => (Array.isArray(xs) ? (xs as Step[]).filter((x) => x?.role?.trim() && x?.gist?.trim()) : []);
-  return {
-    kind: String(got.kind ?? 'other').toLowerCase(),
-    outline: steps(got.outline),
-    plan: steps(got.plan),
-    sense: (got.sense ?? []).filter((x) => x?.problem?.trim() && x?.resolution?.trim()),
-  };
-}
-
-const NO_READING: Reading = { kind: 'other', outline: [], plan: [], sense: [] };
-
-export interface Proof {
-  fixes: { find: string; replace: string; why: string }[];
-  added: { after: string; why: string }[];
-}
-const PROOF = {
-  name: 'report_proof',
-  description: 'Report the exact small edits that make the rewrite faithful, and what it adds unreported.',
-  input_schema: {
-    type: 'object' as const,
-    properties: {
-      fixes: {
-        type: 'array',
-        description: 'Each place the rewrite is unfaithful or garbled, as the smallest edit that mends it in the voice: a fact, detail, time, number or degree changed; a feeling shifted or inverted; a word in a sense that misleads (customers become readers, a nightmare becomes a dream); a phrase repeated; a tense slipped; a sentence whose logic now says something else. Not matters of taste.',
-        items: {
-          type: 'object',
-          properties: {
-            find: { type: 'string', description: 'The rewrite’s words to change, exactly as they stand, within one sentence.' },
-            replace: { type: 'string', description: 'The words to put in their place, in the voice.' },
-            why: { type: 'string' },
-          },
-          required: ['find', 'replace', 'why'],
-        },
-      },
-      added: {
-        type: 'array',
-        description: 'Anything the rewrite adds that the writer did not say or imply, and that the rewrite’s own liberties do not already report.',
-        items: { type: 'object', properties: { after: { type: 'string', description: 'The rewrite’s words, exactly.' }, why: { type: 'string', description: 'What the voice does there.' } }, required: ['after', 'why'] },
-      },
-    },
-    required: ['fixes', 'added'],
-  },
-};
-
-/** A fast proofreader: the writer's text beside the rewrite, sentence by sentence; small exact edits, not a redraft. */
-export async function proofread(m: AuthorModel, brief: Brief, s: Submission, client: Anthropic = makeClient()): Promise<Proof> {
-  const a = m.author;
-  const pairs = s.paragraphs
-    .flatMap((p) => p.sentences)
-    .map((x, i) => `${i + 1}. Rewrite: ${x.text}\n   Writer: ${(x.from ?? []).map((n) => brief.sentences[n - 1]?.text).filter(Boolean).join(' ') || '(none named)'}`)
-    .join('\n');
-  const system = `You proofread a rewrite of a writer's passage into the manner of ${a.title ?? a.name} against the writer's own sentences. The voice may change every word and the order; it may not change what is said. Find each place where the rewrite says something the writer did not: a fact, detail, time, number or degree changed; a feeling shifted or turned the other way; a word in a sense that misleads; a phrase repeated; a tense slipped; logic that now says something else. For each, give the smallest edit, in the voice, that makes it faithful. Then list anything added that the rewrite does not already report as a liberty. A mending of a contradiction that the rewrite reports is not a fault. Say nothing of taste. Most sentences need nothing.`;
-  const user = `<writer>\n${brief.sentences.map((x) => x.text).join(' ')}\n</writer>\n\n<sentences>\n${pairs}\n</sentences>\n\n<reported>\n${[...(s.liberties ?? []).map((x) => `liberty: ${x.after}`), ...(s.sense ?? []).map((x) => `mending: ${x.after} (${x.problem})`)].join('\n') || '(none)'}\n</reported>\n\nCall ${PROOF.name}.`;
+  const system = `You are an editor. A writer's passage is about to be rewritten in the manner of ${a.title ?? a.name}; first you read it for sense, and for nothing else.
+List every person in it and everything said of each, then ask whether it all agrees.
+Report only a contradiction (two statements that cannot both be true of the same person, thing or time), with the mending that makes everything agree with the least change: a woman who moved in with a single man's household is not his wife; she might be his sister. At most two. Usually none.
+${a.echoes?.length ? `Report too any scene of ${pr.possessive} that the passage truly echoes. Among ${pr.possessive} scenes:\n${a.echoes.map((e) => `- ${e}`).join('\n')}\n` : ''}Style is not sense: say nothing of it.`;
   const response = (await client.beta.messages.create({
     model: READER,
     max_tokens: 3000,
     system,
-    tools: [PROOF],
-    tool_choice: { type: 'tool', name: PROOF.name },
+    tools: [READ],
+    tool_choice: { type: 'tool', name: READ.name },
     thinking: { type: 'disabled' },
-    messages: [{ role: 'user', content: user }],
+    messages: [{ role: 'user', content: `<passage>\n${passage}\n</passage>\n\nRead it, then call ${READ.name}.` }],
   } as unknown as Anthropic.Beta.MessageCreateParamsNonStreaming)) as Anthropic.Beta.BetaMessage;
   const use = response.content.find((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
-  const got = (use?.input ?? {}) as Partial<Proof>;
-  return {
-    fixes: (got.fixes ?? []).filter((x) => x?.find?.trim() && typeof x.replace === 'string' && x.find !== x.replace),
-    added: (got.added ?? []).filter((x) => x?.after?.trim()),
-  };
+  const got = (use?.input ?? {}) as { sense?: EditorNote[] };
+  return (got.sense ?? []).filter((x) => x?.problem?.trim() && x?.resolution?.trim());
 }
 
-/** The proofreader's edits applied where their words stand, each within one sentence; what it found added, reported. */
-export function applyProof(s: Submission, proof: Proof): { applied: number } {
-  let applied = 0;
-  for (const f of proof.fixes)
-    for (const p of s.paragraphs)
-      for (const x of p.sentences)
-        if (x.text.includes(f.find)) {
-          x.text = x.text.replace(f.find, f.replace).replace(/\s{2,}/g, ' ');
-          applied++;
-          break;
-        }
-  const told = (s.liberties ?? []).map((x) => x.after.toLowerCase());
-  const text = submissionText(s).toLowerCase();
-  s.liberties = [...(s.liberties ?? []), ...proof.added.filter((x) => text.includes(x.after.toLowerCase()) && !told.some((t) => t.includes(x.after.toLowerCase()) || x.after.toLowerCase().includes(t)))];
-  return { applied };
-}
-/** Whether the voice's plan orders the parts otherwise than the writer did. */
-export const replans = (r: Reading) => r.plan.length > 1 && r.plan.map((x) => x.role.toLowerCase()).join('|') !== r.outline.map((x) => x.role.toLowerCase()).join('|');
-
-export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: string; after?: string; instructions?: string; strength?: Strength; editor?: EditorNote[]; reading?: Reading } = {}): string {
+export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: string; after?: string; instructions?: string; editor?: EditorNote[] } = {}): string {
   return [
     context.before ? `<text_before>\n${context.before}\n</text_before>` : '',
-    renderBrief(m, brief, context.strength ?? 'full'),
+    renderBrief(m, brief),
     context.editor?.length
-      ? `<editor>\nAn editor has read the passage for sense. Make each mending (or echo) below in your rewrite, and report each in sense, in your own words to the writer:\n${context.editor.map((e) => `- ${e.problem} ${e.resolution} (at: “${e.quote}”)`).join('\n')}\n</editor>`
-      : '',
-    context.reading && ['argument', 'letter', 'email'].includes(context.reading.kind) && context.reading.plan.length > 1
-      ? `<plan>\nAn editor has planned how ${m.author.title ?? m.author.name} would build this ${context.reading.kind}. Build your rewrite to this plan, with the writer's matter only (no new facts, reasons or evidence), moving their paragraphs and sentences as it says:\n${context.reading.plan.map((x, i) => `${i + 1}. ${x.role}: ${x.gist} (${x.why})`).join('\n')}\n</plan>`
+      ? `<editor>\nAn editor has read the passage for sense. Make each mending below, and report each in sense:\n${context.editor.map((e) => `- ${e.problem} ${e.resolution} (at: “${e.quote}”)`).join('\n')}\n</editor>`
       : '',
     context.after ? `<text_after>\n${context.after}\n</text_after>` : '',
     context.instructions ? `<writer_asks>\n${context.instructions}\n</writer_asks>` : '',
-    (context.strength ?? 'full') === 'full'
-      ? `Rewrite the passage in the brief as ${m.author.short} would have written it, going the whole way (the text before and after is context only). Then call submit_rewrite.`
-      : `Rewrite the passage in the brief (the text before and after is context only). Then call submit_rewrite.`,
+    `Rewrite the passage in the brief as ${m.author.short} would have written it (the text before and after is context only). Then call submit_rewrite.`,
   ]
     .filter(Boolean)
     .join('\n\n');
 }
 
+/** A stand-in voice and brief for the fingerprint: every template filled with fixed values, so the hash changes when
+ * the wording or the schema changes, and with nothing else. */
+const STUB_MOVE = { id: 'move', name: 'Move', does: 'Does.', pattern: 'x' };
+const STUB = {
+  author: { id: 'voice', name: 'Voice', title: 'Voice', short: 'Voice', advisor: 'Advisor', persona: 'Persona.', whole: 'Whole', moves: [STUB_MOVE], craftNotes: ['Craft.'], echoes: ['Echo.'], manner: ['Manner.'] },
+  profile: { sentenceLength: { narration: { p25: 1, p50: 2, p75: 3 }, dialogue: { p50: 2 } }, punctuationPerSentence: { ';': 0, ':': 0, ',': 0 }, contractions: {}, words: 0 },
+  moveExamples: () => [{ id: 1, text: 'Example.', cite: 'Cite' }],
+} as unknown as AuthorModel;
+const STUB_BRIEF: Brief = {
+  register: 'narrative',
+  person: 'third',
+  headings: [{ before: 2, text: 'Heading' }],
+  score: 0,
+  sentences: [1, 2].map((n) => ({ n, paragraph: n, text: 'Text.', register: 'narration' as const, words: 1, never: [{ word: 'word', alternatives: ['alt'] }, { word: 'none', alternatives: [] }], models: [{ id: 1, text: 'Model.', cite: 'Cite' } as Citation] })),
+};
+
+/**
+ * A hash of what the writer is told: the system prompt, the user prompt's template and the schema, rendered with fixed
+ * values (and, given a voice, that voice's system prompt too). A change to a comment leaves it as it is.
+ */
+export function promptFingerprint(m?: AuthorModel): string {
+  const h = createHash('sha256');
+  for (const x of [PROMPT_VERSION, systemPrompt(STUB), userPrompt(STUB, STUB_BRIEF, { before: 'B', after: 'A', instructions: 'I', editor: [{ problem: 'P', resolution: 'R', quote: 'Q' }] }), JSON.stringify(SUBMIT), m ? systemPrompt(m) : ''])
+    h.update(x).update('\u0000');
+  return h.digest('hex').slice(0, 16);
+}
+
 export const submissionText = (s: Submission) => s.paragraphs.map((p) => p.sentences.map((x) => x.text.trim()).join(' ')).join('\n\n');
 
-/** Straight quotation marks made curly, as the corpus has them, so a move's pattern reads a typed sentence as hers. */
+/** Straight quotation marks made curly, as the corpus has them, so a move's pattern reads a typed sentence. */
 export const curl = (s: string) =>
   s.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/(^|[\s(—])'/g, '$1‘').replace(/'/g, '’');
 
@@ -582,22 +483,14 @@ export function repairWords(m: AuthorModel, brief: Brief, s: Submission): string
   return swapped;
 }
 
-/** What the engine finds still wrong with a submission: nothing, and it is accepted. */
-export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
-  const problems: string[] = [];
-  const short = m.author.short;
+/** What is worth a redraft: the rewrite is empty, runs the paragraphs together, crosses a heading, or loses a sentence. */
+export function hardGate(_m: AuthorModel, brief: Brief, s: Submission): string[] {
   if (!s.paragraphs?.length) return ['The rewrite is empty.'];
-  const text = submissionText(s);
-  // A note's words, and a liberty's, are the rewrite's own: quoted exactly, not remembered.
-  const flat = (t: string) => t.toLowerCase().replace(/[“”"‘’']/g, "'").replace(/[—–-]/g, '-').replace(/\s+/g, ' ').replace(/^[\s'.,;:]+|[\s'.,;:!?]+$/g, '');
-  const whole = flat(text);
-  const misquoted = [...s.notes.map((n) => n.after), ...(s.liberties ?? []).map((x) => x.after)].filter((a) => a?.trim() && !whole.includes(flat(a)));
-  if (misquoted.length)
-    problems.push(`These quotations of your rewrite are not in it: ${misquoted.map((a) => `“${a.slice(0, 80)}”`).join('; ')}. Quote your own words exactly, as they stand in your sentences.`);
+  const problems: string[] = [];
   // The author may gather paragraphs, but not run the writer's whole passage into a lump.
   const theirs = new Set(brief.sentences.map((x) => x.paragraph)).size;
   if (theirs >= 2 && s.paragraphs.length < Math.ceil(theirs / 2))
-    problems.push(`The writer gave ${theirs} paragraphs and you give ${s.paragraphs.length}: keep a paragraph for each turn of the matter, as many as the writer’s unless the matter truly wants fewer.`);
+    problems.push(`The writer gave ${theirs} paragraphs and you give ${s.paragraphs.length}: keep a paragraph for each turn of the matter.`);
   // A heading stands: the writer's paragraphs on either side of one stay apart.
   const sectionOf = (paragraph: number) => brief.headings.filter((h) => h.before <= paragraph).length;
   s.paragraphs.forEach((p, k) => {
@@ -607,16 +500,35 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
       problems.push(`Your paragraph ${k + 1} joins the writer's paragraphs from both sides of the heading “${hd.text}”: a heading stands, and nothing is joined across it. Give each side its own paragraphs.`);
     }
   });
+  const covered = new Set(s.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.from ?? [])));
+  const missing = brief.sentences.filter((x) => !covered.has(x.n));
+  if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
+  return problems;
+}
+
+/** What the engine finds that is not worth a redraft: shown to the writer as notes, or mended by the engine. */
+export function softFindings(m: AuthorModel, brief: Brief, s: Submission): string[] {
+  if (!s.paragraphs?.length) return [];
+  const problems: string[] = [];
+  const short = m.author.short;
+  const notes = s.notes ?? [];
+  const text = submissionText(s);
+  // A liberty's words, and a note's, are the rewrite's own: quoted exactly, not remembered.
+  const flat = (t: string) => t.toLowerCase().replace(/[“”"‘’']/g, "'").replace(/[—–-]/g, '-').replace(/\s+/g, ' ').replace(/^[\s'.,;:]+|[\s'.,;:!?]+$/g, '');
+  const whole = flat(text);
+  const misquoted = [...notes.map((n) => n.after), ...(s.liberties ?? []).map((x) => x.after)].filter((a) => a?.trim() && !whole.includes(flat(a)));
+  if (misquoted.length)
+    problems.push(`These quotations of your rewrite are not in it: ${misquoted.map((a) => `“${a.slice(0, 80)}”`).join('; ')}. Quote your own words exactly, as they stand in your sentences.`);
   const check = checkPassage(m, text);
   const names = wordsThatStand(m, brief);
   const never = check.neverUsed.filter((w) => !names.has(w.word.toLowerCase()));
   if (never.length)
     problems.push(`${short} never wrote: ${never.map((w) => `“${w.word}”${w.alternatives.length ? ` (${w.alternatives.slice(0, 3).join(', ')})` : ''}`).join('; ')}.`);
-  // A name stands; and where the author keeps modern things by their own names, so does the writer's compound (“ice cream”).
+  // A name stands; and where the author keeps modern things by their own names, so does the writer's compound.
   const keptCompounds = check.compounds.filter((c) => !brief.sentences.some((x) => x.text.toLowerCase().includes(c.toLowerCase()) && (/^\p{Lu}/u.test(c) || !!m.author.keepModern)));
   if (keptCompounds.length)
     problems.push(`Compounds ${short} never wrote, though each word is ${pronounsOf(m.author).possessivePronoun.replace(/^its$/, `${short}’s`)}: ${keptCompounds.map((c) => `“${c}”`).join(', ')}. Find what the thing would be in ${short}’s world, or describe it.`);
-  // A modern adverb on an adjective of hers (“essentially alarmed”, “really cool”): a calque, not her idiom.
+  // A modern adverb on an adjective of the author's (“really cool”): a calque, not the author's idiom.
   for (const para of s.paragraphs)
     for (const x of para.sentences) {
       const toks = tokenize(x.text);
@@ -625,7 +537,6 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
         const nx = toks[k + 1];
         if (!nx || t.kind !== 'word' || nx.kind !== 'word' || t.quoted) return;
         if (!/^(RB|QL)/.test(tags[k]!) || !/^JJ|^VBN/.test(tags[k + 1]!)) return;
-        // Only the modern intensifiers, or an -ly adverb she seldom used: “extremely” is hers, whatever follows it.
         const modern = ['really', 'super', 'totally', 'basically', 'essentially', 'literally', 'absolutely', 'incredibly', 'seriously'].includes(t.norm);
         if (!modern && !(t.norm.endsWith('ly') && (m.word(t.norm)?.count ?? 0) < 30)) return;
         if (m.lm.bigram(t.norm, nx.norm) === 0) problems.push(`“${t.text} ${nx.text}”: ${short} never put these together; a calque of the modern idiom. Choose another word, or “very”, “quite”, “rather”.`);
@@ -637,36 +548,26 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
       for (const t of tokenize(x.text))
         if (t.kind === 'word' && !t.quoted && CONTRACTIONS[t.norm] && brief.register !== 'letter' && !contractsFreely(m))
           problems.push(`“${t.text}” in narration: ${short} would write “${CONTRACTIONS[t.norm]}”.`);
-  const covered = new Set(s.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.from)));
-  const missing = brief.sentences.filter((x) => !covered.has(x.n));
-  if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
-  const badModels = s.paragraphs.flatMap((p) => p.sentences).filter((x) => !m.cite(idOf(x.model ?? '')));
+  // Ids, where an older submission still names them.
+  const badModels = s.paragraphs.flatMap((p) => p.sentences).filter((x) => x.model !== undefined && !m.cite(idOf(x.model)));
   if (badModels.length) problems.push(`Each sentence names the id of the sentence of ${short}’s that inspired it; these do not: ${badModels.map((x) => `“${x.text.slice(0, 40)}…” (${x.model || 'none'})`).join('; ')}.`);
-  const bad = s.notes.filter((n) => !m.cite(idOf(n.model)));
-  if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}. Use ids from the brief or a tool result.`);
+  const bad = notes.filter((n) => !m.cite(idOf(n.model)));
+  if (bad.length) problems.push(`Unknown ids: ${bad.map((n) => n.model).join(', ')}.`);
   const words = (t: string) => tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm);
-  // A note names one of the author's moves, or a figure of speech by its term.
   const moves = new Map<string, { id: string; name: string; does: string; pattern?: string }>([
     ...Object.entries(FIGURES).map(([id, f]): [string, { id: string; name: string; does: string }] => [id, { id, name: f.name, does: f.gloss }]),
     ...(m.author.moves ?? []).map((x): [string, typeof x] => [x.id, x]),
   ]);
-  for (const n of s.notes) {
+  for (const n of notes) {
     const mv = moves.get(n.move);
     const c = m.cite(idOf(n.model));
     if (!mv) problems.push(`No move "${n.move}": use one of ${[...moves.keys()].join(', ')}.`);
-    else if (c && !m.shows(mv, c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}): use find_example to find one that does.`);
-    // The writer is to see the move in your words too (irony has no pattern a machine can trust).
-    else if (mv.id === 'irony' && n.after) {
-      // Irony has no form of its own; its usual vehicles do. The sentence that holds the note's words must show one.
-      const holder = s.paragraphs.flatMap((p) => p.sentences).find((x) => x.text.includes(n.after.trim().replace(/[.,;]$/, '')))?.text ?? n.after;
-      // Irony is open-ended: a note claiming it without a vehicle the engine knows is let stand, shown unconfirmed.
-      void holder;
-    } else if (n.after && !m.shows(mv, curl(n.after)))
-      problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. ${mv.name}: ${mv.does} Quote the part of your rewrite that makes the move, or name the move it does make.`);
+    else if (c && !m.shows(mv, c.text)) problems.push(`${n.model} does not show "${mv.id}" (${mv.name}).`);
+    // Irony has no form a machine can trust: a note claiming it is let stand, shown unconfirmed.
+    else if (mv.id !== 'irony' && n.after && !m.shows(mv, curl(n.after)))
+      problems.push(`Your words for the "${mv.id}" note do not show it: “${n.after}”. ${mv.name}: ${mv.does}`);
     if (n.after && !text.includes(n.after.trim())) problems.push(`A note's "after" is not in the rewrite as written: “${n.after}”.`);
   }
-  if (moves.has('irony') && brief.sentences.length >= 6 && !s.notes.some((n) => n.move === 'irony'))
-    problems.push(`Give the passage one ironic verdict in ${short}’s manner where it invites one, and a note for it (move "irony"; find_example "irony" for a model).`);
   const sourceCompounds = checkPassage(m, brief.sentences.map((x) => x.text).join(' ')).compounds.map((c) => c.toLowerCase());
   // Feeling kept at the writer's degree; the writer's things kept.
   const HEDGE = /\b(basically|kind of|sort of|i guess|maybe|probably|a bit|a little|pretty much|kinda)\b/i;
@@ -674,7 +575,8 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const GENERIC = new Set(['thing', 'things', 'stuff', 'time', 'way', 'lot', 'ton', 'bit', 'day', 'something', 'anything', 'everything', 'nothing', 'one', 'kind', 'sort']);
   for (const p of s.paragraphs)
     for (const x of p.sentences) {
-      const src = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
+      const from = x.from ?? [];
+      const src = from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
       const inflated = x.text.match(INFLATE)?.[0];
       if (HEDGE.test(src) && inflated && !INFLATE.test(src)) problems.push(`“${inflated}” inflates what the writer hedged (“${src.match(HEDGE)![0]}”): keep their degree of feeling.`);
       const out = new Set(words(x.text));
@@ -686,38 +588,36 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
       const tags = m.tagger.tagTokens(toks);
       toks.forEach((t, k) => {
         if (t.kind !== 'word' || !/^NNS?$/.test(tags[k]!) || GENERIC.has(t.norm) || !m.word(t.norm) || /^\p{Lu}/u.test(t.text)) return;
-        // A noun of a compound flagged in the writer's words (“ice cream”) goes with its compound: the thing is
-        // rendered whole (“ices”), not word by word.
+        // A noun of a compound flagged in the writer's words (“ice cream”) goes with its compound.
         if (sourceCompounds.some((c) => c.split(/\s+/).includes(t.norm)) || check.compounds.some((c) => c.toLowerCase().includes(t.norm))) return;
         if (out.has(t.norm) || synonyms(t.norm).some((w) => w.split('_').every((p) => out.has(p)))) return;
         const lemma = m.wn.lemmas(t.norm, 'n')[0];
         if (lemma && [...out].some((w) => m.wn.lemmas(w, 'n')[0] === lemma)) return;
-        problems.push(`“${t.text}” (sentence ${x.from.join(', ')}) is lost: keep what the writer named, in ${short}’s words if hers differ.`);
+        problems.push(`“${t.text}” (sentence ${from.join(', ')}) is lost: keep what the writer named, in ${short}’s words if they differ.`);
       });
-    }
-  // Things the writer named, dropped: neither put in her words nor rendered by a periphrasis.
-  for (const p of s.paragraphs)
-    for (const x of p.sentences) {
-      const before = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
+      // Things the writer named, dropped: neither put in the author's words nor rendered by a periphrasis.
+      const before = from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
       const lost = explainSentence(m, before, x.text, null, brief.register === 'letter' ? 'letter' : undefined).dropped;
-      if (lost.length) problems.push(`Dropped: ${lost.map((w) => `“${w}”`).join(', ')} (sentence ${x.from.join(', ')}). Render what the writer named in ${short}’s words, or by a short periphrasis, rather than leave it out.`);
-    }
-  // A sentence left as it was is not yet rewritten.
-  for (const p of s.paragraphs)
-    for (const x of p.sentences) {
-      const src = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').join(' ');
+      if (lost.length) problems.push(`Dropped: ${lost.map((w) => `“${w}”`).join(', ')} (sentence ${from.join(', ')}). Render what the writer named in ${short}’s words, or by a short periphrasis.`);
+      // A sentence left as it was is not yet rewritten.
       const a = words(src);
-      if (a.length < 6 || brief.register === 'letter' && x.from.length === 1 && a.length < 8) continue;
-      const b = new Set(words(x.text));
-      const kept = a.filter((w) => b.has(w)).length / a.length;
+      if (a.length < 6 || (brief.register === 'letter' && from.length === 1 && a.length < 8)) continue;
+      const kept = a.filter((w) => out.has(w)).length / a.length;
       if (kept >= 0.85 && words(x.text).length <= a.length + 2) problems.push(`Barely revised: “${x.text}” keeps the writer's sentence almost word for word.`);
     }
-  if (s.notes.length < 3) problems.push('Give at least three notes.');
   return problems;
 }
 
-/** A submission as the writer sees it: aligned, explained, every quotation from the corpus. */
+/** Everything the engine finds: the hard findings first, then the soft. */
+export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
+  const hard = hardGate(m, brief, s);
+  if (!s.paragraphs?.length) return hard;
+  return [...hard, ...softFindings(m, brief, s)];
+}
+
+/** A submission as the writer sees it: aligned and explained, every quotation from the corpus. */
 export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<RewriteResult, 'text' | 'paragraphs' | 'aligned' | 'source' | 'sense' | 'liberties' | 'explanation' | 'notes'> {
+  const notes = s.notes ?? [];
   return {
     source: brief.sentences.map((x) => ({ n: x.n, paragraph: x.paragraph, text: x.text, never: x.never })),
     sense: (s.sense ?? []).filter((x) => x.problem?.trim()),
@@ -728,20 +628,23 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
       return {
         text: p.sentences.map((x) => x.text.trim()).join(' '),
         source: sourceOf(p.sentences.flatMap((x) => x.from ?? [])),
+        ...(p.role ? { role: p.role } : {}),
+        ...(p.why ? { why: p.why } : {}),
         sentences: p.sentences.map((x) => ({ text: x.text.trim(), source: sourceOf(x.from) })),
       };
     }),
     aligned: s.paragraphs.flatMap((p) =>
       p.sentences.map((x) => {
-        const before = x.from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
-        const reg = brief.sentences[(x.from[0] ?? 1) - 1]?.register;
-        const noted = s.notes.filter((n) => n.after && x.text.includes(n.after.trim().replace(/[.,;]$/, ''))).map((n) => n.move);
-        const w = explainSentence(m, before, x.text, x.model, reg === 'letter' ? 'letter' : undefined, [], noted);
-        return { after: x.text, before, from: (x.from ?? []).filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves };
+        const from = x.from ?? [];
+        const before = from.map((n) => brief.sentences[n - 1]?.text ?? '').filter(Boolean);
+        const reg = brief.sentences[(from[0] ?? 1) - 1]?.register;
+        const noted = notes.filter((n) => n.after && x.text.includes(n.after.trim().replace(/[.,;]$/, ''))).map((n) => n.move);
+        const w = explainSentence(m, before, x.text, x.model ?? null, reg === 'letter' ? 'letter' : undefined, [], noted);
+        return { after: x.text, before, from: from.filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves };
       }),
     ),
     explanation: s.explanation,
-    notes: s.notes.map((n) => {
+    notes: notes.map((n) => {
       const c: Citation | null = m.cite(idOf(n.model));
       const mv = m.author.moves?.find((x) => x.id === n.move) ?? (n.move in FIGURES ? { id: n.move, name: FIGURES[n.move]!.name } : undefined);
       // Confirmed: the cited sentence shows the move, and (for irony, which has no form) the rewrite shows a vehicle of it.
@@ -772,7 +675,7 @@ export function markOf(m: AuthorModel, mv: { id: string }, text: string): [numbe
 
 /**
  * The writing call. To the provider's own model, as it is; to a writer on OpenRouter, translated into the
- * chat-completions form and back, so the rest of the protocol (tool calls, results, a redraft) is the same either way.
+ * chat-completions form and back, so the rest of the protocol (the tool call, a redraft) is the same either way.
  */
 async function writerCall(client: Anthropic, params: Record<string, any>): Promise<Anthropic.Beta.BetaMessage> {
   if (!viaOpenRouter) return (await client.beta.messages.create(params as unknown as Anthropic.Beta.MessageCreateParamsNonStreaming)) as Anthropic.Beta.BetaMessage;
@@ -807,7 +710,7 @@ async function writerCall(client: Anthropic, params: Record<string, any>): Promi
     const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: { authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, 'content-type': 'application/json' },
-      // A rewrite is some three thousand tokens; asking for more only reserves credit that is never spent.
+      // A rewrite is a thousand tokens or so; asking for more only reserves credit that is never spent.
       body: JSON.stringify({ model: WRITER_MODEL, max_tokens: Math.min(params.max_tokens ?? 6000, Number(process.env.ADVISOR_WRITER_MAX_TOKENS ?? 6000)), messages, tools, tool_choice: only }),
     }).catch((e: Error) => ({ ok: false, statusText: e.message, json: async () => ({}) }) as unknown as Response);
     const j = (await r.json().catch(() => ({}))) as any;
@@ -836,115 +739,99 @@ async function writerCall(client: Anthropic, params: Record<string, any>): Promi
   throw new Error(`The writer (${WRITER_MODEL}) did not answer: ${lastError}`);
 }
 
-/** Tool results with ids, as the model is to cite them. */
+/** An engine tool's result, as the CLI prints it. */
 export function toolResult(m: AuthorModel, name: string, input: Record<string, unknown>): string {
   return JSON.stringify(runTool(m, name, input));
 }
 
+/** The first words of a text, for an outline. */
+const gistOf = (t: string) => t.split(/\s+/).slice(0, 8).join(' ').replace(/[,;:]$/, '') + (t.split(/\s+/).length > 8 ? '…' : '');
+
 export async function rewriteWithAI(
   m: AuthorModel,
   passage: string | DocBlock[],
-  context: { before?: string; after?: string; instructions?: string; strength?: Strength; editor?: EditorNote[]; reading?: Reading } = {},
+  context: { before?: string; after?: string; instructions?: string; strength?: Strength; editor?: EditorNote[] } = {},
   onProgress: (what: string, progress: RewriteProgress) => void = () => {},
   writer: WriterClient = defaultWriter(),
 ): Promise<RewriteResult> {
-  const strength = context.strength ?? 'full';
-  const tell = (what: string) => onProgress(what, { what, calls: toolCalls.length, draft: rounds, problems: problems.length });
-  const blocks = typeof passage === 'string' ? blocksOfText(passage) : passage;
-  const brief = buildBrief(m, blocks);
-  // The reader and the proofreader need the provider's client; with any other writer they are skipped.
-  const client = (writer as Partial<ProviderWriter>).anthropic;
-  // An editor reads for sense while the first draft is written (one pass that both writes and reads misses what does
-  // not agree); what it finds goes back with the engine's check, as a redraft. A passage with no fault costs nothing.
-  if (!client && !context.editor && !context.reading) context = { ...context, editor: [] };
-  if (client && PASSES === 1 && strength === 'full' && !context.editor && !context.reading) {
-    onProgress('reading it first', { what: 'reading it first', calls: 0, draft: 0, problems: 0 });
-    const read = await readForSense(m, blocks.map((b) => b.text).join('\n\n'), readerClient(client)).catch(() => NO_READING);
-    context = { ...context, editor: read.sense };
-  }
-  const editor: Promise<Reading> =
-    context.reading || context.editor || strength !== 'full' || PASSES === 1
-      ? Promise.resolve(context.reading ?? { ...NO_READING, sense: context.editor ?? [] })
-      : readForSense(m, blocks.map((b) => b.text).join('\n\n'), client).catch(() => NO_READING);
-  let editorTold = !!context.editor || PASSES === 1;
-  const tools = [...(MODE === 'oneshot' ? [] : TOOL_SPECS.map((t) => ({ ...t, input_schema: { ...t.input_schema } }))), SUBMIT] as unknown as Anthropic.Beta.BetaTool[];
-  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, brief, context) }];
-  const toolCalls: RewriteResult['toolCalls'] = [];
-  let accepted: Submission | null = null;
-  let last: Submission | null = null;
+  let calls = 0;
   let rounds = 0;
   let problems: string[] = [];
+  const tell = (what: string) => onProgress(what, { what, calls, draft: rounds, problems: problems.length });
+  const blocks = typeof passage === 'string' ? blocksOfText(passage) : passage;
+  const brief = buildBrief(m, blocks);
+  const tier = tierOf(m.author.id);
+  const model = modelFor(tier);
+  // The reader needs the provider's client; with any other writer it is skipped.
+  const client = (writer as Partial<ProviderWriter>).anthropic;
+  let editor = context.editor ?? [];
+  if (client && READER_ON && !context.editor) {
+    tell('reading it first');
+    editor = await readForSense(m, blocks.map((b) => b.text).join('\n\n'), readerClient(client)).catch(() => []);
+  }
+  const system = systemPrompt(m);
+  const tools = [SUBMIT] as unknown as Anthropic.Beta.BetaTool[];
+  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, brief, { ...context, editor }) }];
+  const toolCalls: RewriteResult['toolCalls'] = [];
   const usage = { input: 0, cached: 0, cacheWrite: 0, output: 0 };
-  for (let turn = 0; turn < 18 && !accepted; turn++) {
-    tell(turn === 0 ? (MODE === 'oneshot' ? 'writing the rewrite, in one go' : 'reading the brief') : rounds && problems.length ? `drafting again (draft ${rounds + 1})` : 'consulting the works');
-    const response = await writer.call(systemPrompt(m, strength), messages, tools);
-    const u = ((response as unknown as { usage?: Record<string, number> }).usage ?? {}) as Record<string, number>;
+  let accepted: Submission | null = null;
+  let last: Submission | null = null;
+  let askedAgain = false;
+  // One call, and one more only on a hard failure: a sentence lost, a heading crossed, the paragraphs run together, or
+  // no rewrite submitted.
+  while (!accepted && calls < 3) {
+    tell(rounds ? `drafting again (draft ${rounds + 1})` : 'writing the rewrite');
+    const response = await writer.call(system, messages, tools, { model });
+    calls++;
+    const u = response.usage ?? {};
     usage.input += u.input_tokens ?? 0;
     usage.cached += u.cache_read_input_tokens ?? 0;
     usage.cacheWrite += u.cache_creation_input_tokens ?? 0;
     usage.output += u.output_tokens ?? 0;
     if (response.stop_reason === 'refusal') throw new Error('The model declined to rewrite this passage.');
     messages.push({ role: 'assistant', content: response.content as Anthropic.Beta.BetaContentBlockParam[] });
-    if (response.stop_reason === 'pause_turn') continue;
     const uses = response.content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
     if (!uses.length) {
+      if (askedAgain) break;
+      askedAgain = true;
       messages.push({ role: 'user', content: 'Call submit_rewrite with your rewrite.' });
       continue;
     }
     const results: Anthropic.Beta.BetaToolResultBlockParam[] = [];
-    for (const u of uses) {
-      const input = (u.input ?? {}) as Record<string, unknown>;
-      toolCalls.push({ name: u.name, input });
-      if (u.name === SUBMIT.name) {
-        last = input as unknown as Submission;
-        rounds++;
-        problems = gate(m, brief, last);
-        if (!editorTold) {
-          editorTold = true;
-          tell('reading for sense');
-          const reading = await editor;
-          if (reading.sense.length)
-            problems.push(
-              `An editor has read the passage for sense. Make each mending (or echo) below, keep every other sentence of the writer’s, and report each in sense, in your own words to the writer:\n${reading.sense.map((e) => `  · ${e.problem} ${e.resolution} (at: “${e.quote}”)`).join('\n')}`,
-            );
-          // An argument, a letter or an email is rebuilt as the voice would build it; a story keeps its telling.
-          if (['argument', 'letter', 'email'].includes(reading.kind) && replans(reading))
-            problems.push(
-              `An editor has planned how ${m.author.title ?? m.author.name} would build this ${reading.kind}. Build your rewrite in this order, with the same matter (no new facts or evidence), moving the writer’s paragraphs and sentences as needed:\n${reading.plan.map((x, i) => `  ${i + 1}. ${x.role}: ${x.gist} (${x.why})`).join('\n')}`,
-            );
-        }
-        // In one transaction only a hard failure is worth a second: anything else the engine repairs or shows.
-        const hard = PASSES === 2 ? problems : problems.filter((x) => /^Not rendered|across it|you give \d+:|^The rewrite is empty/.test(x) || /joins the writer's paragraphs from both sides/.test(x));
-        if (!hard.length || rounds >= Math.max(DRAFTS, PASSES === 1 ? 2 : DRAFTS)) accepted = last;
-        else problems = hard;
-        tell(accepted ? (problems.length ? `draft ${rounds} taken, ${problems.length} left for you` : `draft ${rounds} accepted`) : `draft ${rounds}: ${problems.length} to mend`);
-        results.push({ type: 'tool_result', tool_use_id: u.id, content: problems.length && !accepted ? `Not yet accepted:\n- ${problems.join('\n- ')}` : 'Accepted.' });
+    for (const use of uses) {
+      const input = (use.input ?? {}) as Record<string, unknown>;
+      toolCalls.push({ name: use.name, input });
+      if (use.name !== SUBMIT.name) {
+        results.push({ type: 'tool_result', tool_use_id: use.id, content: 'The only tool is submit_rewrite.', is_error: true });
         continue;
       }
-      tell(`${u.name.replace(/_/g, ' ')}${input.word ? ` “${input.word}”` : input.query ? ` “${input.query}”` : ''}`);
-      try {
-        results.push({ type: 'tool_result', tool_use_id: u.id, content: toolResult(m, u.name, input) });
-      } catch (e) {
-        results.push({ type: 'tool_result', tool_use_id: u.id, content: String(e), is_error: true });
-      }
+      last = input as unknown as Submission;
+      rounds++;
+      problems = hardGate(m, brief, last);
+      if (!problems.length || rounds >= 2) accepted = last;
+      tell(accepted ? (problems.length ? `draft ${rounds} taken, ${problems.length} left` : `draft ${rounds} accepted`) : `draft ${rounds}: ${problems.length} to mend`);
+      results.push({ type: 'tool_result', tool_use_id: use.id, content: accepted ? 'Accepted.' : `Not yet accepted:\n- ${problems.join('\n- ')}` });
     }
+    if (accepted) break;
     messages.push({ role: 'user', content: results });
   }
   const sub = accepted ?? last;
   if (!sub) throw new Error('The model gave no rewrite.');
   repairWords(m, brief, sub);
-  if (client && PASSES === 1 && strength === 'full' && process.env.ADVISOR_PROOF === 'on') {
-    tell('proofreading against yours');
-    const proof = await proofread(m, brief, sub, client).catch(() => null);
-    if (proof) applyProof(sub, proof);
-  }
   const r = render(m, brief, sub);
-  const fromEditor = await editor;
-  const own = (xs: unknown) => (Array.isArray(xs) ? (xs as Step[]).filter((x) => x?.role?.trim() && x?.gist?.trim()) : []);
-  const reading: Reading = PASSES === 1 ? { kind: String(sub.kind ?? 'other').toLowerCase(), outline: own(sub.outline), plan: own(sub.plan), sense: fromEditor.sense } : fromEditor;
+  problems = [...hardGate(m, brief, sub), ...softFindings(m, brief, sub)];
+  // How it is built: the writer's parts as the engine reads them, the voice's as the rewrite gives them.
+  const structure = readStructure(blocks);
+  const paragraphs = blocks.filter((b) => b.kind === 'paragraph' || b.kind === 'quote' || b.kind === 'item').map((b) => b.text.trim()).filter(Boolean);
+  const reading: Reading = {
+    kind: structure.kind,
+    outline: structure.roles.map((p) => ({ role: ROLES[p.role]?.name ?? p.role, gist: gistOf(paragraphs[p.paragraph] ?? '') })),
+    plan: r.paragraphs.filter((p) => p.role).map((p) => ({ role: ROLES[p.role as Role]?.name ?? p.role!, gist: gistOf(p.text), ...(p.why ? { why: p.why } : {}) })),
+    sense: editor,
+  };
   const flat = (t: string) => t.toLowerCase().replace(/[“”"‘’']/g, "'").replace(/[—–-]/g, '-').replace(/\s+/g, ' ').replace(/^[\s'.,;:]+|[\s'.,;:!?]+$/g, '');
   const whole = flat(r.text);
-  r.notes = r.notes.filter((n) => (!n.after?.trim() || whole.includes(flat(n.after))) && (PASSES === 2 || n.verified));
+  r.notes = r.notes.filter((n) => (!n.after?.trim() || whole.includes(flat(n.after))) && n.verified);
   r.liberties = r.liberties.filter((x) => whole.includes(flat(x.after)));
   return {
     ...r,
@@ -955,6 +842,8 @@ export async function rewriteWithAI(
     problems,
     scoreBefore: brief.score,
     scoreAfter: checkPassage(m, r.text).score,
-    model: WRITER_MODEL,
+    model,
+    tier,
+    promptVersion: PROMPT_VERSION,
   };
 }

@@ -1,7 +1,8 @@
 // A rewrite brief: the passage as the engine reads it, sentence by numbered sentence, for a language model to work
 // from. Each sentence carries its register (narration, speech, a letter), its length against the author's, every word
-// the author never wrote with the author's own alternatives, and two of the author's sentences nearest it in meaning
-// and in the same register, each by its id. The model cites the author only by those ids; the server renders them.
+// the author never wrote with the author's own alternatives, and the author's sentence nearest it in meaning and in
+// the same register, by its id. The voice's moves, with an example of each, go in the system prompt (renderMoves),
+// which is the same for every rewrite in a voice and so is cached.
 
 import { cap, pronounsOf } from '../corpus/sources.ts';
 import { tokenize } from '../nlp/tokenize.ts';
@@ -27,8 +28,6 @@ export interface Brief {
   /** Headings inside the passage: each stands before the paragraph numbered `before`, and nothing may be joined
    * across it. */
   headings: { before: number; text: string }[];
-  advice: string[];
-  measures: string[];
   score: number;
 }
 
@@ -73,7 +72,7 @@ export function buildBrief(m: AuthorModel, blocks: DocBlock[]): Brief {
           // A word of the same sense the author used: “children” for “kids”. Then the writer's word cannot stand as a modern thing.
           synonym: w.alternatives.some((x) => (x.source === 'synonym' || x.source === 'expansion') && x.weight >= 0.7 && x.count >= 5),
         }));
-      const models = m.similarSentences(text, 2, { minWords: register === 'speech' ? 5 : 10, maxWords: 70, register });
+      const models = m.similarSentences(text, 1, { minWords: register === 'speech' ? 5 : 10, maxWords: 70, register });
       sentences.push({ n: sentences.length + 1, paragraph, text, register, words: s.words, never, models });
     }
   });
@@ -82,8 +81,6 @@ export function buildBrief(m: AuthorModel, blocks: DocBlock[]): Brief {
     person: firstPerson >= thirdPerson ? 'first' : 'third',
     sentences,
     headings,
-    advice: a.advice.filter((x) => x.kind !== 'word').map((x) => `${x.title}: ${x.why}`),
-    measures: a.report.measures.map((x) => `${x.label}: the writer’s ${x.yours}, ${m.author.short}’s ${x.author}`),
     score: a.report.score,
   };
 }
@@ -110,8 +107,8 @@ function contractionRates(m: AuthorModel): { n: number; d: number } {
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-/** The brief as the model reads it: tagged, numbered, every model sentence by its id. */
-export function renderBrief(m: AuthorModel, b: Brief, strength: 'full' | 'light' = 'full'): string {
+/** The brief as the model reads it: tagged and numbered, each sentence with the author's sentence nearest it. */
+export function renderBrief(m: AuthorModel, b: Brief): string {
   const short = m.author.short;
   const pr = pronounsOf(m.author);
   const P = m.profile;
@@ -121,9 +118,7 @@ export function renderBrief(m: AuthorModel, b: Brief, strength: 'full' | 'light'
     `<targets>`,
     `Narration: ${short}’s sentences have a median of ${P.sentenceLength.narration.p50} words; half fall between ${P.sentenceLength.narration.p25} and ${P.sentenceLength.narration.p75}. Speech: median ${P.sentenceLength.dialogue.p50}.`,
     `${(P.punctuationPerSentence[';'] ?? 0).toFixed(2)} semicolons and ${(P.punctuationPerSentence[':'] ?? 0).toFixed(2)} colons a sentence; ${(P.punctuationPerSentence[',']! ).toFixed(1)} commas a sentence. ${contractionNote(m)}`,
-    strength === 'full'
-      ? `Write within these as ${short} did: most narrative sentences at or above the median, built of balanced clauses, never padded; a short one only for a turn or a verdict.`
-      : `These are ranges to write within, not scores to raise: a sentence padded to length is worse than a short one.`,
+    `Write within these as ${short} did: most narrative sentences at or above the median, never padded; a short one only for a turn or a verdict.`,
     `</targets>`,
   );
   let para = 0;
@@ -137,12 +132,11 @@ export function renderBrief(m: AuthorModel, b: Brief, strength: 'full' | 'light'
     }
     out.push(`<sentence n="${s.n}" register="${s.register}" words="${s.words}">`, esc(s.text));
     for (const w of s.never) out.push(`  <never word="${esc(w.word)}">${short} never wrote it. ${w.alternatives.length ? `${cap(pr.possessive)} words: ${esc(w.alternatives.join('; '))}` : `${short} has no word near it: rephrase.`}</never>`);
-    for (const c of s.models) out.push(`  <model id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</model>`);
+    for (const c of s.models) out.push(`  <nearest>${esc(c.text)} (${esc(c.cite)})</nearest>`);
     out.push(`</sentence>`);
   }
   if (para) out.push(`</paragraph>`);
-  if (b.advice.length) out.push(`<advice>`, ...b.advice.map(esc), `</advice>`);
-  out.push(`<measures score="${b.score}">`, ...b.measures.map(esc), `</measures>`, renderMoves(m, b), `</brief>`);
+  out.push(`</brief>`);
   return out.join('\n');
 }
 
@@ -162,17 +156,18 @@ export function craftOf(m: AuthorModel): string {
   ].join('\n');
 }
 
-/** Two of the author's sentences for each move, nearest the passage: exemplars to learn from and to cite. */
-export function renderMoves(m: AuthorModel, b: Brief): string {
-  const near = b.sentences.map((x) => x.text).join(' ');
+/** The voice's moves, each with one sentence of the author's that makes it. The example is chosen against the move's
+ * own name, never against the passage, so the block is the same for every rewrite in the voice and can be cached. */
+export function renderMoves(m: AuthorModel): string {
   const out = ['<moves>'];
   const used = new Set<number>();
   for (const mv of m.author.moves ?? []) {
-    out.push(`<move id="${mv.id}" name="${esc(mv.name)}">`);
-    // Each example shows one move only here, so a note cannot borrow another's.
-    for (const c of m.moveExamples(mv.id, near, 6).filter((c) => !used.has(c.id)).slice(0, 2)) {
+    // Each example shows one move only, so no move borrows another's.
+    const c = m.moveExamples(mv.id, `${mv.name}. ${mv.does}`, 4).find((x) => !used.has(x.id));
+    out.push(`<move id="${mv.id}" name="${esc(mv.name)}">${esc(mv.does)}`);
+    if (c) {
       used.add(c.id);
-      out.push(`  <example id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</example>`);
+      out.push(`  <example>${esc(c.text)} (${esc(c.cite)})</example>`);
     }
     out.push('</move>');
   }

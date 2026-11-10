@@ -3,9 +3,11 @@
 // (Claude, through OpenRouter) on a rubric: fidelity, voice, sense, naturalness, notes. Writes docs/eval/voices/<label>.json
 // and .md.
 //
-//   node scripts/eval-voices.ts <label> [--voices austen,kjv] [--cases neighbors,paris] [--judge anthropic/claude-sonnet-5.5]
+//   node scripts/eval-voices.ts <label> [--voices austen,kjv] [--cases neighbors,paris | --set diet] [--judge anthropic/claude-sonnet-5.5]
+//   node scripts/eval-voices.ts <label> --set diet --from final      an earlier run's rewrites, re-reported, no server
+//   node scripts/eval-voices.ts <label> --set diet --compare <base>  and the sense and fidelity means set against a baseline
 //
-// Needs the server running (BASE, default http://localhost:8080) and OPENROUTER_API_KEY for the judge.
+// Needs the server running (BASE, default http://localhost:8080) and OPENROUTER_API_KEY for the judge, except with --from.
 
 import { mkdirSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -20,6 +22,16 @@ const opt = (k: string) => {
 };
 const JUDGE = opt('judge') ?? 'anthropic/claude-sonnet-5.5';
 const AT_ONCE = Number(opt('at-once') ?? 8);
+
+/** Named sets of cases. `diet`: the cases written to test sense, and ten more of every kind, for the writer's diet
+ * (the reader removed, the schema and the brief trimmed): sense and fidelity are to stay within 0.3 of the baseline. */
+const SETS: Record<string, string[]> = {
+  diet: ['neighbors', 'paris', 'relieved', 'breakup', 'camp-letter', 'job-interview', 'party', 'store', 'email', 'list', 'oped', 'pitch'],
+};
+const caseIds = opt('cases')?.split(',') ?? (opt('set') ? SETS[opt('set')!] : undefined);
+if (opt('set') && !SETS[opt('set')!]) throw new Error(`No set "${opt('set')}": ${Object.keys(SETS).join(', ')}.`);
+/** The largest fall in a judged mean that still counts as level. */
+const TOLERANCE = 0.3;
 
 /** What a judge should know of a case that the writer's text alone does not say. */
 const KNOWN: Record<string, string> = {
@@ -39,9 +51,14 @@ interface Case {
 const cases: Case[] = [
   ...readdirSync(join(ROOT, 'samples')).filter((f) => f.endsWith('.txt')).map((f) => ({ id: f.replace('.txt', '').replace('-text', ''), text: readFileSync(join(ROOT, 'samples', f), 'utf8') })),
   ...readdirSync(join(ROOT, 'docs/eval/cases')).filter((f) => f.endsWith('.txt')).map((f) => ({ id: f.replace('.txt', ''), text: readFileSync(join(ROOT, 'docs/eval/cases', f), 'utf8') })),
-].filter((c) => !opt('cases') || opt('cases')!.split(',').includes(c.id));
+].filter((c) => !caseIds || caseIds.includes(c.id));
 
-const authors = (await (await fetch(`${BASE}/api/authors`)).json()) as { id: string; title: string; built: boolean; whole: string }[];
+const from = opt('from');
+const earlier = (name: string) => JSON.parse(readFileSync(join(ROOT, 'docs/eval/voices', `${name}.json`), 'utf8')) as Run[];
+// With --from, the voices are the earlier run's, and the server is not asked.
+const authors: { id: string; title: string; built: boolean }[] = from
+  ? [...new Set(earlier(from).map((r) => r.voice))].map((id) => ({ id, title: id, built: true }))
+  : ((await (await fetch(`${BASE}/api/authors`)).json()) as { id: string; title: string; built: boolean }[]);
 const voices = authors.filter((a) => a.built && (!opt('voices') || opt('voices')!.split(',').includes(a.id)));
 
 interface Run {
@@ -167,7 +184,9 @@ const again = opt('rejudge');
 const retry = opt('retry');
 const jobs = voices.flatMap((v) => cases.map((c) => ({ v, c })));
 let done = 0;
-const runs: Run[] = retry
+const runs: Run[] = from
+  ? earlier(from).filter((r) => voices.some((v) => v.id === r.voice) && cases.some((c) => c.id === r.case))
+  : retry
   ? await pool(JSON.parse(readFileSync(join(ROOT, 'docs/eval/voices', `${retry}.json`), 'utf8')) as Run[], AT_ONCE, async (old) => {
       if (!old.error) return old;
       const v = voices.find((x) => x.id === old.voice)!;
@@ -207,11 +226,30 @@ const judged = runs.filter((r) => r.judge);
 const row = (label: string, rs: Run[]) =>
   `| ${label} | ${dims.map((d) => f1(mean(rs.filter((r) => r.judge).map((r) => r.judge![d])))).join(' | ')} | ${f1(mean(rs.filter((r) => r.judge).map((r) => mean(dims.map((d) => r.judge![d])))))} | ${f1(mean(rs.filter((r) => r.engine).map((r) => r.engine!.score)))} | ${f1(mean(rs.filter((r) => r.engine).map((r) => r.engine!.never.length)))} | ${Math.round(mean(rs.map((r) => r.ms)) / 1000)}s | ${rs.filter((r) => r.error).length} |`;
 const head = `| | ${dims.join(' | ')} | mean | engine score | never-used | time | errors |\n|${'---|'.repeat(dims.length + 6)}`;
+// --compare <label>: the sense and fidelity means beside a baseline's, on the voices and cases both runs have.
+const base = opt('compare');
+const comparison: string[] = [];
+let level = true;
+if (base) {
+  const pairs = earlier(base).filter((b) => b.judge && runs.some((r) => r.judge && r.voice === b.voice && r.case === b.case));
+  const now = runs.filter((r) => r.judge && pairs.some((b) => b.voice === r.voice && b.case === r.case));
+  comparison.push('## Against the baseline', '', `${now.length} rewrites judged in both this run and ${base}. Level means a fall of ${TOLERANCE} or less.`, '', '| | baseline | this run | change | level |', '|---|---|---|---|---|');
+  for (const d of ['sense', 'fidelity'] as const) {
+    const before = mean(pairs.map((r) => r.judge![d]));
+    const after = mean(now.map((r) => r.judge![d]));
+    const ok = Number.isFinite(after - before) && after - before >= -TOLERANCE;
+    level &&= ok;
+    comparison.push(`| ${d} | ${f1(before)} | ${f1(after)} | ${Number.isFinite(after - before) ? (after - before).toFixed(2) : '–'} | ${ok ? 'yes' : 'no'} |`);
+  }
+  comparison.push('', level ? 'Sense and fidelity are level with the baseline.' : 'Sense or fidelity fell further than the baseline allows.', '');
+}
 const md = [
   `# Voices evaluation: ${label}`,
   '',
-  `${runs.length} rewrites (${voices.length} voices × ${cases.length} cases), judged by ${JUDGE}. Judge scores 1–5; engine score 0–100 against the voice's corpus; never-used is words left in the rewrite that the voice never used.`,
+  ...(from ? [`The rewrites of ${from}, re-reported for these cases.`, ''] : []),
+  `${runs.length} rewrites (${voices.length} voices × ${cases.length} cases), judged by ${from ? `the judge of ${from}` : JUDGE}. Judge scores 1–5; engine score 0–100 against the voice's corpus; never-used is words left in the rewrite that the voice never used.`,
   '',
+  ...comparison,
   '## By voice',
   '',
   head,
@@ -233,3 +271,4 @@ mkdirSync(dir, { recursive: true });
 writeFileSync(join(dir, `${label}.json`), JSON.stringify(runs, null, 1));
 writeFileSync(join(dir, `${label}.md`), md);
 console.log(md.split('## Faults')[0]);
+if (base && !level) process.exitCode = 1;

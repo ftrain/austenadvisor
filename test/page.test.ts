@@ -1,30 +1,128 @@
-import { existsSync } from 'node:fs';
+import { copyFileSync, existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { authorDbPath } from '../src/db.ts';
+import { authorDbPath, ROOT } from '../src/db.ts';
 import { buildBrief } from '../src/engine/brief.ts';
 import { blocksOfText } from '../src/engine/doc.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { plan, rowsOf } from '../src/server/page.ts';
-import { applyProof, repairWords, type RewriteResult, type Submission } from '../src/server/rewrite.ts';
+import { hardGate, promptFingerprint, PROMPT_VERSION, repairWords, softFindings, SUBMIT, systemPrompt, tierOf, userPrompt, type RewriteResult, type Submission } from '../src/server/rewrite.ts';
 
-describe('the proofreader', () => {
-  it('applies its small exact edits within a sentence, and reports what was added and not told', () => {
-    const sub = {
-      paragraphs: [{ sentences: [{ text: 'Some business owners will say their readers cannot reach them.', from: [1], model: 'S1' }, { text: 'It was a sore travail and a dream.', from: [2], model: 'S1' }] }],
-      notes: [],
-      liberties: [{ after: 'a sore travail', why: 'the voice' }],
-      explanation: '',
-    } as unknown as Submission;
-    applyProof(sub, {
-      fixes: [
-        { find: 'their readers', replace: 'their customers', why: 'customers' },
-        { find: 'and a dream', replace: 'and a nightmare', why: 'inverted' },
-        { find: 'not in the text', replace: 'x', why: 'ignored' },
-      ],
-      added: [{ after: 'sore travail', why: 'already told' }, { after: 'cannot reach them', why: 'new' }],
+describe('the writer on its diet', () => {
+  const schema = SUBMIT.input_schema;
+  const paragraph = (schema.properties.paragraphs as { items: { required: string[]; properties: Record<string, { items?: { required: string[] } }> } }).items;
+
+  it('asks for the sense, the liberties, a short explanation and the paragraphs, and nothing more', () => {
+    expect(Object.keys(schema.properties).sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
+    expect([...schema.required].sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
+    expect([...paragraph.required].sort()).toEqual(['role', 'sentences', 'why']);
+    expect([...paragraph.properties.sentences!.items!.required].sort()).toEqual(['from', 'text']);
+  });
+
+  it('keeps the test fixtures in the shape the schema asks for', () => {
+    const fixtures = JSON.parse(readFileSync(join(ROOT, 'test', 'fixtures', 'rewrites.json'), 'utf8')) as { submission: Record<string, unknown> & Submission }[];
+    for (const f of fixtures) {
+      expect(Object.keys(f.submission).sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
+      for (const p of f.submission.paragraphs) {
+        expect(Object.keys(p).sort()).toEqual(['role', 'sentences', 'why']);
+        expect(p.why!.split(/\s+/).length).toBeLessThanOrEqual(15);
+        for (const x of p.sentences) expect(Object.keys(x).sort()).toEqual(['from', 'text']);
+      }
+    }
+  });
+
+  it('fingerprints the prompts and the schema, and not the comments around them', async () => {
+    const fp = promptFingerprint();
+    expect(fp).toMatch(/^[0-9a-f]{16}$/);
+    expect(PROMPT_VERSION).toBeTruthy();
+    const source = readFileSync(join(ROOT, 'src', 'server', 'rewrite.ts'), 'utf8');
+    // A copy beside the original, so its relative imports resolve; removed at once.
+    const load = async (text: string) => {
+      const copy = join(ROOT, 'src', 'server', `rewrite.fp-${process.pid}-${Math.random().toString(36).slice(2)}.ts`);
+      writeFileSync(copy, text);
+      try {
+        return ((await import(copy)) as { promptFingerprint: () => string }).promptFingerprint();
+      } finally {
+        rmSync(copy, { force: true });
+      }
+    };
+    const commented = source.replace('// The provider:', '// A comment edited. The provider:').replace('/** The first words of a text, for an outline. */', '/** Edited. */');
+    expect(commented).not.toBe(source);
+    expect(await load(commented)).toBe(fp);
+    const reworded = source.replace("Keep the writer's tenses.", "Keep the writer's tense.");
+    expect(reworded).not.toBe(source);
+    expect(await load(reworded)).not.toBe(fp);
+  });
+
+  it('reads each voice’s writer tier from a file, and writes with the full model by default', () => {
+    const dir = mkdtempSync(join(tmpdir(), 'tiers-'));
+    try {
+      const file = join(dir, 'tiers.json');
+      expect(tierOf('austen', file)).toBe('full');
+      writeFileSync(file, JSON.stringify({ austen: 'fast', twain: 'full', kjv: 'odd' }));
+      expect(tierOf('austen', file)).toBe('fast');
+      expect(tierOf('twain', file)).toBe('full');
+      expect(tierOf('kjv', file)).toBe('full');
+      expect(tierOf('nobody', file)).toBe('full');
+      writeFileSync(file, '{ not json');
+      expect(tierOf('austen', file)).toBe('full');
+    } finally {
+      rmSync(dir, { recursive: true, force: true });
+    }
+  });
+
+  const baseline = JSON.parse(readFileSync(join(ROOT, 'docs', 'eval', 'voices', 's5-prompts-baseline.json'), 'utf8')) as { voices: Record<string, { user: number; system: number }> };
+  const voices = Object.keys(baseline.voices).filter((id) => existsSync(authorDbPath(id)));
+  const neighbors = readFileSync(join(ROOT, 'samples', 'neighbors.txt'), 'utf8');
+  describe.skipIf(!voices.length).each(voices)('the prompts for %s', (id) => {
+    const m = AuthorModel.load(id);
+    const brief = buildBrief(m, blocksOfText(neighbors));
+    const user = userPrompt(m, brief);
+    const system = systemPrompt(m);
+
+    it('sends a user prompt at least 30% shorter than before, on the New Neighbors case', () => {
+      expect(user.length).toBeLessThanOrEqual(0.7 * baseline.voices[id]!.user);
+      expect(user.length + system.length).toBeLessThan(baseline.voices[id]!.user + baseline.voices[id]!.system);
     });
-    expect(sub.paragraphs[0]!.sentences.map((x) => x.text)).toEqual(['Some business owners will say their customers cannot reach them.', 'It was a sore travail and a nightmare.']);
-    expect(sub.liberties!.map((x) => x.after)).toEqual(['a sore travail', 'cannot reach them']);
+
+    it('gives one nearest sentence for each of the writer’s, and no advice, measures or moves', () => {
+      expect(user.match(/<nearest>/g)?.length ?? 0).toBeLessThanOrEqual(brief.sentences.length);
+      expect(brief.sentences.every((s) => s.models.length <= 1)).toBe(true);
+      expect(user).not.toMatch(/<advice>|<measures|<moves>|<plan>/);
+    });
+
+    it('puts the voice’s moves in the system prompt, each with one example, the same for every passage', () => {
+      const moves = m.author.moves ?? [];
+      expect(system.match(/<move id=/g)?.length ?? 0).toBe(moves.length);
+      expect(system.match(/<example>/g)?.length ?? 0).toBeLessThanOrEqual(moves.length);
+      expect(systemPrompt(m)).toBe(system);
+      expect(system).not.toMatch(/notes?\b.*\bS12345|find_example|check_passage/);
+    });
+  });
+});
+
+describe('the gate, split', () => {
+  const austen = existsSync(authorDbPath('austen'));
+  it.skipIf(!austen)('sends back only what is worth a redraft, and keeps the rest for the engine', () => {
+    const m = AuthorModel.load('austen');
+    const brief = buildBrief(m, blocksOfText('My sister borrowed my car without asking. She brought it back with an empty tank.\n\nThen I went home.'));
+    const whole: Submission = {
+      paragraphs: [
+        { role: 'scene', why: 'The wrong first.', sentences: [{ text: 'My sister took the carriage without asking, and brought it back quite empty.', from: [1, 2] }] },
+        { role: 'turn', why: 'Then the end.', sentences: [{ text: 'I then went home, super tired.', from: [3] }] },
+      ],
+      sense: [],
+      liberties: [],
+      explanation: '',
+    };
+    expect(hardGate(m, brief, whole)).toEqual([]);
+    expect(softFindings(m, brief, whole).join(' ')).toMatch(/super/);
+    const lost = structuredClone(whole);
+    lost.paragraphs.pop();
+    expect(hardGate(m, brief, lost).join(' ')).toMatch(/^Not rendered: sentence 3/);
+    expect(softFindings(m, brief, lost).some((p) => /^Not rendered/.test(p))).toBe(false);
+    expect(hardGate(m, brief, { ...whole, paragraphs: [] })).toEqual(['The rewrite is empty.']);
   });
 });
 
