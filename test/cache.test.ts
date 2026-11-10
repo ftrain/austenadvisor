@@ -190,7 +190,7 @@ describe.skipIf(!built)('the rewrite, part by part', { timeout: 120_000 }, () =>
     }
   });
 
-  it('serves a sample, or a text within 3% of one, from the rewrites made ahead of time', async () => {
+  it('serves a sample, or the same words with a mark changed, from the rewrites made ahead of time', async () => {
     const text = readFileSync(join(ROOT, 'samples', 'breakup-text.txt'), 'utf8');
     const lines = [{ type: 'plan', parts: 1, headings: [], paragraphs: [] }, { type: 'part', part: 0, rows: [], explanation: 'Made ahead.' }, { type: 'done', elapsed: 0 }];
     mkdirSync(join(pre, 'breakup-text'), { recursive: true });
@@ -198,8 +198,11 @@ describe.skipIf(!built)('the rewrite, part by part', { timeout: 120_000 }, () =>
 
     const words = text.split(' ');
     const k = words.findIndex((w) => /^[a-z]{4,}$/.test(w));
-    const near = [...words.slice(0, k), 'zebra', ...words.slice(k + 1)].join(' ');
+    const near = [...words.slice(0, k), `${words[k]},`, ...words.slice(k + 1)].join(' ');
     expect(findPrecomputed('austen', near)?.exact).toBe(false);
+    // A changed word is the writer's own: the sample's rewrite would show a word they no longer wrote.
+    const changed = [...words.slice(0, k), 'zebra', ...words.slice(k + 1)].join(' ');
+    expect(findPrecomputed('austen', changed)).toBeNull();
     expect(findPrecomputed('austen', text)?.exact).toBe(true);
     expect(findPrecomputed('twain', text)).toBeNull();
     expect(findPrecomputed('austen', 'Something else entirely, which no sample says.')).toBeNull();

@@ -29,6 +29,9 @@ import { PROMPT_VERSION, promptFingerprint, rewriteWithAI, tierOf, type RewriteP
 
 /** Words in a part: enough for the voice's manner to show and for paragraphs to move, few enough to answer in seconds. */
 const PART_WORDS = Number(process.env.ADVISOR_PART_WORDS ?? 600);
+/** The most parts one request may send to the writer; the rest rest as `long`. Headings close a part, so a text of
+ * many short sections would otherwise make a writer call for each. */
+const MAX_WRITES = Number(process.env.ADVISOR_PARTS ?? 3);
 /** Parts written at once. */
 const AT_ONCE = Number(process.env.ADVISOR_AT_ONCE ?? 6);
 /** The most a page may send. */
@@ -333,6 +336,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     return { part, idx, before, after, words: words(own), ...partKeys({ voice, tier, fingerprint, promptVersion: PROMPT_VERSION, instructions, text: own, before, after }), how: 'write' as How, kept: null as Kept | null, flight: null as Promise<Kept> | null };
   });
   let total = 0;
+  let writing = 0;
   for (const j of jobs) {
     total += j.words;
     const hit = !fresh && cache ? cache.get(j.key, j.core) : null;
@@ -347,7 +351,9 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     }
     const running = inFlight<Kept>(j.key);
     if (running) [j.how, j.flight] = ['join', running];
-    else if (cap > 0 && j.part > 0 && total > cap) j.how = 'long';
+    // Past the word cap, or one paragraph longer than the cap by itself, or past the parts one request may write.
+    else if (cap > 0 && total > cap && (j.part > 0 || j.words > cap)) j.how = 'long';
+    else if (MAX_WRITES > 0 && ++writing > MAX_WRITES) j.how = 'long';
   }
 
   let admission: Admission | null = null;
@@ -432,7 +438,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
           const r = await rewriteWithAI(
             m,
             j.idx.map((i) => blocks[i]!),
-            { before: j.before, after: j.after, instructions, strength: 'full' },
+            { before: j.before, after: j.after, instructions, strength: 'full', spend: (n) => admission?.spend(n) },
             (what: string, p: RewriteProgress) => {
               state[j.part] = { what, calls: p.calls, draft: p.draft, done: false };
               say(j.part, what);
@@ -440,9 +446,9 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
             },
             opts.writer,
           );
-          const u = r.usage;
-          admission?.spend(u ? u.input + u.cached + u.cacheWrite + u.output : 0);
           const kept = keep(r);
+          // A rewrite the page cannot show is not kept: it would fail on every later request.
+          rowsOf(blocks, j.idx, j.part, kept, 1000 * j.part, paraNo, m, { exemplars });
           cache?.put(j.key, j.core, voice, JSON.stringify(kept), r.model);
           return kept;
         } finally {

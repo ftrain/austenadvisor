@@ -144,6 +144,9 @@ describe.skipIf(!hasAusten)('POST /api/read, GET /api/guess and GET /api/boot', 
     }
     expect(a.roles.length).toBe(a.paragraphs.length);
     expect(a.style.line).toMatch(/^Words a sentence: yours \d+, Austen \d+\./);
+    // Against her narration, as Try it measures it, though she wrote more sentences of dialogue.
+    const austen = packs.find((p) => p.id === 'austen')!;
+    expect(a.style.voice).toBe(Math.round(austen.profile.sentenceLength.narration.p50));
     expect(Object.keys(a.suggest).sort()).toEqual(['kind', 'soundsLike', 'stretch']);
   });
 

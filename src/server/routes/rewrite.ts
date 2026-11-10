@@ -8,6 +8,9 @@ import { MAX_CHARS, streamRewrite } from '../page.ts';
 import { aiAvailable, PROMPT_VERSION, writerInjected } from '../rewrite.ts';
 import { voiceOr404 } from './engine.ts';
 
+/** The most a caller may add as instructions to the writer. The page sends none; the evaluation sends a line or two. */
+const MAX_INSTRUCTIONS = 500;
+
 const LOOPBACK = /^(127\.|::1$|::ffff:127\.)/;
 
 /**
@@ -34,9 +37,11 @@ route('POST', '/api/rewrite', async (req, res) => {
   if (!m) return;
   if (!text.trim()) return send(res, 400, { error: 'There is nothing to rewrite yet.' });
   if (text.length > MAX_CHARS) return send(res, 413, { error: `That is ${text.length.toLocaleString()} characters; the most is ${MAX_CHARS.toLocaleString()}. Try a chapter at a time.` });
+  const instructions = String(b.instructions ?? '');
+  if (instructions.length > MAX_INSTRUCTIONS) return send(res, 413, { error: `The instructions run to ${instructions.length.toLocaleString()} characters; the most is ${MAX_INSTRUCTIONS}.` });
   const asker = askerOf(req, b.client);
   // fresh: write it again, not the kept answer (the evaluation asks for this).
-  await streamRewrite(res, m, text, String(b.instructions ?? ''), b.fresh === true, {
+  await streamRewrite(res, m, text, instructions, b.fresh === true, {
     admit: () => admit(rewriteCache(), asker, aiAvailable() || writerInjected()),
   });
 });

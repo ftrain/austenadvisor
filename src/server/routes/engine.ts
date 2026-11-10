@@ -7,6 +7,7 @@ import { blocksOfText } from '../../engine/doc.ts';
 import type { AuthorModel } from '../../engine/model.ts';
 import { withFigures, wordProfile } from '../../engine/tools.ts';
 import { body, route, send } from '../http.ts';
+import { MAX_CHARS } from '../page.ts';
 import { isBuilt, model } from '../voices.ts';
 
 /** The built voice by this id, or null after answering 404. */
@@ -21,7 +22,9 @@ route('POST', '/api/analyze', async (req, res) => {
   const b = await body(req);
   const m = voiceOr404(res, b.author);
   if (!m) return;
-  const a = analyze(m, blocksOfText(String(b.text ?? '')));
+  const text = String(b.text ?? '');
+  if (text.length > MAX_CHARS) return send(res, 413, { error: `That is ${text.length.toLocaleString()} characters; the most is ${MAX_CHARS.toLocaleString()}. Try a chapter at a time.` });
+  const a = analyze(m, blocksOfText(text));
   // Every sentence of the voice's shown names the figures of speech it shows.
   for (const f of a.words) for (const x of f.alternatives) if (x.example) x.example = withFigures(m, x.example);
   for (const ad of a.advice) ad.examples = ad.examples.map((c) => withFigures(m, c));

@@ -34,7 +34,7 @@ export function guessCard(terms: Definer): GuessView {
       button(cap(name(c)), () => {
         for (const b of choices) {
           b.disabled = true;
-          b.classList.toggle('pg-right', b.dataset.voice === r.answer);
+          b.classList.toggle('pg-right', b.dataset.choice === r.answer);
         }
         const right = c === r.answer;
         const words = r.tells.words.slice(0, 3).map((w) => w.word);
@@ -58,7 +58,7 @@ export function guessCard(terms: Definer): GuessView {
           next,
         );
         next.focus();
-      }, { 'data-voice': c }),
+      }, { 'data-choice': c }),
     );
     body.replaceChildren(h('blockquote', { class: 'pg-guess-text' }, `“${r.text.replace(/^[“"]|[”"]$/g, '')}”`), h('div', { class: 'pg-guess-choices' }, ...choices), answer);
   }

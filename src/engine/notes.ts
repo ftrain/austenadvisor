@@ -68,9 +68,15 @@ const curly = (t: string) => t.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, 
 const narration = (t: string) => curly(t).replace(/“[^”]*”?/g, (q) => ' '.repeat(q.length));
 const wordSet = (t: string) => new Set(t.toLowerCase().match(/[\p{L}'’]{3,}/gu) ?? []);
 
+/** The glossary term for a move's id or name. A role (“turn”, “objection”) names a paragraph's work, not a move. */
+const moveTerm = (name: string) => {
+  const t = termOf(name);
+  return t && t.kind !== 'role' ? t : undefined;
+};
+
 /** The one id a move goes by, whatever the voice or the glossary calls it. */
 export function moveKey(id: string, name?: string): string {
-  return termOf(id)?.id ?? (name ? termOf(name)?.id : undefined) ?? id;
+  return moveTerm(id)?.id ?? (name ? moveTerm(name)?.id : undefined) ?? id;
 }
 
 interface Candidate {
@@ -94,13 +100,13 @@ function movesIn(m: AuthorModel, after: string, before: string, register?: Regis
   const fresh = (mv: { id: string; pattern?: string }) => m.shows(mv, look(mv.id)(after)) && !m.shows(mv, look(mv.id)(before));
   for (const mv of moves) {
     if (mv.id === 'irony' || !fresh(mv)) continue;
-    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: termOf(mv.id)?.id ?? termOf(mv.name)?.id, after, before, own: true });
+    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: moveTerm(mv.id)?.id ?? moveTerm(mv.name)?.id, after, before, own: true });
   }
   // Moves another reading credits to the sentence (explainSentence's), where the patterns confirm them.
   for (const id of named) {
     const mv = moves.find((x) => x.id === id);
     if (!mv || mv.id === 'irony' || out.some((c) => c.id === id) || !fresh(mv)) continue;
-    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: termOf(mv.id)?.id, after, before, own: true });
+    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: moveTerm(mv.id)?.id ?? moveTerm(mv.name)?.id, after, before, own: true });
   }
   const letter = register === 'letter';
   const had = new Set(findFigures(m, before, { letter }).map((f) => f.term));

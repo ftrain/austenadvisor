@@ -174,6 +174,17 @@ const lower = (s: string) => (/^[A-Z][a-z]/.test(s) && !/^(I|O)\b/.test(s) ? s[0
  */
 export function definer(glossary: GlossaryEntry[]) {
   const byId = new Map(glossary.map((t) => [t.id, t]));
+  /** A word that opens its definition in place. */
+  function term(t: GlossaryEntry, words: string): [HTMLElement, HTMLElement] {
+    const def = h('span', { class: 'pg-def', hidden: true }, ` (${lower(t.definition).replace(/\.$/, '')})`);
+    const btn = h('button', { type: 'button', class: 'pg-term', 'aria-expanded': 'false' }, words);
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      def.hidden = !def.hidden;
+      btn.setAttribute('aria-expanded', String(!def.hidden));
+    });
+    return [btn, def];
+  }
   function defined(text: string): (Node | string)[] {
     const out: (Node | string)[] = [];
     let at = 0;
@@ -181,24 +192,28 @@ export function definer(glossary: GlossaryEntry[]) {
       const t = byId.get(id);
       if (!t || a < at) continue;
       out.push(text.slice(at, a));
-      const def = h('span', { class: 'pg-def', hidden: true }, ` (${lower(t.definition).replace(/\.$/, '')})`);
-      const btn = h('button', { type: 'button', class: 'pg-term', 'aria-expanded': 'false' }, text.slice(a, b));
-      btn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        def.hidden = !def.hidden;
-        btn.setAttribute('aria-expanded', String(!def.hidden));
-      });
-      out.push(btn, def);
+      out.push(...term(t, text.slice(a, b)));
       at = b;
     }
     out.push(text.slice(at));
     return out;
   }
+  /** A paragraph's role shown as a label (“Claim”, “Scene”), defined in place. Running prose never marks a role
+   * word, since “close” and “call” are everyday words; a label is known to be one. */
+  function labelled(name: string): (Node | string)[] {
+    const n = name.trim().toLowerCase();
+    const t = glossary.find((x) => x.kind === 'role' && (x.term.toLowerCase() === n || x.names.includes(n)));
+    return t ? term(t, name) : defined(name);
+  }
+  /** A SHAPE line, “Claim · Reason · Call”, each role defined in place. */
+  function shape(line: string): (Node | string)[] {
+    return line.split(' · ').flatMap((x, i) => [...(i ? [' · '] : []), ...labelled(x)]);
+  }
   function definition(name: string): GlossaryEntry | null {
     const n = name.trim().toLowerCase();
     return byId.get(n) ?? glossary.find((x) => x.names.includes(n) || x.names.includes(n.replace(/(es|s)$/, ''))) ?? null;
   }
-  return { defined, definition };
+  return { defined, definition, labelled, shape };
 }
 export type Definer = ReturnType<typeof definer>;
 

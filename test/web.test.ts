@@ -120,6 +120,16 @@ describe('the page', () => {
     expect(page.moves.entries()[0]!.sentence).toBe('It was not a small thing.');
   });
 
+  it('defines each role word on the SHAPE line and on a row’s label', async () => {
+    const role = (id: string, term: string) => ({ id: `role-${id}`, term, kind: 'role', definition: `What ${id} means.`, unless: '^', names: [id] });
+    const withRoles = { ...boot, glossary: [...boot.glossary, role('objection', 'Objection'), role('scene', 'Scene')] };
+    override = (path) => (path === '/api/boot' ? json(withRoles) : undefined);
+    await onResult();
+    const shape = [...app().querySelectorAll('.pg-shape .pg-term')].map((b) => b.textContent);
+    expect(shape.length).toBeGreaterThan(0);
+    expect(app().querySelector('.pg-role .pg-term')).not.toBeNull();
+  });
+
   it('opens no dialog anywhere', async () => {
     await onResult();
     app().querySelector<HTMLButtonElement>('.pg-never')?.click();
@@ -144,6 +154,75 @@ describe('the page', () => {
     await rewritePage(app());
     app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
     await vi.waitFor(() => expect(app().querySelector('.pg-progress')!.textContent).toContain('The rewrite failed.'));
+  });
+
+  it('says when parts were not rewritten, does not call the voice ready, and offers to try again', async () => {
+    const lines = ndjson.trim().split('\n').map((l) => JSON.parse(l));
+    const part = lines.find((l) => l.type === 'part');
+    const failed = { type: 'part', part: 0, error: 'upstream', rows: part.rows.map((r: { index: number }, i: number) => ({ kind: 'paragraph', index: i + 1, part: 0, yours: [{ n: -1, text: 'x', never: [] }], hers: null, notes: [], error: 'upstream' })) };
+    const body = lines.map((l) => JSON.stringify(l.type === 'part' ? failed : l)).join('\n');
+    override = (path) => (path === '/api/rewrite' ? new Response(body) : undefined);
+    // Not a sample, so no voice is ready for it ahead of time.
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: `${debate} One more.` }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(app().querySelector('.pg-progress')!.textContent).toContain('Some parts were not rewritten.'));
+    const sel = app().querySelector<HTMLSelectElement>('.pg-result select')!;
+    expect([...sel.options].find((o) => o.value === 'austen')!.textContent).not.toContain('· ready');
+    [...app().querySelectorAll<HTMLButtonElement>('.pg-progress button')].find((b) => b.textContent === 'Try again')!.click();
+    await vi.waitFor(() => expect(rewrites()).toBe(2));
+  });
+
+  it('says a text is too long before asking for anything', async () => {
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: 'Word. '.repeat(5000) }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await new Promise((r) => setTimeout(r, 30));
+    expect(rewrites()).toBe(0);
+    expect(app().querySelector<HTMLElement>('.pg-notice')!.textContent).toContain('the most is 24,000');
+    expect(app().dataset.state).not.toBe('result');
+  });
+
+  it('keeps the guess card in COMPOSE after Edit while a rewrite still streams, and keeps an open Try it across a redraw', async () => {
+    const lines = ndjson.trim().split('\n');
+    let push: (s: string) => void = () => {};
+    let end: () => void = () => {};
+    override = (path) =>
+      path === '/api/rewrite'
+        ? new Response(
+            new ReadableStream({
+              start(c) {
+                push = (x) => c.enqueue(new TextEncoder().encode(x + '\n'));
+                end = () => c.close();
+              },
+            }),
+          )
+        : undefined;
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: debate }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(rewrites()).toBe(1));
+    push(lines[0]!);
+    await new Promise((r) => setTimeout(r, 20));
+    [...app().querySelectorAll<HTMLButtonElement>('.pg-tools button')].find((b) => b.textContent === '← Edit')!.click();
+    // A line that redraws the run (the plan again) arrives while COMPOSE is on view.
+    push(lines[0]!);
+    await new Promise((r) => setTimeout(r, 20));
+    expect(app().querySelector('.pg-compose .pg-guess')).not.toBeNull();
+
+    // Back to the result: the part arrives, a Try it is opened and typed in, then the stream ends and redraws.
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    push(lines.find((l) => l.includes('"type":"part"'))!);
+    await vi.waitFor(() => expect(app().querySelectorAll('.pg-hers .pg-her').length).toBeGreaterThan(0));
+    [...app().querySelectorAll<HTMLButtonElement>('.pg-note-actions button')].find((b) => b.textContent === 'Try it')!.click();
+    const box = app().querySelector<HTMLTextAreaElement>('.pg-tryit textarea')!;
+    box.value = 'It was not a little strange.';
+    push(lines.at(-1)!);
+    end();
+    await vi.waitFor(() => expect(app().querySelector('.pg-progress')!.hasAttribute('hidden')).toBe(true));
+    await new Promise((r) => setTimeout(r, 20));
+    expect(box.isConnected).toBe(true);
+    expect(box.value).toBe('It was not a little strange.');
   });
 
   it('shows at most two WHY notes a row, and no move twice', async () => {

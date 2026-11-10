@@ -60,7 +60,7 @@
     {
       "id": "cumulative",
       "name": "Cumulative sentence",
-      "does": "A long run of “and … and …” building to a turn.",
+      "does": "A long sentence that states its point first, then adds detail after detail with “and … and …” until it turns.",
       "pattern": "\\band\\b[^.]*\\band\\b[^.]*\\band\\b",
       "register": "narration",
       "hint": "Chain events with “and … and … and”, then turn."

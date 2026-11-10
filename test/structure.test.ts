@@ -148,11 +148,11 @@ describe('typicalOrder', () => {
     expect(o.order).toEqual(['scene', 'turn', 'verdict']);
     expect(o.support).toBe(3);
     expect(o.passages).toBe(3);
-    expect(o.signature).toBe('Hardy begins from something that happened, then turns the story.');
+    expect(o.signature).toBe('Hardy begins by setting the scene, then turns the story.');
   });
 
   it('builds a signature from the template', () => {
-    expect(signatureOf('Lincoln', ['scene', 'claim', 'reason', 'call'])).toBe('Lincoln begins from something that happened, then says what it all means.');
+    expect(signatureOf('Lincoln', ['scene', 'claim', 'reason', 'call'])).toBe('Lincoln begins by setting the scene, then says what it all means.');
     expect(signatureOf('Austen', ['part'])).toMatch(/^Austen follows no single order/);
   });
 

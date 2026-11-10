@@ -141,6 +141,13 @@ const BASE: Term[] = [
   T('calltoaction', 'Call to action', 'argument', 'What the reader is asked to do, said plainly, usually at the end.', { example: 'Sign the petition today.', also: ['call to action'] }),
   T('enthymeme', 'Enthymeme', 'argument', 'An argument with one premise left unsaid for the hearer to supply: “He is a politician, so of course he lied.”'),
   T('thesis', 'Thesis', 'argument', 'The claim a piece of writing sets out to prove, stated so someone could disagree.', { example: 'School should start an hour later.' }),
+  T('premise', 'Premise', 'argument', 'A statement an argument starts from and takes as true.', { example: 'All people want to be free.', also: ['premises', 'premiss'] }),
+  // Terms the voices' notes use.
+  T('mockheroic', 'Mock-heroic', 'diction', 'Grand words used for a small matter, for comedy.', { example: 'I shall then place my establishment on a superior footing.', source: 'Dickens, David Copperfield', also: ['mock heroic'] }),
+  T('epizeuxis', 'Epizeuxis', 'figure', 'A word said twice or more in a row, for emphasis.', { example: 'Simplify, simplify.', source: 'Thoreau, Walden' }),
+  T('participle', 'Participle', 'sentence', 'A verb form in -ing or -ed used as a describing word: “looking up”, “tired out”.', { also: ['participles', 'participial'] }),
+  T('intensifier', 'Intensifier', 'diction', 'A word that strengthens the word after it: “quite”, “perfectly”, “absolutely”.', { also: ['intensifiers'] }),
+  T('analogy', 'Analogy', 'figure', 'Explaining one thing by its likeness to another, point by point.', { example: 'The heart is a pump.', also: ['analogies'] }),
 ];
 
 /**

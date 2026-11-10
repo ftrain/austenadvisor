@@ -5,6 +5,9 @@
 import './page.css';
 import { clientId, definer, get, h, keep, post, Refused, streamLines, textHash, type AuthorInfo, type Boot, type Drill, type Reading, type Row } from './api.ts';
 import { compose, RESTING, sortVoices } from './compose.ts';
+
+/** The most a text may hold, as the server counts it. */
+const MAX_CHARS = 24000;
 import { guessCard } from './guesscard.ts';
 import { movesBook } from './moves.ts';
 import { result, type ResultState, type Run } from './result.ts';
@@ -26,8 +29,14 @@ export async function rewritePage(app: HTMLElement) {
   const readyServer = new Map<string, Promise<string[]>>();
   let ready = new Set<string>();
   let shown: { run: Run; reading: Reading | null } | null = null;
-  let streaming: AbortController | null = null;
+  /** The rewrites streaming, each with its own controller: showing another voice does not stop one. */
+  const streaming = new Set<AbortController>();
   let tick: ReturnType<typeof setInterval> | undefined;
+  addEventListener('pagehide', () => {
+    for (const ctl of streaming) ctl.abort();
+  });
+  /** A run that finished with every part it could rewrite rewritten. */
+  const whole = (r: Run) => r.done && !r.failed && !r.resting && !r.partial;
 
   const key = (v: string, t: string) => `${v}\u0000${t.trim()}`;
   const save = () => keep.set(PAGE_KEY, { voice: voice.id, text: c.area.value });
@@ -57,12 +66,13 @@ export async function rewritePage(app: HTMLElement) {
         textHash(t).then((hash) => (hash ? get<{ voices: string[] }>(`/api/ready?hash=${hash}`).then((r) => r.voices ?? []).catch(() => []) : [])),
       );
     for (const v of await readyServer.get(t)!) out.add(v);
-    for (const r of runs.values()) if (r.text === t && r.done && !r.failed && !r.resting) out.add(r.voice);
+    for (const r of runs.values()) if (r.text === t && whole(r)) out.add(r.voice);
     return out;
   }
   const isReady = (v: string, text: string) => {
     const r = runs.get(key(v, text));
-    return ready.has(v) || (!!r && r.done && !r.failed && !r.resting);
+    if (r?.done && !whole(r)) return false;
+    return ready.has(v) || (!!r && whole(r));
   };
 
   function noticeText(text: string) {
@@ -129,7 +139,8 @@ export async function rewritePage(app: HTMLElement) {
     const flip = flipOk ? voices.filter((v) => isReady(v.id, c.area.value) || v.id === voice.id).map((v) => v.id) : [];
     return { voice, run, reading: shown?.reading ?? null, flip, ready, suggested: c.suggested(), resting: !boot.ai.available && !sampleOf(c.area.value) };
   }
-  const redraw = () => shown && r.draw(state());
+  // Only while the result is on view; start() draws it again when it comes back.
+  const redraw = () => shown && app.dataset.state === 'result' && r.draw(state());
 
   function edit() {
     r.ask(null, voice);
@@ -169,6 +180,11 @@ export async function rewritePage(app: HTMLElement) {
   async function go() {
     const text = c.area.value.trim();
     if (!text) return c.area.focus();
+    if (text.length > MAX_CHARS) {
+      c.setNotice(`That is ${text.length.toLocaleString()} characters; the most is ${MAX_CHARS.toLocaleString()}. Try a chapter at a time.`);
+      return c.area.focus();
+    }
+    c.setNotice(null);
     ready = await readyFor(text).catch(() => ready);
     await start();
   }
@@ -181,7 +197,7 @@ export async function rewritePage(app: HTMLElement) {
     moves.useVoice(v.id);
     r.ask(null, v);
     let run = runs.get(k);
-    const fresh = !run || (run.done && (!!run.failed || run.resting === 'busy'));
+    const fresh = !run || (run.done && (!!run.failed || !!run.partial || run.resting === 'busy'));
     if (fresh) {
       run = { voice: v.id, text, rows: new Map(), roles: new Map(), done: false, started: Date.now() };
       runs.set(k, run);
@@ -205,16 +221,15 @@ export async function rewritePage(app: HTMLElement) {
   }
 
   async function stream(run: Run, v: AuthorInfo, text: string) {
-    streaming?.abort();
     const ctl = new AbortController();
-    streaming = ctl;
-    clearInterval(tick);
-    tick = setInterval(() => shown?.run === run && r.progress(state()), 1000);
+    streaming.add(ctl);
+    tick ??= setInterval(() => shown && !shown.run.done && app.dataset.state === 'result' && r.progress(state()), 1000);
     try {
       await streamLines('/api/rewrite', { author: v.id, text, client: clientId }, (line) => take(run, line), ctl.signal);
       run.done = true;
       const rows = [...run.rows.values()].filter((x) => x.kind === 'paragraph');
       if (rows.length && rows.every((x) => x.kind === 'paragraph' && !x.hers && x.resting === 'budget')) run.resting = 'resting';
+      else if (rows.some((x) => x.kind === 'paragraph' && (x.error || x.resting === 'budget'))) run.partial = true;
     } catch (e) {
       if ((e as Error).name === 'AbortError') {
         runs.delete(key(v.id, text));
@@ -222,15 +237,22 @@ export async function rewritePage(app: HTMLElement) {
       }
       run.done = true;
       if (e instanceof Refused && (e.status === 503 || e.status === 429)) run.resting = e.budget === 'busy' ? 'busy' : 'resting';
-      else run.failed = (e as Error).message || 'failed';
+      else {
+        // The server's own reason for a request it refused (it is written for the student); otherwise a plain line.
+        run.failed = e instanceof Refused && e.status >= 400 && e.status < 500 && e.message ? e.message : 'The rewrite failed.';
+        // Too long: the same request would be refused again.
+        run.final = e instanceof Refused && e.status === 413;
+      }
     } finally {
-      if (streaming === ctl) {
-        streaming = null;
+      streaming.delete(ctl);
+      if (!streaming.size) {
         clearInterval(tick);
+        tick = undefined;
       }
     }
     if (run.resting || ![...run.rows.values()].some((x) => x.kind === 'paragraph' && x.hers)) void drills(run, v);
-    if (run.done && !run.failed && !run.resting) {
+    // Ready for the text on the page only if this run was of that text.
+    if (whole(run) && run.text === c.area.value.trim()) {
       ready.add(v.id);
       c.setReady(ready);
     }

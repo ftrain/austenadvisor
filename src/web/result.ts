@@ -19,6 +19,10 @@ export interface Run {
   done: boolean;
   /** Why the rewrite failed. */
   failed?: string;
+  /** The failure is final: the same request would fail again (the text is too long). */
+  final?: boolean;
+  /** Done, but some parts were not rewritten (an error, or the budget ran out partway). */
+  partial?: boolean;
   /** No rewrite: 'resting' (no writer, or the day's budget is spent) or 'busy' (another is still running). */
   resting?: 'resting' | 'busy';
   started: number;
@@ -106,8 +110,8 @@ export function result(o: ResultOptions): ResultView {
       h(
         'div',
         { class: 'pg-line-body' },
-        h('p', {}, h('span', { class: 'pg-who' }, 'Yours: '), ...o.terms.defined(r.shape.yours)),
-        r.shape.voice ? h('p', {}, h('span', { class: 'pg-who' }, `${v.short}: `), ...o.terms.defined(r.shape.voice)) : null,
+        h('p', {}, h('span', { class: 'pg-who' }, 'Yours: '), ...o.terms.shape(r.shape.yours)),
+        r.shape.voice ? h('p', {}, h('span', { class: 'pg-who' }, `${v.short}: `), ...o.terms.shape(r.shape.voice)) : null,
         r.shape.signature ? h('p', { class: 'pg-line-note' }, ...o.terms.defined(r.shape.signature)) : null,
       ),
     );
@@ -125,13 +129,14 @@ export function result(o: ResultOptions): ResultView {
   function progress(s: ResultState) {
     const run = s.run;
     const v = s.voice;
-    if (!run || (run.done && !run.failed) || run.resting) {
+    if (!run || (run.done && !run.failed && !run.partial) || run.resting) {
       progressEl.hidden = true;
       return;
     }
     progressEl.hidden = false;
-    progressEl.classList.toggle('pg-bad', !!run.failed);
-    if (run.failed) progressEl.replaceChildren(h('span', {}, 'The rewrite failed. '), button('Try again', () => o.onRetry()));
+    progressEl.classList.toggle('pg-bad', !!run.failed || !!run.partial);
+    if (run.failed) progressEl.replaceChildren(h('span', {}, `${run.failed} `), ...(run.final ? [] : [button('Try again', () => o.onRetry())]));
+    else if (run.partial) progressEl.replaceChildren(h('span', {}, 'Some parts were not rewritten. '), button('Try again', () => o.onRetry()));
     else progressEl.replaceChildren(h('span', { class: 'pg-dotpulse', 'aria-hidden': 'true' }), `${v.short} is writing · about 20 s · ${mmss(Date.now() - run.started)}`);
   }
 
@@ -166,9 +171,17 @@ export function result(o: ResultOptions): ResultView {
 
     const writing = !!run && !run.done && !run.failed && !run.resting && ![...run.rows.values()].some((r) => r.kind === 'paragraph' && r.hers);
     guessRow.hidden = !writing;
-    if (writing) guessRow.querySelector('.pg-guess-slot')!.replaceChildren(o.guess.el);
+    // Only while the result is on view: after Edit the card belongs to COMPOSE.
+    if (writing && !el.hidden) guessRow.querySelector('.pg-guess-slot')!.replaceChildren(o.guess.el);
 
     const rows = rowsOf(s);
+    // An open Try it, with what the student typed in it, stays in its row across a redraw.
+    const focused = document.activeElement;
+    const open = new Map<string, HTMLElement>();
+    for (const t of rowsEl.querySelectorAll<HTMLElement>('.pg-row > .pg-tryit')) {
+      const at = (t.parentElement as HTMLElement).dataset.index;
+      if (at) open.set(at, t);
+    }
     const seen = new Set<string>();
     const marked = new Set<string>();
     let from = 0;
@@ -188,6 +201,12 @@ export function result(o: ResultOptions): ResultView {
         return paraRow(s, r, idx, place.get(r) ?? 0, seen, marked);
       }),
     );
+    for (const [at, t] of open) {
+      const row = rowsEl.querySelector<HTMLElement>(`.pg-row[data-index="${at}"]`) ?? rowsEl.querySelector<HTMLElement>(`.pg-row[data-index^="${Math.floor(Number(at))}."]`);
+      if (!row) continue;
+      row.append(t);
+      if (focused instanceof HTMLElement && t.contains(focused)) focused.focus();
+    }
     copyBtn.disabled = !rows.some((r) => r.kind === 'paragraph' && r.hers);
   }
 
@@ -207,7 +226,7 @@ export function result(o: ResultOptions): ResultView {
     const reading = s.reading;
     const roleYours = idx !== null ? reading?.roles[idx]?.name : undefined;
     const roleHers = r.hers ? s.run?.roles.get(r.part)?.[at] : undefined;
-    const row = h('div', { class: 'pg-row' });
+    const row = h('div', { class: 'pg-row', 'data-index': String(r.index) });
     const cells = h('div', { class: 'pg-cols' });
     row.append(cells);
 
@@ -236,6 +255,7 @@ export function result(o: ResultOptions): ResultView {
     else {
       if (r.resting === 'long') theirs.append(h('p', { class: 'pg-muted' }, 'Only the first 1,200 words are rewritten.'));
       else if (r.error) theirs.append(h('p', { class: 'pg-muted' }, 'This part could not be rewritten.'));
+      else if (r.resting === 'budget') theirs.append(h('p', { class: 'pg-muted' }, 'This part was not rewritten. Rewrites are resting for now.'));
       theirs.append(sketch(v, reading?.sketch.filter((x) => x.paragraph === idx) ?? []));
     }
     cells.append(theirs);
@@ -267,7 +287,7 @@ export function result(o: ResultOptions): ResultView {
 
   /** A cell's label: the column's name, always read aloud and shown on a phone, and the paragraph's role. */
   function label(col: string, role?: string, extra?: string): HTMLElement {
-    return h('p', { class: 'pg-cell-label' }, h('span', { class: 'pg-colname' }, col), role ? h('span', { class: 'pg-role' }, ...o.terms.defined(role)) : null, extra ? h('span', { class: 'pg-from' }, extra) : null);
+    return h('p', { class: 'pg-cell-label' }, h('span', { class: 'pg-colname' }, col), role ? h('span', { class: 'pg-role' }, ...o.terms.labelled(role)) : null, extra ? h('span', { class: 'pg-from' }, extra) : null);
   }
 
   function yourSentence(n: number, text: string, nevers: Reading['never'], marked: Set<string>, opened: HTMLElement): HTMLElement {

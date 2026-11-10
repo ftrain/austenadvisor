@@ -49,6 +49,30 @@ describe('the routes', () => {
     expect(r.status).toBe(503);
   });
 
+  it('answers a malformed path, a bad Host header and an oversized body without falling over', async () => {
+    expect((await fetch(`${base}/api/glossary/%E0%A4%A`)).status).toBe(404);
+    const { request } = await import('node:http');
+    const status = await new Promise<number>((done, fail) => {
+      const q = request(`${base}/api/authors`, { headers: { host: 'a b' } }, (r) => (r.resume(), done(r.statusCode ?? 0)));
+      q.on('error', fail);
+      q.end();
+    });
+    expect(status).toBe(400);
+    expect((await post('/api/analyze', { author: 'austen', text: 'x'.repeat(300 * 1024) })).status).toBe(413);
+    expect((await post('/api/analyze', { author: 'austen', text: 'Word. '.repeat(5000) })).status).toBe(413);
+    expect((await post('/api/rewrite', { author: 'austen', text: 'A short text.', instructions: 'x'.repeat(600) })).status).toBe(413);
+    const bad = await fetch(`${base}/api/analyze`, { method: 'POST', headers: { 'content-type': 'application/json' }, body: '{not json' });
+    expect(bad.status).toBe(400);
+    // Still serving.
+    expect((await fetch(`${base}/api/authors`)).status).toBe(200);
+  });
+
+  it('reads drills from notes of any shape without failing', async () => {
+    const notes = [{ id: 5, before: null, after: ['x'] }, ...Array.from({ length: 500 }, () => ({ kind: 'move', id: 'litotes', before: 'It was big.', after: 'It was not small.' }))];
+    const r = await post('/api/practice/drills', { author: 'austen', text: 'It was big. It was big.', notes });
+    expect(r.status).toBe(200);
+  });
+
   it('no longer serves the old editor or its routes', async () => {
     expect((await fetch(`${base}/d/x`)).status).toBe(404);
     expect((await fetch(`${base}/api/docs`)).status).toBe(404);

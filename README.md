@@ -23,7 +23,7 @@ While the page waits, and on the compose screen, a card asks **Guess whose sente
 
 ## The glossary
 
-Every term of rhetoric, poetics or grammar the page uses is defined where it appears. A defined term is underlined; tap it and its definition opens in the line. The glossary is [src/engine/glossary.ts](src/engine/glossary.ts): 109 terms, each defined in one plain sentence, most with one short example. It is written to `data/glossary.sqlite` (a row for each term, a row for each name it goes by, and a full-text index) and rebuilt whenever the list changes.
+Every term of rhetoric, poetics or grammar the page uses is defined where it appears. A defined term is underlined; tap it and its definition opens in the line. The glossary is [src/engine/glossary.ts](src/engine/glossary.ts): 115 terms, each defined in one plain sentence, most with one short example. It is written to `data/glossary.sqlite` (a row for each term, a row for each name it goes by, and a full-text index) and rebuilt whenever the list changes.
 
 ```sh
 curl localhost:4180/api/glossary?q=objection
@@ -67,15 +67,15 @@ Each voice has a pack (`data/packs/<id>.json` and `.sif`), built from its model:
 A rewrite is one call to the writer for each part of the text (about 600 words of whole paragraphs), with one retry only on a hard failure: a sentence lost, a heading crossed, or the paragraphs run together. The engine writes the brief beforehand and the Why notes afterward, so no note quotes the model.
 
 - **Writer.** With `ANTHROPIC_API_KEY`, Claude (`claude-opus-5-5`); with `DEEPSEEK_API_KEY` alone, DeepSeek (`deepseek-v4-pro`) through its Anthropic-compatible API; or any OpenRouter model with `ADVISOR_WRITER=openrouter:<model>` and `OPENROUTER_API_KEY`. `ADVISOR_MODEL` overrides the model. `data/tiers.json`, written by `scripts/tiers.ts` from two evaluation runs, can move a voice to the faster model where it scored within 0.3 of the best.
-- **Reader.** With `DEEPSEEK_API_KEY` set, `deepseek-flash` first reads the text for contradictions. `ADVISOR_READER=off` turns it off.
+- **Reader.** With `DEEPSEEK_API_KEY` set, `deepseek-flash` first reads the text for contradictions; `ADVISOR_READER_MODEL` names another model. With neither, there is no reader. `ADVISOR_READER=off` turns it off.
 - **Cache.** Each part the writer has rewritten is kept in `data/cache.sqlite` for 180 days (`ADVISOR_CACHE_DAYS`), keyed by a hash of the prompt's version and fingerprint, the voice, its tier, the part and the paragraphs on either side. Change one paragraph and only its part is written again. The table holds hashes, never a student's text. `ADVISOR_CACHE=off` turns it off.
-- **Budget.** Ten full rewrites a day for each address (`ADVISOR_DAILY_PER_IP`), two million tokens a day across all readers (`ADVISOR_DAILY_TOKENS`), one rewrite in flight for each reader, and the first 1,200 words of a long text (`ADVISOR_FULL_WORDS`); the rest gets the engine's view. A limit of 0 means no limit. Requests from the server's own machine are not counted against the address limit. Past the budget, the page says "Rewrites of your own text are off for now. Every sample has a rewrite ready." and shows the engine's view.
+- **Budget.** Ten full rewrites a day for each address (`ADVISOR_DAILY_PER_IP`), two million tokens a day across all students (`ADVISOR_DAILY_TOKENS`), counted as each call returns, one rewrite at a time for each open page, and the first 1,200 words of a long text (`ADVISOR_FULL_WORDS`) in at most three parts (`ADVISOR_PARTS`); the rest gets the engine's view. A limit of 0 means no limit. Requests from the server's own machine are not counted against the address limit. Past the budget, the page says "Rewrites of your own text are off for now. Every sample has a rewrite ready." and shows the engine's view.
 
 Every setting is in [.env.example](.env.example).
 
 ### Samples rewritten ahead of time
 
-`scripts/prewarm.ts` rewrites every sample in every voice through a running server's own `/api/rewrite` and keeps the result in `data/precomputed/<sample>/<voice>.json`. A text that is a sample, or within 3% of one, is then served from there with no call at all, and the select marks those voices "ready".
+`scripts/prewarm.ts` rewrites every sample in every voice through a running server's own `/api/rewrite` and keeps the result in `data/precomputed/<sample>/<voice>.json`. A text that is a sample, or has the same words with a few marks changed, is then served from there with no call at all, and the select marks those voices "ready".
 
 **This has not been run yet.** It needs the owner's key on the server. Until then, samples are rewritten on demand like any other text, and with no key the page shows the engine's view only.
 

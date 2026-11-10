@@ -48,6 +48,8 @@ export interface ComposeView {
   setReading(r: Reading | null): void;
   setReady(ready: Set<string>): void;
   setResting(on: boolean): void;
+  /** A plain line under the box, such as why a text cannot be rewritten; null clears it. */
+  setNotice(text: string | null): void;
   suggested(): Suggested | null;
 }
 
@@ -84,6 +86,7 @@ export function compose(o: ComposeOptions): ComposeView {
   const sounds = h('p', { class: 'pg-sounds', 'aria-live': 'polite' });
   const sampleLine = h('p', { class: 'pg-sample-line', 'aria-live': 'polite' });
   const resting = h('p', { class: 'pg-resting', hidden: true }, RESTING);
+  const notice = h('p', { class: 'pg-resting pg-notice', hidden: true, role: 'status' });
 
   // The samples by kind: a tap fills the box with one, and a second tap with the next of that kind.
   const kinds = KINDS.filter((k) => o.boot.samples.some((s) => s.kind === k));
@@ -107,7 +110,7 @@ export function compose(o: ComposeOptions): ComposeView {
     o.boot.samples.length ? button('Shuffle', shuffle, { class: 'pg-chip pg-chip-quiet' }) : null,
   );
 
-  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, epigraph, area, sounds, chips, sampleLine, o.guess.el, resting);
+  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, epigraph, area, sounds, chips, sampleLine, notice, o.guess.el, resting);
 
   function teachName(id: string): string {
     const t = o.terms.definition(id);
@@ -173,7 +176,7 @@ export function compose(o: ComposeOptions): ComposeView {
       const name = (id: string | null) => (id ? byId.get(id)?.title ?? id : null);
       const like = name(r.suggest.soundsLike);
       const stretch = name(r.suggest.stretch);
-      sounds.replaceChildren(...[like ? `You sound like ${like}` : '', stretch && stretch !== like ? `Stretch: ${stretch}` : ''].filter(Boolean).join(' · '));
+      sounds.replaceChildren(...[like ? `You sound like ${like}` : '', stretch && stretch !== like ? `For a stretch, try ${stretch}` : ''].filter(Boolean).join(' · '));
       if (!sample) {
         const ids = [r.suggest.kind, r.suggest.soundsLike, r.suggest.stretch].filter((x, i, a): x is string => !!x && a.indexOf(x) === i && !!byId.get(x)?.built);
         setSuggested(ids.length ? { label: `Suggested for this ${r.kind}`, ids } : null);
@@ -185,6 +188,10 @@ export function compose(o: ComposeOptions): ComposeView {
     },
     setResting(on) {
       resting.hidden = !on;
+    },
+    setNotice(text) {
+      notice.hidden = !text;
+      notice.textContent = text ?? '';
     },
     suggested: () => suggested,
   };

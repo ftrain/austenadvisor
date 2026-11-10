@@ -4,7 +4,7 @@ import { createServer, type Server } from 'node:http';
 import { existsSync, readFileSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { ROOT } from '../db.ts';
-import { match, send } from './http.ts';
+import { HttpError, match, send } from './http.ts';
 import './routes/index.ts';
 
 const MIME: Record<string, string> = {
@@ -22,15 +22,27 @@ export async function createApp(opts: { dev?: boolean; hmrPort?: number } = {}):
     vite = await createVite({ configFile: join(ROOT, 'vite.config.ts'), server: { middlewareMode: true, host: true, hmr: { port: opts.hmrPort } }, appType: 'spa' });
   }
   return createServer(async (req, res) => {
-    const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
+    let url: URL;
+    try {
+      url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
+    } catch {
+      // A Host header or path that makes no URL.
+      return send(res, 400, { error: 'bad request' });
+    }
     if (url.pathname.startsWith('/api/')) {
-      const found = match(req.method ?? 'GET', url.pathname);
-      if (!found) return send(res, 404, { error: 'no such route' });
       try {
+        const found = match(req.method ?? 'GET', url.pathname);
+        if (!found) return send(res, 404, { error: 'no such route' });
         await found.handler(req, res, found.params, url);
       } catch (e) {
+        if (e instanceof HttpError) {
+          if (!res.headersSent) send(res, e.status, { error: e.message });
+          else res.end();
+          return;
+        }
         console.error(e);
         if (!res.headersSent) send(res, 500, { error: String((e as Error).message ?? e) });
+        else res.end();
       }
       return;
     }

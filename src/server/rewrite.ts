@@ -49,10 +49,10 @@ export const EFFORT = process.env.ADVISOR_EFFORT ?? 'high';
 export const THINKING = (process.env.ADVISOR_THINKING ?? 'off') === 'on';
 
 /** The reader: a fast model that reads the passage for faults of sense before the rewrite, at the cost of a second
- * call. ADVISOR_READER=off leaves the sense check to the writer's own `sense` field. It stays on by default until
- * eval-voices shows the writer alone keeps sense and fidelity within 0.3 of the baseline (docs/eval/voices/README.md). */
-export const READER_ON = (process.env.ADVISOR_READER ?? 'on') !== 'off';
-export const READER = process.env.ADVISOR_READER_MODEL ?? (process.env.DEEPSEEK_API_KEY ? 'deepseek-flash' : MODEL);
+ * call. It runs with DEEPSEEK_API_KEY set (deepseek-flash), or with ADVISOR_READER_MODEL named; never on the writer's
+ * own model by default. ADVISOR_READER=off leaves the sense check to the writer's own `sense` field. */
+export const READER = process.env.ADVISOR_READER_MODEL ?? (process.env.DEEPSEEK_API_KEY ? 'deepseek-flash' : '');
+export const READER_ON = (process.env.ADVISOR_READER ?? 'on') !== 'off' && !!READER;
 /** The reader's client: DeepSeek's wherever its key is set, whoever writes. */
 function readerClient(main: Anthropic): Anthropic {
   return process.env.DEEPSEEK_API_KEY && PROVIDER !== 'deepseek' && READER.startsWith('deepseek')
@@ -377,7 +377,7 @@ const READ = {
 
 /** The reader (ADVISOR_READER, on by default for now): a fast model reads the passage for sense alone before it is
  * rewritten, and what it finds goes to the writer. */
-export async function readForSense(m: AuthorModel, passage: string, client: Anthropic = makeClient()): Promise<EditorNote[]> {
+export async function readForSense(m: AuthorModel, passage: string, client: Anthropic = makeClient(), onUsage: (tokens: number) => void = () => {}): Promise<EditorNote[]> {
   const a = m.author;
   const pr = pronounsOf(a);
   const system = `You are an editor. A writer's passage is about to be rewritten in the manner of ${a.title ?? a.name}; first you read it for sense, and for nothing else.
@@ -393,6 +393,8 @@ ${a.echoes?.length ? `Report too any scene of ${pr.possessive} that the passage 
     thinking: { type: 'disabled' },
     messages: [{ role: 'user', content: `<passage>\n${passage}\n</passage>\n\nRead it, then call ${READ.name}.` }],
   } as unknown as Anthropic.Beta.MessageCreateParamsNonStreaming)) as Anthropic.Beta.BetaMessage;
+  const u = response.usage ?? {};
+  onUsage((u.input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0) + (u.output_tokens ?? 0));
   const use = response.content.find((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
   const got = (use?.input ?? {}) as { sense?: EditorNote[] };
   return (got.sense ?? []).filter((x) => x?.problem?.trim() && x?.resolution?.trim());
@@ -623,8 +625,9 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
   const notes = s.notes ?? [];
   return {
     source: brief.sentences.map((x) => ({ n: x.n, paragraph: x.paragraph, text: x.text, never: x.never })),
-    sense: (s.sense ?? []).filter((x) => x.problem?.trim()),
-    liberties: (s.liberties ?? []).filter((x) => x.after?.trim() && x.why?.trim()),
+    // A writer without a strict schema may leave a field out: an item missing one is dropped, not shown broken.
+    sense: (s.sense ?? []).filter((x) => [x?.problem, x?.resolution, x?.before, x?.after].every((f) => typeof f === 'string') && x.problem.trim()),
+    liberties: (s.liberties ?? []).filter((x) => typeof x?.after === 'string' && typeof x?.why === 'string' && x.after.trim() && x.why.trim()),
     text: submissionText(s),
     paragraphs: s.paragraphs.map((p) => {
       const sourceOf = (from: number[]) => brief.sentences[Math.min(...(from ?? []).filter((n) => Number.isFinite(n))) - 1]?.paragraph ?? null;
@@ -753,7 +756,15 @@ const gistOf = (t: string) => t.split(/\s+/).slice(0, 8).join(' ').replace(/[,;:
 export async function rewriteWithAI(
   m: AuthorModel,
   passage: string | DocBlock[],
-  context: { before?: string; after?: string; instructions?: string; strength?: Strength; editor?: EditorNote[] } = {},
+  context: {
+    before?: string;
+    after?: string;
+    instructions?: string;
+    strength?: Strength;
+    editor?: EditorNote[];
+    /** Told the tokens of each paid call as it returns, the reader's too, whether or not the rewrite succeeds. */
+    spend?: (tokens: number) => void;
+  } = {},
   onProgress: (what: string, progress: RewriteProgress) => void = () => {},
   writer: WriterClient = defaultWriter(),
 ): Promise<RewriteResult> {
@@ -768,9 +779,13 @@ export async function rewriteWithAI(
   // The reader needs the provider's client; with any other writer it is skipped.
   const client = (writer as Partial<ProviderWriter>).anthropic;
   let editor = context.editor ?? [];
+  let readerTokens = 0;
   if (client && READER_ON && !context.editor) {
     tell('reading it first');
-    editor = await readForSense(m, blocks.map((b) => b.text).join('\n\n'), readerClient(client)).catch(() => []);
+    editor = await readForSense(m, blocks.map((b) => b.text).join('\n\n'), readerClient(client), (n) => {
+      readerTokens += n;
+      context.spend?.(n);
+    }).catch(() => []);
   }
   const system = systemPrompt(m);
   const tools = [SUBMIT] as unknown as Anthropic.Beta.BetaTool[];
@@ -781,8 +796,8 @@ export async function rewriteWithAI(
   let last: Submission | null = null;
   let askedAgain = false;
   // One call, and one more only on a hard failure: a sentence lost, a heading crossed, the paragraphs run together, or
-  // no rewrite submitted.
-  while (!accepted && calls < 3) {
+  // no rewrite submitted. Never more than two.
+  while (!accepted && calls < 2) {
     tell(rounds ? `drafting again (draft ${rounds + 1})` : 'writing the rewrite');
     const response = await writer.call(system, messages, tools, { model });
     calls++;
@@ -791,6 +806,7 @@ export async function rewriteWithAI(
     usage.cached += u.cache_read_input_tokens ?? 0;
     usage.cacheWrite += u.cache_creation_input_tokens ?? 0;
     usage.output += u.output_tokens ?? 0;
+    context.spend?.((u.input_tokens ?? 0) + (u.cache_read_input_tokens ?? 0) + (u.cache_creation_input_tokens ?? 0) + (u.output_tokens ?? 0));
     if (response.stop_reason === 'refusal') throw new Error('The model declined to rewrite this passage.');
     messages.push({ role: 'assistant', content: response.content as Anthropic.Beta.BetaContentBlockParam[] });
     const uses = response.content.filter((b): b is Anthropic.Beta.BetaToolUseBlock => b.type === 'tool_use');
@@ -818,6 +834,8 @@ export async function rewriteWithAI(
     if (accepted) break;
     messages.push({ role: 'user', content: results });
   }
+  // The reader's tokens count with the writer's.
+  usage.input += readerTokens;
   const sub = accepted ?? last;
   if (!sub) throw new Error('The model gave no rewrite.');
   repairWords(m, brief, sub);

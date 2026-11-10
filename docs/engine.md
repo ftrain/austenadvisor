@@ -1,13 +1,13 @@
 # How Advisor reads
 
-Advisor is a model of one author, built from that author's complete works and nothing else (apart from English's dictionary and grammar). It answers four questions about every word and sentence you write:
+Each voice in Advisor is a model of one author, built from that author's complete works and nothing else (apart from English's dictionary and grammar). It answers four questions about every word and sentence you write:
 
 1. Would the author have written this word?
 2. If not, which of the author's words would stand in its place?
 3. How does this sentence, paragraph or chapter compare with the author's?
 4. Where can I see the author doing it?
 
-There is no language model anywhere in the engine. Each answer comes from counts, and each comes with the counts and the author's own sentences, cited. "Rewrite with AI" is a separate step that sits on top of the engine (below).
+There is no language model anywhere in the engine. Each answer comes from counts, and each comes with the counts and the author's own sentences, cited. The rewrite is a separate step on top of the engine (below).
 
 ## The build: `npm run build:model -- austen`
 
@@ -21,7 +21,7 @@ There is no language model anywhere in the engine. Each answer comes from counts
 | Vocabulary | Every word: how many times, in narration and in speech, by work, by tag. Every lemma: the forms the author gave it, by tag (*walk*: walked VBD 215, walking VBG 157…). | `words`, `forms` |
 | Language model | Trigram counts of the author's sentences, punctuation included. The model is smoothed when it is read, by interpolated Kneser–Ney with Ney's discounts. | `src/nlp/kn.ts` |
 | Tag model | Trigram counts of the tags, for how sentences are built. | `tag_trigrams` |
-| Vectors | Words seen five times or more. Weighted co-occurrence within five words, positive PMI with context-distribution smoothing (α = 0.75), randomized SVD to 100 dimensions, U·√Σ, unit length. These are the author's own semantic space: in Austen's, *angry* is nearest *vexed, pleased, disappointed, astonished, ashamed*. | `src/nlp/linalg.ts`, `vectors` |
+| Vectors | Words seen five times or more. Weighted co-occurrence within five words, positive PMI with context-distribution smoothing (α = 0.75), randomized SVD to 100 dimensions, U·√Σ, unit length. These are the author's own semantic space: in Austen's, *angry* is nearest *vexed, pleased, disappointed, astonished, ashamed*; in Twain's, *reckon* sits beside *maybe, ain't, bet*. | `src/nlp/linalg.ts`, `vectors` |
 | Profile | Sentence length (narration and speech separately), paragraph length, punctuation per sentence, how clauses are joined (", and" 10,813×; "; and" 4,156×), how narrative sentences open, contractions in narration and speech, -ly adverbs, and the 150 commonest words with their mean and spread over 2,000-word stretches (for Delta). | `meta.profile` |
 
 ## Reading your text
@@ -90,7 +90,7 @@ The page asks the engine everything it can answer without a model call. These mo
 | `src/server/read.ts` | The engine's view of a text against one voice (`/api/read`): kind and roles, up to five words the voice never wrote with its own word where the engine is sure, a style line (words a sentence and one joining mark against the voice's), the suggested voices, and the shape sketches. |
 | `src/engine/notes.ts` | The Why column. For each paragraph of a rewrite it compares every new sentence with the student's sentences it renders, finds the moves and figures the new one makes that the old did not, and quotes a sentence of the voice's that makes the same move, with the move's words marked. At most two notes a paragraph, and no move twice on a page. `moveKey` gives every name of a move one id ("understatement" is litotes). |
 | `src/engine/practice.ts` | Try it. `practiceCheck` reads a student's attempt at a move with the same detector that checks the notes, and says whether the move is there, its length against the voice's, what else it does and which words the voice never used; a miss gets a hint and an example. `drillsFor` chooses what to practise: after a rewrite, only moves the rewrite was shown to make; with none, only gaps the engine finds (sentences much shorter than the voice's, no joined clauses, no move at all). |
-| `src/engine/glossary.ts`, `terms.ts` | The glossary: 109 terms, each one plain sentence, most with an example, written to `data/glossary.sqlite`. `findTerms` finds them in any text, so the page can underline a term where it is used. |
+| `src/engine/glossary.ts`, `terms.ts` | The glossary: 115 terms, each one plain sentence, most with an example, written to `data/glossary.sqlite`. `findTerms` finds them in any text, so the page can underline a term where it is used. |
 | `src/server/routes/guess.ts` | The guessing game: a sentence from one of three voices, and after a guess, the words that gave it away. The rounds come from the packs. |
 
 ## The rewrite (`src/engine/brief.ts`, `src/server/rewrite.ts`, `src/server/page.ts`)
@@ -147,5 +147,3 @@ npm run build:model -- <id>       # the corpus and the model, data/<id>.sqlite
 node scripts/build-packs.ts       # every pack again: signature words and the guessing game measure each voice against the rest
 node scripts/index-samples.ts     # a sample that lists the voice under pending moves it to bestVoices
 ```
-
-In Twain's space, *reckon* sits beside *maybe, ain't, bet*.

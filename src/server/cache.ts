@@ -286,7 +286,15 @@ const samplesIn = (dir: string) => {
 /** The share of tokens a text may differ from a sample by and still be served the sample's rewrite. */
 export const NEAR = 0.03;
 
-/** The sample rewrite a text is, or nearly is, in this voice; null when there is none. */
+const wordsOnly = (tokens: string[]) => tokens.filter((t) => /[\p{L}\p{N}]/u.test(t));
+const sameWords = (a: string[], b: string[]) => {
+  const x = wordsOnly(a);
+  const y = wordsOnly(b);
+  return x.length === y.length && x.every((w, i) => w === y[i]);
+};
+
+/** The sample rewrite a text is, or nearly is, in this voice; null when there is none. Nearly means the same words,
+ * with no more than 3% of the marks between them changed: a changed word is the writer's own, and is written. */
 export function findPrecomputed(voice: string, text: string, dir = precomputedRoot()): (PrecomputedFile & { exact: boolean }) | null {
   const hash = textHash(text);
   const mine = tokensOf(text);
@@ -301,7 +309,7 @@ export function findPrecomputed(voice: string, text: string, dir = precomputedRo
     }
     const max = Math.floor(NEAR * Math.max(mine.length, e.tokens.length));
     const d = tokenDistance(mine, e.tokens, max);
-    if (d <= max && (!best || d < best.d)) best = { e, d };
+    if (d <= max && (!best || d < best.d) && sameWords(mine, e.tokens)) best = { e, d };
   }
   if (!best) return null;
   try {

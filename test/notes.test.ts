@@ -7,7 +7,7 @@ import { describe, expect, it } from 'vitest';
 import { authorDbPath } from '../src/db.ts';
 import { findTerms, Glossary, rolesOf, termOf } from '../src/engine/glossary.ts';
 import { AuthorModel } from '../src/engine/model.ts';
-import { notesFor, type EngineNote, type NoteRow } from '../src/engine/notes.ts';
+import { moveKey, notesFor, type EngineNote, type NoteRow } from '../src/engine/notes.ts';
 
 /** Fixture rows for each voice: a rewrite that makes moves, and a sentence left as the writer wrote it. */
 const FIXTURES: Record<string, NoteRow[]> = {
@@ -128,6 +128,12 @@ describe.skipIf(!voices.length)('notes written by the engine', () => {
 });
 
 describe('the glossary’s aliases and roles', () => {
+  it('never gives a move a role’s definition', () => {
+    expect(moveKey('turn')).toBe('turn');
+    expect(moveKey('objection', 'The objection met')).toBe('objection');
+    expect(moveKey('litotes')).toBe(termOf('litotes')!.id);
+  });
+
   const g = Glossary.load(join(mkdtempSync(join(tmpdir(), 'glossary-')), 'glossary.sqlite'));
 
   it('resolves litotes and understatement to one term', () => {

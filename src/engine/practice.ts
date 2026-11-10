@@ -143,7 +143,7 @@ function figureHint(id: string, example?: string): string {
     antithesis: 'Try “not …, but …”: “It was not the money that hurt, but the silence.”',
     litotes: 'Say less than you mean with a negative: “not unkind”, “no small thing”.',
     tricolon: 'Give three of the same kind in a row: “tired, hungry, and late”.',
-    polysyndeton: 'Join four things with “and” each time: “and the rain and the wind and the dark”.',
+    polysyndeton: 'Join four things with “and” between each: “the rain and the wind and the cold and the dark”.',
     anaphora: 'Start three clauses with the same word: “We tried; we waited; we failed.”',
     parenthesis: 'Set a remark inside the sentence with dashes: “The test—I admit it—was fair.”',
     inversion: 'Put the describing word first: “Small comfort was it to us.”',

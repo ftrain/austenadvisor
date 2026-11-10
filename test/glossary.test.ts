@@ -19,6 +19,11 @@ describe('the glossary', () => {
     expect(g.define('nonsense')).toBeNull();
   });
 
+  it('defines the terms the voices’ notes use', () => {
+    for (const t of ['mock-heroic', 'epizeuxis', 'participles', 'Intensifiers', 'premise', 'Analogy'])
+      expect(findTerms(entries, `The ${t} here.`).length, t).toBe(1);
+  });
+
   it('searches the definitions', () => {
     expect(g.search('three parallel').map((t) => t.id)).toContain('tricolon');
     expect(g.search('objection').map((t) => t.id)).toEqual(expect.arrayContaining(['refutation', 'procatalepsis']));

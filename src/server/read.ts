@@ -197,7 +197,8 @@ const round1 = (x: number) => Math.round(x * 10) / 10;
 /** Words a sentence and one joining mark, the student's against the voice's. */
 function styleOf(short: string, sents: Sent[], lengths: { narration: Dist; dialogue: Dist }, punct: Record<string, number>): StyleLine {
   const counts = sents.map((s) => s.toks.slice(s.from, s.to).filter((t) => t.kind === 'word').length);
-  const dist = lengths.narration.n >= lengths.dialogue.n ? lengths.narration : lengths.dialogue;
+  // The voice's narration, as Try it uses: a novelist's dialogue runs far shorter. Dialogue only for a voice with none.
+  const dist = lengths.narration.n ? lengths.narration : lengths.dialogue;
   const n = sents.length;
   const marks = MARKS.map((x) => {
     const used = sents.reduce((a, s) => a + s.toks.slice(s.from, s.to).filter((t) => t.kind === 'punct' && (t.norm === x.mark || (x.mark === '—' && /^(—|–|-{2,})$/.test(t.text)))).length, 0);

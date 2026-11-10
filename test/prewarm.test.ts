@@ -16,7 +16,7 @@ const { builtVoices, check, judged, pairsOf, prewarm, problemOf, samplesOf, stat
 const { chooseTiers } = await import('../scripts/tiers.ts');
 const { PROMPT_VERSION, submitted } = await import('../src/server/rewrite.ts');
 const { collectRewrite } = await import('../src/server/page.ts');
-const { RewriteCache } = await import('../src/server/cache.ts');
+const { findPrecomputed, RewriteCache } = await import('../src/server/cache.ts');
 const { AuthorModel } = await import('../src/engine/model.ts');
 type WriterClient = import('../src/server/rewrite.ts').WriterClient;
 type Line = { type: string; [k: string]: unknown };
@@ -211,11 +211,14 @@ describe.skipIf(!built)('made ahead through the real rewrite, then served with n
       expect(got[0]).toMatchObject({ type: 'progress', kept: 'sample', sample: s.id, exact: true, calls: 0 });
       expect(got.some((l) => l.type === 'part' && Array.isArray(l.rows) && (l.rows as { hers?: unknown }[]).some((row) => Array.isArray(row.hers)))).toBe(true);
     }
-    // One word changed: still within 3%, still no call.
+    // One mark changed: the same words, still no call.
     const words = samples[0]!.text.split(' ');
     const k = words.findIndex((w) => /^[a-z]{4,}$/.test(w));
-    const near = [...words.slice(0, k), 'zebra', ...words.slice(k + 1)].join(' ');
-    const got = await collectRewrite(austen, near, { writer: throwing, cache: null, precomputed: dir });
+    const marked = [...words.slice(0, k), `${words[k]},`, ...words.slice(k + 1)].join(' ');
+    const got = await collectRewrite(austen, marked, { writer: throwing, cache: null, precomputed: dir });
     expect(got[0]).toMatchObject({ kept: 'sample', sample: samples[0]!.id, exact: false });
+    // One word changed: the writer's own words, so not the sample's rewrite.
+    const changed = [...words.slice(0, k), 'zebra', ...words.slice(k + 1)].join(' ');
+    expect(findPrecomputed('austen', changed, dir)).toBeNull();
   });
 });

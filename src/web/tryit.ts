@@ -73,7 +73,7 @@ export function tryIt(o: TryItOptions): HTMLElement {
     'div',
     { class: 'pg-tryit', role: 'group', 'aria-label': `Try it: ${o.name}` },
     h('div', { class: 'pg-try-col' }, h('p', { class: 'pg-label' }, 'Yours'), h('p', { class: 'pg-try-yours' }, o.sentence)),
-    h('div', { class: 'pg-try-col' }, h('label', { class: 'pg-label', for: id }, `Your try: write it again with ${o.name.toLowerCase()}`), box, h('div', { class: 'pg-try-buttons' }, check, close)),
+    h('div', { class: 'pg-try-col' }, h('label', { class: 'pg-label', for: id }, `Your try: write it again with this move: ${o.name}`), box, h('div', { class: 'pg-try-buttons' }, check, close)),
     h('div', { class: 'pg-try-col' }, h('p', { class: 'pg-label' }, 'Why'), why),
   );
 }

@@ -113,6 +113,37 @@ describe.skipIf(!built)('rewriteWithAI with a fake writer', () => {
     const writer = fakeWriter([{ content: [], stop_reason: 'refusal' }]);
     await expect(rewriteWithAI(austen, fixture('sister-car').text, {}, () => {}, writer)).rejects.toThrow(/declined/);
   });
+
+  it('counts the tokens of every call as it returns, even when the rewrite fails', async () => {
+    const paid = (a: WriterAnswer): WriterAnswer => ({ ...a, usage: { input_tokens: 100, output_tokens: 10 } });
+    let spent = 0;
+    const spend = (n: number) => (spent += n);
+    await expect(rewriteWithAI(austen, fixture('sister-car').text, { spend }, () => {}, fakeWriter([paid({ content: [], stop_reason: 'refusal' })]))).rejects.toThrow(/declined/);
+    expect(spent).toBe(110);
+    spent = 0;
+    await expect(rewriteWithAI(austen, fixture('sister-car').text, { spend }, () => {}, fakeWriter([paid(noTool), paid(noTool)]))).rejects.toThrow('The model gave no rewrite.');
+    expect(spent).toBe(220);
+  });
+
+  it('makes two writer calls at most, taking the draft it has after a nudge', async () => {
+    const f = fixture('sister-car');
+    const lost = structuredClone(f.submission);
+    lost.paragraphs[0]!.sentences.pop();
+    const writer = fakeWriter([noTool, submitted(lost as unknown as Record<string, unknown>), submitted(f.submission as unknown as Record<string, unknown>)]);
+    const r = await rewriteWithAI(austen, f.text, {}, () => {}, writer);
+    expect(writer.calls).toHaveLength(2);
+    expect(r.rounds).toBe(1);
+  });
+
+  it('drops a sense note or liberty with a field missing, as a writer without a strict schema may send', async () => {
+    const f = fixture('sister-car');
+    const sub = structuredClone(f.submission) as Submission & Record<string, unknown>;
+    sub.sense = [{ problem: 'Unclear who.' } as never, { problem: 'Whose car?', resolution: 'The sister’s.', before: 'my car', after: 'my car' }];
+    sub.liberties = [{ after: 'without asking' } as never];
+    const r = await rewriteWithAI(austen, f.text, {}, () => {}, fakeWriter([submitted(sub as unknown as Record<string, unknown>)]));
+    expect(r.sense.map((x) => x.problem)).toEqual(['Whose car?']);
+    expect(r.liberties).toEqual([]);
+  });
 });
 
 /** A response that keeps what the page is sent. */
@@ -145,6 +176,23 @@ describe.skipIf(!built)('streamRewrite and its cache', () => {
   const cache = new RewriteCache(':memory:');
   const opts = { cache, precomputed: null };
   afterEach(() => useWriter(null));
+
+  it('rewrites no more than the word cap and the part limit allow', async () => {
+    const f = fixture('sister-car');
+    const writer = fakeWriter(Array.from({ length: 20 }, () => submitted(f.submission as unknown as Record<string, unknown>)));
+    useWriter(writer);
+    // One paragraph longer than the cap by itself is not sent.
+    const long = fakeResponse();
+    await streamRewrite(long.res, austen, Array.from({ length: 1300 }, () => 'word').join(' ') + '.', '', false, opts);
+    expect(writer.calls).toHaveLength(0);
+    expect(long.lines().find((l) => l.type === 'part')).toMatchObject({ resting: 'long' });
+    // Headings make a part of every short paragraph; only the first three are sent.
+    const many = fakeResponse();
+    await streamRewrite(many.res, austen, Array.from({ length: 8 }, (_x, i) => `# Section ${i + 1}\n\nWe went home at ${i + 1}.`).join('\n\n'), '', false, opts);
+    const parts = many.lines().filter((l) => l.type === 'part');
+    expect(parts.filter((l) => l.resting === 'long')).toHaveLength(5);
+    expect(writer.calls.length).toBeLessThanOrEqual(3 * 2);
+  });
 
   it('calls the writer on a miss, keeps the result, and serves it again without a call', async () => {
     const f = fixture('sister-car');

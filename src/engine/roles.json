@@ -27,7 +27,7 @@
     "name": "Answer",
     "definition": "The writer’s reply to an objection. Example: “But responsibility is learned in other ways too.”",
     "opens": "begins with a reply",
-    "then": "answers it"
+    "then": "answers the other side"
   },
   "call": {
     "name": "Call",
@@ -44,7 +44,7 @@
   "scene": {
     "name": "Scene",
     "definition": "The place, time and people of a story, set down before anything happens. Example: “The party was at Jessica’s house.”",
-    "opens": "begins from something that happened",
+    "opens": "begins by setting the scene",
     "then": "sets the scene"
   },
   "turn": {
@@ -61,8 +61,8 @@
   },
   "verdict": {
     "name": "Verdict",
-    "definition": "The writer’s judgment of what the story meant, usually at the end. Example: “Maybe I was wrong about him.”",
-    "opens": "begins with the judgment",
+    "definition": "The writer’s judgement of what the story meant, usually at the end. Example: “Maybe I was wrong about him.”",
+    "opens": "begins with the judgement",
     "then": "says what it meant"
   },
   "greeting": {

@@ -46,10 +46,10 @@
     {
       "id": "balance",
       "name": "Balanced clauses in one long sentence",
-      "does": "Two or more clauses held in one sentence by “, and”, “; but” or “, which”, with the main point at the end. A short sentence is kept for a turn or a verdict.",
+      "does": "Two or more clauses held in one sentence by “, and”, “; but” or “, which”. A short sentence is kept for a turn or a verdict.",
       "pattern": "(;\\s+(and|but|for|yet)\\b)|(,\\s+and\\b.*;)",
       "register": "narration",
-      "hint": "Join two clauses with “, and” or “; but”, and save the main point for the end of the sentence."
+      "hint": "Join two clauses of about the same length with “, and” or “; but”."
     },
     {
       "id": "judgement",
