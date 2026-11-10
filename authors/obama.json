@@ -46,44 +46,61 @@
       "name": "From what happened to what we do",
       "does": "The turn from the story to its meaning and purpose: “That’s why…”, “And that’s what…”.",
       "pattern": "\\b(that’s why|that's why|that is why|and that’s what|that’s what|which is why)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "After the story, turn with “That’s why …”."
     },
     {
       "id": "antithesis",
       "name": "Not this, but that",
       "does": "A claim turned by its opposite: not because it was easy, but because it was right.",
       "pattern": "\\bnot (because|just|only|about|that)\\b[^.]*\\bbut\\b|\\bisn’t\\b[^.]*\\bit’s\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Try “not because …, but because …”."
     },
     {
       "id": "one",
       "name": "One American’s story",
       "does": "One person, named with a detail, standing for many.",
       "pattern": "\\b(a woman named|a man named|a young (man|woman) named|wrote (me|to me)|I met|I think of|people like)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Name one person and one detail: “A woman named …, who …”."
     },
     {
       "id": "plain",
       "name": "Plain talk to the listener",
       "does": "The speaker turns to the listener: “Here’s the thing.” “Let me be clear.” “Folks.”",
       "pattern": "\\b(here’s the thing|here's the thing|let me be clear|folks|everybody|make no mistake|I’ll be honest)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Speak to the listener once: “Here’s the thing.”"
     },
     {
       "id": "we",
       "name": "The shared “we”",
       "does": "What belongs to all of us: together, as a country, who we are.",
       "pattern": "\\b(together|all of us|as Americans|as a country|as a nation|who we are|each other|one another)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Widen “I” to “we”: “together”, “all of us”."
     },
     {
       "id": "three",
       "name": "Building in threes",
       "does": "Three parallel phrases that build to the point.",
       "pattern": "\\b(\\w+), (\\w+),? and (\\w+)\\b|\\b(we|it|you)\\b[^.]{3,40}\\. \\1\\b[^.]{3,40}\\. \\1\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Build three phrases of the same shape: “…, …, and …”."
     }
   ],
+  "family": "speakers",
+  "goodFor": [
+    "speech",
+    "argument",
+    "essay"
+  ],
+  "license": {
+    "source": "The Obama White House archive (obamawhitehouse.archives.gov)",
+    "note": "Speeches and weekly addresses of the President, works of the US government: public domain in the US (17 U.S.C. § 105). The voice is a model of the style, not his words.",
+    "basis": "government"
+  },
   "works": [
     {
       "id": "weekly",

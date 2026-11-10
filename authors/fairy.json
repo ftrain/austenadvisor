@@ -46,44 +46,59 @@
       "name": "Once upon a time",
       "does": "The tale opened as tales open: once upon a time, there was once, long ago.",
       "pattern": "\\b(once upon a time|there was once|there lived|long, long ago|long ago|in the days when)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Open with “Once upon a time there was …”."
     },
     {
       "id": "three",
       "name": "Things in threes",
       "does": "Three sons, three tasks, three nights: the pattern a listener can feel coming.",
       "pattern": "\\b(three|third|thrice)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Give three of something: three sons, three tasks, three nights."
     },
     {
       "id": "then",
       "name": "And so, and then",
       "does": "One thing after another, joined plainly by “and”, “so” and “then”.",
       "pattern": "^\\W*(So|Then|Now|And|But|At last)\\b|\\b(and so|and then|so then)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Join the events in order with “and then” and “so”."
     },
     {
       "id": "said",
       "name": "Speech that drives the tale",
       "does": "Quick quoted speech, its speaker named after it: “…,” said the king.",
       "pattern": "[,!?]”\\s*(said|cried|answered|replied|asked)\\s+(the\\s+)?\\w+",
-      "register": "any"
+      "register": "any",
+      "hint": "Put the speaker after the words: “…,” said the king."
     },
     {
       "id": "roles",
       "name": "People by their place",
       "does": "People called by their place in the story: the king, the youngest son, the old woman, the miller’s daughter.",
       "pattern": "\\bthe (king|queen|prince|princess|youngest|eldest|old woman|old man|miller|woodcutter|stepmother|giant|witch|fisherman)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Call a person by their place in the story: the miller’s daughter, the youngest son."
     },
     {
       "id": "ending",
       "name": "The happy ending",
       "does": "The tale closed: they lived happily ever after, and if they are not dead they are living still.",
       "pattern": "\\b(lived happily|happy ever|ever after|to this day|and they were married|for ever after)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Close with “and they lived happily ever after.”"
     }
   ],
+  "family": "storytellers",
+  "goodFor": [
+    "story"
+  ],
+  "license": {
+    "source": "Project Gutenberg, by way of the GITenberg mirror",
+    "note": "Andrew Lang’s Fairy Books, published 1889–1910: public domain in the US.",
+    "basis": "age"
+  },
   "works": [
     {
       "id": "blue",

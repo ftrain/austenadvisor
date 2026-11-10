@@ -49,44 +49,60 @@
       "name": "Apostrophe",
       "does": "The speaker turns to address someone absent, or a thing, a night, a feeling: “O, that this too too solid flesh would melt”.",
       "pattern": "(^|[.!?;:]\\s+|—)\\s*O[,!]?\\s+\\w+|\\bO\\s+(thou|you|that|my|what|how)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Speak to something absent: “O night, …”."
     },
     {
       "id": "thou",
       "name": "Thou and thee",
       "does": "The intimate or contemptuous singular, and its verbs: thou art, thou hast, thy, thine.",
       "pattern": "\\b(thou|thee|thy|thine|art thou|hast|dost|wilt|shalt|hath|doth)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Speak to one person as “thou”: “thou art”, “thy face”."
     },
     {
       "id": "antithesis",
       "name": "Antithesis",
       "does": "A thing set against its opposite in balanced words: “Fair is foul, and foul is fair.”",
       "pattern": "\\bnot\\b[^.]{1,40}\\bbut\\b|\\b(\\w+) is (\\w+),? and \\2 is \\1\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Set two opposites in words of the same shape: “… is …, and … is …”."
     },
     {
       "id": "image",
       "name": "The image",
       "does": "A feeling or thing given as a metaphor or simile, and the image followed out: “a sea of troubles”.",
       "pattern": "\\b(like|as) (a|an|the) \\w+|\\b(a|the) (sea|sun|storm|flower|rose|star|wound|crown|fire|tempest|night) of\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Give the feeling as a thing, then say what that thing does: “my grief is a tide that …”."
     },
     {
       "id": "question",
       "name": "The question turned over",
       "does": "The speaker puts a question to himself or the hearer and answers it: the soliloquy’s engine.",
       "pattern": "\\?\\s+\\S",
-      "register": "any"
+      "register": "any",
+      "hint": "Ask yourself a question, then answer it."
     },
     {
       "id": "interjection",
       "name": "Oaths and interjections",
       "does": "The speech of his people: alas, fie, marry, faith, prithee, forsooth, alack.",
       "pattern": "\\b(alas|fie|marry|faith|zounds|i’faith|forsooth|prithee|alack|ay me|by my troth|go to)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Start a line with “Alas,” or “Fie,”."
     }
   ],
+  "family": "speakers",
+  "goodFor": [
+    "speech",
+    "story"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for the plays; Project Gutenberg ebook 100 for the sonnets",
+    "note": "Written 1590–1613 and published by 1623: public domain in the US.",
+    "basis": "age"
+  },
   "works": [
     {
       "id": "amidsummernightsdream",

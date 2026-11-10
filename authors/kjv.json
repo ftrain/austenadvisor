@@ -75,58 +75,76 @@
       "name": "Clauses laid side by side with “and”",
       "does": "Clause after clause joined by “and”, sentence after sentence opened by it, where English now would subordinate: “And God said, Let there be light: and there was light.”",
       "pattern": "^\\W*and\\b|[:;,]\\s+and\\b[^.]*[:;,]\\s+and\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Begin a sentence with “And”, and join its clauses with “and”."
     },
     {
       "id": "cametopass",
       "name": "And it came to pass",
       "does": "A new turn of the story opened by “And it came to pass”, or closed by “and it was so”.",
       "pattern": "\\b(it came to pass|it was so|it shall come to pass)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Open the next event with “And it came to pass, when …”."
     },
     {
       "id": "thou",
       "name": "Thou and thee, -eth and -est",
       "does": "The singular you as thou, thee, thy, thine, the plural as ye; the verb in -est after thou and in -eth for he and she: “thou knowest”, “he goeth”.",
       "pattern": "\\b(thou|thee|thy|thine|ye|hath|doth|saith|shalt|wilt|hast|dost|art\\s+thou|\\w{3,}eth)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Speak to one person as “thou”: “thou knowest”, “thy house”."
     },
     {
       "id": "behold",
       "name": "Behold, lo, verily",
       "does": "Attention called with “behold” or “lo”, an oath with “verily”.",
       "pattern": "\\b(behold|lo|verily)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Call attention with “Behold,” at the head of a sentence."
     },
     {
       "id": "unto",
       "name": "Unto, thereof, wherefore",
       "does": "The old prepositions and adverbs: unto, upon, thereof, therein, wherefore, whither, thence, hither, yea, nay.",
       "pattern": "\\b(unto|thereof|therein|wherefore|whither|thence|hither|yea|nay|whereupon|thereupon)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Use one old word: “unto”, “thereof” or “wherefore”."
     },
     {
       "id": "saidunto",
       "name": "Speech brought in by “said unto”",
       "does": "Speech introduced plainly, without quotation marks, by “And he said unto them,” and given in full.",
       "pattern": "\\b(said|spake|answered|saith|cried)\\b[^,:]{0,30}\\b(unto|to)\\s+\\w+[,:]",
-      "register": "any"
+      "register": "any",
+      "hint": "Bring in speech with “And he said unto them,” and no quotation marks."
     },
     {
       "id": "parallel",
       "name": "Parallelism",
       "does": "One thought said twice, the second half echoing the first in other words, the halves divided by a colon or semicolon: “Pride goeth before destruction, and an haughty spirit before a fall.”",
       "pattern": "^[^:;]{12,}[:;]\\s*(and|but|for|yet)?\\s*[^:;]{12,}$",
-      "register": "any"
+      "register": "any",
+      "hint": "Say a thought, then say it again in other words after a semicolon."
     },
     {
       "id": "of",
       "name": "The genitive with “of”",
       "does": "Possession and kind given by “of”: “the house of the LORD”, “the children of Israel”, “the day of his wrath”, not “the LORD’s house”.",
       "pattern": "\\bthe\\s+\\w+\\s+of\\s+(the\\s+|his\\s+|my\\s+|thy\\s+)?\\w+",
-      "register": "any"
+      "register": "any",
+      "hint": "Show possession with “of”: “the house of my father”."
     }
   ],
+  "family": "speakers",
+  "goodFor": [
+    "speech",
+    "story"
+  ],
+  "license": {
+    "source": "Project Gutenberg ebook 30, by way of the GITenberg mirror",
+    "note": "Published 1611: public domain in the US.",
+    "basis": "age"
+  },
   "works": [
     {
       "id": "genesis",

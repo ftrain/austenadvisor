@@ -46,37 +46,52 @@
       "name": "Vernacular voice",
       "does": "The narrator talks as he would, grammar and all, and the joke is in the voice.",
       "pattern": "\\b(ain't|warn't|reckon|kinder|considerable|powerful|ever so|says I)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Write as you talk: “I reckon it was …”."
     },
     {
       "id": "deadpan",
       "name": "Deadpan",
       "does": "The absurd stated flatly, the punch line last and never explained.",
       "pattern": "\\b(of course|naturally|I judged|it was no use)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "State the absurd thing flatly, put it last, and leave it unexplained."
     },
     {
       "id": "cumulative",
       "name": "Cumulative sentence",
       "does": "A long run of “and … and …” building to a turn.",
       "pattern": "\\band\\b[^.]*\\band\\b[^.]*\\band\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Chain events with “and … and … and”, then turn."
     },
     {
       "id": "tall",
       "name": "Exaggeration with a straight face",
       "does": "An impossible number or comparison stated as plain fact.",
       "pattern": "\\b(million|thousand|hundred|forty|ninety|biggest|never was|in the world|in creation|since the flood)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Give an impossible number as plain fact: “It rained for forty days.”"
     },
     {
       "id": "aside",
       "name": "The narrator’s aside",
       "does": "The teller breaks off to comment, confide or correct himself: “I reckon”, “I judge”, “which is”.",
       "pattern": "\\b(I reckon|I judge|I allow|you see|you know|which is|which was|and that is|so to speak)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Break off to comment: “I judge”, “which is the truth”."
     }
   ],
+  "family": "storytellers",
+  "goodFor": [
+    "story",
+    "essay"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1869–1896: public domain in the US.",
+    "basis": "age"
+  },
   "works": [
     {
       "id": "innocents",

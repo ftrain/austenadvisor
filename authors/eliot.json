@@ -45,37 +45,52 @@
       "name": "The narrator’s “we”",
       "does": "The narrator steps back from the case to what is true of us all: “We are all of us born in moral stupidity.”",
       "pattern": "\\b(we are all|we all|all of us|who of us|which of us|we mortals|our human|most of us)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Step back from the person to everyone: “We are all of us …”."
     },
     {
       "id": "inward",
       "name": "The inner life, from inside",
       "does": "What a person feels and half-knows, given with sympathy from within.",
       "pattern": "\\b(she felt|he felt|her mind|his mind|consciousness|her soul|his soul|she was conscious|he was conscious|inward)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Give one thought the person only half knows: “She did not yet know that she …”."
     },
     {
       "id": "analogy",
       "name": "Analogy from science and nature",
       "does": "An inward thing made visible by a likeness from science, nature or work.",
       "pattern": "\\b(as if|like a|like the|as a|as the)\\b[^.]{0,60}\\b(water|light|plant|seed|river|web|glass|lens|current|tide|stream|root|thread)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Show a feeling by a likeness from nature or work: “as a seed …”, “like a lens …”."
     },
     {
       "id": "moral",
       "name": "Moral nouns",
       "does": "The moral weather named in abstract nouns: duty, egoism, sympathy, vanity, conscience, ardour.",
       "pattern": "\\b(duty|egoism|sympathy|vanity|conscience|ardour|resignation|self-|scruple|motive|piety|fellow-feeling)\\b",
-      "register": "any"
+      "register": "any",
+      "hint": "Name the moral quality at stake in one noun: duty, vanity, sympathy."
     },
     {
       "id": "qualified",
       "name": "The qualified period",
       "does": "A long sentence that corrects and qualifies itself as it goes.",
       "pattern": "\\b(which|whose|whom)\\b[^.]*;[^.]*\\b(and|but|for)\\b",
-      "register": "narration"
+      "register": "narration",
+      "hint": "Write a long sentence that corrects itself as it goes: “…, or rather …”, “…, though …”."
     }
   ],
+  "family": "storytellers",
+  "goodFor": [
+    "story",
+    "essay"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1860–1876: public domain in the US.",
+    "basis": "age"
+  },
   "works": [
     {
       "id": "mill",

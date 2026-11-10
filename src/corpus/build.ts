@@ -5,7 +5,7 @@ import type { DatabaseSync } from 'node:sqlite';
 import { join } from 'node:path';
 import { DATA, setMeta, tx } from '../db.ts';
 import { sentences, tokenize, wordCount } from '../nlp/tokenize.ts';
-import { readWork, type AuthorConfig } from './sources.ts';
+import { readWork, sourceUrl, type AuthorConfig } from './sources.ts';
 
 export const CORPUS_SCHEMA = `
 CREATE TABLE IF NOT EXISTS meta (key TEXT PRIMARY KEY, value TEXT NOT NULL);
@@ -49,7 +49,7 @@ export function buildCorpus(db: DatabaseSync, author: AuthorConfig, log = consol
     );
     author.works.forEach((work, wi) => {
       const chapters = readWork(work, sourcesDir);
-      insWork.run(work.id, wi, work.title, work.year, work.source.type === 'speeches' ? work.source.url : `https://github.com/${work.source.repo}`);
+      insWork.run(work.id, wi, work.title, work.year, sourceUrl(work));
       counts.works++;
       let workWords = 0;
       chapters.forEach((ch, ci) => {
