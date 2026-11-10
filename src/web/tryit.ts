@@ -27,6 +27,18 @@ export function tryIt(o: TryItOptions): HTMLElement {
   const check = button('Check', () => void run(), { class: 'pg-btn pg-btn-main' });
   const close = button('Close', () => o.onClose());
 
+  /** The voice's own words for the ones it never wrote. A word the verdict already names gets only its substitute. */
+  function neverLine(c: PracticeCheck): string {
+    return c.never
+      .map((w) => {
+        const named = (c.verdict ?? '').includes(`“${w.word}”`);
+        if (named) return w.theirs.length ? `For “${w.word}”, try “${w.theirs[0]}”.` : '';
+        return `${o.voice.short} never wrote “${w.word}”${w.theirs.length ? `; try “${w.theirs[0]}”` : ''}.`;
+      })
+      .filter(Boolean)
+      .join(' ');
+  }
+
   async function run() {
     const text = box.value.trim();
     if (!text) return box.focus();
@@ -42,9 +54,7 @@ export function tryIt(o: TryItOptions): HTMLElement {
           h('p', { class: `pg-verdict ${made ? 'pg-ok' : 'pg-notyet'}` }, ...o.terms.defined(c.verdict || (made ? 'Yes.' : 'Not yet.'))),
           made ? h('p', { class: 'pg-muted' }, 'Kept in Your moves.') : null,
           c.also.length ? h('p', { class: 'pg-try-also' }, ...o.terms.defined(`Also in it: ${c.also.join(', ')}.`)) : null,
-          c.never.length
-            ? h('p', { class: 'pg-try-also' }, ...c.never.flatMap((w, i) => [i ? ' ' : '', `${o.voice.short} never wrote “${w.word}”${w.theirs.length ? `; try “${w.theirs[0]}”` : ''}.`]))
-            : null,
+          neverLine(c) ? h('p', { class: 'pg-try-also' }, neverLine(c)) : null,
           !made && c.move?.example ? h('blockquote', { class: 'pg-q' }, `“${c.move.example.text}”`, ' ', h('cite', {}, c.move.example.cite)) : null,
         ],
       );

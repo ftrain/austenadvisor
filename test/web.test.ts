@@ -188,4 +188,18 @@ describe('the page', () => {
     await vi.waitFor(() => expect(row.querySelector('.pg-verdict')?.textContent).toContain('Yes'));
     expect(app().querySelector('.pg-moves-toggle')!.textContent).toBe('Your moves (1)');
   });
+
+  it('names a word the voice never wrote once, with the voice’s word for it', async () => {
+    override = (path) =>
+      path === '/api/practice'
+        ? json({ made: false, verdict: 'Not yet. Austen never used “opponent”.', hint: '', also: [], never: [{ word: 'opponent', theirs: ['opposition'] }, { word: 'okay', theirs: [] }], length: {}, shape: null, move: { id: 'litotes', name: 'Understatement and litotes', made: false, does: '', hint: '', example: null } })
+        : undefined;
+    await onResult();
+    const btn = [...app().querySelectorAll<HTMLButtonElement>('.pg-note-actions button')].find((b) => b.textContent === 'Try it')!;
+    btn.click();
+    const row = btn.closest('.pg-row')!;
+    row.querySelector<HTMLButtonElement>('.pg-tryit .pg-btn-main')!.click();
+    await vi.waitFor(() => expect(row.querySelector('.pg-verdict')?.textContent).toContain('Not yet'));
+    expect(row.querySelector('.pg-try-also')!.textContent).toBe('For “opponent”, try “opposition”. Austen never wrote “okay”.');
+  });
 });

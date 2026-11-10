@@ -26,7 +26,7 @@ There is no language model anywhere in the engine. Each answer comes from counts
 
 ## Reading your text
 
-`analyze(model, blocks)` (`src/engine/analyze.ts`) reads the document block by block, as the Word Processor numbers them, so every place it names is a place in the editor. Headings begin chapters, and paragraphs are split into sentences. Each sentence's result is cached by its words, so typing re-reads only the sentence you are in. A page is read in about 20 ms once the model is warm.
+`analyze(model, blocks)` (`src/engine/analyze.ts`) reads the document block by block (a title, a heading, or a paragraph; `src/engine/doc.ts`). Headings begin chapters, and paragraphs are split into sentences. Each sentence's result is cached by its words, so typing re-reads only the sentence you are in. A page is read in about 20 ms once the model is warm.
 
 **Every word.** A word the author never wrote, in any form, is flagged `never`. A word whose lemma she used but whose form she didn't is flagged `form`. A capitalized word in mid-sentence is a `name`, unless WordNet knows it as a common noun (*Mom* → *Mama*). A contraction she wrote out is a `fix` in narration and a `consider` in speech; the deciding share comes from her own counts.
 
@@ -77,69 +77,39 @@ The engine's own rewrite, by statistics alone:
 
 Every change is listed with its reason and a sentence of hers. See [before-after.md](before-after.md) for what it does well and what it can't: an idiom ("said okay"), or a thing with no Regency word (a phone).
 
-## Rewrite with AI (`src/engine/brief.ts`, `src/server/rewrite.ts`)
+## The page's engine
 
-The language model gets structure, not a dump. Every quotation it gives comes from the corpus, never from the model.
+The page asks the engine everything it can answer without a model call. These modules are new with the page, and each answers in milliseconds.
 
-**In: a brief.** The engine numbers the passage's sentences. For each sentence it gives:
+| Module | What it does |
+|---|---|
+| `src/engine/pack.ts` | A voice's pack, built by `scripts/build-packs.ts` into `data/packs/<id>.json` and `<id>.sif`. The JSON holds the signature words, up to eight real sentences for each move and figure, the profile in brief, the usual order of parts, 500 rounds of the guessing game and a shape index of 8,000 sentences. The `.sif` holds the vectors: the shape index's, the word vectors, and the whole corpus's sentence vectors, which `AuthorModel` reads in place of building them. Every pack stays in memory; only six whole models do (`src/server/models.ts`). A pack is rebuilt when its model's fingerprint changes. |
+| `src/engine/structure.ts` | What kind of writing a text is (argument, story, letter, speech, essay, review), what job each paragraph does (claim, reason, objection, scene, turn, call…), and the order a voice usually puts those jobs in. It works from cue words and position, and says "part" where it cannot tell. The roles and their plain names are in `roles.json`. |
+| `src/engine/voiceid.ts` | Which voice a passage sounds like, from the packs alone. It adds two scores: the words, by each voice's word counts, and the build, by each voice's tag trigrams. From these come the three voices the select puts first: the best voice for the kind, the voice it sounds like, and a stretch. |
+| `src/engine/shape.ts` | For a student's sentence, the voice's real sentence built most like it: half the score from word classes in order (by edit distance), a fifth from punctuation in order, the rest from meaning. Below a score of 0.5 it offers nothing. This fills the voice's column when there is no rewrite. |
+| `src/server/read.ts` | The engine's view of a text against one voice (`/api/read`): kind and roles, up to five words the voice never wrote with its own word where the engine is sure, a style line (words a sentence and one joining mark against the voice's), the suggested voices, and the shape sketches. |
+| `src/engine/notes.ts` | The Why column. For each paragraph of a rewrite it compares every new sentence with the student's sentences it renders, finds the moves and figures the new one makes that the old did not, and quotes a sentence of the voice's that makes the same move, with the move's words marked. At most two notes a paragraph, and no move twice on a page. `moveKey` gives every name of a move one id ("understatement" is litotes). |
+| `src/engine/practice.ts` | Try it. `practiceCheck` reads a student's attempt at a move with the same detector that checks the notes, and says whether the move is there, its length against the voice's, what else it does and which words the voice never used; a miss gets a hint and an example. `drillsFor` chooses what to practise: after a rewrite, only moves the rewrite was shown to make; with none, only gaps the engine finds (sentences much shorter than the voice's, no joined clauses, no move at all). |
+| `src/engine/glossary.ts`, `terms.ts` | The glossary: 109 terms, each one plain sentence, most with an example, written to `data/glossary.sqlite`. `findTerms` finds them in any text, so the page can underline a term where it is used. |
+| `src/server/routes/guess.ts` | The guessing game: a sentence from one of three voices, and after a guess, the words that gave it away. The rounds come from the packs. |
 
-- its register (narration, speech, or a letter, detected from the passage);
-- its length;
-- every word the author never wrote, with the author's alternatives by meaning (gap-fill guesses are left out: they are noise to a model);
-- two of the author's sentences nearest it in meaning *and in the same register*, each with an id: `<model id="S16541">My dear, dear Fanny, if I had you here, how I would talk to you! (Mansfield Park, ch. 43, ¶ 2)</model>`. A letter gets her letters (Lady Susan, the juvenilia, the letters in the novels), and speech gets her speech.
+## The rewrite (`src/engine/brief.ts`, `src/server/rewrite.ts`, `src/server/page.ts`)
 
-The brief also carries the measures as *ranges to write within*, not scores to raise, because a model told to raise a score pads sentences. The system prompt carries the author's craft from `authors/<id>.json`: the moves statistics cannot see (free indirect speech, judgement in abstract nouns, irony by litotes, speech reported as often as quoted, modern things rendered by what they do in her world). It also says what to keep (events, speakers, point of view, form, names) and what may change.
+The language model writes the voice's sentences and nothing else on the page.
 
-**Tools.** The engine's own functions, each answer citing by id:
+**Parts.** `page.ts` splits the text into parts of whole paragraphs, about 600 words each, and rewrites them at once. Each part is looked for first among the samples rewritten ahead of time (`data/precomputed`), then in the cache (`data/cache.sqlite`), and only then sent to the writer, within the budget (`src/server/cache.ts`). The answer streams to the page as lines of JSON: a `plan` with every paragraph, `progress`, a `part` with its rows, and `done`.
 
-- `check_passage`
-- `word_profile`
-- `concordance`
-- `similar_sentences` (with a register)
+**In: a brief.** The system prompt is the same for every rewrite in a voice, so the provider caches it: the voice's manner, its moves with one example each, and how to write the notes for a reader of about fifteen. The user message is the engine's brief: the passage sentence by numbered sentence, each with its register (narration, speech, a letter), its length against the voice's, every word the voice never wrote with the voice's own words for it, and the voice's sentence nearest it in meaning, by id. Measures are given as ranges to write within, never as scores to raise, because a model told to raise a score pads its sentences.
 
-**Out: structured.** `submit_rewrite` (strict schema) takes three things:
+**Out: one tool call.** `submit_rewrite` takes the faults of sense mended, the liberties taken (anything not in the student's text), a short explanation, and the paragraphs, each with its role and, for every sentence, the student's sentences it renders (`from`), so nothing is lost unseen.
 
-- the sentences, each naming the brief's sentence numbers it renders (`from`), so the writer sees before and after aligned and nothing is dropped unseen;
-- three to six notes, each naming a technique, the writer's words, the new words, and a model sentence *by id only*;
-- a short explanation.
+**A gate.** `hardGate` finds what is worth one redraft: a sentence lost, a heading crossed, the paragraphs run together, or no rewrite submitted. That is the only second call. `softFindings` finds the rest, which the engine mends or shows: a word the voice never used is replaced by the voice's own where the engine is sure of one.
 
-The server renders each quotation from the corpus by its id. An invented quotation is impossible, and an unknown id is refused.
+**After.** The engine writes the Why notes (`notes.ts`), the structure notes (a paragraph moved, a part added), and the explanation sentence for each rewritten sentence (`explain.ts`). Every quotation is rendered from the corpus by id; the model cannot invent one.
 
-**A gate, not a request.** Each submission is checked by the engine on the server. It is refused if any of these hold:
+**Versions.** `PROMPT_VERSION` in `rewrite.ts` is raised whenever the prompts or the schema change in meaning. The cache key holds it, so old answers retire, and `scripts/prewarm.ts --stale` rewrites the samples made under an older one.
 
-- a word the author never wrote remains (names aside);
-- there is a contraction in narration;
-- a source sentence is not rendered;
-- an id is unknown;
-- there are fewer than three notes.
-
-The findings go back as the tool's answer, and the model revises, up to four submissions (after which the last is shown, with what the gate still found).
-
-**Every rewritten sentence links to the Austen sentence that inspired it, with a reason the system writes** (`src/engine/explain.ts`). The model names, for each sentence, the ID of the sentence of hers that inspired it. The engine then compares the new sentence with the writer's sentences it renders and fills a template from what it can see:
-
-- the author's moves now made (by pattern, and as the notes credit them);
-- sentences joined;
-- words she never wrote removed;
-- her likelier words preferred;
-- contractions written out;
-- quoted speech reported;
-- the most telling word of hers brought in.
-
-The result is one sentence, for example: *"This sentence uses her “understatement and litotes” and removes “counselors” (never in Austen), modelled on Pride and Prejudice, ch. 10, ¶ 37."* The link is checked as well. The model's own pick stands only if it shows a move made in the sentence (or, with no move, shares a word the sentence brings in). Otherwise the engine links the nearest exemplar of the move, or a sentence of hers using the word brought in. The juvenilia burlesques are never linked. Austenize, the statistical rewrite, aligns its sentences by shared words and gets the same treatment. Advisor's margin thread lists every rewritten sentence with its reason and its link.
-
-**The moves** (`authors/austen.json`) are named, described, and given a pattern each:
-
-- balance;
-- judgement in abstract nouns;
-- litotes;
-- reported speech;
-- speech tagged after its first clause;
-- feeling shown by conduct;
-- ironic verdict.
-
-The patterns power `find_example`, the brief's exemplars, the gate's check that a note's cited sentence (and the note's own words) show its move, and the explanations. Another author's file brings its own moves.
-
-**Testing without a key.** `npm run cli -- brief <file> <dir>` writes the exact system and user prompts. `npm run cli -- tool <name> '<json>'` answers as the tools do. `npm run cli -- submit <dir> <submission.json>` runs the gate and renders the result. Any model, including an agent in a terminal, can then run the protocol end to end. [rewrite-eval.md](rewrite-eval.md) is such a run: Sonnet rewriting, Opus judging.
+**Testing without a key.** The tests inject a fake writer. `npm run cli -- brief <file> <dir>` writes the exact prompts; `npm run cli -- tool <name> '<json>'` answers as the tools do; `npm run cli -- submit <dir> <submission.json>` runs the gate and renders the result. [rewrite-eval.md](rewrite-eval.md) and [eval/voices](eval/voices/README.md) record the evaluations.
 
 ## Figures of speech (`src/engine/figures.ts`)
 
@@ -158,17 +128,24 @@ Classical rhetoric's figures are recognized by their form: the words, their tags
   - inversion (anastrophe);
   - hyperbole.
 
-Irony itself has no form. It is credited only where the rewriter's note claims it *and* one of its vehicles is there; otherwise the note is shown unconfirmed.
+Irony itself has no form. It is credited only where one of its vehicles is there.
 
-The figures are pointed out everywhere:
+The figures are used in three places:
 
-- **Your draft:** a Figures card in the Advisor panel and a violet underline, with a hover that shows the figure's gloss and her own examples.
-- **The rewrites:** each sentence's one-line reason names the figures it gained ("makes a litotes (“not disagreeable”)"). It also says what became of each word she never wrote: replaced (with which word), rendered by periphrasis (quoted), rephrased, or dropped.
-- **Explore:** every Austen sentence shown carries chips naming its figures, and searching a figure's name ("tricolon") lists her examples.
-- **The AI rewrite:** the brief gives the vocabulary, a note may name a figure, and the gate refuses a dropped thing the writer named.
+- **The Why column:** a note names the figure the rewrite made, defines it, and quotes a sentence of the voice's that makes it.
+- **Try it:** the same detector says whether the student's attempt makes the figure, and names any other figures in it ("Also in it: ironic verdict").
+- **The packs:** each voice's pack keeps real sentences for each figure it uses, so a note or a hint finds its example at once.
 
 An example offered for a figure is always confirmed by that figure's detector (`figureExamples`): the nearest sentences first, then the whole corpus sifted by a cheap sign of the figure.
 
 ## Another author
 
-Everything above reads the author from `authors/<id>.json`: the works and their sources, the name, the pronouns the advisor uses for the author, and a line of persona for the AI. `npm run build:model -- twain` builds Twain Advisor (903,501 words from eight books) in under a minute. In his space, *reckon* sits beside *maybe, ain't, bet*.
+Everything above reads the voice from `authors/<id>.json`: the works and their sources, the license, the name and pronouns, the family (storytellers, speakers, arguers, essayists), the kinds of writing it suits, its moves with a pattern each, and the persona and manner for the writer. There are twenty; the README lists them. To add one:
+
+```sh
+npm run build:model -- <id>       # the corpus and the model, data/<id>.sqlite
+node scripts/build-packs.ts       # every pack again: signature words and the guessing game measure each voice against the rest
+node scripts/index-samples.ts     # a sample that lists the voice under pending moves it to bestVoices
+```
+
+In Twain's space, *reckon* sits beside *maybe, ain't, bet*.
