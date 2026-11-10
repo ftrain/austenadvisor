@@ -8,3 +8,6 @@ import './glossary.ts';
 import './engine.ts';
 import './practice.ts';
 import './rewrite.ts';
+import './read.ts';
+import './guess.ts';
+import './boot.ts';
