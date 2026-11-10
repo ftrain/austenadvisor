@@ -5,15 +5,16 @@
 // store. Figures the engine recognizes (figures.ts) are terms here too, under the same ids.
 
 import { createHash } from 'node:crypto';
-import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { existsSync, readFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import type { DatabaseSync } from 'node:sqlite';
 import { DATA, open, tx } from '../db.ts';
 import { FIGURES } from './figures.ts';
 import type { GlossaryEntry } from './terms.ts';
 export { findTerms, type GlossaryEntry } from './terms.ts';
 
-export type TermKind = 'figure' | 'sound' | 'verse' | 'sentence' | 'narrative' | 'argument' | 'diction';
+export type TermKind = 'figure' | 'sound' | 'verse' | 'sentence' | 'narrative' | 'argument' | 'diction' | 'role';
 
 export interface Term {
   id: string;
@@ -33,12 +34,12 @@ export interface Term {
 
 const T = (id: string, term: string, kind: TermKind, definition: string, rest: Partial<Term> = {}): Term => ({ id, term, kind, definition, ...rest });
 
-export const TERMS: Term[] = [
+const BASE: Term[] = [
   // Figures of speech: the classical names for turns of phrase.
   T('antithesis', 'Antithesis', 'figure', 'Contrary ideas set against each other in balanced words, so each sharpens the other.', { example: 'It was the best of times, it was the worst of times.', source: 'Dickens, A Tale of Two Cities', also: ['antitheses', 'not this, but that'] }),
   T('chiasmus', 'Chiasmus', 'figure', 'Two phrases whose terms come back in reverse order (A B, B A), so the second answers the first.', { example: 'Ask not what your country can do for you—ask what you can do for your country.', source: 'Kennedy, inaugural address', also: ['antimetabole', 'chiastic'] }),
-  T('litotes', 'Litotes', 'figure', 'Saying a thing by denying its opposite, usually to understate it.', { example: '“not unwilling”, “no small matter”', also: ['litotes'] }),
-  T('understatement', 'Understatement', 'figure', 'Saying less than the case warrants, so the reader supplies the rest and feels it more.', { example: 'No, ’tis not so deep as a well, nor so wide as a church-door; but ’tis enough, ’twill serve.', source: 'Romeo and Juliet 3.1 (Mercutio, mortally wounded)', also: ['understated', 'meiosis'] }),
+  // Litotes is a kind of understatement, and a writer needs only one name to look up: one term answers to both.
+  T('litotes', 'Litotes (understatement)', 'figure', 'Saying less than the case warrants, often by denying the opposite, so the reader supplies the rest.', { example: '“not unwilling”, “no small matter”', also: ['understatement', 'understated', 'understatements', 'meiosis', 'understatement and litotes'] }),
   T('hyperbole', 'Hyperbole', 'figure', 'Exaggeration not meant to be taken literally, for emphasis or comedy.', { example: '“the most awkward ten minutes of my life”', also: ['exaggeration'] }),
   T('periphrasis', 'Periphrasis', 'figure', 'Naming a thing by a description of it rather than by its name, to dignify it, distance it or make it strange.', { example: '“the instrument in his hand” for a phone', also: ['circumlocution'] }),
   T('tricolon', 'Tricolon', 'figure', 'Three parallel words, phrases or clauses in a row, often rising to the last.', { example: 'Emma Woodhouse, handsome, clever, and rich', source: 'Austen, Emma, ch. 1', also: ['tricola', 'rule of three', 'building in threes', 'things in threes'] }),
@@ -141,6 +142,64 @@ export const TERMS: Term[] = [
   T('enthymeme', 'Enthymeme', 'argument', 'An argument with one premise left unsaid for the hearer to supply: “He is a politician, so of course he lied.”'),
   T('thesis', 'Thesis', 'argument', 'The claim a piece of writing sets out to prove, stated so it could be disputed.'),
 ];
+
+/**
+ * The parts of a piece of writing that the structure line names (claim, reason, scene, close), from
+ * src/engine/roles.json, so the page can define a role word where it shows one. The file maps each role to its
+ * definition, as `{"claim": "..."}`, `{"claim": {"name": "Claim", "definition": "..."}}` or a list of such objects.
+ * Other fields of a role are ignored. A role whose name a term already has is left to that term; “part”, the label
+ * for a paragraph with no clear role, is not a term.
+ */
+export function rolesOf(raw: unknown, taken: Term[] = BASE): Term[] {
+  const src = raw && typeof raw === 'object' && 'roles' in raw ? (raw as { roles: unknown }).roles : raw;
+  const items: { id: string; name?: string; definition?: string }[] = Array.isArray(src)
+    ? (src as { id: string; name?: string; definition?: string }[])
+    : Object.entries((src ?? {}) as Record<string, unknown>).map(([id, v]) => (typeof v === 'string' ? { id, definition: v } : { id, ...(v as object) }));
+  const names = new Set(taken.flatMap(namesOf));
+  const out: Term[] = [];
+  for (const r of items) {
+    if (!r?.id || typeof r.definition !== 'string' || r.id === 'part') continue;
+    const name = (r.name ?? r.id).trim();
+    if (names.has(name.toLowerCase())) continue;
+    names.add(name.toLowerCase());
+    // “Close” and “call” are everyday words: a role is defined where the page shows it as a label, by roleTerm,
+    // and never marked in running prose (an `unless` that always matches).
+    out.push(T(`role-${r.id}`, name[0]!.toUpperCase() + name.slice(1), 'role', r.definition.trim(), { unless: '^' }));
+  }
+  return out;
+}
+
+const ROLES_FILE = join(dirname(fileURLToPath(import.meta.url)), 'roles.json');
+function loadRoles(): Term[] {
+  try {
+    return existsSync(ROLES_FILE) ? rolesOf(JSON.parse(readFileSync(ROLES_FILE, 'utf8'))) : [];
+  } catch {
+    return [];
+  }
+}
+
+/** Every term: the list above, then the roles. */
+export const TERMS: Term[] = [...BASE, ...loadRoles()];
+
+/** The glossary id of a role word: “claim” is defined under “role-claim”. */
+export const roleTerm = (role: string): string => `role-${role}`;
+
+let byName: Map<string, Term> | null = null;
+/**
+ * A term by any of its names or its id, from the list in memory (no store): “understatement” and “litotes” are the
+ * same term. Used where the engine must tell whether two names mean one thing.
+ */
+export function termOf(name: string): Term | undefined {
+  if (!byName) {
+    byName = new Map();
+    for (const t of TERMS) {
+      if (!byName.has(t.id)) byName.set(t.id, t);
+      for (const n of namesOf(t)) if (!byName.has(n)) byName.set(n, t);
+    }
+  }
+  const n = name.trim().toLowerCase().replace(/'/g, '’');
+  return byName.get(n) ?? byName.get(n.replace(/(es|s)$/, ''));
+}
 
 const glossaryPath = () => join(DATA, 'glossary.sqlite');
 const fingerprint = () => createHash('sha1').update(JSON.stringify(TERMS)).digest('hex');
