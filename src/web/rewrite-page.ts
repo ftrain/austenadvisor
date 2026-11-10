@@ -498,7 +498,7 @@ export async function rewritePage(app: HTMLElement) {
           const mine = r.yours.filter((y) => s.from.includes(y.n)).map((y) => y.text).join(' ');
           if (!mine) continue;
           seen.add(mv);
-          out.push(drill({ kind: 'move', technique: mv, before: mine, after: s.text, quote: s.model, verified: true }, mine));
+          out.push(drill({ kind: 'move', technique: mv, before: mine, after: s.text, quote: s.model ?? null, verified: true }, mine));
         }
     }
     return out;

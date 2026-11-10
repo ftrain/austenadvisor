@@ -134,6 +134,8 @@ let injectedWriter: WriterClient | null = null;
 export function useWriter(client: WriterClient | null): void {
   injectedWriter = client;
 }
+/** Whether a writer has been put in place of the provider's. */
+export const writerInjected = (): boolean => injectedWriter !== null;
 /** The writer a rewrite uses when none is passed: the injected one, or the provider's. */
 export const defaultWriter = (): WriterClient => injectedWriter ?? providerWriter();
 

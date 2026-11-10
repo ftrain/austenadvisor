@@ -6,6 +6,7 @@ import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
 import { authorDbPath, DATA, ROOT } from '../src/db.ts';
 import { AuthorModel } from '../src/engine/model.ts';
+import { RewriteCache } from '../src/server/cache.ts';
 import { streamRewrite } from '../src/server/page.ts';
 import { rewriteWithAI, submitted, useWriter, type Submission, type WriterAnswer, type WriterClient } from '../src/server/rewrite.ts';
 
@@ -140,16 +141,10 @@ function fakeResponse() {
 
 describe.skipIf(!built)('streamRewrite and its cache', () => {
   const austen = built ? AuthorModel.load('austen') : (null as unknown as AuthorModel);
-  const dir = join(DATA, 'cache', 'rewrites');
-  const before = new Set(existsSync(dir) ? readdirSync(dir) : []);
-  // Instructions of its own give this test a cache key no one else has.
-  const instructions = `test ${process.pid} ${Date.now()}`;
-  // The files this test wrote: new since it began, and of its own text. A server running beside it may write others.
-  const ours = () => (existsSync(dir) ? readdirSync(dir) : []).filter((x) => !before.has(x) && readFileSync(join(dir, x), 'utf8').includes(fixture('sister-car').text));
-  afterEach(() => {
-    useWriter(null);
-    for (const f of ours()) rmSync(join(dir, f));
-  });
+  // A cache of the test's own, in memory, and no samples made ahead of time.
+  const cache = new RewriteCache(':memory:');
+  const opts = { cache, precomputed: null };
+  afterEach(() => useWriter(null));
 
   it('calls the writer on a miss, keeps the result, and serves it again without a call', async () => {
     const f = fixture('sister-car');
@@ -157,7 +152,7 @@ describe.skipIf(!built)('streamRewrite and its cache', () => {
     useWriter(writer);
 
     const miss = fakeResponse();
-    await streamRewrite(miss.res, austen, f.text, instructions);
+    await streamRewrite(miss.res, austen, f.text, '', false, opts);
     expect(writer.calls).toHaveLength(1);
     const first = miss.lines();
     expect(first.map((l) => l.type)).toContain('plan');
@@ -165,26 +160,26 @@ describe.skipIf(!built)('streamRewrite and its cache', () => {
     expect(part.error).toBeUndefined();
     expect(JSON.stringify(part.rows)).toContain('My sister had taken my car without asking');
     expect(first.at(-1)!.type).toBe('done');
-    expect(ours()).toHaveLength(1);
 
     const hit = fakeResponse();
-    await streamRewrite(hit.res, austen, f.text, instructions);
+    await streamRewrite(hit.res, austen, f.text, '', false, opts);
     expect(writer.calls).toHaveLength(1);
     const second = hit.lines();
-    expect(second[0]).toMatchObject({ type: 'progress', log: ['kept from before'] });
-    expect(second.slice(1)).toEqual(first.filter((l) => l.type !== 'progress'));
+    expect(second.find((l) => l.type === 'progress')).toMatchObject({ log: ['kept from before'] });
+    expect(second.find((l) => l.type === 'part')).toMatchObject({ rows: part.rows, cached: true });
 
     const fresh = fakeResponse();
-    await streamRewrite(fresh.res, austen, f.text, instructions, true);
+    await streamRewrite(fresh.res, austen, f.text, '', true, opts);
     expect(writer.calls).toHaveLength(2);
   });
 
   it('keeps nothing when a part fails', async () => {
     useWriter(fakeWriter([]));
+    const text = `${fixture('sister-car').text} It failed.`;
     const out = fakeResponse();
-    await streamRewrite(out.res, austen, fixture('sister-car').text, `${instructions} failing`);
+    await streamRewrite(out.res, austen, text, '', false, opts);
     const part = out.lines().find((l) => l.type === 'part')!;
     expect(part.error).toMatch(/no answer/);
-    expect(ours()).toEqual([]);
+    expect((cache.db.prepare('SELECT COUNT(*) AS n FROM rewrites WHERE json LIKE ?').get('%It failed.%') as { n: number }).n).toBe(0);
   });
 });
