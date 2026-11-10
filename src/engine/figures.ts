@@ -200,12 +200,16 @@ export const mayShow = (term: string, text: string): boolean => !SIGNS[term] || 
 
 /**
  * Sentences of the author's that show a figure, nearest in meaning to a passage: the candidates nearest first, each
- * confirmed by the figure's own detector (so a link names a sentence that truly shows it).
+ * confirmed by the figure's own detector (so a link names a sentence that truly shows it). The voice's pack holds
+ * them ready; without a pack the corpus is sifted (up to 3 s).
  */
 export function figureExamples(m: AuthorModel, term: string, near: string, k = 3): import('./model.ts').Citation[] {
   const exclude = new Set(m.author.linkExclude ?? []);
   // An ironic verdict is found by its usual vehicle, the generalization.
   const want = term === 'irony' ? 'gnomic' : term;
+  // The pack's table, checked at build time, answers in milliseconds; an empty entry means the corpus has none.
+  const table = m.pack?.exemplars[want];
+  if (table) return m.nearestOf(table.filter((id) => !exclude.has(m.cite(id)?.work ?? '')), near, k);
   const out: import('./model.ts').Citation[] = [];
   const take = (cands: import('./model.ts').Citation[]) => {
     for (const c of cands) {

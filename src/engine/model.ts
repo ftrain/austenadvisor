@@ -10,6 +10,7 @@ import { normWord, tokenize } from '../nlp/tokenize.ts';
 import { WordNet, type WnPos } from '../nlp/wordnet.ts';
 import { readAuthor, type AuthorConfig } from '../corpus/sources.ts';
 import { FIGURES, figureExamples, findFigures, mayShow } from './figures.ts';
+import { fingerprintOf, loadPack, readFullSif, type Pack, type SifIndex } from './pack.ts';
 import type { StyleProfile } from './profile.ts';
 
 /** How a sentence is told: in narration, in speech, or in a letter. */
@@ -47,6 +48,12 @@ export interface Form {
   count: number;
 }
 
+/** Where loaded models are kept: a Map keeps them all; the server's LRU (src/server/models.ts) keeps a few. */
+export interface ModelCache {
+  get(id: string): AuthorModel | undefined;
+  set(id: string, m: AuthorModel): unknown;
+}
+
 export class AuthorModel {
   readonly author: AuthorConfig;
   readonly db: DatabaseSync;
@@ -64,7 +71,11 @@ export class AuthorModel {
   private works = new Map<string, { title: string; year: number }>();
   private citeStmt: ReturnType<DatabaseSync['prepare']>;
   private sentenceCache = new Map<number, Citation>();
-  private sif: { ids: Int32Array; vecs: Float32Array; pc: Float32Array; words: Int16Array; register: Uint8Array; texts: string[] } | null = null;
+  private sif: SifIndex | null = null;
+  private sifTextList: string[] | null = null;
+  private packRead = false;
+  private packValue: Pack | null = null;
+  private fingerprintValue: string | null = null;
 
   private constructor(authorId: string) {
     this.db = open(authorDbPath(authorId), { readOnly: true });
@@ -107,15 +118,54 @@ export class AuthorModel {
     );
   }
 
-  private static cache = new Map<string, AuthorModel>();
+  private static cache: ModelCache = new Map<string, AuthorModel>();
   static load(authorId: string): AuthorModel {
     let m = AuthorModel.cache.get(authorId);
     if (!m) {
-      if (!existsSync(authorDbPath(authorId))) throw new Error(`No model for "${authorId}": run npm run build:model -- ${authorId}`);
-      m = new AuthorModel(authorId);
+      m = AuthorModel.open(authorId);
       AuthorModel.cache.set(authorId, m);
     }
     return m;
+  }
+
+  /** A model read afresh, kept nowhere. */
+  static open(authorId: string): AuthorModel {
+    if (!existsSync(authorDbPath(authorId))) throw new Error(`No model for "${authorId}": run npm run build:model -- ${authorId}`);
+    return new AuthorModel(authorId);
+  }
+
+  /** Keep loaded models here from now on (the models already loaded are not moved). */
+  static useCache(cache: ModelCache): void {
+    AuthorModel.cache = cache;
+  }
+
+  /** What identifies this build of the model; a pack built from another build is not used. */
+  get fingerprint(): string {
+    return (this.fingerprintValue ??= fingerprintOf(this.db));
+  }
+
+  /** The voice's pack (scripts/build-packs.ts), if one is built for this model. */
+  get pack(): Pack | null {
+    if (!this.packRead) {
+      this.packValue = loadPack(this.author.id, { fingerprint: this.fingerprint });
+      this.packRead = true;
+    }
+    return this.packValue;
+  }
+
+  /** The sentences among `ids` nearest a passage in meaning, at most k, in that order; all of them where it has no words of the voice's. */
+  nearestOf(ids: number[], near: string, k: number): (Citation & { sim: number })[] {
+    const cites = ids.map((id) => this.cite(id)).filter((c): c is Citation => !!c);
+    const vec = (t: string) => this.contextVector(tokenize(t).filter((x) => x.kind === 'word').map((x) => x.norm));
+    const v = near ? vec(near) : null;
+    if (!v) return cites.slice(0, k).map((c) => ({ ...c, sim: 0 }));
+    return cites
+      .map((c) => {
+        const u = vec(c.text);
+        return { ...c, sim: u ? cosine(v, u) : -1 };
+      })
+      .sort((a, b) => b.sim - a.sim)
+      .slice(0, k);
   }
 
   word(w: string): WordInfo | undefined {
@@ -289,6 +339,7 @@ export class AuthorModel {
     opts: { minWords?: number; maxWords?: number; register?: Register; test?: (text: string, register: Register) => boolean } = {},
   ): (Citation & { sim: number })[] {
     const idx = this.sifIndex();
+    const texts = opts.test ? this.sifTexts() : null;
     const words = tokenize(text).filter((t) => t.kind === 'word').map((t) => t.norm);
     const v = this.contextVector(words);
     if (!v) return [];
@@ -302,7 +353,7 @@ export class AuthorModel {
       if (opts.minWords && idx.words[i]! < opts.minWords) continue;
       if (opts.maxWords && idx.words[i]! > opts.maxWords) continue;
       if (opts.register && REGISTERS[idx.register[i]!] !== opts.register) continue;
-      if (opts.test && !opts.test(idx.texts[i]!, REGISTERS[idx.register[i]!]!)) continue;
+      if (opts.test && !opts.test(texts![i]!, REGISTERS[idx.register[i]!]!)) continue;
       let dot = 0;
       const o = i * dims;
       for (let j = 0; j < dims; j++) dot += v[j]! * idx.vecs[o + j]!;
@@ -316,12 +367,37 @@ export class AuthorModel {
     return best.map(({ i, sim }) => ({ ...this.cite(idx.ids[i]!)!, sim }));
   }
 
-  private sifIndex() {
+  /** The texts of the SIF index's sentences, in its order. */
+  private sifTexts(): string[] {
+    if (this.sifTextList) return this.sifTextList;
+    const idx = this.sifIndex();
+    if (!this.sifTextList) {
+      const texts = (this.db.prepare('SELECT text FROM sentences WHERE words >= 4 ORDER BY id').all() as { text: string }[]).map((r) => r.text);
+      // A corpus whose sentences do not line up with the stored index: build the index afresh.
+      if (texts.length !== idx.ids.length) {
+        this.sif = null;
+        this.buildSif();
+      } else this.sifTextList = texts;
+    }
+    return this.sifTextList!;
+  }
+
+  /**
+   * Every sentence of four words or more as a SIF vector, with its length and register. Read from the voice's pack
+   * where one is built for this model, else built here (1.5 to 4 s).
+   */
+  sifIndex(): SifIndex {
     if (this.sif) return this.sif;
+    const stored = readFullSif(this.author.id, this.fingerprint);
+    if (stored) return (this.sif = stored);
+    return this.buildSif();
+  }
+
+  private buildSif(): SifIndex {
     const rows = this.db
       .prepare(
         `SELECT s.id, s.text, s.words, s.dialogue, p.kind, c.work FROM sentences s JOIN paragraphs p ON p.id = s.paragraph
-         JOIN chapters c ON c.id = p.chapter WHERE s.words >= 4`,
+         JOIN chapters c ON c.id = p.chapter WHERE s.words >= 4 ORDER BY s.id`,
       )
       .all() as { id: number; text: string; words: number; dialogue: number; kind: string; work: string }[];
     const letters = new Set(this.author.epistolary ?? []);
@@ -359,7 +435,8 @@ export class AuthorModel {
       n = Math.sqrt(n) || 1;
       for (let j = 0; j < dims; j++) v[j]! /= n;
     }
-    this.sif = { ids, vecs, pc, words: wc, register, texts: rows.map((r) => r.text) };
+    this.sif = { ids, vecs, pc, words: wc, register };
+    this.sifTextList = rows.map((r) => r.text);
     return this.sif;
   }
 
@@ -379,12 +456,17 @@ export class AuthorModel {
     return !!move.pattern && new RegExp(move.pattern, 'i').test(t);
   }
 
-  /** The author's sentences that show a move (its pattern matched, in its register), nearest a passage first. */
+  /**
+   * The author's sentences that show a move (its pattern matched, in its register), nearest a passage first. A pack's
+   * table answers in milliseconds; without one the corpus is sifted (about 1 s).
+   */
   moveExamples(moveId: string, near: string, k = 4): (Citation & { sim: number })[] {
     const move = this.author.moves?.find((x) => x.id === moveId);
     // A figure of speech with no move of the author's by its name: by its detector.
     if (!move && moveId in FIGURES) return figureExamples(this, moveId, near, k).map((c) => ({ ...c, sim: 0 }));
     if (!move) return [];
+    const table = this.pack ? (this.pack.moveExemplars?.[moveId] ?? this.pack.exemplars[moveId]) : undefined;
+    if (table) return this.nearestOf(table, near, k);
     const opts = {
       minWords: 6,
       maxWords: 60,
