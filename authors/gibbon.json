@@ -1,0 +1,119 @@
+{
+  "id": "gibbon",
+  "name": "Edward Gibbon",
+  "title": "Edward Gibbon",
+  "advisor": "Gibbon Advisor",
+  "short": "Gibbon",
+  "tagline": "Long balanced sentences, and irony in a careful word",
+  "epigraph": {
+    "text": "His reign is marked by the rare advantage of furnishing very few materials for history; which is, indeed, little more than the register of the crimes, follies, and misfortunes of mankind.",
+    "cite": "The Decline and Fall of the Roman Empire, ch. 3"
+  },
+  "whole": "the whole of The Decline and Fall of the Roman Empire",
+  "years": "1737–1794",
+  "action": "Gibbon it up",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Edward Gibbon (1737–1794), the English historian of The History of the Decline and Fall of the Roman Empire: long, balanced periodic sentences; three parallel members, the last brought in by “; and”; pairs of abstract nouns; a clause of time or place set before the main action; the evidence weighed aloud; the particular case widened into a verdict on mankind; and irony carried by a cautious word (“perhaps”, “is said to have”, “the pious”).",
+  "family": "arguers",
+  "goodFor": [
+    "essay",
+    "argument",
+    "review"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1776–1789: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A long peace and prosperity that softens a people until they cannot defend themselves: the age of the Antonines, ch. 1–3.",
+    "A ruler chosen by soldiers who sell the throne to the highest bidder: the auction of the empire, ch. 5.",
+    "A new belief spreading through an old society, and the historian weighing why: the rise of Christianity, ch. 15–16.",
+    "A leader who claims a sign from heaven before a battle and wins: Constantine at the Milvian Bridge, ch. 14 and 20.",
+    "A great city taken and sacked by people it had called barbarians: Alaric and Rome, ch. 31.",
+    "The fall of a capital after a long siege, and the last emperor dying at the walls: Constantinople in 1453, ch. 68.",
+    "A ruin visited, and the visitor reflecting on how much has been lost: the General Observations and ch. 71."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of the Decline and Fall, not as the writer’s page in long words.",
+    "Build long, balanced sentences. Set a clause of time, place or concession first (“After a long resistance, …”), then the main action, then its consequence.",
+    "Group in threes and pairs: three parallel members joined by semicolons, the last brought in by “; and”; two abstract nouns in a pair (“the strength and courage of”).",
+    "Weigh the evidence aloud: say who reports it and how far it can be believed (“we are informed, and we may believe”).",
+    "Let irony live in a cautious word: “perhaps”, “is said to have”, “the pious”. Never mock openly.",
+    "Close a paragraph by widening the case into a calm verdict on human nature or on mankind."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage may keep its “I” as Gibbon keeps his: a historian who now and then speaks for himself.",
+    "Treat a small event with the gravity of history only for comedy, and keep it the writer’s event; invent no war, emperor or date the writer did not give.",
+    "A modern thing the passage needs is named plainly or by a short description in his words, recognisable at once. Never a riddle.",
+    "Keep the writer’s judgement: the irony may sharpen it, never reverse it."
+  ],
+  "moves": [
+    {
+      "id": "triad",
+      "name": "Three in a row",
+      "does": "Three parallel parts joined by semicolons, the last brought in by “; and” (a tricolon): “equally true; by the philosopher as equally false; and by the magistrate as equally useful.”",
+      "pattern": "[^;]{8,};[^;]{8,};\\s*and\\b",
+      "register": "any",
+      "hint": "Write three parallel parts of one shape, and start the last with “; and”."
+    },
+    {
+      "id": "doublet",
+      "name": "The pair of abstract nouns",
+      "does": "Two abstract nouns in a pair, governing one thing: “the strength and courage of Barbarians”.",
+      "pattern": "\\bthe (\\w+) and (\\w+) of\\b",
+      "register": "any",
+      "hint": "Pair two abstract nouns before “of”: “the patience and cunning of the team”."
+    },
+    {
+      "id": "hedge",
+      "name": "The ironic hedge",
+      "does": "A cautious word (“perhaps”, “is said to have”, “the pious”) that quietly doubts what it reports: “The imprudence of Probus is said to have inflamed the discontent of his troops.”",
+      "pattern": "\\b(it may (perhaps|be|seem)|perhaps|might be|seems to have|is said to have|are said to have|has been (suspected|observed|supposed)|(the|a) (pious|devout|zealous|credulous) \\w+|it is not easy)\\b",
+      "register": "any",
+      "hint": "Report a claim you doubt with “is said to have” or “perhaps”, and let the reader catch the doubt."
+    },
+    {
+      "id": "mankind",
+      "name": "The verdict on mankind",
+      "does": "The single event widened into a calm judgement on human nature: “little more than the register of the crimes, follies, and misfortunes of mankind.”",
+      "pattern": "\\b(mankind|human nature|the human (mind|race|species)|posterity|the vulgar)\\b",
+      "register": "any",
+      "hint": "End with a sentence about people in general: “… as mankind has always done.”"
+    },
+    {
+      "id": "source",
+      "name": "The sources weighed",
+      "does": "The narrator weighs the evidence aloud, so the citing is part of the voice: “We are informed, and we may believe, that Constantine disposed his troops with consummate skill.”",
+      "pattern": "\\b(we (may|are (told|informed|assured)|learn)|according to|historians?|testimony|(is|are|was|were) (related|reported|recorded)|ancient writers|contemporary)\\b",
+      "register": "any",
+      "hint": "Name where a fact comes from and how far to trust it: “According to …, and we may believe it, …”."
+    },
+    {
+      "id": "opening",
+      "name": "The setting first",
+      "does": "The sentence opens with a clause of time, place or concession, and the main action comes after the comma: “Notwithstanding the prudence and success of Odoacer, his kingdom exhibited the sad prospect of misery.”",
+      "pattern": "^(after|during|under|from|in|amidst|notwithstanding|before|since|while|when)\\b[^,]{5,80},",
+      "register": "any",
+      "hint": "Start with when or where (“After a long silence, …”) and put the main action after the comma."
+    }
+  ],
+  "works": [
+    {
+      "id": "decline",
+      "title": "The Decline and Fall of the Roman Empire",
+      "year": 1788,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/edward-gibbon_the-history-of-the-decline-and-fall-of-the-roman-empire",
+        "drop": "^(The Greeks, after their country had|The rise of a city, which|The decay of Rome has been|As the happiness of a future|This awful revolution may be usefully|I\\. The Romans were ignorant of|II\\. The empire of Rome was|III\\. Cold, poverty, and a life|Should these speculations be found doubtful|Since the first discovery of the|The purple of three emperors who|I\\. Before the introduction of trade,|II\\. While Joscelin reigned beyond the|While the elder brothers dissipated their|III\\. According to the old register|“What we gave, we have; What|But their losses, in this sense,)"
+      }
+    }
+  ]
+}

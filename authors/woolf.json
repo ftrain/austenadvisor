@@ -1,0 +1,195 @@
+{
+  "id": "woolf",
+  "name": "Virginia Woolf",
+  "title": "Virginia Woolf",
+  "advisor": "Woolf Advisor",
+  "short": "Woolf",
+  "tagline": "The mind from inside, one moment at a time",
+  "epigraph": {
+    "text": "Mrs. Dalloway said she would buy the flowers herself.",
+    "cite": "Mrs. Dalloway, § 1"
+  },
+  "whole": "Woolf’s novels and essays of 1925–1929",
+  "years": "1882–1941",
+  "action": "Woolf it up",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "she",
+    "object": "her",
+    "possessive": "her",
+    "possessivePronoun": "hers"
+  },
+  "persona": "Virginia Woolf (1882–1941), the English novelist and critic of Mrs. Dalloway, To the Lighthouse and A Room of One’s Own: narration that slips into a character’s mind and out again; long sentences that follow thought, strung on semicolons and broken by dashes and parentheses; participles that keep the action moving; the single moment held and looked at; the impersonal “one”; and, in the essays, an “I” that thinks aloud and persuades without claiming authority.",
+  "family": "storytellers",
+  "goodFor": [
+    "story",
+    "essay",
+    "review"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for the novels; Project Gutenberg ebook 64457 for The Common Reader; Project Gutenberg Australia for A Room of One’s Own",
+    "note": "Published 1925–1929: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A woman goes out on a June morning to buy flowers for a party, and the city and her past come to her as she walks: Mrs. Dalloway, § 1.",
+    "A party given, and news of a stranger’s death arriving in the middle of it: Mrs. Dalloway, the last section.",
+    "A trip to the lighthouse promised to a child and put off for years: To the Lighthouse.",
+    "A painter who cannot finish her picture until the last stroke comes to her: Lily Briscoe, To the Lighthouse, part 3.",
+    "Ten years passing over an empty house in a few pages: “Time Passes”, To the Lighthouse, part 2.",
+    "A young man who wakes one morning a woman, and goes on living: Orlando.",
+    "A woman shut out of a college library, thinking about why women have written so little: A Room of One’s Own, ch. 1.",
+    "Shakespeare’s imagined sister, as gifted as he and given no chance: A Room of One’s Own, ch. 3."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of Woolf’s, not as the writer’s page with semicolons added.",
+    "Enter the mind. Give the person’s thoughts in the narration, as they come, with the tag left showing (“she thought”), and move from one mind to another where the passage has more than one person.",
+    "Let the sentence follow thought: impressions joined by semicolons, a second thought set off by dashes or parentheses, an afterthought added with “for”. Short sentences only for a moment that stops the mind.",
+    "Hold a moment: name the hour, the light, a sound, and let one ordinary thing open into memory and back.",
+    "Use “one” for a feeling anyone might share: “One cannot bring children into a world like this.”",
+    "In an essay, think aloud in the first person: question, qualify and turn, and reach the point by walking toward it."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. The flow of thought must not scramble the events: what happened first still comes first.",
+    "A first-person passage may stay first person, or become close third person with “she thought”; keep the writer as the one whose mind we are in.",
+    "A modern thing the story needs is named plainly, in her words: “the phone”, “the screen”. Never a riddle.",
+    "Keep the writer’s degree of feeling. A small worry stays small, though it may be looked at closely; add no grief, illness or death the writer did not write."
+  ],
+  "moves": [
+    {
+      "id": "thought",
+      "name": "The thought overheard",
+      "does": "A character’s thought set into the narration, often mid-sentence, with “she thought” left showing: “Such fools we are, she thought, crossing Victoria Street.”",
+      "pattern": "[,;]\\s*(she|he|I) (thought|felt|wondered|remembered|supposed)\\b|\\b(thought|felt|said to (himself|herself)) (Clarissa|Mrs\\. Ramsay|Mr\\. Ramsay|Lily|Peter|Septimus|Rezia|Orlando|she|he)\\b",
+      "register": "narration",
+      "hint": "Write a thought as the narration, then tag it in the middle: “It was too late now, she thought, to call.”"
+    },
+    {
+      "id": "semicolon",
+      "name": "The sentence that keeps going",
+      "does": "Impressions strung one after another on semicolons, none ranked above the rest, as the mind lists them.",
+      "pattern": ";[^;]{3,}[;—]",
+      "register": "narration",
+      "hint": "Join three things noticed with semicolons: “the bus passed; a dog barked; someone laughed.”"
+    },
+    {
+      "id": "dash",
+      "name": "The second thought",
+      "does": "The sentence breaks off for a second thought set between dashes or in parentheses (a parenthesis): “If her husband required sacrifices (and indeed he did) she cheerfully offered them.”",
+      "pattern": "—[^—]{3,100}—|\\([^)]{5,}\\)",
+      "register": "any",
+      "hint": "Interrupt a sentence with a second thought in dashes: “The party—and she had dreaded it—went well.”"
+    },
+    {
+      "id": "ing",
+      "name": "Words in -ing that keep it moving",
+      "does": "Two or three phrases in -ing (participles) in a row, so the action stays open: “putting away her brushes, looking up, looking down.”",
+      "pattern": "\\b\\w{3,}ing\\b[^.;]{0,40},\\s*(and )?\\w{3,}ing\\b[^.;]{0,40}(,\\s*(and )?\\w{3,}ing\\b)?",
+      "register": "narration",
+      "hint": "Follow the main verb with two -ing phrases: “She waited, watching the door, counting the cars.”"
+    },
+    {
+      "id": "for",
+      "name": "The reason after",
+      "does": "“For” used to mean “because”, adding the reason after the fact, as thought does: “half laughing, for she guessed what he was thinking.”",
+      "pattern": "[,;—]\\s*for\\s+(she|he|it|they|there|this|that|the|in|after|of|so|was|who|I|we|one)\\b",
+      "register": "any",
+      "hint": "Add the reason at the end with “for”: “She said nothing, for she knew he was right.”"
+    },
+    {
+      "id": "moment",
+      "name": "The moment held",
+      "does": "The narration stops on the moment itself: the clock striking, “this moment”, time passing.",
+      "pattern": "\\b(this moment|the moment|at that moment|for a moment|the hour|struck|was striking|for ever|at last|time (passes|passed|went on))\\b",
+      "register": "narration",
+      "hint": "Stop on one moment and name it: “It was half past eleven; for a moment nothing moved.”"
+    },
+    {
+      "id": "one",
+      "name": "One, for anyone",
+      "does": "The impersonal “one”, which turns a private feeling into anyone’s without leaving the character’s mind: “One cannot bring children into a world like this.”",
+      "pattern": "\\bone (feels|felt|thinks|thought|could|would|might|must|can|cannot|can[’']t|has|had|is|was|says|said|sees|saw|knows|knew|remembers|did|does|never|always)\\b",
+      "register": "any",
+      "hint": "Turn “I” into “one” for a feeling anyone could have: “One never knows what to say.”"
+    }
+  ],
+  "works": [
+    {
+      "id": "dalloway",
+      "title": "Mrs. Dalloway",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/virginia-woolf_mrs-dalloway",
+        "files": "^mrs-dalloway",
+        "breaks": true
+      }
+    },
+    {
+      "id": "commonreader",
+      "title": "The Common Reader",
+      "year": 1925,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Common-Reader_64457",
+        "file": "64457-0.txt",
+        "from": "^_The Common Reader_$",
+        "chapter": "^(_[^_]+_|[A-Z][A-Z ,.]+[A-Z])(\\[\\d+\\])?$",
+        "wrap": 2,
+        "gap": 2,
+        "drop": "^[IVX]+$",
+        "dropPara": "^The next day we read: .For the rest one can only say"
+      }
+    },
+    {
+      "id": "lighthouse1",
+      "title": "To the Lighthouse, part 1",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/virginia-woolf_to-the-lighthouse",
+        "files": "^chapter-1-"
+      }
+    },
+    {
+      "id": "lighthouse2",
+      "title": "To the Lighthouse, part 2",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/virginia-woolf_to-the-lighthouse",
+        "files": "^chapter-2-"
+      }
+    },
+    {
+      "id": "lighthouse3",
+      "title": "To the Lighthouse, part 3",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/virginia-woolf_to-the-lighthouse",
+        "files": "^chapter-3-"
+      }
+    },
+    {
+      "id": "orlando",
+      "title": "Orlando",
+      "year": 1928,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/virginia-woolf_orlando"
+      }
+    },
+    {
+      "id": "room",
+      "title": "A Room of One’s Own",
+      "year": 1929,
+      "source": {
+        "type": "html",
+        "file": "woolf/a-room-of-ones-own.html",
+        "url": "https://gutenberg.net.au/ebooks02/0200791h.html",
+        "chapter": "^(ONE|TWO|THREE|FOUR|FIVE|SIX)$"
+      }
+    }
+  ]
+}

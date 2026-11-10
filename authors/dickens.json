@@ -1,0 +1,204 @@
+{
+  "id": "dickens",
+  "name": "Charles Dickens",
+  "title": "Charles Dickens",
+  "advisor": "Dickens Advisor",
+  "short": "Dickens",
+  "tagline": "Comic names, comic likenesses, and the word said again",
+  "epigraph": {
+    "text": "It was the best of times, it was the worst of times, it was the age of wisdom, it was the age of foolishness…",
+    "cite": "A Tale of Two Cities, book 1, ch. 1"
+  },
+  "whole": "six of Dickens’s novels",
+  "years": "1812–1870",
+  "action": "Dickens it up",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Charles Dickens (1812–1870), the Victorian novelist of Bleak House, Great Expectations and A Christmas Carol: a narrator who comments, exaggerates and exclaims; people drawn as caricatures, kept in view by title and surname and one repeated trait; comic likenesses that turn people into things and things into people; grand words for small matters; the same word opening clause after clause; and set-piece descriptions of weather and the city.",
+  "family": "storytellers",
+  "goodFor": [
+    "story",
+    "speech"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1843–1861: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A city buried in fog, and a court where a lawsuit has gone on so long nobody remembers what it is about: Bleak House, ch. 1.",
+    "A boy in a churchyard seized by an escaped convict and told to bring food: Great Expectations, ch. 1.",
+    "An old woman still in her wedding dress, the clocks stopped at the hour she was jilted: Miss Havisham, Great Expectations, ch. 8.",
+    "A miser visited on Christmas Eve by the ghost of his partner and three spirits: A Christmas Carol.",
+    "A schoolmaster who wants nothing but facts from his pupils: Mr. Gradgrind, Hard Times, book 1, ch. 1.",
+    "A man always waiting for something to turn up, and a sum that settles his happiness: Mr. Micawber, David Copperfield, ch. 12.",
+    "A man who gives his life for the woman he loves and her husband: Sydney Carton, A Tale of Two Cities, book 3, ch. 15."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of Dickens’s, not as the writer’s page with “Mr.” in front of the names.",
+    "Let the narrator be present: he comments, exaggerates, exclaims and now and then speaks to the reader.",
+    "Draw people as caricatures: one striking trait, a manner of speech, a name kept with its title (“Mr. Jellyby”), repeated each time they appear.",
+    "Use comic likenesses: a person like a machine or an animal, a house or a fog that seems to have a mind of its own.",
+    "Open a set piece by saying one word again and again at the head of each clause (anaphora): “Fog everywhere. Fog up the river … fog down the river.”",
+    "Give small things grand words for comedy (“establishment”, “individual”, “personage”), and let a sentence run long and then end with a short, flat one."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person, the narrator looking back as Pip and David do.",
+    "Keep the writer’s people as they are; exaggerate their manner, never change what they did.",
+    "A modern thing the story needs is named plainly or by a comic description, recognisable at once. Never a riddle.",
+    "Keep the writer’s degree of feeling: comedy may swell a small trouble, but it stays small; invent no death, orphan or fortune the writer did not write."
+  ],
+  "moves": [
+    {
+      "id": "anaphora",
+      "name": "The word said again",
+      "does": "The same word opens clause after clause (anaphora): “Fog creeping into the cabooses of collier-brigs; fog lying out on the yards; fog drooping on the gunwales of barges.”",
+      "pattern": "(^|[;,—:]\\s*)(?!(?:the|and|but|was|were|had|has|his|her|its|with|for|not|she|you|that|which|who|they|then|this|there|from|all|one)\\b)(\\w{3,})\\b[^;,]{3,90}[;,—]\\s*\\2\\b[^;,]{3,90}[;,—]\\s*\\2\\b",
+      "register": "any",
+      "hint": "Start three clauses in a row with the same word: “Noise in the hall; noise on the stairs; noise in every room.”"
+    },
+    {
+      "id": "name",
+      "name": "Title and surname",
+      "does": "A person kept in view by title and surname, the name itself part of the joke: “Mr. Jellyby”, “Mrs. Pardiggle”.",
+      "pattern": "\\b(mr|mrs|miss)\\.? [A-Z]\\w+",
+      "register": "any",
+      "hint": "Call a person by title and surname each time: “Mr. Patel”, never “he” or a first name."
+    },
+    {
+      "id": "asif",
+      "name": "The comic likeness",
+      "does": "A person described as a thing, a machine or an animal: “going on in his business consideration of the matter like a machine.”",
+      "pattern": "\\b(as if|as though|like a|like an)\\b",
+      "register": "any",
+      "hint": "Compare a person to a thing: “He stood in the doorway like a coat-stand.”"
+    },
+    {
+      "id": "grand",
+      "name": "The grand word for a small thing",
+      "does": "Inflated words for ordinary matters, for comedy (mock-heroic): “I shall then place my establishment on a superior footing.”",
+      "pattern": "\\b(gentleman|individual|personage|establishment|apartment|countenance|benevolent|respectable|immensely|tremendous|tremendously|prodigious|venerable|illustrious)\\b",
+      "register": "any",
+      "hint": "Call a small thing by a grand name: “the establishment” for a snack bar, “the personage” for a little brother."
+    },
+    {
+      "id": "exclaim",
+      "name": "The narrator exclaims",
+      "does": "The narrator or a speaker breaks into an exclamation, or turns to speak to someone not there: “Oh, never, never, never shall I forget the emotion this letter caused!”",
+      "pattern": "^(oh|ah|o|dead|so|and so|what|how|alas)\\b[^.]{0,80}!|\\b(reader|your majesty|my lords and gentlemen)\\b",
+      "register": "any",
+      "hint": "Let the narrator break in once with “Oh, …!” at a moment that matters."
+    },
+    {
+      "id": "tag",
+      "name": "Speech with a gesture",
+      "does": "Speech tagged with the speaker’s name and what the speaker does while talking, so manner shows character: “said Mr. Jellyby, looking slowly round from the wall.”",
+      "pattern": "\\b(said|says|cried|returned|observed|replied) (mr|mrs|miss)\\.? \\w+,? (with|in|looking|who|as|rubbing|shaking|nodding|taking|putting|turning)\\b",
+      "register": "any",
+      "hint": "Tag a line with the name and one habit of the speaker: “said Mrs. Lee, folding her arms.”"
+    }
+  ],
+  "works": [
+    {
+      "id": "carol",
+      "title": "A Christmas Carol",
+      "year": 1843,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_a-christmas-carol"
+      }
+    },
+    {
+      "id": "copperfield",
+      "title": "David Copperfield",
+      "year": 1850,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_david-copperfield"
+      }
+    },
+    {
+      "id": "bleakhouse",
+      "title": "Bleak House",
+      "year": 1853,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_bleak-house"
+      }
+    },
+    {
+      "id": "hardtimes1",
+      "title": "Hard Times, book 1",
+      "year": 1854,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_hard-times",
+        "files": "^chapter-1-"
+      }
+    },
+    {
+      "id": "hardtimes2",
+      "title": "Hard Times, book 2",
+      "year": 1854,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_hard-times",
+        "files": "^chapter-2-"
+      }
+    },
+    {
+      "id": "hardtimes3",
+      "title": "Hard Times, book 3",
+      "year": 1854,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_hard-times",
+        "files": "^chapter-3-"
+      }
+    },
+    {
+      "id": "twocities1",
+      "title": "A Tale of Two Cities, book 1",
+      "year": 1859,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_a-tale-of-two-cities",
+        "files": "^chapter-1-"
+      }
+    },
+    {
+      "id": "twocities2",
+      "title": "A Tale of Two Cities, book 2",
+      "year": 1859,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_a-tale-of-two-cities",
+        "files": "^chapter-2-"
+      }
+    },
+    {
+      "id": "twocities3",
+      "title": "A Tale of Two Cities, book 3",
+      "year": 1859,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_a-tale-of-two-cities",
+        "files": "^chapter-3-"
+      }
+    },
+    {
+      "id": "expectations",
+      "title": "Great Expectations",
+      "year": 1861,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/charles-dickens_great-expectations"
+      }
+    }
+  ]
+}

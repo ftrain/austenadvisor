@@ -1,0 +1,347 @@
+{
+  "id": "hammett",
+  "name": "Dashiell Hammett",
+  "title": "Dashiell Hammett",
+  "advisor": "Hammett Advisor",
+  "short": "Hammett",
+  "tagline": "The detective’s eye: what people do, never what they feel",
+  "epigraph": {
+    "text": "I first heard Personville called “Poisonville” by a red-haired mucker named Hickey Dewey in the Big Ship in Butte.",
+    "cite": "Red Harvest, ch. 1"
+  },
+  "whole": "Hammett’s first three novels and the Continental Op stories",
+  "years": "1894–1961",
+  "action": "Hammett it up",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Dashiell Hammett (1894–1961), the American detective writer of Red Harvest and The Maltese Falcon: a hard, flat voice that reports from outside; feeling shown only by what a person does with face, hands and cigarette; short plain sentences of action; exact sums, times and distances; faces described like a police report; talk that carries the plot, tagged with a bare “said”; and the street slang of the 1920s.",
+  "family": "storytellers",
+  "goodFor": [
+    "story"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Red Harvest and The Dain Curse (1929), The Maltese Falcon (1930) and the Continental Op stories (1923–1930): public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A detective arrives in a town to meet a client and finds him already dead: Red Harvest, ch. 1–2.",
+    "A man sets the rival gangs of a corrupt town against each other until they destroy themselves: Red Harvest.",
+    "A partner shot at night in a fog-bound alley, and the detective who goes on working: The Maltese Falcon, ch. 2.",
+    "A man who walks out of his life after a beam nearly kills him, and drifts back into the same kind of life: the Flitcraft story, The Maltese Falcon, ch. 7.",
+    "A prize everyone has lied and killed for turns out to be a fake: the falcon of lead, The Maltese Falcon, ch. 19.",
+    "A detective turns in the woman he may love, because she killed his partner: “I won’t play the sap for you”, The Maltese Falcon, ch. 20.",
+    "A family curse explained away, crime by crime, as the work of people: The Dain Curse."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of Hammett’s, flat and hard, not as the writer’s page with a few tough words in it.",
+    "Stay outside. Report what can be seen and heard: a grin, a shrug, a hand on a door. Never name what someone feels; let the act show it.",
+    "Write short declarative sentences, most of them one clause, subject first: “I went back to my chair and waited.” A longer sentence is a string of acts joined by “and”.",
+    "Be exact: a sum of money, a time, a distance, a count, given as a figure a policeman would write down.",
+    "Describe a person as an inventory of features, coolly: eyes, mouth, chin, height, clothes.",
+    "Let talk carry the story. Tag it with a plain “said”, sometimes before the speech with a colon (“Spade said:”); add only how it was said, never what it meant.",
+    "No comment, no moral, no metaphor for its own sake. A dry understatement may close a scene."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person: the writer becomes a narrator like the Op, who tells what he did and saw.",
+    "A modern thing the story needs is named plainly, as Hammett would name a gun or a telephone: “her phone”, “the laptop”. Never a riddle.",
+    "Keep the writer’s degree of feeling and of danger. A spilled drink does not become a shooting; invent no crime, weapon or death the writer did not write.",
+    "Use slang sparingly and only where a speaker would use it: one street word is a voice, five is a costume."
+  ],
+  "moves": [
+    {
+      "id": "number",
+      "name": "The exact figure",
+      "does": "Sums of money, times and distances given exactly, as a detective would note them: “a check for five thousand dollars”.",
+      "pattern": "\\$\\s?\\d|\\b(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|twenty|fifty|hundred|thousand)[- ](dollars?|grand|bucks|o[’']clock|minutes|hours|cents|feet|inches|pounds|blocks)\\b|\\b(half past|quarter (to|past)|\\d{1,2}:\\d{2})\\b",
+      "register": "any",
+      "hint": "Replace a vague amount with an exact one: “ten minutes past four”, “eleven dollars”."
+    },
+    {
+      "id": "face",
+      "name": "The face as a list",
+      "does": "A person is described feature by feature, coolly, the way a police description reads: “His yellow-grey eyes were horizontal.”",
+      "pattern": "\\b(his|her|their) (eyes|mouth|face|lips|hands?|chin|jaw|nose|hair|teeth|voice|shoulders) (was|were|had|went|looked|moved)\\b|\\b(yellow-grey|grey|gray|blue|brown|green|black|pale) eyes\\b",
+      "register": "narration",
+      "hint": "Describe one person by two plain features: “Her eyes were grey. Her mouth was small and tight.”"
+    },
+    {
+      "id": "behave",
+      "name": "Acts, not feelings",
+      "does": "What a person feels is shown only by what the body does: a grin, a shrug, a cigarette lit. The narrator never says what they feel.",
+      "pattern": "\\b(grinned|smiled|laughed|nodded|shrugged|scowled|frowned|lit a cigarette|cigarette|blew smoke|said nothing|didn[’']t say anything|put (his|her) hand)\\b",
+      "register": "narration",
+      "hint": "Cut a feeling word like “angry” and write what the person did instead: “He put his cigarette out on the desk.”"
+    },
+    {
+      "id": "said",
+      "name": "Said, and how",
+      "does": "Speech tagged with a plain “said”, sometimes before the words with a colon, and only the manner added: “Spade said in a low voice”.",
+      "pattern": "\\bsaid:\\s|\\b(he|she|I|spade|they) said,?\\s*“|\\b(he|she|I|spade|they) said (in a|with|without|slowly|softly|carelessly|evenly)\\b",
+      "register": "any",
+      "hint": "Tag the speech with plain “said”, and put any manner after it: “she said without looking up”."
+    },
+    {
+      "id": "slang",
+      "name": "The street word",
+      "does": "The crime slang of the 1920s, used by the people in the story: rod, racket, dick, bulls. A marker of the voice, not a structure to copy.",
+      "pattern": "\\b(dick|gunman|gunmen|bulls?|bump(ed)? off|rod|gat|sap|dope|yeah|okay|sweetheart|precious|angel|swell|hooch|hood|crook|graft|racket|frame-up|framed|copper|shamus)\\b",
+      "register": "speech",
+      "hint": "Give one speaker one street word where it fits: “the bulls”, “a racket”."
+    },
+    {
+      "id": "act",
+      "name": "The bare act",
+      "does": "A short sentence of one action, a pronoun and a verb of motion, with nothing explained: “I went back to my chair and waited.”",
+      "pattern": "^(I|he|she|we|they|spade) (went|got|turned|walked|sat|stood|took|put|came|opened|shut|picked|looked|left|crossed|lit|pulled|pushed) [^,;“”]{1,50}\\.$",
+      "register": "narration",
+      "hint": "Write one sentence that is only an action: “I went downstairs.” Add no reason."
+    }
+  ],
+  "works": [
+    {
+      "id": "redharvest",
+      "title": "Red Harvest",
+      "year": 1929,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_red-harvest"
+      }
+    },
+    {
+      "id": "daincurse",
+      "title": "The Dain Curse",
+      "year": 1929,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_the-dain-curse"
+      }
+    },
+    {
+      "id": "falcon",
+      "title": "The Maltese Falcon",
+      "year": 1930,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_the-maltese-falcon"
+      }
+    },
+    {
+      "id": "opstories",
+      "title": "The Continental Op Stories",
+      "year": 1930,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^(crooked-souls|it|bodies-piled-up|the-house-in-turk-street|who-killed-bob-teal|mike-or-alec-or-rufus|the-main-death|death-and-company)\\.xhtml$"
+      }
+    },
+    {
+      "id": "arsonplus",
+      "title": "Arson Plus",
+      "year": 1923,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^arson-plus\\.xhtml$",
+        "breaks": true
+      }
+    },
+    {
+      "id": "slipperyfingers",
+      "title": "Slippery Fingers",
+      "year": 1923,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^slippery-fingers\\.xhtml$",
+        "breaks": true
+      }
+    },
+    {
+      "id": "thetenthclue",
+      "title": "The Tenth Clue",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-tenth-clue\\.xhtml$"
+      }
+    },
+    {
+      "id": "nightshots",
+      "title": "Night Shots",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^night-shots\\.xhtml$"
+      }
+    },
+    {
+      "id": "zigzagsoftreachery",
+      "title": "Zigzags of Treachery",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^zigzags-of-treachery\\.xhtml$"
+      }
+    },
+    {
+      "id": "onehour",
+      "title": "One Hour",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^one-hour\\.xhtml$"
+      }
+    },
+    {
+      "id": "thegirlwiththesilvereyes",
+      "title": "The Girl with the Silver Eyes",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-girl-with-the-silver-eyes\\.xhtml$"
+      }
+    },
+    {
+      "id": "womenpoliticsmurder",
+      "title": "Women, Politics and Murder",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^women-politics-murder\\.xhtml$"
+      }
+    },
+    {
+      "id": "thegoldenhorseshoe",
+      "title": "The Golden Horseshoe",
+      "year": 1924,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-golden-horseshoe\\.xhtml$"
+      }
+    },
+    {
+      "id": "thewhosiskid",
+      "title": "The Whosis Kid",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-whosis-kid\\.xhtml$"
+      }
+    },
+    {
+      "id": "thescorchedface",
+      "title": "The Scorched Face",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-scorched-face\\.xhtml$"
+      }
+    },
+    {
+      "id": "corkscrew",
+      "title": "Corkscrew",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^corkscrew\\.xhtml$"
+      }
+    },
+    {
+      "id": "deadyellowwomen",
+      "title": "Dead Yellow Women",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^dead-yellow-women\\.xhtml$"
+      }
+    },
+    {
+      "id": "theguttingofcouffignal",
+      "title": "The Gutting of Couffignal",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-gutting-of-couffignal\\.xhtml$"
+      }
+    },
+    {
+      "id": "creepingsiamese",
+      "title": "Creeping Siamese",
+      "year": 1926,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^creeping-siamese\\.xhtml$"
+      }
+    },
+    {
+      "id": "thebigknockover",
+      "title": "The Big Knock-Over",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-big-knock-over\\.xhtml$"
+      }
+    },
+    {
+      "id": "bloodmoney",
+      "title": "$106,000 Blood Money",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^blood-money\\.xhtml$"
+      }
+    },
+    {
+      "id": "thiskingbusiness",
+      "title": "This King Business",
+      "year": 1928,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^this-king-business\\.xhtml$"
+      }
+    },
+    {
+      "id": "flypaper",
+      "title": "Flypaper",
+      "year": 1929,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^flypaper\\.xhtml$"
+      }
+    },
+    {
+      "id": "thefarewellmurder",
+      "title": "The Farewell Murder",
+      "year": 1930,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/dashiell-hammett_continental-op-stories",
+        "files": "^the-farewell-murder\\.xhtml$"
+      }
+    }
+  ]
+}
