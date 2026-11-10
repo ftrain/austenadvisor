@@ -30,13 +30,15 @@ const DEV = process.argv.includes('--dev');
 const store = new Store();
 const rooms = new Map<string, Room>();
 
+/** The voices, read once at startup; only whether each is built is asked again, and that is remembered once true. */
+const voiceList = readdirSync(join(ROOT, 'authors'))
+  .filter((f) => f.endsWith('.json'))
+  .map((f) => {
+    const a = readAuthor(ROOT, f.replace(/\.json$/, ''));
+    return { id: a.id, name: a.name, title: a.title ?? a.name, tagline: a.tagline ?? '', epigraph: a.epigraph ?? null, action: a.action ?? `${a.short} it up`, whole: a.whole ?? `${a.short}’s complete works`, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), moves: (a.moves ?? []).map((m) => ({ id: m.id, name: m.name, does: m.does })) };
+  });
 function authors() {
-  return readdirSync(join(ROOT, 'authors'))
-    .filter((f) => f.endsWith('.json'))
-    .map((f) => {
-      const a = readAuthor(ROOT, f.replace(/\.json$/, ''));
-      return { id: a.id, name: a.name, title: a.title ?? a.name, tagline: a.tagline ?? '', epigraph: a.epigraph ?? null, action: a.action ?? `${a.short} it up`, whole: a.whole ?? `${a.short}’s complete works`, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), moves: (a.moves ?? []).map((m) => ({ id: m.id, name: m.name, does: m.does })), built: isBuilt(a.id) };
-    });
+  return voiceList.map((a) => ({ ...a, built: isBuilt(a.id) }));
 }
 
 const model = (id: string) => AuthorModel.load(id);

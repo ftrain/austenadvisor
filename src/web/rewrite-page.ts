@@ -118,7 +118,7 @@ export async function rewritePage(app: HTMLElement) {
     );
   const picker = h('div', { class: 'pg-picker' });
   function openPicker(anchor: HTMLElement) {
-    showPop(anchor, h('p', { class: 'pg-pop-label' }, result.hidden ? 'Write it as' : 'Rewrite it as'), cards((x) => (hidePop(), x.id !== voice.id && setVoice(x, !result.hidden))));
+    showPop(anchor, h('p', { class: 'pg-pop-label' }, result.hidden ? 'Write it as' : 'Rewrite it as'), cards((x) => (hidePop(), x.id !== voice.id && (result.hidden ? setVoice(x, false) : pickVoice(x)))));
     pop.classList.add('pg-pop-wide');
     place();
   }
@@ -162,7 +162,9 @@ export async function rewritePage(app: HTMLElement) {
   const built = h('section', { class: 'pg-built', hidden: true });
   const lesson = h('section', { class: 'pg-lesson', hidden: true });
   const foot = h('p', { class: 'pg-foot' });
-  const result = h('section', { class: 'pg-result', hidden: true }, tools, progress, built, colHead, rowsEl, lesson, foot);
+  // A new voice on the result page costs a rewrite: ask first, in one line.
+  const ask = h('div', { class: 'pg-ask', hidden: true, role: 'status' });
+  const result = h('section', { class: 'pg-result', hidden: true }, tools, ask, progress, built, colHead, rowsEl, lesson, foot);
 
   const pop = h('div', { class: 'pg-pop', hidden: true, role: 'dialog' });
   const sheet = h('dialog', { class: 'pg-sheet' }) as HTMLDialogElement;
@@ -190,11 +192,22 @@ export async function rewritePage(app: HTMLElement) {
     (go as HTMLButtonElement).disabled = !ai.available;
     colHead.querySelector('.pg-voice-name')!.textContent = v.title;
     save();
+    ask.hidden = true;
     if (rerun) {
       const had = runs.get(key(v.id, area.value));
       if (had) show(had);
-      else void start();
     }
+  }
+  /** On the result page: a voice already rewritten shows at once; any other waits for a yes. */
+  function pickVoice(v: AuthorInfo) {
+    const had = runs.get(key(v.id, area.value));
+    if (had?.done && !had.error) return setVoice(v, true);
+    ask.replaceChildren(
+      h('span', {}, `Rewrite as ${v.title}? It takes about 20 seconds.`),
+      h('button', { class: 'pg-btn', onclick: () => (setVoice(v, false), void start()) }, 'Rewrite'),
+      h('button', { class: 'pg-btn', onclick: () => (ask.hidden = true) }, `Keep ${voice.title}`),
+    );
+    ask.hidden = false;
   }
   setVoice(voice, false);
 
@@ -214,6 +227,7 @@ export async function rewritePage(app: HTMLElement) {
   function edit() {
     abort?.abort();
     hidePop();
+    ask.hidden = true;
     result.hidden = true;
     compose.hidden = false;
     area.focus();
@@ -426,7 +440,7 @@ export async function rewritePage(app: HTMLElement) {
 
   function quoteEl(q: Quote): HTMLElement {
     const [a, b] = q.mark ?? [0, 0];
-    const words = b > a ? [q.text.slice(0, a), h('mark', { class: 'pg-mark' }, q.text.slice(a, b)), q.text.slice(b)] : [q.text];
+    const words = b > a ? [q.text.slice(0, a), h('mark', { class: 'pg-hl' }, q.text.slice(a, b)), q.text.slice(b)] : [q.text];
     return h(
       'blockquote',
       { class: 'pg-q' },

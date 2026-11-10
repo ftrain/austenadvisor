@@ -22,7 +22,7 @@ export interface Figure {
 export const FIGURES: Record<string, { name: string; gloss: string }> = {
   litotes: { name: 'Litotes', gloss: 'Affirming by denying the contrary: “not unwilling”, “no small consequence”.' },
   periphrasis: { name: 'Periphrasis', gloss: 'A thing named by a description rather than its name: “the instrument in his hand”.' },
-  gnomic: { name: 'Generalization (gnomic statement)', gloss: 'A general truth laid over the particular case: the usual vehicle of her irony.' },
+  gnomic: { name: 'Generalization (gnomic statement)', gloss: 'A general truth laid over the particular case: the usual vehicle of irony.' },
   irony: { name: 'Ironic verdict', gloss: 'The narrator’s verdict, saying more (or other) than it says.' },
   aside: { name: 'Ironic aside', gloss: 'A dry clause that deflates what came before: “, which was at least consistent with the occasion”.' },
   fid: { name: 'Free indirect discourse', gloss: 'A character’s thought or exclamation given in the narration, without quotation marks or “she thought”.' },
@@ -110,6 +110,8 @@ export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolea
   re(/\b(?:the\s+(?:most|very\s+\w+est|\w+est)\s+[^,.;]{0,40}\b(?:in|of)\s+(?:my|her|his|their|all)\s+(?:life|lives|days|existence|week|world)|never\s+in\s+(?:my|her|his)\s+life|a\s+(?:thousand|hundred|million)\s+times|beyond\s+all\s+(?:reason|measure|bounds|description))/i, 'hyperbole');
 
   // By sentence: free indirect discourse, polysyndeton, anaphora, tricolon, inversion.
+  // Free indirect discourse belongs to prose narration: in a play or in verse a line ending “?” or “!” is speech.
+  const prose = m.author.citeStyle !== 'play' && m.author.citeStyle !== 'verse';
   const tags = m.tagger.tagTokens(toks);
   let from = 0;
   const ends = toks.map((t, k) => (t.kind === 'punct' && /^[.!?]$/.test(t.norm) ? k : -1)).filter((k) => k >= 0);
@@ -124,7 +126,7 @@ export function findFigures(m: AuthorModel, raw: string, opts: { letter?: boolea
       const last = seg[seg.length - 1]!;
       // A question or exclamation in the narration.
       // (In a letter the writer addresses the reader: a question there is no character's thought.)
-      if (!opts.letter && !opts.spoken && (last.norm === '?' || last.norm === '!') && !inSpeech(last.start) && !seg.some((t) => t.text === '“' || t.text === '”')) out.push(fig('fid', s0, s1, text));
+      if (prose && !opts.letter && !opts.spoken && (last.norm === '?' || last.norm === '!') && !inSpeech(last.start) && !seg.some((t) => t.text === '“' || t.text === '”')) out.push(fig('fid', s0, s1, text));
       // Three or more “and”s joining.
       const ands = words.filter((t) => t.norm === 'and').length;
       if (ands >= 3) out.push(fig('polysyndeton', s0, s1, text));

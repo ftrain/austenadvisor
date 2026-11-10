@@ -565,7 +565,7 @@ export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   // A name stands; and where the author keeps modern things by their own names, so does the writer's compound (“ice cream”).
   const keptCompounds = check.compounds.filter((c) => !brief.sentences.some((x) => x.text.toLowerCase().includes(c.toLowerCase()) && (/^\p{Lu}/u.test(c) || !!m.author.keepModern)));
   if (keptCompounds.length)
-    problems.push(`Compounds ${short} never wrote, though each word is hers: ${keptCompounds.map((c) => `“${c}”`).join(', ')}. Find what the thing would be in ${short}’s world, or describe it.`);
+    problems.push(`Compounds ${short} never wrote, though each word is ${pronounsOf(m.author).possessivePronoun.replace(/^its$/, `${short}’s`)}: ${keptCompounds.map((c) => `“${c}”`).join(', ')}. Find what the thing would be in ${short}’s world, or describe it.`);
   // A modern adverb on an adjective of hers (“essentially alarmed”, “really cool”): a calque, not her idiom.
   for (const para of s.paragraphs)
     for (const x of para.sentences) {

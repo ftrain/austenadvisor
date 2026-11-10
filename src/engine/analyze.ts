@@ -416,7 +416,7 @@ function readSentence(m: AuthorModel, s: SentenceWork, sentenceText: string, opt
       start: a.start - base,
       end: b.end - base,
       title: `“${a.text} ${b.text}”: a compound ${short} never wrote`,
-      message: `${short} used “${a.text}” and “${b.text}”, but never together: the thing may be newer than she is.`,
+      message: `${short} used “${a.text}” and “${b.text}”, but never together: the thing may be newer than ${short}.`,
       why: `“${a.norm}” ${m.word(a.norm)!.count}×, “${b.norm}” ${m.word(b.norm)!.count}×, “${a.norm} ${b.norm}” never.`,
       examples: [],
     });
@@ -569,7 +569,7 @@ function joinShortRuns(m: AuthorModel, work: SentenceWork[], blocks: DocBlock[])
         start: run[0]!.start,
         end: run[run.length - 1]!.end,
         title: `${run.length} short sentences in a row`,
-        message: `${short} would have joined these: ${pronounsOf(m.author).possessive} narration moves in longer sentences, its clauses held together by semicolons and “and”.`,
+        message: `${cap(short)} would have joined these: ${pronounsOf(m.author).possessive} narration moves in longer sentences, joined most often by ${topJoins(m)}.`,
         why: `Yours run ${lengths} words. Half of ${short}’s narrative sentences are ${Math.round(d.p50)} words or more; a quarter are ${Math.round(d.p75)} or more. ${cap(pronounsOf(m.author).subject)} joins clauses with “, and” ${(m.profile.joins[', and'] ?? 0).toLocaleString()} times and “; and” ${(m.profile.joins['; and'] ?? 0).toLocaleString()} times.`,
         replacements: [{ block: s.block, start: run[0]!.start, end: run[run.length - 1]!.end, text: replacement }],
         examples,
@@ -639,7 +639,7 @@ function reportOf(m: AuthorModel, t: Tally): Report {
     author: round2(P.punctuationPerSentence[';']!),
     unit: '',
     score: clamp((Math.min(semis, P.punctuationPerSentence[';']!) / P.punctuationPerSentence[';']!) * 100),
-    explain: `${short} balances clauses on the semicolon: about one sentence in three has one.`,
+    explain: `${cap(short)} uses ${perSentence(P.punctuationPerSentence[';'] ?? 0, 'semicolon')}.`,
   });
   const commas = t.punct[',']! / nSent;
   measures.push({
@@ -657,7 +657,7 @@ function reportOf(m: AuthorModel, t: Tally): Report {
     author: round1(P.per1000.lyAdverbs),
     unit: '',
     score: clamp(100 - Math.max(0, ly - P.per1000.lyAdverbs) * 6),
-    explain: `${short} qualifies with “very”, “quite” and a judging adjective more than with -ly adverbs.`,
+    explain: `${cap(short)} writes about ${round1(P.per1000.lyAdverbs)} -ly adverbs (“quickly”, “really”) in every 1,000 words.`,
   });
   const contractedNarr = sents
     .filter((s) => !s.spoken)
@@ -668,7 +668,7 @@ function reportOf(m: AuthorModel, t: Tally): Report {
     author: round1((Object.values(P.contractions).reduce((a, c) => a + c.narr, 0) / P.narrationWords) * 1000),
     unit: '',
     score: clamp(100 - (contractedNarr / Math.max(1, t.narrWords)) * 1000 * 8),
-    explain: `Outside speech ${short} writes “do not”, “it is”, “I am”.`,
+    explain: contractionNote(short, (Object.values(P.contractions).reduce((a, c) => a + c.narr, 0) / Math.max(1, P.narrationWords)) * 1000),
   });
   const spokenShare = t.spokenWords / n;
   measures.push({
@@ -715,7 +715,7 @@ function reportOf(m: AuthorModel, t: Tally): Report {
       author: round2(mfw.chunkDelta.p50),
       unit: '',
       score: deltaScore,
-      explain: `How far your rates of ${short}’s ${mfw.words.length} commonest words (${mfw.words.slice(0, 5).join(', ')}…) are from ${pronounsOf(m.author).possessivePronoun}, in standard deviations; her own 2,000-word stretches score ${round2(mfw.chunkDelta.p10)}–${round2(mfw.chunkDelta.p90)}.`,
+      explain: `How far your rates of ${short}’s ${mfw.words.length} commonest words (${mfw.words.slice(0, 5).join(', ')}…) are from ${pronounsOf(m.author).possessivePronoun}, in standard deviations; ${pronounsOf(m.author).possessive} own 2,000-word stretches score ${round2(mfw.chunkDelta.p10)}–${round2(mfw.chunkDelta.p90)}.`,
     });
   const rates = mfw.words.map((w, i) => ({ word: w, yours: round1(((t.counts.get(w) ?? 0) / n) * 1000), author: round1(mfw.mean[i]!), z: z[i]! }));
   const overused = [...rates].filter((r) => r.z > 2 && r.yours > 1).sort((a, b) => b.z - a.z).slice(0, 6).map(({ word, yours, author }) => ({ word, yours, author }));
@@ -762,7 +762,7 @@ function documentAdvice(m: AuthorModel, r: Report, narrParagraphWords: number[],
       start: 0,
       end: 0,
       title: 'Short paragraphs of narration',
-      message: `${short} gathers narration into fuller paragraphs: a scene’s action, and the heroine’s reflection on it, together.`,
+      message: `${cap(short)} gathers narration into fuller paragraphs, so an action and what follows from it stand together.`,
       why: `Your narrative paragraphs run a median ${median(narrParagraphWords)} words; ${short}’s ${P.paragraphWords.p50} (a quarter of ${pronounsOf(m.author).possessivePronoun} are under ${P.paragraphWords.p25}).`,
       examples: [],
     });
@@ -796,7 +796,7 @@ function documentAdvice(m: AuthorModel, r: Report, narrParagraphWords: number[],
     });
   }
   if (chapters.length > 1) {
-    const typical = 2200;
+    const { mean: typical, count, unit } = chapterLength(m);
     for (const c of chapters)
       if (c.words > typical * 4)
         out.push({
@@ -807,12 +807,46 @@ function documentAdvice(m: AuthorModel, r: Report, narrParagraphWords: number[],
           start: 0,
           end: 0,
           title: `A long chapter: ${c.title || 'the first'}`,
-          message: `${short}’s chapters average some 2,200 words; this one runs ${c.words.toLocaleString()}.`,
-          why: `${short} ends chapters on a turn or a line of dialogue, and the next opens on a new scene.`,
+          message: `${cap(short)}’s ${unit} average some ${typical.toLocaleString()} words; this one runs ${c.words.toLocaleString()}.`,
+          why: `The mean over all ${count.toLocaleString()} of ${short}’s ${unit}.`,
           examples: [],
         });
   }
   return out;
+}
+
+/** How often a mark comes, said as a reader counts it: “one semicolon in about 25 sentences”, “about 2 commas a sentence”. */
+function perSentence(rate: number, mark: string): string {
+  if (rate <= 0) return `no ${mark}s`;
+  if (rate >= 0.9) return `about ${round1(rate)} ${mark}s a sentence`;
+  const n = Math.round(1 / rate);
+  return n <= 1 ? `about one ${mark} a sentence` : `one ${mark} in about ${n} sentences`;
+}
+
+/** What the author does with contractions outside speech, from the rate per 1,000 words of narration. */
+function contractionNote(short: string, rate: number): string {
+  if (rate >= 2) return `Outside speech ${short} contracts freely: about ${round1(rate)} contractions (“don’t”, “it’s”) in every 1,000 words.`;
+  return `Outside speech ${short} writes “do not”, “it is”, “I am”${rate >= 0.5 ? `: about ${round1(rate)} contractions in every 1,000 words` : ''}.`;
+}
+
+/** The author's two commonest ways of joining clauses, quoted. */
+function topJoins(m: AuthorModel): string {
+  const top = Object.entries(m.profile.joins).filter(([j]) => !j.includes('…')).sort((a, b) => b[1] - a[1]).slice(0, 2).map(([j]) => `“${j.trim()}”`);
+  return top.length ? top.join(' and ') : 'commas';
+}
+
+/** The mean length of the author's chapters (a speech, a scene, a book of the Bible), counted once per model. */
+const chapterLengths = new WeakMap<AuthorModel, { mean: number; count: number; unit: string }>();
+function chapterLength(m: AuthorModel): { mean: number; count: number; unit: string } {
+  let c = chapterLengths.get(m);
+  if (!c) {
+    const r = m.db.prepare('SELECT COUNT(*) AS n FROM chapters').get() as { n: number };
+    const count = Math.max(1, r.n);
+    const unit = m.author.citeStyle === 'speech' ? 'speeches' : m.author.citeStyle === 'play' ? 'scenes' : 'chapters';
+    c = { mean: Math.round(m.profile.words / count / 100) * 100, count, unit };
+    chapterLengths.set(m, c);
+  }
+  return c;
 }
 
 const round1 = (x: number) => Math.round(x * 10) / 10;

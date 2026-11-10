@@ -113,6 +113,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 /** The brief as the model reads it: tagged, numbered, every model sentence by its id. */
 export function renderBrief(m: AuthorModel, b: Brief, strength: 'full' | 'light' = 'full'): string {
   const short = m.author.short;
+  const pr = pronounsOf(m.author);
   const P = m.profile;
   const out: string[] = [];
   out.push(
@@ -135,7 +136,7 @@ export function renderBrief(m: AuthorModel, b: Brief, strength: 'full' | 'light'
       out.push(`<paragraph n="${para}">`);
     }
     out.push(`<sentence n="${s.n}" register="${s.register}" words="${s.words}">`, esc(s.text));
-    for (const w of s.never) out.push(`  <never word="${esc(w.word)}">${short} never wrote it. ${w.alternatives.length ? `Hers: ${esc(w.alternatives.join('; '))}` : 'No word of hers is near: rephrase.'}</never>`);
+    for (const w of s.never) out.push(`  <never word="${esc(w.word)}">${short} never wrote it. ${w.alternatives.length ? `${cap(pr.possessive)} words: ${esc(w.alternatives.join('; '))}` : `${short} has no word near it: rephrase.`}</never>`);
     for (const c of s.models) out.push(`  <model id="S${c.id}">${esc(c.text)} (${esc(c.cite)})</model>`);
     out.push(`</sentence>`);
   }

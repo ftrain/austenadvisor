@@ -1,7 +1,8 @@
 // The engine against the built Austen model (npm run build:model); skipped where it is not built.
-import { existsSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { authorDbPath } from '../src/db.ts';
+import { ROOT, authorDbPath } from '../src/db.ts';
 import { analyze } from '../src/engine/analyze.ts';
 import { austenize } from '../src/engine/austenize.ts';
 import { blocksOfText } from '../src/engine/doc.ts';
@@ -170,5 +171,73 @@ describe.skipIf(!built)('the Austen engine', () => {
     const t = performance.now();
     analyze(m, blocksOfText(text + ' One more sentence here.'));
     expect(performance.now() - t).toBeLessThan(400);
+  });
+});
+
+// Every voice's report is built from its own numbers, in its own pronouns.
+const builtVoices = ['austen', 'eliot', 'fairy', 'kjv', 'obama', 'shakespeare', 'twain'].filter((id) => existsSync(authorDbPath(id)));
+const reportText = [
+  'I went to the store. It was late. The lights were off. I didn’t know what to do. We waited by the door.',
+  'My brother said we should go home. He wasn’t sure. The coffee shop was closed and the street was quiet.',
+  'We walked back in the rain. Nobody spoke. It wasn’t far, but it felt long, and the dog was cold and tired and wet.',
+  'In the morning we tried again. The store was open. We bought bread, milk, eggs and apples, and we went home happy. '.repeat(1),
+]
+  .join('\n\n')
+  .concat('\n\n', 'It was a plain day and we did plain things, as people do when nothing much is wrong. '.repeat(16));
+
+describe('reports for every voice', () => {
+  for (const id of builtVoices)
+    it(`says nothing of ${id} that is another voice’s habit`, { timeout: 120_000 }, () => {
+      const v = AuthorModel.load(id);
+      const a = analyze(v, blocksOfText(reportText));
+      const lines = [...a.report.measures.map((x) => x.explain), ...a.advice.flatMap((x) => [x.title, x.message, x.why])];
+      expect(lines.length).toBeGreaterThan(5);
+      if (v.author.pronouns?.subject !== 'she') for (const l of lines) expect(l).not.toMatch(/\b(her|hers|heroine)\b/i);
+      if (id === 'obama') {
+        for (const l of lines) {
+          expect(l).not.toMatch(/one sentence in three has/);
+          expect(l).not.toMatch(/writes “do not”/);
+        }
+        expect(a.report.measures.find((x) => x.label.startsWith('Semicolons'))!.explain).toMatch(/one semicolon in about \d+ sentences/);
+      }
+    });
+});
+
+describe.skipIf(!builtVoices.includes('shakespeare'))('free indirect discourse in a play', () => {
+  it('is not found in speech, which a play leaves unquoted', { timeout: 120_000 }, () => {
+    const v = AuthorModel.load('shakespeare');
+    const lines = [
+      'O Mother, O Father, hear me!',
+      'What light through yonder window breaks?',
+      'Is this a dagger which I see before me?',
+      'A horse! a horse! my kingdom for a horse!',
+      'Wherefore art thou Romeo?',
+      'Out, damned spot! out, I say!',
+      'How now, my lord, what news?',
+      'Shall I compare thee to a summer’s day?',
+      'Alas, poor Yorick!',
+      'Et tu, Brute?',
+      'What’s in a name?',
+      'O, what a rogue and peasant slave am I!',
+      'Who’s there?',
+      'Is it not strange, my lord?',
+      'Get thee to a nunnery!',
+      'Why, then the world’s mine oyster!',
+      'What fools these mortals be!',
+      'Hath not a Jew eyes?',
+      'Now is the winter of our discontent made glorious summer by this sun of York!',
+      'Will you walk out of the air, my lord?',
+    ];
+    expect(lines.filter((l) => findFigures(v, l).some((f) => f.term === 'fid'))).toEqual([]);
+  });
+});
+
+describe('the page’s styles', () => {
+  it('keeps the brand tile’s class for the brand tile alone', () => {
+    const css = readFileSync(join(ROOT, 'src/web/page.css'), 'utf8');
+    const page = readFileSync(join(ROOT, 'src/web/rewrite-page.ts'), 'utf8');
+    expect(css.match(/\.pg-mark\b/g)).toHaveLength(1);
+    expect(page.match(/pg-mark\b/g)).toHaveLength(1);
+    expect(page).toMatch(/class: 'pg-brand'.*class: 'pg-mark'/);
   });
 });

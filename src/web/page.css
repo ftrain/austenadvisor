@@ -5,7 +5,7 @@
   --card: #ffffff;
   --ink: #1f1b16;
   --ink-2: #4a433b;
-  --ink-3: #8a8178;
+  --ink-3: #70685f;
   --rule: #e7e0d6;
   --accent: #7a3b5f;
   --accent-soft: #f3e6ee;
@@ -347,6 +347,17 @@
 .pg-grow {
   flex: 1;
 }
+.pg-ask {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 12px;
+  color: var(--ink-2);
+}
+.pg-ask[hidden] {
+  display: none;
+}
 .pg-btn {
   border: 1px solid var(--rule);
   background: var(--card);
@@ -628,7 +639,7 @@
 .pg-note-liberty .pg-note-move {
   color: var(--ink-3);
 }
-.pg-mark {
+.pg-hl {
   background: none;
   color: var(--ink);
   font-weight: 600;
