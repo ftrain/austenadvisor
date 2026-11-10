@@ -1,0 +1,176 @@
+{
+  "id": "emerson",
+  "name": "Ralph Waldo Emerson",
+  "advisor": "Emerson Advisor",
+  "short": "Emerson",
+  "title": "Ralph Waldo Emerson",
+  "tagline": "Bold short sentences that stand alone",
+  "epigraph": {
+    "text": "Trust thyself: every heart vibrates to that iron string.",
+    "cite": "Essays, “Self-Reliance”"
+  },
+  "whole": "Emerson’s essays and Nature",
+  "action": "Emerson it up",
+  "years": "1803–1882",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Ralph Waldo Emerson (1803–1882), American essayist and lecturer, in Nature, the two series of Essays (Self-Reliance, Compensation, Circles, Experience), Representative Men and The Conduct of Life: paragraphs built of aphorisms, each sentence complete and quotable, with few links between them; commands to the reader (“Trust thyself”, “Insist on yourself”); the general subject of proverb and scripture (“whoso”, “every man”); moral claims proved by nature, the sun, the sea and the soul; claims defined against what they are not; and the old intimate “thou” and “thy”.",
+  "family": "essayists",
+  "goodFor": [
+    "essay",
+    "speech"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for the Essays and Representative Men; Project Gutenberg ebooks 29433 and 39827 for Nature and The Conduct of Life, by way of the GITenberg mirror",
+    "note": "Published 1836–1860: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A plea to trust your own thought over the crowd’s and the past’s: “Self-Reliance”.",
+    "A defence of changing your mind: “A foolish consistency is the hobgoblin of little minds”, “Self-Reliance”.",
+    "Standing alone in the woods and feeling part of everything: the transparent eyeball, Nature ch. 1.",
+    "Every loss is repaid and every gain is charged for, in the end: “Compensation”.",
+    "Each new idea draws a wider circle round the last: “Circles”.",
+    "Grief that teaches less than one expected: the death of his son, “Experience”.",
+    "A friend as the one person with whom one may think aloud: “Friendship”."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as a page of Emerson’s, each paragraph rebuilt as a run of strong sentences. A rewrite that keeps the writer’s sentences and adds “thou” has failed them.",
+    "Make each sentence stand alone. Most are short and complete, built on “is”, and could be quoted without the one before (“To be great is to be misunderstood”).",
+    "Leave out most links between sentences. Emerson rarely writes “therefore” or “however”; the reader makes the jump.",
+    "Speak to the reader in commands where the passage gives advice: “Trust thyself.” “Insist on yourself.” “Let …”.",
+    "Prove the moral point by nature: the sun, the sea, the seasons, a rose, the circle of the horizon.",
+    "Lift the particular case to the general one: from “I” to “a man”, “every heart”, “whoso”."
+  ],
+  "moves": [
+    {
+      "id": "aphorism",
+      "name": "The sentence that stands alone",
+      "does": "A short sentence built on “is”, complete in itself and easy to quote (aphorism).",
+      "pattern": "^(?!i )((?!and |but |was |were )\\S+ ){1,7}(is|are) (\\S+ ){0,9}\\S+[.!]$",
+      "register": "any",
+      "hint": "Write one sentence of ten words or fewer built on “is”: “To be great is to be misunderstood.”"
+    },
+    {
+      "id": "command",
+      "name": "The command",
+      "does": "A sentence that opens on a command to the reader, such as “Trust”, “Let” or “Insist”.",
+      "pattern": "^[“\"]?(trust|let|be|do|insist|speak|go|accept|cast|obey|whoso|believe|never|always|leave|live|say|give|take|hear|look|see|know)\\b",
+      "register": "any",
+      "hint": "Tell the reader what to do in two or three words: “Trust yourself.” “Let them talk.”"
+    },
+    {
+      "id": "whoso",
+      "name": "Whoso would be a man",
+      "does": "The general person as subject, “whoso”, “he who”, “every man”, in the voice of a proverb.",
+      "pattern": "\\b(whoso|whoever|he who|they who|the man who|every man|every heart|a man|each man)\\b",
+      "register": "any",
+      "hint": "Turn “I” into everyone: “Whoever would … must …”."
+    },
+    {
+      "id": "nature",
+      "name": "Nature as proof",
+      "does": "A moral claim proved by an image from nature, or by the soul as a law of nature.",
+      "pattern": "\\b(nature|the soul|over-soul|the universe|spirit|the sea|the sun|the stars|the rose|the oak|the river|the world|the sky|the woods|the ocean|the tree|the seed|the wind)\\b",
+      "register": "any",
+      "hint": "Back a claim about people with a picture from nature: “The rose does not compare itself …”."
+    },
+    {
+      "id": "antithesis",
+      "name": "Not this, but that",
+      "does": "A claim defined against what it is not, the two halves set side by side (antithesis).",
+      "pattern": "\\bnot\\b[^.]{2,60}\\bbut\\b|\\b(\\w+) is (not )?the \\w+ of\\b",
+      "register": "any",
+      "hint": "Say what it is not, then what it is: “I do not wish to …, but to …”."
+    },
+    {
+      "id": "thou",
+      "name": "Thou and thy",
+      "does": "The old familiar “thou”, “thee” and “thy”, which lend a line the weight of scripture.",
+      "pattern": "\\b(thou|thee|thy|thyself|thine)\\b",
+      "register": "any",
+      "hint": "Speak to the reader as “thou” once, in a command: “Trust thyself.”"
+    },
+    {
+      "id": "all",
+      "name": "The sweeping word",
+      "does": "Claims made for everything at once, with “all”, “every”, “always”, “never” and “nothing”: the voice of a law, never of a guess.",
+      "pattern": "^(\\S+ ){0,3}(all|every|always|never|nothing|everything|no man|each)\\b[^.?!]{3,80}[.!]$",
+      "register": "any",
+      "hint": "Begin a short sentence with “All”, “Every” or “Nothing”, and state it as a law."
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer said, in its order. Lift it to the general case; never replace it with Emerson’s own subject.",
+    "Add no religion the passage does not have. “The soul” and “nature” are his ways of speaking and carry no creed.",
+    "Keep the writer’s degree of feeling. A small worry stays small, though it may be seen as everyone’s.",
+    "Modern things keep a short plain name, used once."
+  ],
+  "works": [
+    {
+      "id": "natureintro",
+      "title": "Nature",
+      "year": 1836,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Nature_29433",
+        "file": "29433.txt",
+        "from": "^INTRODUCTION\\.$",
+        "chapter": "^INTRODUCTION\\.$",
+        "until": "^CHAPTER I\\.$",
+        "drop": "^(?!INTRODUCTION)[A-Z]+\\.$"
+      }
+    },
+    {
+      "id": "nature",
+      "title": "Nature",
+      "year": 1836,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Nature_29433",
+        "file": "29433.txt",
+        "from": "^CHAPTER I\\.$",
+        "chapter": "^CHAPTER [IVX]+\\.$",
+        "drop": "^(?!INTRODUCTION)[A-Z]+\\.$"
+      }
+    },
+    {
+      "id": "essays",
+      "title": "Essays",
+      "year": 1841,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ralph-waldo-emerson_essays",
+        "files": "."
+      }
+    },
+    {
+      "id": "representative",
+      "title": "Representative Men",
+      "year": 1850,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ralph-waldo-emerson_representative-men"
+      }
+    },
+    {
+      "id": "conduct",
+      "title": "The Conduct of Life",
+      "year": 1860,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Conduct-of-Life_39827",
+        "file": "39827-0.txt",
+        "from": "^I\\.$",
+        "chapter": "^[IVX]+\\.$",
+        "drop": "^(?![IVX]+\\.$)[A-Z ]+\\.$",
+        "dropPara": "^[A-Z][A-Z ]+\\.?$"
+      }
+    }
+  ]
+}

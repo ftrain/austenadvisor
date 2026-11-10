@@ -1,0 +1,245 @@
+{
+  "id": "chesterton",
+  "name": "G. K. Chesterton",
+  "advisor": "Chesterton Advisor",
+  "short": "Chesterton",
+  "title": "G. K. Chesterton",
+  "tagline": "Arguments won by paradox and good humour",
+  "epigraph": {
+    "text": "Angels can fly because they can take themselves lightly.",
+    "cite": "Orthodoxy, ch. 7"
+  },
+  "whole": "Chesterton’s essays, novels and Father Brown stories",
+  "action": "Chesterton it up",
+  "years": "1874–1936",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "G. K. Chesterton (1874–1936), English essayist, novelist and author of the Father Brown stories, in Orthodoxy, Heretics, What’s Wrong with the World, The Everlasting Man and his fiction: argument by paradox, the common view denied and its opposite shown to be common sense; phrases turned round so that the reversal is the point; the opponent named (the modern thinker, the sceptic, the materialist) and answered; “the man who” as the shape of an idea; homely proofs from fairy tales, lamp-posts and the Sunday dinner; and a talking voice, cheerful and sure, that says “of course” before saying something nobody expected.",
+  "family": "arguers",
+  "goodFor": [
+    "argument",
+    "essay",
+    "review"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1905–1925: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A man reasons perfectly from one narrow idea and is mad for it: the maniac, Orthodoxy ch. 2.",
+    "An English yachtsman sets out to discover a new island and lands, without knowing it, in England: Orthodoxy ch. 1.",
+    "Fairy tales teach that every joy comes with a condition, and that the world is a wonder: “The Ethics of Elfland”, Orthodoxy ch. 4.",
+    "Tradition defended as giving votes to the dead: “The Ethics of Elfland”, Orthodoxy ch. 4.",
+    "A crowd pulls down a lamp-post because they cannot agree what light is for: Heretics ch. 2.",
+    "A small priest catches a master thief by leaving a trail of odd little disturbances: “The Blue Cross”, The Innocence of Father Brown.",
+    "A man no one notices commits the crime because he is part of the scenery, a postman: “The Invisible Man”, The Innocence of Father Brown.",
+    "A detective joins a council of anarchists and finds that every member is a policeman in disguise: The Man Who Was Thursday."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as Chesterton arguing it, rebuilt in his order and his turns. A rewrite that keeps the writer’s sentences and adds “of course” has failed them.",
+    "Find the paradox in the writer’s own claim: state the view everyone holds, deny it, and show that the opposite is the plain truth (“The madman is not the man who has lost his reason”).",
+    "Name the opponent and answer him: “The modern critic says …; but …”. Be fair to him first and then turn him round.",
+    "Prove a large point with a small homely picture: a lamp-post, a fence, a fairy tale, a man looking for his hat.",
+    "Turn a phrase round where it carries the argument: “If the apple hit Newton’s nose, Newton’s nose hit the apple.” Once a paragraph at most.",
+    "Talk to the reader. Use “I”, “of course”, “that is to say” and plain words, and keep the tone cheerful even when the point is grave."
+  ],
+  "moves": [
+    {
+      "id": "paradox",
+      "name": "Not what you think",
+      "does": "The common view is denied and its opposite asserted in the same sentence (paradox: a claim that seems absurd and turns out true).",
+      "pattern": "\\b(is|are|was) not\\b[^.]{3,80}[;,:—]\\s*(but|it is|he is|they are|it was|he was)\\b|\\b(paradox|paradoxical)\\b",
+      "register": "any",
+      "hint": "Deny the usual view, then give its opposite: “… is not …; it is …”."
+    },
+    {
+      "id": "chiasmus",
+      "name": "The phrase turned round",
+      "does": "Two words repeated in reverse order, so that the reversal carries the argument (chiasmus). “If the apple hit Newton’s nose, Newton’s nose hit the apple.”",
+      "pattern": "\\b(\\w{3,}) (\\w+ )?(\\w{3,})\\b[^.;]{0,40}[;,—]\\s*[^.;]{0,30}\\b\\3 (\\w+ )?\\1\\b",
+      "register": "any",
+      "hint": "Say a pair of words, then say them again the other way round: “We do not … the …; the … the …”."
+    },
+    {
+      "id": "plain",
+      "name": "Talking to the reader",
+      "does": "Signposts from conversation, such as “of course”, “I mean” and “the truth is”, that make a large claim sound like common sense.",
+      "pattern": "\\b(I mean|that is to say|in other words|it is (quite )?(obvious|evident|clear)|of course|the truth is|the plain fact|I do not mean|the point is|in plain words|in short)\\b",
+      "register": "any",
+      "hint": "Lead into your boldest claim with “Of course,” or “The truth is,” as if it were obvious."
+    },
+    {
+      "id": "man",
+      "name": "The man who",
+      "does": "An idea given a body as a kind of person: “the man who …”.",
+      "pattern": "\\b(a|the|every|any|no) (man|woman|person|people|men) who\\b",
+      "register": "any",
+      "hint": "Turn an idea into a person: “The student who … is the student who …”."
+    },
+    {
+      "id": "modern",
+      "name": "The opponent answered",
+      "does": "A named opponent, such as the modern thinker, the sceptic or the believer in progress, stated fairly and then turned upside down.",
+      "pattern": "\\b(modern|moderns|progress|materialis\\w+|sceptic\\w*|rationalis\\w+|evolution|the philosophers?|the critics?|the reformers?|the pessimists?|optimists?)\\b",
+      "register": "any",
+      "hint": "Name who disagrees and give their view in one line: “The modern critic says …”. Then answer."
+    },
+    {
+      "id": "fairy",
+      "name": "The fairy-tale proof",
+      "does": "Fairy tales, giants, dragons and miracles used as homely pictures for a serious claim.",
+      "pattern": "\\b(fairy|fairies|fairyland|elfland|dragons?|giants?|romance|romantic|miracles?|marvels?|wonders?|ogres?|knights?)\\b",
+      "register": "any",
+      "hint": "Prove your point with a story every child knows: “As in the fairy tale, …”."
+    },
+    {
+      "id": "homely",
+      "name": "The homely picture",
+      "does": "An everyday object, such as a lamp-post, a hat, a fence or a cheese, set in the middle of a large argument to make it plain.",
+      "pattern": "\\b(lamp-?posts?|hats?|umbrellas?|cheese|beer|inns?|post-?office|omnibus|fences?|gates?|walls?|pillar-?box|chimney|cab|tea|kettle|boots?|grocers?|policem[ae]n|suburbs?|street)\\b",
+      "register": "any",
+      "hint": "Set one ordinary object in the middle of your argument: “It is like a man looking for his hat …”."
+    }
+  ],
+  "craftNotes": [
+    "Keep the writer’s own claim. The paradox must sharpen what they believe; it must never argue them into the opposite.",
+    "Keep what the writer named, in its order. A homely picture may be added; facts may not.",
+    "Add no religion or politics the passage does not have.",
+    "Modern things keep a short plain name, used once."
+  ],
+  "works": [
+    {
+      "id": "heretics",
+      "title": "Heretics",
+      "year": 1905,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_heretics"
+      }
+    },
+    {
+      "id": "orthodoxy",
+      "title": "Orthodoxy",
+      "year": 1908,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_orthodoxy"
+      }
+    },
+    {
+      "id": "thursday",
+      "title": "The Man Who Was Thursday",
+      "year": 1908,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-man-who-was-thursday"
+      }
+    },
+    {
+      "id": "wrong1",
+      "title": "What’s Wrong with the World, Part I",
+      "year": 1910,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_whats-wrong-with-the-world",
+        "files": "^chapter-1-"
+      }
+    },
+    {
+      "id": "wrong2",
+      "title": "What’s Wrong with the World, Part II",
+      "year": 1910,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_whats-wrong-with-the-world",
+        "files": "^chapter-2-"
+      }
+    },
+    {
+      "id": "wrong3",
+      "title": "What’s Wrong with the World, Part III",
+      "year": 1910,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_whats-wrong-with-the-world",
+        "files": "^chapter-3-"
+      }
+    },
+    {
+      "id": "wrong4",
+      "title": "What’s Wrong with the World, Part IV",
+      "year": 1910,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_whats-wrong-with-the-world",
+        "files": "^chapter-4-"
+      }
+    },
+    {
+      "id": "wrong5",
+      "title": "What’s Wrong with the World, Part V",
+      "year": 1910,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_whats-wrong-with-the-world",
+        "files": "^chapter-5-"
+      }
+    },
+    {
+      "id": "innocence",
+      "title": "The Innocence of Father Brown",
+      "year": 1911,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-innocence-of-father-brown",
+        "files": "^the-"
+      }
+    },
+    {
+      "id": "wisdom",
+      "title": "The Wisdom of Father Brown",
+      "year": 1914,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-wisdom-of-father-brown",
+        "files": "^the-"
+      }
+    },
+    {
+      "id": "everlasting",
+      "title": "The Everlasting Man",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-everlasting-man",
+        "files": "^(introduction|conclusion)"
+      }
+    },
+    {
+      "id": "everlasting1",
+      "title": "The Everlasting Man, Part I",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-everlasting-man",
+        "files": "^chapter-1-"
+      }
+    },
+    {
+      "id": "everlasting2",
+      "title": "The Everlasting Man, Part II",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/g-k-chesterton_the-everlasting-man",
+        "files": "^chapter-2-"
+      }
+    }
+  ]
+}

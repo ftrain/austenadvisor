@@ -1,0 +1,157 @@
+{
+  "id": "thoreau",
+  "name": "Henry David Thoreau",
+  "advisor": "Thoreau Advisor",
+  "short": "Thoreau",
+  "title": "Henry David Thoreau",
+  "tagline": "One life, measured plainly and judged",
+  "epigraph": {
+    "text": "The mass of men lead lives of quiet desperation.",
+    "cite": "Walden, “Economy”"
+  },
+  "whole": "Walden, A Week and Thoreau’s essays",
+  "action": "Thoreau it up",
+  "years": "1817–1862",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Henry David Thoreau (1817–1862), American essayist and naturalist, in Walden, A Week on the Concord and Merrimack Rivers and his essays (Civil Disobedience, Walking, Life without Principle, Wild Apples): the first person, plain and unapologetic, saying what he did and why; the exact fact, in rods, acres, dollars and cents, set under a large claim; the language of the account book turned on how to live; a creature or place in the woods, the loon, the pond, the bean field, as the occasion for a reflection; blunt verdicts on “most men” set against the single “I”; and paradoxes meant to wake the reader.",
+  "family": "essayists",
+  "goodFor": [
+    "essay",
+    "argument",
+    "story"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1849–1866: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "Going to live alone in a small cabin to learn what life truly needs: Walden, “Where I Lived, and What I Lived For”.",
+    "Listing exactly what a house or a year cost, to the half cent: Walden, “Economy”.",
+    "A night in jail for refusing to pay a tax to a government that allows slavery: “Civil Disobedience”.",
+    "A war between red and black ants watched closely on a woodpile: Walden, “Brute Neighbors”.",
+    "A game of hide and seek with a loon on the pond: Walden, “Brute Neighbors”.",
+    "Sand and clay thawing on a railway bank in spring, shaped like leaves and veins: Walden, “Spring”.",
+    "A walk taken westward, toward the wild, as a kind of pilgrimage: “Walking”.",
+    "Hoeing beans for the sake of knowing beans: Walden, “The Bean-Field”."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as a page of Thoreau’s, rebuilt in his order: the fact, then the reflection, then the verdict. A rewrite that keeps the writer’s sentences and adds a pond has failed them.",
+    "Speak plainly in the first person. Say what you did and why, without apology: “I went to the woods because I wished to live deliberately.”",
+    "Give the exact fact where the passage has a number, a price or a distance, and let it carry the larger claim.",
+    "Turn the language of money and work on the question of how to live: cost, rent, wages, what is necessary and what is a luxury.",
+    "Let one thing seen closely, a bird, a tree, a cup of coffee, open onto a reflection about all of us.",
+    "Close a paragraph on a verdict or a paradox that makes the reader look again: “I have travelled a good deal in Concord.”"
+  ],
+  "moves": [
+    {
+      "id": "i",
+      "name": "I, plainly",
+      "does": "The first person says what he did and why, without apology.",
+      "pattern": "\\b(for my part|I (went|have|am|say|would|wished|did not|do not|lived|found|learned|know|saw|heard|walked|built|think|believe))\\b",
+      "register": "any",
+      "hint": "Say what you did and why in one plain sentence: “I went to … because I wished to …”."
+    },
+    {
+      "id": "measure",
+      "name": "The measured fact",
+      "does": "An exact measure, in rods, acres, dollars or cents, that grounds a large claim in a small fact.",
+      "pattern": "\\b(\\d+|one|two|three|four|five|six|seven|eight|nine|ten|twelve|twenty|thirty|forty|fifty|hundred|thousand|half|quarter|a few)[- ](\\w+[- ]){0,2}(feet|foot|inches|rods|miles|acres|cents|dollars|pounds|bushels|quarts|degrees|days|weeks|years|hours)\\b",
+      "register": "any",
+      "hint": "Put an exact number in: “twenty-eight dollars and twelve and a half cents”, “a hundred rods south”."
+    },
+    {
+      "id": "ledger",
+      "name": "The ledger of a life",
+      "does": "The words of the account book, such as cost, rent, wages and luxuries, turned on the question of how to live.",
+      "pattern": "\\b(cost|costs|expense|dollars?|cents|economy|bread|rent|labor|necessar(y|ies)|luxur(y|ies)|wages|property|farm|shelter|clothing|price|profit|account|earn\\w*|spend\\w*)\\b",
+      "register": "any",
+      "hint": "Price your choice in a life’s terms: “The cost of a thing is the amount of life it takes.”"
+    },
+    {
+      "id": "pond",
+      "name": "The thing in the woods",
+      "does": "A creature or place seen closely, the loon, the pond, the beans, that becomes the occasion for a reflection.",
+      "pattern": "\\b(pond|woods?|loon|ice|beans?|squirrels?|owls?|hawks?|huckleberr\\w+|pines?|lake|shore|walden|mice|river|meadows?|apples?|oaks?|swamp|frogs?|snow)\\b",
+      "register": "narration",
+      "hint": "Describe one small thing you saw closely, then say what it taught you."
+    },
+    {
+      "id": "mass",
+      "name": "The verdict on the many",
+      "does": "A blunt general claim about “most men” or “we”, set against the single “I”.",
+      "pattern": "\\b(most men|the mass of men|men (are|have|do|labor|say|think)|mankind|we (are|do|live|have|should|must)|the (nation|state|village|public))\\b",
+      "register": "any",
+      "hint": "Judge everyone else in one blunt line: “Most people …”. Then say what you do instead."
+    },
+    {
+      "id": "paradox",
+      "name": "The paradox that wakes",
+      "does": "A statement that sounds absurd or reversed and makes the reader look again, such as “I have travelled a good deal in Concord” (paradox).",
+      "pattern": "\\b(a good deal in concord|the more|rather than|instead of|not (that|because)|in proportion as|the cost of a thing|it is never too late|we do not|nothing is|I would rather|the less|richest|poorest)\\b",
+      "register": "any",
+      "hint": "Say something that sounds backwards and is true: “I have travelled a good deal in my own street.”"
+    },
+    {
+      "id": "twice",
+      "name": "The word said twice",
+      "does": "A word repeated at once for emphasis (epizeuxis), as in “Simplify, simplify.”",
+      "pattern": "\\b(\\w{4,}),\\s+\\1\\b|\\b(\\w{4,})\\b[^.]{1,40}\\b\\2\\b[^.]{1,40}\\b\\2\\b",
+      "register": "any",
+      "hint": "Repeat the one word that matters: “Simplify, simplify.”"
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer did and saw, in its order. A first-person passage stays first person, and the reflection grows out of the writer’s own fact.",
+    "Keep the writer’s numbers exactly, and add none they did not give.",
+    "Add no politics or cause the passage does not have.",
+    "Modern things keep a short plain name, used once. A phone may stand in a sentence beside a pond."
+  ],
+  "works": [
+    {
+      "id": "week",
+      "title": "A Week on the Concord and Merrimack Rivers",
+      "year": 1849,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/henry-david-thoreau_a-week-on-the-concord-and-merrimack-rivers"
+      }
+    },
+    {
+      "id": "walden",
+      "title": "Walden",
+      "year": 1854,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/henry-david-thoreau_walden",
+        "files": "."
+      }
+    },
+    {
+      "id": "essays",
+      "title": "Essays",
+      "year": 1863,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/henry-david-thoreau_essays",
+        "files": "^(?!preface|a-yankee)"
+      }
+    },
+    {
+      "id": "canada",
+      "title": "A Yankee in Canada",
+      "year": 1866,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/henry-david-thoreau_essays",
+        "files": "^a-yankee"
+      }
+    }
+  ]
+}

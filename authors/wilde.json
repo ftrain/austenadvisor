@@ -1,0 +1,229 @@
+{
+  "id": "wilde",
+  "name": "Oscar Wilde",
+  "advisor": "Wilde Advisor",
+  "short": "Wilde",
+  "title": "Oscar Wilde",
+  "tagline": "Wit that turns a common saying on its head",
+  "epigraph": {
+    "text": "We are all in the gutter, but some of us are looking at the stars.",
+    "cite": "Lady Windermere’s Fan, Act 3"
+  },
+  "whole": "Wilde’s novel, plays and critical dialogues",
+  "action": "Wilde it up",
+  "years": "1854–1900",
+  "citeStyle": "chapter",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Oscar Wilde (1854–1900), Irish wit, playwright and critic, in The Picture of Dorian Gray, his four society comedies and the dialogues of Intentions: the epigram, a short general sentence about life with a twist inside it; the paradox that turns a proverb round; sweeping claims about men, women and society made for the pleasure of the phrase; the drawing-room vocative “my dear fellow”; words of excess (quite, perfectly, charming, dreadful); and descriptions heaped with precious colours and stuffs.",
+  "family": "essayists",
+  "goodFor": [
+    "essay",
+    "review",
+    "story"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for the novel, the stories and the plays; Project Gutenberg ebook 887 for Intentions, by way of the GITenberg mirror",
+    "note": "Published 1887–1899: public domain in the US.",
+    "basis": "age"
+  },
+  "echoes": [
+    "A portrait ages and grows ugly while the man it shows stays young: The Picture of Dorian Gray.",
+    "An older man talks a beautiful young one into living for pleasure alone: Lord Henry in the garden, The Picture of Dorian Gray ch. 2.",
+    "An invented friend or invalid relative used as an excuse to get away: Bunburying, The Importance of Being Earnest, Act 1.",
+    "A formidable aunt questions a young man about his income and his parents, and learns he was found in a handbag: Lady Bracknell’s interview, The Importance of Being Earnest, Act 1.",
+    "Two friends argue that art and lying are finer than nature and truth: The Decay of Lying, in Intentions.",
+    "A mother with a hidden past saves her daughter from making her own mistake: Lady Windermere’s Fan.",
+    "A rising politician’s old dishonest bargain comes to light and is used to blackmail him: An Ideal Husband.",
+    "A palmist foretells a murder, and the young man resolves to get it over with before his wedding: Lord Arthur Savile’s Crime."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as a page of Wilde’s, its sentences rebuilt in his manner. A rewrite that keeps the writer’s sentences and adds a few fine words has failed them.",
+    "Give the paragraph an epigram where the matter allows: a short general sentence about people or life with a twist inside it (“One should never trust a woman who tells one her real age”). One or two a paragraph; the rest carries the story or the argument.",
+    "Turn a common saying round where one fits the matter: “I can resist everything except temptation.” The reversal must say something true about the passage.",
+    "Make talk quick and polished. A character answers a serious remark lightly and a light remark gravely, and the narrator lets the reply stand.",
+    "Where the passage describes, describe by colour and material: ivory, jade, silk, a purple flower, honey-coloured light.",
+    "Keep the tone easy and sure of itself. The wit mocks manners, fashions and received opinion; it is never cruel to the writer or to the people in the passage."
+  ],
+  "moves": [
+    {
+      "id": "epigram",
+      "name": "The epigram",
+      "does": "A short sentence about life, people, men or women, complete in itself, with a twist inside it.",
+      "pattern": "^[“\"]?(the only|there is (only|no)|nothing|everything|all|one should|one can|one never|one must|a man|a woman|women|men|to be|no \\w+|it is (always|only)|experience|life|society)\\b[^.?!]{3,90}\\b(is|are|can|should|never|always|has|have|makes?)\\b[^.?!]*[.!][”\"]?$",
+      "register": "any",
+      "hint": "Write one short sentence that holds for everyone, with a twist: “One should …, but one should never …”."
+    },
+    {
+      "id": "paradox",
+      "name": "The saying turned round",
+      "does": "A proverb or common opinion turned inside out, so that it says something unexpected and true (paradox: a statement that seems to contradict itself).",
+      "pattern": "\\b(the only (way|thing|difference|people|things?|possible|real|one)|there is (only )?one thing|is to \\w+ (it|them)|of everything and the \\w+ of nothing|nowadays|except temptation|the (secret|value|use) of)\\b",
+      "register": "any",
+      "hint": "Take a common saying and reverse it: “The only way to get rid of a temptation is to yield to it.”"
+    },
+    {
+      "id": "class",
+      "name": "The sweeping claim",
+      "does": "A claim about a whole class of people or things, exaggerated for the sake of wit: “Men are …”, “Women never …”, “The English have …”.",
+      "pattern": "\\b(women|men|people|the public|society|young men|old women|young people|art|life|the english|americans|critics|artists|husbands|wives) (are|is|never|always|have|has|love|like|can|should)\\b",
+      "register": "any",
+      "hint": "Turn one person’s habit into a rule for everyone like them: “Teachers always …”."
+    },
+    {
+      "id": "excess",
+      "name": "The word of excess",
+      "does": "Intensifiers and words of taste such as quite, perfectly, absolutely, charming, exquisite and dreadful: the voice of a man of fashion.",
+      "pattern": "\\b(quite|simply|absolutely|dreadfully|perfectly|charming|delightful|exquisite|wonderful|horrid|monstrous|tedious|curious|extraordinary)\\b",
+      "register": "any",
+      "hint": "Put one word of taste where a plain one stands: “a perfectly dreadful afternoon”."
+    },
+    {
+      "id": "sense",
+      "name": "Colour and costly things",
+      "does": "Description heaped with precious colours and materials such as purple, ivory, jade, silk and gold.",
+      "pattern": "\\b(purple|gold|golden|ivory|silver|jade|amber|lilac|roses?|orchids?|silk|velvet|pearls?|crimson|scarlet|honey|satin|marble|jewels?)\\b",
+      "register": "narration",
+      "hint": "Name an object’s colour and stuff: “a jade-green cup”, “curtains of faded silk”."
+    },
+    {
+      "id": "dear",
+      "name": "My dear fellow",
+      "does": "The friendly drawing-room address, “my dear fellow”, “dear boy”, that comes just before a witty reply.",
+      "pattern": "\\b(my dear|dear boy|my dear fellow|dear lady)\\b",
+      "register": "speech",
+      "hint": "Open a reply with “My dear …,” then say the clever thing."
+    },
+    {
+      "id": "antithesis",
+      "name": "The balanced contrast",
+      "does": "Two opposed halves set side by side in one sentence, so that each sharpens the other (antithesis).",
+      "pattern": "\\b(but|and) (one|we|he|she|they|you) (should )?never\\b|\\b(\\w+) (is|are) (\\w+ ){0,3}(but|while|whereas) (\\w+ ){0,3}\\4\\b|\\bthe one\\b[^.]{3,60}\\bthe other\\b|\\bnot (\\w+ ){1,6}but (\\w+ )?(the|a|an|to|in|by|of)\\b|\\b(more|less) \\w+ than\\b[^.]{0,40}[;,] (and|but)\\b",
+      "register": "any",
+      "hint": "Set two halves against each other: “Some … ; others …”, or “… but one should never …”."
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer said, in its order. The wit serves the writer’s point and never replaces it.",
+    "An epigram must be about the passage’s own matter. Never drop in a famous line of Wilde’s whole.",
+    "Modern things the passage needs keep a short plain name, used once. Do not make a riddle of them.",
+    "Keep the writer’s degree of feeling. A sincere sentence may stay sincere and plain, as in his letters from prison."
+  ],
+  "works": [
+    {
+      "id": "savile",
+      "title": "Lord Arthur Savile’s Crime",
+      "year": 1887,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_lord-arthur-saviles-crime-and-other-stories",
+        "files": "^lord-arthur"
+      }
+    },
+    {
+      "id": "canterville",
+      "title": "The Canterville Ghost",
+      "year": 1887,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_lord-arthur-saviles-crime-and-other-stories",
+        "files": "^the-canterville"
+      }
+    },
+    {
+      "id": "mrwh",
+      "title": "The Portrait of Mr. W. H.",
+      "year": 1889,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_lord-arthur-saviles-crime-and-other-stories",
+        "files": "^the-portrait"
+      }
+    },
+    {
+      "id": "preface",
+      "title": "The Preface to Dorian Gray",
+      "year": 1891,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_the-picture-of-dorian-gray",
+        "files": "^preface"
+      }
+    },
+    {
+      "id": "dorian",
+      "title": "The Picture of Dorian Gray",
+      "year": 1891,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_the-picture-of-dorian-gray",
+        "files": "^chapter-"
+      }
+    },
+    {
+      "id": "stories",
+      "title": "Lord Arthur Savile’s Crime and Other Stories",
+      "year": 1891,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/oscar-wilde_lord-arthur-saviles-crime-and-other-stories",
+        "files": "^the-(sphinx|model)"
+      }
+    },
+    {
+      "id": "intentions",
+      "title": "Intentions",
+      "year": 1891,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/Intentions_887",
+        "file": "887-0.txt",
+        "from": "^THE DECAY OF LYING:$",
+        "chapter": "^(THE DECAY OF LYING|PEN, PENCIL,? AND POISON|THE CRITIC AS ARTIST|THE TRUTH OF MASKS)",
+        "wrap": 3,
+        "speakers": "^(CYRIL|VIVIAN|ERNEST|GILBERT)(\\s*\\(_[^)]*_\\))?\\.\\s+",
+        "dropPara": "^_A DIALOGUE_"
+      }
+    },
+    {
+      "id": "windermere",
+      "title": "Lady Windermere’s Fan",
+      "year": 1892,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/oscar-wilde_lady-windermeres-fan"
+      }
+    },
+    {
+      "id": "noimportance",
+      "title": "A Woman of No Importance",
+      "year": 1893,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/oscar-wilde_a-woman-of-no-importance"
+      }
+    },
+    {
+      "id": "idealhusband",
+      "title": "An Ideal Husband",
+      "year": 1895,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/oscar-wilde_an-ideal-husband"
+      }
+    },
+    {
+      "id": "earnest",
+      "title": "The Importance of Being Earnest",
+      "year": 1895,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/oscar-wilde_the-importance-of-being-earnest"
+      }
+    }
+  ]
+}
