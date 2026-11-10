@@ -1,7 +1,8 @@
 // The page's rewrite: a text in the voice's manner, streamed as NDJSON as each part is written. Also which voices a
 // text is ready in, so the page can offer them without spending a call.
 
-import type { IncomingMessage } from 'node:http';
+import { randomUUID } from 'node:crypto';
+import type { IncomingMessage, ServerResponse } from 'node:http';
 import { admit, askerHash, precomputedVoices, rewriteCache, type Asker } from '../cache.ts';
 import { body, route, send } from '../http.ts';
 import { MAX_CHARS, streamRewrite } from '../page.ts';
@@ -40,10 +41,93 @@ route('POST', '/api/rewrite', async (req, res) => {
   const instructions = String(b.instructions ?? '');
   if (instructions.length > MAX_INSTRUCTIONS) return send(res, 413, { error: `The instructions run to ${instructions.length.toLocaleString()} characters; the most is ${MAX_INSTRUCTIONS}.` });
   const asker = askerOf(req, b.client);
+  const opts = { admit: () => admit(rewriteCache(), asker, aiAvailable() || writerInjected()) };
   // fresh: write it again, not the kept answer (the evaluation asks for this).
-  await streamRewrite(res, m, text, instructions, b.fresh === true, {
-    admit: () => admit(rewriteCache(), asker, aiAvailable() || writerInjected()),
-  });
+  if (b.job !== true) return streamRewrite(res, m, text, instructions, b.fresh === true, opts);
+  // job: answer at once with an id, and let the page ask for the lines as they come. A proxy that holds a streamed
+  // answer until it ends cannot hold these short ones.
+  const job = new Job();
+  sweep();
+  jobs.set(job.id, job);
+  void streamRewrite(job as unknown as ServerResponse, m, text, instructions, b.fresh === true, opts)
+    .catch((e) => job.fail(e))
+    .finally(() => job.end());
+  send(res, 200, { job: job.id });
+});
+
+/** A rewrite under way, written into memory, not to a socket. It runs on if the page goes away: the cache keeps it. */
+class Job {
+  id = randomUUID();
+  status = 0;
+  lines: unknown[] = [];
+  done = false;
+  ended = 0;
+  private buf = '';
+  private waiting: (() => void)[] = [];
+  writeHead(status: number) {
+    this.status = status;
+    return this;
+  }
+  write(s: string) {
+    this.buf += s;
+    let i: number;
+    while ((i = this.buf.indexOf('\n')) >= 0) {
+      const l = this.buf.slice(0, i).trim();
+      this.buf = this.buf.slice(i + 1);
+      if (l) this.lines.push(JSON.parse(l));
+    }
+    this.wake();
+    return true;
+  }
+  end(s?: string) {
+    if (s) this.write(s + '\n');
+    if (!this.done) {
+      this.done = true;
+      this.ended = Date.now();
+    }
+    this.wake();
+    return this;
+  }
+  fail(e: unknown) {
+    console.error(e);
+    if (!this.status) this.status = 500;
+    this.lines.push({ type: 'failed', error: 'The rewrite failed.' });
+  }
+  on() {
+    return this;
+  }
+  /** Resolves when a line arrives or the job ends, or after `ms`. */
+  next(ms: number): Promise<void> {
+    return new Promise((ok) => {
+      const t = setTimeout(ok, ms);
+      this.waiting.push(() => (clearTimeout(t), ok()));
+    });
+  }
+  private wake() {
+    for (const w of this.waiting.splice(0)) w();
+  }
+}
+
+const jobs = new Map<string, Job>();
+const JOB_KEPT = 10 * 60_000;
+const JOB_WAIT = 8_000;
+
+/** Forget jobs that ended a while ago. */
+function sweep() {
+  const now = Date.now();
+  for (const [id, j] of jobs) if (j.done && now - j.ended > JOB_KEPT) jobs.delete(id);
+}
+
+/**
+ * GET /api/rewrite/<job>?after=<n>: {status, lines, next, done}: the job's lines from the n-th on. With nothing new
+ * it waits a few seconds for a line, then answers anyway. A status other than 200 is a refusal, and lines[0] says why.
+ */
+route('GET', '/api/rewrite/:job', async (_q, res, [id], url) => {
+  const job = jobs.get(id ?? '');
+  if (!job) return send(res, 404, { error: 'That rewrite is not here. Ask for it again.' });
+  const after = Math.max(0, Number(url.searchParams.get('after')) || 0);
+  if (job.lines.length <= after && !job.done) await job.next(JOB_WAIT);
+  send(res, 200, { status: job.status || 200, lines: job.lines.slice(after), next: job.lines.length, done: job.done });
 });
 
 /** GET /api/ready?hash=<sha256 of the text, see textHash>: {hash, voices}, the voices it can be shown in at once. */

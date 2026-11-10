@@ -49,6 +49,18 @@ describe('the routes', () => {
     expect(r.status).toBe(503);
   });
 
+  it('gives a rewrite as a job whose lines are asked for, and says there why it was refused', async () => {
+    const r = await post('/api/rewrite', { author: 'austen', text: 'A short text.', job: true });
+    expect(r.status).toBe(200);
+    const { job } = (await r.json()) as { job: string };
+    let a = { status: 0, lines: [] as { budget?: string }[], done: false };
+    for (let i = 0; i < 20 && !a.done; i++) a = (await (await fetch(`${base}/api/rewrite/${job}?after=0`)).json()) as typeof a;
+    expect(a.done).toBe(true);
+    expect(a.status).toBe(503);
+    expect(a.lines[0]!.budget).toBe('resting');
+    expect((await fetch(`${base}/api/rewrite/nothing`)).status).toBe(404);
+  });
+
   it('answers a malformed path, a bad Host header and an oversized body without falling over', async () => {
     expect((await fetch(`${base}/api/glossary/%E0%A4%A`)).status).toBe(404);
     const { request } = await import('node:http');

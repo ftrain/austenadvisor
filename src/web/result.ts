@@ -9,6 +9,14 @@ import type { GuessView } from './guesscard.ts';
 import type { MovesView } from './moves.ts';
 import { tryIt } from './tryit.ts';
 
+/** Where a rewrite is, in a few words: the part count for a long text, and the server's last word on it. */
+function where(run: Run): string {
+  const at = run.at;
+  if (!at) return 'starting';
+  const parts = at.parts > 1 ? `${at.done} of ${at.parts} parts done` : '';
+  return [parts, at.note].filter(Boolean).join(' · ');
+}
+
 /** One rewrite of one text in one voice, as it streams in. */
 export interface Run {
   voice: string;
@@ -26,6 +34,8 @@ export interface Run {
   /** No rewrite: 'resting' (no writer, or the day's budget is spent) or 'busy' (another is still running). */
   resting?: 'resting' | 'busy';
   started: number;
+  /** Where the writer is: parts done, parts in all, and the server's last word on it. */
+  at?: { done: number; parts: number; note: string };
   /** Drills from the engine, for a text with no rewrite. */
   drills?: Drill[];
 }
@@ -137,7 +147,7 @@ export function result(o: ResultOptions): ResultView {
     progressEl.classList.toggle('pg-bad', !!run.failed || !!run.partial);
     if (run.failed) progressEl.replaceChildren(h('span', {}, `${run.failed} `), ...(run.final ? [] : [button('Try again', () => o.onRetry())]));
     else if (run.partial) progressEl.replaceChildren(h('span', {}, 'Some parts were not rewritten. '), button('Try again', () => o.onRetry()));
-    else progressEl.replaceChildren(h('span', { class: 'pg-dotpulse', 'aria-hidden': 'true' }), `${v.short} is writing · about 20 s · ${mmss(Date.now() - run.started)}`);
+    else progressEl.replaceChildren(h('span', { class: 'pg-dotpulse', 'aria-hidden': 'true' }), `${v.short} is writing · ${where(run)} · ${mmss(Date.now() - run.started)}`);
   }
 
   // -----------------------------------------------------------------------------------------------------------
@@ -441,7 +451,7 @@ export function result(o: ResultOptions): ResultView {
         return;
       }
       const yes = button('Rewrite', () => o.onConfirm(v.id), { class: 'pg-btn pg-btn-main' });
-      askEl.replaceChildren(h('span', {}, `Rewrite as ${v.title}? It takes about 20 seconds.`), yes, button(`Keep ${keepV.short}`, () => o.onVoice(keepV.id)));
+      askEl.replaceChildren(h('span', {}, `Rewrite as ${v.title}? A page takes about 20 seconds; a long piece takes longer.`), yes, button(`Keep ${keepV.short}`, () => o.onVoice(keepV.id)));
       askEl.hidden = false;
       yes.focus();
     },

@@ -371,6 +371,8 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     head();
     // The headings stand as the writer wrote them, and every paragraph appears at once with its own sentences.
     const headings: Row[] = blocks.flatMap((b, i) => (b.kind === 'title' || b.kind === 'heading' ? [{ kind: 'heading' as const, index: i, text: b.text, title: b.kind === 'title' }] : []));
+    const words = text.split(/\s+/).filter(Boolean).length;
+    console.log(`${new Date().toISOString()} rewrite ${voice}: ${words} words in ${parts.length} parts`);
     line({ type: 'plan', parts: parts.length, headings, paragraphs: parts.flatMap((idx, part) => idx.map((i) => ({ index: i, part, text: blocks[i]!.text }))) });
     if (!parts.length) {
       line({ type: 'done', elapsed: Date.now() - t0 });
@@ -407,6 +409,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     const fail = (j: (typeof jobs)[number], e: unknown) => {
       whole = false;
       const error = String((e as Error)?.message ?? e);
+      console.error(`${new Date().toISOString()} rewrite ${voice}: part ${j.part + 1} failed after ${Math.round((Date.now() - t0) / 1000)} s: ${error}`);
       say(j.part, error);
       line({ type: 'part', part: j.part, error, rows: j.idx.map((i) => ({ kind: 'paragraph', index: i, part: j.part, yours: [{ n: -1, text: blocks[i]!.text, never: [] }], hers: null, notes: [], error })) });
     };
@@ -475,6 +478,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     );
     clearInterval(beat);
     line({ type: 'done', elapsed: Date.now() - t0 });
+    console.log(`${new Date().toISOString()} rewrite ${voice}: ${whole ? 'done' : 'done, with parts missing'} in ${Math.round((Date.now() - t0) / 1000)} s`);
     res.end();
     // A whole text rewritten in a voice is ready in it: the page can show so before anyone asks again.
     if (whole && cache && !instructions.trim()) cache.markReady(textHash(text), voice, PROMPT_VERSION);

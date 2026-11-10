@@ -270,6 +270,11 @@ export async function rewritePage(app: HTMLElement) {
       for (const row of (msg.rows as Row[]) ?? []) run.rows.set(row.index, row);
       const plan = (msg.reading as { plan?: { role: string }[] } | undefined)?.plan;
       if (plan?.length) run.roles.set(part, plan.map((x) => x.role));
+    } else if (msg.type === 'progress') {
+      const log = (msg.log as string[]) ?? [];
+      run.at = { done: Number(msg.done) || 0, parts: Number(msg.parts) || 1, note: log.at(-1) ?? '' };
+      if (shown?.run === run) r.progress(state());
+      return;
     } else return;
     if (shown?.run === run) redraw();
   }

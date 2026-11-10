@@ -716,6 +716,8 @@ async function writerCall(client: Anthropic, params: Record<string, any>): Promi
     const r = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: { authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`, 'content-type': 'application/json' },
+      // A provider that never answers must not hold the page for ever.
+      signal: AbortSignal.timeout(Number(process.env.ADVISOR_WRITER_TIMEOUT_MS ?? 120_000)),
       // A rewrite is a thousand tokens or so; asking for more only reserves credit that is never spent.
       body: JSON.stringify({ model: WRITER_MODEL, max_tokens: Math.min(params.max_tokens ?? 6000, Number(process.env.ADVISOR_WRITER_MAX_TOKENS ?? 6000)), messages, tools, tool_choice: only }),
     }).catch((e: Error) => ({ ok: false, statusText: e.message, json: async () => ({}) }) as unknown as Response);

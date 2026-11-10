@@ -117,13 +117,44 @@ export class Refused extends Error {
   }
 }
 
-/** POST, then read the answer as lines of JSON, one call of `each` a line. */
-export async function streamLines(path: string, body: unknown, each: (line: { type: string; [k: string]: unknown }) => void, signal?: AbortSignal) {
-  const r = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal });
+type Each = (line: { type: string; [k: string]: unknown }) => void;
+
+/**
+ * POST for a job, then ask for its lines until it ends, one call of `each` a line. Each answer is short and whole, so
+ * a proxy that holds a streamed answer until it ends does not hold these. A server that streams the lines in the one
+ * answer is read that way.
+ */
+export async function streamLines(path: string, body: unknown, each: Each, signal?: AbortSignal) {
+  const r = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...(body as object), job: true }), signal });
   if (!r.ok) {
     const data = (await r.json().catch(() => ({}))) as { error?: string; budget?: string };
     throw new Refused(r.status, data.budget ?? '', plain(data.error ?? r.statusText));
   }
+  if (!(r.headers.get('content-type') ?? '').includes('application/json')) return readLines(r, each);
+  const { job } = (await r.json()) as { job: string };
+  for (let after = 0, misses = 0; ; ) {
+    let a: { status: number; lines: { type: string; error?: string; budget?: string }[]; next: number; done: boolean };
+    try {
+      const g = await fetch(`${path}/${job}?after=${after}`, { signal });
+      if (g.status === 404) throw new Refused(500, '', 'The rewrite failed.');
+      if (!g.ok) throw new Error(g.statusText);
+      a = await g.json();
+      misses = 0;
+    } catch (e) {
+      // One dropped answer is not the end of the rewrite: the job is still running, so ask again.
+      if (e instanceof Refused || (e as Error).name === 'AbortError' || ++misses > 5) throw e;
+      await new Promise((ok) => setTimeout(ok, 1000));
+      continue;
+    }
+    if (a.status !== 200) throw new Refused(a.status, a.lines[0]?.budget ?? '', plain(a.lines[0]?.error ?? ''));
+    for (const l of a.lines) each(l);
+    after = a.next;
+    if (a.done) return;
+  }
+}
+
+/** Read one streamed answer as lines of JSON. */
+async function readLines(r: Response, each: Each) {
   const rd = r.body!.getReader();
   const dec = new TextDecoder();
   let buf = '';
