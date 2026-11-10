@@ -1,21 +1,38 @@
-// The server's answers, typed by the engine's own types.
+// The server's answers, typed by the server's own types, and the few helpers every part of the page uses.
 
-import type { Analysis } from '../engine/analyze.ts';
 import type { Citation } from '../engine/model.ts';
-import type { WordProfile } from '../engine/tools.ts';
+import { findTerms } from '../engine/terms.ts';
+import type { Drill, PracticeCheck } from '../engine/practice.ts';
+import type { GlossaryEntry } from '../engine/terms.ts';
+import type { HerSentence, Note, Quote, Row, YourSentence } from '../server/page.ts';
+import type { NeverWord, Reading, SketchRow, StyleLine } from '../server/read.ts';
+import type { GuessCard } from '../server/routes/guess.ts';
+import type { Sample } from '../server/routes/samples.ts';
 
-export type { Analysis, Citation, WordProfile };
-export type { Advice, WordFlag, Replacement, Report, Measure } from '../engine/analyze.ts';
-export type { Alternative } from '../engine/alternatives.ts';
+export type { Citation, Drill, GlossaryEntry, GuessCard, HerSentence, NeverWord, Note, PracticeCheck, Quote, Reading, Row, Sample, SketchRow, StyleLine, YourSentence };
+export type Para = Extract<Row, { kind: 'paragraph' }>;
 
 async function json<T>(r: Response): Promise<T> {
   const data = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error((data as { error?: string }).error ?? r.statusText);
+  if (!r.ok) throw new Error(plain((data as { error?: string }).error ?? r.statusText));
   return data as T;
 }
-export const get = <T>(path: string) => fetch(path).then((r) => json<T>(r));
-export const post = <T>(path: string, body: unknown) =>
-  fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) }).then((r) => json<T>(r));
+export const get = <T>(path: string, signal?: AbortSignal) => fetch(path, { signal }).then((r) => json<T>(r));
+export const post = <T>(path: string, body: unknown, signal?: AbortSignal) =>
+  fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal }).then((r) => json<T>(r));
+
+/** A server message fit to show: never the name of a setting on the server. */
+export function plain(message: string): string {
+  return /\b[A-Z][A-Z0-9]*_[A-Z0-9_]+\b/.test(message) ? 'The server could not do that just now.' : message;
+}
+
+export interface Pronouns {
+  subject: string;
+  object: string;
+  possessive: string;
+  possessivePronoun: string;
+}
+export type Family = 'storytellers' | 'speakers' | 'arguers' | 'essayists';
 
 export interface AuthorInfo {
   id: string;
@@ -24,69 +41,114 @@ export interface AuthorInfo {
   title: string;
   tagline: string;
   epigraph: { text: string; cite: string } | null;
-  /** The button: “Austen it up”. */
-  action: string;
-  /** “Austen’s complete works”. */
-  whole: string;
-  advisor: string;
   short: string;
   years: string;
   pronouns: Pronouns;
-  works: string[];
-  /** The voice's moves, each with what it does: a note's heading is defined by it. */
+  /** The voice's moves, each with what it does. */
   moves: { id: string; name: string; does: string }[];
   built: boolean;
-}
-export interface Pronouns {
-  subject: string;
-  object: string;
-  possessive: string;
-  possessivePronoun: string;
-}
-export const SHE: Pronouns = { subject: 'she', object: 'her', possessive: 'her', possessivePronoun: 'hers' };
-export const cap = (s: string) => s[0]!.toUpperCase() + s.slice(1);
-
-export interface Kwic {
-  left: string;
-  match: string;
-  right: string;
-  cite: Citation;
+  family?: Family;
+  goodFor?: string[];
 }
 
-/** Who this browser is, kept on the device. */
-export function me(): { id: string; name: string } {
-  try {
-    const v = JSON.parse(localStorage.getItem('advisor.me') ?? 'null');
-    if (v?.id && v?.name) return v;
-  } catch {
-    /* none kept */
-  }
-  const fresh = { id: `p-${Math.random().toString(36).slice(2, 10)}`, name: 'Writer' };
-  try {
-    localStorage.setItem('advisor.me', JSON.stringify(fresh));
-  } catch {
-    /* memory only */
-  }
-  return fresh;
+export interface Boot {
+  voices: AuthorInfo[];
+  samples: Sample[];
+  glossary: GlossaryEntry[];
+  ai: { available: boolean };
+  /** For each sample id, the voices it is already rewritten in. */
+  ready: Record<string, string[]>;
 }
-export function setMyName(name: string) {
-  const m = { ...me(), name };
+
+export const cap = (s: string) => (s ? s[0]!.toUpperCase() + s.slice(1) : s);
+/** A title in mid-sentence: “the King James Bible”. */
+export const mid = (t: string) => t.replace(/^The /, 'the ');
+
+/** Browser storage that may be missing or may throw: every read and write is guarded, and memory stands in. */
+const memory = new Map<string, string>();
+export const keep = {
+  get<T>(key: string, fallback: T): T {
+    let raw: string | null | undefined;
+    try {
+      raw = localStorage.getItem(key);
+    } catch {
+      raw = memory.get(key);
+    }
+    if (raw === null || raw === undefined) return fallback;
+    try {
+      return JSON.parse(raw) as T;
+    } catch {
+      return fallback;
+    }
+  },
+  set(key: string, value: unknown) {
+    const raw = JSON.stringify(value);
+    memory.set(key, raw);
+    try {
+      localStorage.setItem(key, raw);
+    } catch {
+      /* memory only */
+    }
+  },
+};
+
+/** This page's id for the server's one-rewrite-at-a-time rule. It lasts as long as the tab. */
+export const clientId = `pg-${Math.random().toString(36).slice(2, 12)}`;
+
+/** The text's hash as the server makes it: sha256 hex of the text with \r\n made \n, then trimmed. */
+export async function textHash(text: string): Promise<string | null> {
   try {
-    localStorage.setItem('advisor.me', JSON.stringify(m));
+    const bytes = new TextEncoder().encode(text.replace(/\r\n/g, '\n').trim());
+    const d = await crypto.subtle.digest('SHA-256', bytes);
+    return [...new Uint8Array(d)].map((b) => b.toString(16).padStart(2, '0')).join('');
   } catch {
-    /* memory only */
+    return null;
   }
-  return m;
+}
+
+/** A refusal from the rewrite route: the budget, or no writer. */
+export class Refused extends Error {
+  status: number;
+  budget: string;
+  constructor(status: number, budget: string, message: string) {
+    super(message);
+    this.status = status;
+    this.budget = budget;
+  }
+}
+
+/** POST, then read the answer as lines of JSON, one call of `each` a line. */
+export async function streamLines(path: string, body: unknown, each: (line: { type: string; [k: string]: unknown }) => void, signal?: AbortSignal) {
+  const r = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal });
+  if (!r.ok) {
+    const data = (await r.json().catch(() => ({}))) as { error?: string; budget?: string };
+    throw new Refused(r.status, data.budget ?? '', plain(data.error ?? r.statusText));
+  }
+  const rd = r.body!.getReader();
+  const dec = new TextDecoder();
+  let buf = '';
+  const flush = (all: boolean) => {
+    let i: number;
+    while ((i = buf.indexOf('\n')) >= 0) {
+      const line = buf.slice(0, i).trim();
+      buf = buf.slice(i + 1);
+      if (line) each(JSON.parse(line));
+    }
+    if (all && buf.trim()) each(JSON.parse(buf.trim()));
+  };
+  for (;;) {
+    const { done, value } = await rd.read();
+    if (done) break;
+    buf += dec.decode(value, { stream: true });
+    flush(false);
+  }
+  flush(true);
 }
 
 /** A tiny element builder. */
-type Tag = Exclude<keyof HTMLElementTagNameMap, `to-${string}`>;
-export function h<K extends Tag>(
-  tag: K,
-  attrs: Record<string, unknown> = {},
-  ...kids: (Node | string | null | undefined | false)[]
-): HTMLElementTagNameMap[K] {
-  const el = document.createElement(tag) as HTMLElement as HTMLElementTagNameMap[K] & HTMLElement;
+type Tag = keyof HTMLElementTagNameMap;
+export function h<K extends Tag>(tag: K, attrs: Record<string, unknown> = {}, ...kids: (Node | string | null | undefined | false)[]): HTMLElementTagNameMap[K] {
+  const el = document.createElement(tag) as HTMLElementTagNameMap[K] & HTMLElement;
   for (const [k, v] of Object.entries(attrs)) {
     if (v === undefined || v === null || v === false) continue;
     if (k.startsWith('on') && typeof v === 'function') el.addEventListener(k.slice(2), v as EventListener);
@@ -99,20 +161,48 @@ export function h<K extends Tag>(
   return el;
 }
 
-/** An author's sentence, cited: the words, then where they are. */
-export function quoteEl(c: Citation, onOpen?: (c: Citation) => void): HTMLElement {
-  return h(
-    'blockquote',
-    { class: 'aa-quote' },
-    h('span', { class: 'aa-quote-text' }, c.text),
-    h('cite', {}, onOpen ? h('button', { class: 'aa-link', onclick: () => onOpen(c), title: 'Read it in its paragraph' }, c.cite) : c.cite),
-    c.figures?.length ? h('span', { class: 'aa-figs' }, ...c.figures.map((f) => h('span', { class: 'aa-fig-chip', title: 'A figure of speech in this sentence' }, f))) : null,
-  );
-}
+/** A button: always a real one, never a link or a span. */
+export const button = (label: string | Node, onclick: (e: MouseEvent) => void, attrs: Record<string, unknown> = {}) =>
+  h('button', { type: 'button', class: 'pg-btn', ...attrs, onclick }, label);
 
-export interface FigureInfo {
-  term: string;
-  name: string;
-  gloss: string;
-  examples: import('../engine/model.ts').Citation[];
+/** A sentence-case definition in mid-sentence: “Contrary ideas…” becomes “contrary ideas…”. */
+const lower = (s: string) => (/^[A-Z][a-z]/.test(s) && !/^(I|O)\b/.test(s) ? s[0]!.toLowerCase() + s.slice(1) : s);
+
+/**
+ * The glossary at work on the page: `defined(text)` marks each term in a text with a dotted line, and a tap opens its
+ * definition in the line, right after it. `definition(name)` finds a term by any of its names.
+ */
+export function definer(glossary: GlossaryEntry[]) {
+  const byId = new Map(glossary.map((t) => [t.id, t]));
+  function defined(text: string): (Node | string)[] {
+    const out: (Node | string)[] = [];
+    let at = 0;
+    for (const [a, b, id] of findTerms(glossary, text)) {
+      const t = byId.get(id);
+      if (!t || a < at) continue;
+      out.push(text.slice(at, a));
+      const def = h('span', { class: 'pg-def', hidden: true }, ` (${lower(t.definition).replace(/\.$/, '')})`);
+      const btn = h('button', { type: 'button', class: 'pg-term', 'aria-expanded': 'false' }, text.slice(a, b));
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        def.hidden = !def.hidden;
+        btn.setAttribute('aria-expanded', String(!def.hidden));
+      });
+      out.push(btn, def);
+      at = b;
+    }
+    out.push(text.slice(at));
+    return out;
+  }
+  function definition(name: string): GlossaryEntry | null {
+    const n = name.trim().toLowerCase();
+    return byId.get(n) ?? glossary.find((x) => x.names.includes(n) || x.names.includes(n.replace(/(es|s)$/, ''))) ?? null;
+  }
+  return { defined, definition };
+}
+export type Definer = ReturnType<typeof definer>;
+
+/** Put children in an element, leaving out the ones that are not there. */
+export function fill(el: Element, ...kids: (Node | string | null | undefined | false)[]) {
+  el.replaceChildren(...kids.filter((k): k is Node | string => k !== null && k !== undefined && k !== false));
 }

@@ -1,0 +1,456 @@
+{
+"voices": [
+{
+"id": "austen",
+"name": "Jane Austen",
+"title": "Jane Austen",
+"tagline": "Irony, balanced periods, judgement in a word",
+"epigraph": {
+"text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+"cite": "Pride and Prejudice, ch. 1"
+},
+"action": "Austen it up",
+"whole": "Austen’s complete works",
+"advisor": "Austen Advisor",
+"short": "Austen",
+"years": "1775–1817",
+"pronouns": {
+"subject": "she",
+"object": "her",
+"possessive": "her",
+"possessivePronoun": "hers"
+},
+"works": [
+"Sense and Sensibility",
+"Pride and Prejudice"
+],
+"moves": [
+{
+"id": "balance",
+"name": "Clauses balanced in one period",
+"does": "Clauses held in one sentence by “, and”, “; and”, “; but”, “, which”, the main point arriving late; a short sentence kept only for a turn or a verdict."
+},
+{
+"id": "judgement",
+"name": "Judgement in abstract nouns",
+"does": "Feeling and character named by abstract nouns of judgement rather than things described: civility, propriety, composure, mortification, felicity, indifference, consequence, spirits."
+},
+{
+"id": "litotes",
+"name": "Understatement and litotes",
+"does": "The verdict implied by understatement: “not unwelcome”, “no very great”, “not a little”, “rather too much”."
+},
+{
+"id": "reported",
+"name": "Speech reported",
+"does": "Speech reported rather than quoted, in the narrator’s syntax: “He said that he was not ready…”."
+},
+{
+"id": "saidshe",
+"name": "Speech tagged after its first clause",
+"does": "Quoted speech that shows character, the speaker named after the first clause, often inverted: “—,” said she, “—.”"
+},
+{
+"id": "conduct",
+"name": "Feeling shown by conduct",
+"does": "Feeling given by its effect on conduct or countenance, not named outright: “she could hardly keep her countenance”, “coloured”."
+},
+{
+"id": "irony",
+"name": "Ironic verdict",
+"does": "The narrator’s dry verdict on the situation or on the speaker, implied by precision rather than announced; often a generalization (“It is a truth…”, “as is usual…”) or a deflating last clause."
+}
+],
+"built": true,
+"family": "storytellers",
+"goodFor": [
+"story",
+"letter"
+]
+},
+{
+"id": "kjv",
+"name": "the King James Bible",
+"title": "The King James Bible",
+"tagline": "And, and, and: the cadence of the Authorized Version",
+"epigraph": {
+"text": "In the beginning God created the heaven and the earth.",
+"cite": "Genesis 1:1"
+},
+"action": "King James it up",
+"whole": "the whole of the King James Bible",
+"advisor": "King James Advisor",
+"short": "the King James Bible",
+"years": "1611",
+"pronouns": {
+"subject": "it",
+"object": "it",
+"possessive": "its",
+"possessivePronoun": "its"
+},
+"works": [
+"Genesis",
+"Exodus"
+],
+"moves": [
+{
+"id": "and",
+"name": "Clauses laid side by side with “and”",
+"does": "Clause after clause joined by “and”, sentence after sentence opened by it, where English now would subordinate: “And God said, Let there be light: and there was light.”"
+},
+{
+"id": "cametopass",
+"name": "And it came to pass",
+"does": "A new turn of the story opened by “And it came to pass”, or closed by “and it was so”."
+},
+{
+"id": "thou",
+"name": "Thou and thee, -eth and -est",
+"does": "The singular you as thou, thee, thy, thine, the plural as ye; the verb in -est after thou and in -eth for he and she: “thou knowest”, “he goeth”."
+},
+{
+"id": "behold",
+"name": "Behold, lo, verily",
+"does": "Attention called with “behold” or “lo”, an oath with “verily”."
+},
+{
+"id": "unto",
+"name": "Unto, thereof, wherefore",
+"does": "The old prepositions and adverbs: unto, upon, thereof, therein, wherefore, whither, thence, hither, yea, nay."
+},
+{
+"id": "saidunto",
+"name": "Speech brought in by “said unto”",
+"does": "Speech introduced plainly, without quotation marks, by “And he said unto them,” and given in full."
+},
+{
+"id": "parallel",
+"name": "Parallelism",
+"does": "One thought said twice, the second half echoing the first in other words, the halves divided by a colon or semicolon: “Pride goeth before destruction, and an haughty spirit before a fall.”"
+},
+{
+"id": "of",
+"name": "The genitive with “of”",
+"does": "Possession and kind given by “of”: “the house of the LORD”, “the children of Israel”, “the day of his wrath”, not “the LORD’s house”."
+}
+],
+"built": true,
+"family": "speakers",
+"goodFor": [
+"speech",
+"story"
+]
+},
+{
+"id": "lincoln",
+"name": "Abraham Lincoln",
+"title": "Abraham Lincoln",
+"tagline": "Plain words, a fair premise, the case followed to its end",
+"epigraph": {
+"text": "If slavery is not wrong, nothing is wrong.",
+"cite": "Letter to Albert G. Hodges, 4 April 1864"
+},
+"action": "Lincoln it up",
+"whole": "Lincoln’s speeches, letters and messages",
+"advisor": "Lincoln Advisor",
+"short": "Lincoln",
+"years": "1809–1865",
+"pronouns": {
+"subject": "he",
+"object": "him",
+"possessive": "his",
+"possessivePronoun": "his"
+},
+"works": [
+"Papers and Writings, vol. 1: 1832–1843",
+"Papers and Writings, vol. 2: 1843–1858"
+],
+"moves": [
+{
+"id": "repeat",
+"name": "The phrase said again",
+"does": "The same words open clause after clause, or a phrase comes back with one word changed, so the listener can hold it."
+},
+{
+"id": "ifthen",
+"name": "Arguing from the premise",
+"does": "A condition carried to its end: if this holds, then that must follow."
+},
+{
+"id": "plain",
+"name": "The speaker’s own plain judgement",
+"does": "The speaker says what he thinks and what he does not claim: “I think”, “I do not know”, “I have no purpose”."
+},
+{
+"id": "ask",
+"name": "Turning to the listener",
+"does": "The speaker turns to the audience and asks them to act together: “let us”, “I ask”, “my friends”."
+},
+{
+"id": "question",
+"name": "The question put, then answered",
+"does": "A question the speaker asks so that he can answer it himself."
+},
+{
+"id": "exact",
+"name": "The term made exact",
+"does": "He stops to say exactly what he means: “I mean”, “that is”, “in this sense”."
+},
+{
+"id": "antithesis",
+"name": "The cases set side by side",
+"does": "Each possible case laid out in matching clauses, each with its result; or “not this, but that”."
+}
+],
+"built": true,
+"family": "speakers",
+"goodFor": [
+"speech",
+"argument",
+"letter"
+]
+},
+{
+"id": "obama",
+"name": "Barack Obama",
+"title": "Barack Obama",
+"tagline": "Plain talk, one story for many, measured hope",
+"epigraph": {
+"text": "I am asking you to believe. Not in my ability to bring about change — but in yours.",
+"cite": "Farewell Address, 10 January 2017"
+},
+"action": "Obama it up",
+"whole": "President Obama’s weekly addresses and speeches",
+"advisor": "Obama Advisor",
+"short": "Obama",
+"years": "2009–2017",
+"pronouns": {
+"subject": "he",
+"object": "him",
+"possessive": "his",
+"possessivePronoun": "his"
+},
+"works": [
+"Weekly Addresses",
+"Speeches"
+],
+"moves": [
+{
+"id": "thatswhy",
+"name": "From what happened to what we do",
+"does": "The turn from the story to its meaning and purpose: “That’s why…”, “And that’s what…”."
+},
+{
+"id": "antithesis",
+"name": "Not this, but that",
+"does": "A claim turned by its opposite: not because it was easy, but because it was right."
+},
+{
+"id": "one",
+"name": "One American’s story",
+"does": "One person, named with a detail, standing for many."
+},
+{
+"id": "plain",
+"name": "Plain talk to the listener",
+"does": "The speaker turns to the listener: “Here’s the thing.” “Let me be clear.” “Folks.”"
+},
+{
+"id": "we",
+"name": "The shared “we”",
+"does": "What belongs to all of us: together, as a country, who we are."
+},
+{
+"id": "three",
+"name": "Building in threes",
+"does": "Three parallel phrases that build to the point."
+}
+],
+"built": true,
+"family": "speakers",
+"goodFor": [
+"speech",
+"argument",
+"essay"
+]
+},
+{
+"id": "twain",
+"name": "Mark Twain",
+"title": "Mark Twain",
+"tagline": "Deadpan, vernacular, the joke at the end",
+"epigraph": {
+"text": "You don’t know about me without you have read a book by the name of The Adventures of Tom Sawyer; but that ain’t no matter.",
+"cite": "Adventures of Huckleberry Finn, ch. 1"
+},
+"action": "Twain it up",
+"whole": "Twain’s books",
+"advisor": "Twain Advisor",
+"short": "Twain",
+"years": "1835–1910",
+"pronouns": {
+"subject": "he",
+"object": "him",
+"possessive": "his",
+"possessivePronoun": "his"
+},
+"works": [
+"The Innocents Abroad",
+"Roughing It"
+],
+"moves": [
+{
+"id": "vernacular",
+"name": "Vernacular voice",
+"does": "The narrator talks as he would, grammar and all, and the joke is in the voice."
+},
+{
+"id": "deadpan",
+"name": "Deadpan",
+"does": "The absurd stated flatly, the punch line last and never explained."
+},
+{
+"id": "cumulative",
+"name": "Cumulative sentence",
+"does": "A long run of “and … and …” building to a turn."
+},
+{
+"id": "tall",
+"name": "Exaggeration with a straight face",
+"does": "An impossible number or comparison stated as plain fact."
+},
+{
+"id": "aside",
+"name": "The narrator’s aside",
+"does": "The teller breaks off to comment, confide or correct himself: “I reckon”, “I judge”, “which is”."
+}
+],
+"built": true,
+"family": "storytellers",
+"goodFor": [
+"story",
+"essay"
+]
+}
+],
+"samples": [
+{
+"id": "book-review",
+"file": "book-review.txt",
+"title": "Book Review: The Lighthouse Year",
+"kind": "review",
+"level": "6-8",
+"words": 142,
+"teaches": [
+"thesis",
+"exemplum",
+"concession"
+],
+"bestVoices": [
+"twain"
+],
+"pending": [
+"johnson",
+"wilde"
+],
+"text": "# Book Review: The Lighthouse Year\n\nThe Lighthouse Year is honestly one of the best books I have ever read. I couldn't put it down. I read the whole thing in two days, mostly on the bus and at night when I was supposed to be sleeping.\n\nThe characters are amazing and so realistic. The main character is relatable and you really feel what she feels. Her little brother is hilarious. The writing is beautiful and the descriptions make you feel like you're actually there. The plot has so many twists and the ending made me cry.\n\nSome people might say it's slow in the middle, but I didn't think so. It's a coming-of-age story but it's also about family and friendship and growing up.\n\nI would give it five out of five stars. If you like good books, you will love this one. Everyone should read it.\n"
+},
+{
+"id": "debate-rebuttal",
+"file": "debate-rebuttal.txt",
+"title": "Rebuttal: The Four-Day School Week",
+"kind": "argument",
+"level": "9-10",
+"words": 147,
+"teaches": [
+"refutation",
+"concession",
+"procatalepsis",
+"rhetoricalquestion"
+],
+"bestVoices": [
+"obama"
+],
+"pending": [
+"lincoln",
+"douglass",
+"federalist"
+],
+"text": "# Rebuttal: The Four-Day School Week\n\nMy opponent says a four-day week would save money and give students more time to rest. But honestly, has my opponent ever actually looked at the numbers? I don't think so. Their whole speech was basically just feelings.\n\nThey also said teachers would be happier. Okay, but who cares if teachers are happier if students are falling behind? That's the real issue here. And they talked about a district in another state where it worked, but that's just one district, and things are totally different there.\n\nAlso, what are working parents supposed to do on Fridays? My opponent didn't even mention that. That shows they didn't think it through.\n\nPlus, kids would just stay on their phones all day on the extra day off. Everybody knows that's what would happen. So for all these reasons, my opponent's case falls apart, and you should vote for our side.\n"
+}
+],
+"glossary": [
+{
+"id": "antithesis",
+"term": "Antithesis",
+"kind": "figure",
+"definition": "Contrary ideas set against each other in balanced words, so each sharpens the other.",
+"names": [
+"not this, but that",
+"antithesis",
+"antitheses"
+],
+"example": "It was the best of times, it was the worst of times.",
+"source": "Dickens, A Tale of Two Cities"
+},
+{
+"id": "litotes",
+"term": "Litotes (understatement)",
+"kind": "figure",
+"definition": "Saying less than the case warrants, often by denying the opposite, so the reader supplies the rest.",
+"names": [
+"understatement and litotes",
+"litotes (understatement)",
+"understatements",
+"understatement",
+"understated",
+"meiosis",
+"litotes"
+],
+"example": "“not unwilling”, “no small matter”"
+},
+{
+"id": "polysyndeton",
+"term": "Polysyndeton",
+"kind": "figure",
+"definition": "Many conjunctions (“and … and … and”) where commas would do, so each item lands on its own.",
+"names": [
+"polysyndeton"
+],
+"example": "And the rain descended, and the floods came, and the winds blew, and beat upon that house; and it fell not.",
+"source": "Matthew 7:25"
+},
+{
+"id": "isocolon",
+"term": "Isocolon",
+"kind": "figure",
+"definition": "Clauses of the same length and build set side by side, so the sentence balances.",
+"names": [
+"balanced clauses",
+"balanced periods",
+"balanced period",
+"isocolon",
+"balance"
+]
+},
+{
+"id": "clause",
+"term": "Clause",
+"kind": "sentence",
+"definition": "A group of words with its own subject and verb; a sentence is one clause or several joined.",
+"names": [
+"clauses",
+"clause"
+]
+}
+],
+"ai": {
+"available": false
+},
+"ready": {
+"debate-rebuttal": [
+"austen",
+"twain"
+]
+}
+}
