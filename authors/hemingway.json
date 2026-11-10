@@ -1,0 +1,144 @@
+{
+  "id": "hemingway",
+  "name": "Ernest Hemingway",
+  "title": "Ernest Hemingway",
+  "advisor": "Hemingway Advisor",
+  "short": "Hemingway",
+  "tagline": "Short sentences, plain words, the feeling left out",
+  "epigraph": {
+    "text": "Isn’t it pretty to think so?",
+    "cite": "The Sun Also Rises, ch. 19"
+  },
+  "whole": "Hemingway’s fiction through 1929",
+  "action": "Hemingway it up",
+  "years": "1899–1961",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Ernest Hemingway (1899–1961), American writer of fiction, in his work of the 1920s (In Our Time, The Sun Also Rises, Men Without Women, A Farewell to Arms): short declarative sentences; plain words of one or two syllables; clauses joined by “and” in the order things happened; dialogue tagged only with “said”; feeling carried by plain words of value (“good”, “fine”, “nice”) or left out entirely, so that what the narrator does not say carries the weight.",
+  "echoes": [
+    "Two people at a train station talk around the one thing they will not name: “Hills Like White Elephants”, Men Without Women.",
+    "A soldier back from a war cannot tell anyone at home what it was like: “Soldiers Home”, In Our Time.",
+    "A man alone fishes a river after a war, and does not think about what he left behind: “Big Two-Hearted River”, In Our Time.",
+    "A boy watches his father at work and asks about death on the way home: “Indian Camp”, In Our Time.",
+    "A couple in a taxi say how good it could have been: the close of The Sun Also Rises.",
+    "Two men wait in a diner for someone who does not come: “The Killers”, Men Without Women."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as a page of Hemingway’s would. A rewrite that keeps the writer’s sentences and cuts a few adjectives has failed them.",
+    "Write short declarative sentences. State a fact and stop. Let a longer sentence run on “and” when events follow one another.",
+    "Use plain words of one or two syllables. Cut adverbs and most adjectives.",
+    "Do not name the feeling. Show what the person did, saw or said, and leave the rest out.",
+    "Tag dialogue with “said” or “asked”, after the speech, and nothing else.",
+    "Where feeling must be named, use the plainest word of value: “It was good.” “I felt fine.”"
+  ],
+  "moves": [
+    {
+      "id": "and",
+      "name": "And, and, and",
+      "does": "Clauses run together with “and” and no commas, so the events arrive in the order they happened, none ranked above another.",
+      "pattern": "\\band\\b[^,.;:]{1,40}\\band\\b[^,.;:]{1,40}\\band\\b",
+      "register": "narration",
+      "hint": "Join three actions with “and” and no commas: “I went in and sat down and ordered a beer.”"
+    },
+    {
+      "id": "short",
+      "name": "The short plain sentence",
+      "does": "A sentence of a few words with no commas that states a fact and stops.",
+      "pattern": "^[^,;:—]{3,45}[.!]$",
+      "register": "narration",
+      "hint": "Cut a sentence to its fact: “It was cold.”"
+    },
+    {
+      "id": "said",
+      "name": "Said, and nothing else",
+      "does": "Dialogue tagged only with “said” or “asked”, after the speech, with no adverb.",
+      "pattern": "[,?!.]”\\s+(I|he|she|\\w+) (said|asked)[.,]|\\b(said|asked) (Nick|Brett|Bill|Mike|Rinaldi|Catherine|George|Jake|Cohn)\\b",
+      "register": "any",
+      "hint": "End the line of dialogue with “he said.” and nothing more."
+    },
+    {
+      "id": "fine",
+      "name": "The plain word of value",
+      "does": "Feeling carried by the plainest words of value (“good”, “fine”, “nice”) instead of by analysis.",
+      "pattern": "\\b(it was (good|fine|nice|cool|hot|cold|lovely|pleasant|swell|a good|a fine|a nice|all right)|(a|the) (good|fine|nice|cold|hot|wonderful|lovely) \\w+|it[’']s (fine|all right|wonderful|good|nice)|I feel (fine|good|all right)|I felt (fine|good))\\b",
+      "register": "any",
+      "hint": "Name the feeling with one plain word: “It was good.”"
+    },
+    {
+      "id": "unsaid",
+      "name": "What is not said",
+      "does": "The narrator reports the silence instead of the feeling. Only the visible trace of the omission can be found by its words.",
+      "pattern": "\\b(did not|didn[’']t|never|wouldn[’']t|would not) (say|said) anything\\b|\\b(nobody|no one) said anything\\b|\\b(not|n[’']t) (to )?think about (it|that|anything|her|him)\\b|\\bthere was nothing to say\\b|\\bwe did not talk\\b|\\b(don[’']t|do not|didn[’']t|did not) (want to )?talk about (it|that)\\b|\\bsaid nothing\\b|\\b(I|he|she) did not (answer|say)\\b",
+      "register": "any",
+      "hint": "Instead of the feeling, report the silence: “I did not say anything.”"
+    },
+    {
+      "id": "itwas",
+      "name": "There was, it was",
+      "does": "The sentence opens on the plainest frame (“It was”, “There was”) and puts the weight on the thing named.",
+      "pattern": "^[“\"]?(there (was|were)|it was|they were|we were)\\b",
+      "register": "narration",
+      "hint": "Start with “It was” or “There was”, and end on the thing: “It was cold on the water.”"
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order. Cut what names nothing: adverbs, intensifiers, the feeling said outright.",
+    "Keep the writer’s modern things, named plainly in short words.",
+    "Add no drinking, war, bullfights or fishing the passage does not have. Borrow his sentences, not his subjects.",
+    "A first-person passage stays first person, and the speaker is the writer.",
+    "Never use a slur, or any sentence of his that uses one, as a model."
+  ],
+  "family": "storytellers",
+  "goodFor": [
+    "story"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1925–1929: public domain in the US. Still under copyright in many other countries until the end of 2031.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "inourtime",
+      "title": "In Our Time",
+      "year": 1925,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ernest-hemingway_short-fiction",
+        "files": "^(on-the-quai|indian-camp|chapter-\\d+|the-doctor|the-end-of|the-three-day|the-battler|a-very-short|soldiers-home|the-revolutionist|mr-and-mrs|cat-in-the|out-of-season|cross-country|my-old-man|big-two|l-envoi)"
+      }
+    },
+    {
+      "id": "sun",
+      "title": "The Sun Also Rises",
+      "year": 1926,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ernest-hemingway_the-sun-also-rises"
+      }
+    },
+    {
+      "id": "menwithoutwomen",
+      "title": "Men Without Women",
+      "year": 1927,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ernest-hemingway_short-fiction",
+        "files": "^(the-undefeated|in-another|hills-like|the-killers|che-ti|fifty-grand|a-simple|ten-indians|a-canary|an-alpine|a-pursuit|today-is|banal-story|now-i-lay)"
+      }
+    },
+    {
+      "id": "farewell",
+      "title": "A Farewell to Arms",
+      "year": 1929,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ernest-hemingway_a-farewell-to-arms"
+      }
+    }
+  ]
+}

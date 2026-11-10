@@ -1,0 +1,134 @@
+{
+  "id": "douglass",
+  "name": "Frederick Douglass",
+  "title": "Frederick Douglass",
+  "advisor": "Douglass Advisor",
+  "short": "Douglass",
+  "tagline": "The fact first, then the truth it proves",
+  "epigraph": {
+    "text": "You have seen how a man was made a slave; you shall see how a slave was made a man.",
+    "cite": "Narrative of the Life of Frederick Douglass, ch. 10"
+  },
+  "whole": "Douglass’s two first autobiographies and his speeches",
+  "action": "Douglass it up",
+  "years": "1818–1895",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Frederick Douglass (1818–1895), who escaped slavery in Maryland and became the leading abolitionist writer and orator of his time, in the Narrative (1845), My Bondage and My Freedom (1855) and his speeches: testimony given first as plain physical fact, then widened to a general truth; the moment the narrator understands, told as the hinge of the story; the opponent’s words of praise turned back on him; a phrase turned round so the second half answers the first; questions that put the charge to the listener; long, controlled periods in a grave public voice.",
+  "echoes": [
+    "A child learns to read in secret after being forbidden, and sees for the first time what was kept from him: Narrative, chs. 6–7.",
+    "A fight in which the narrator stands up to the man sent to break him, and is changed by it: the fight with Covey, Narrative, ch. 10.",
+    "A speaker invited to celebrate a national holiday asks what it means to those it leaves out: “What to the Slave Is the Fourth of July?”, Rochester, 5 July 1852.",
+    "A letter to the person who once held power over the writer, plain and without hate: “Letter to His Old Master”, 1848.",
+    "Ships on a bay seen as free things, and the watcher’s longing to be like them: the sails on the Chesapeake, Narrative, ch. 10."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as Douglass would have written or spoken it. A rewrite that keeps the writer’s sentences and adds a solemn word has failed them.",
+    "Give the particular fact first, plainly and in the body: what was seen, heard, felt. Then widen it to what it shows about people in that place.",
+    "Mark the moment of understanding: “I now understood …”, “From that moment …”.",
+    "Where the passage judges someone, turn their own words of praise back on them.",
+    "Set two things against each other in one sentence: “yours, not mine”. Rarely, turn a phrase round so the second half answers the first: “how a man was made a slave; … how a slave was made a man”.",
+    "In a speech, put the charge to the listener as a question about “you” and “your”.",
+    "Build long, controlled periods, and keep the grave public voice. Let a short sentence stand for a turn."
+  ],
+  "moves": [
+    {
+      "id": "boast",
+      "name": "Their own praise turned on them",
+      "does": "The words of praise the other side uses for itself (“boasted”, “pious”, “kind master”) turned back on it as a sham.",
+      "pattern": "\\b(slaveholding religion|religious slaveholders?|christianity of this land|religion of the (south|land)|pious|piety|kind master|hypocri\\w+|so-called|boast\\w*|sham|mockery|bombast)\\b",
+      "register": "any",
+      "hint": "Take the word they praise themselves with and set it beside what they do: “this boasted …”."
+    },
+    {
+      "id": "body",
+      "name": "The body as witness",
+      "does": "The argument rests on plain physical fact: the whip, the cold, the hunger. The concrete testimony comes before the general truth.",
+      "pattern": "\\b(whip(ped|ping)?|lash(ed|es|ing)?|cowskin|blood|scars?|stripes|shrieks?|naked|hunger|hungry|cold|chains?|fetters|auction)\\b",
+      "register": "any",
+      "hint": "Name one thing the body felt or saw before you say what it means."
+    },
+    {
+      "id": "turn",
+      "name": "The moment of understanding",
+      "does": "The story turns on a moment when the narrator sees, resolves or learns something.",
+      "pattern": "\\b(I (now )?(understood|saw|felt|resolved|learned|discovered|determined)|from that moment|it was a new and special revelation|the turning-point|I was (now|at last) )\\b",
+      "register": "any",
+      "hint": "Mark the turn: “From that moment I understood …”."
+    },
+    {
+      "id": "question",
+      "name": "Questions that accuse",
+      "does": "A question aimed at the listener, about you, your nation, your God, that carries a charge.",
+      "pattern": "^[“\"]?(what|am I|are|is|must|shall|do|why|how|would|was|where|who)\\b[^?]{5,}\\b(you|your|we|our|I|me|slaves?|slavery|men|man|god|nation)\\b[^?]*\\?[”\"]?$",
+      "register": "any",
+      "hint": "Put the charge to the listener as a question: “What, to …, is your …?”."
+    },
+    {
+      "id": "slave",
+      "name": "From one case to all",
+      "does": "He moves from his own case to “the slave” and “the slaveholder” as types, and states general truths about the system.",
+      "pattern": "\\b(the|a) slave(holder|holders|s)?\\b[^.;]{0,40}\\b(is|are|was|were|must|cannot|can|never|has|have|had)\\b",
+      "register": "any",
+      "hint": "After your own case, say what is true of everyone in it: “The new student is always …”."
+    },
+    {
+      "id": "antithesis",
+      "name": "Theirs set against mine",
+      "does": "Two things set against each other in one sentence: “not this, but that”, “yours, not mine”. This is called antithesis.",
+      "pattern": "\\b\\w+, not (yours|mine|ours|theirs|his|hers|me|you|us|them|him|her)\\b|\\bnot\\b[^.;?]{2,50},?\\s+but\\b|\\bnot (only|merely)\\b[^.;]{2,60}\\bbut\\b",
+      "register": "any",
+      "hint": "Set two things side by side and choose: “This … is yours, not mine.”"
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order and its size. Borrow his structure, never his subject: add no cruelty, violence or suffering the passage does not have.",
+    "Add no cause, politics or religion the passage does not have. A small wrong stays a small wrong, argued with his care.",
+    "A first-person passage stays first person, and the speaker is the writer.",
+    "A letter keeps the form of a letter; his letter to his old master is the model: plain, direct, without hate.",
+    "Never use the period’s words for race, or any sentence that quotes a slaveholder’s insult, as a model."
+  ],
+  "family": "speakers",
+  "goodFor": [
+    "speech",
+    "story",
+    "essay"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for the Narrative; Project Gutenberg ebook 202 for My Bondage and My Freedom, by way of the GITenberg mirror",
+    "note": "Published 1845 and 1855: public domain in the US.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "narrative",
+      "title": "Narrative of the Life of Frederick Douglass",
+      "year": 1845,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/frederick-douglass_narrative-of-the-life-of-frederick-douglass",
+        "files": "^(chapter-\\d+|appendix)"
+      }
+    },
+    {
+      "id": "bondage",
+      "title": "My Bondage and My Freedom",
+      "year": 1855,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/My-Bondage-and-My-Freedom_202",
+        "file": "202-0.txt",
+        "from": "^CHAPTER I\\. _Childhood_",
+        "chapter": "^(CHAPTER [IVXL]+\\. .*|RECEPTION SPEECH.*|LETTER TO HIS OLD MASTER.*|WHAT TO THE SLAVE.*|THE NATURE OF SLAVERY.*|INHUMANITY OF SLAVERY.*|THE ANTI-SLAVERY MOVEMENT.*)$",
+        "wrap": 2,
+        "dropPara": "^([A-Z][^a-z]*(\\(sic\\))?[^a-z]*--){3}",
+        "speakers": "^Mr\\. Douglass rose[^:]*:\\s*",
+        "letters": "^LETTER"
+      }
+    }
+  ]
+}

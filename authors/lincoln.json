@@ -1,0 +1,199 @@
+{
+  "id": "lincoln",
+  "name": "Abraham Lincoln",
+  "title": "Abraham Lincoln",
+  "advisor": "Lincoln Advisor",
+  "short": "Lincoln",
+  "tagline": "Plain words, a fair premise, the case followed to its end",
+  "epigraph": {
+    "text": "If slavery is not wrong, nothing is wrong.",
+    "cite": "Letter to Albert G. Hodges, 4 April 1864"
+  },
+  "whole": "Lincoln’s speeches, letters and messages",
+  "action": "Lincoln it up",
+  "years": "1809–1865",
+  "citeStyle": "speech",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "linkExclude": [
+    "debates1",
+    "debates2"
+  ],
+  "persona": "Abraham Lincoln (1809–1865), lawyer, congressman and sixteenth President of the United States, in his speeches, letters and messages: plain Anglo-Saxon words; the other side’s premise stated fairly and followed to its end; terms defined before they are used; a phrase repeated until the listener can hold it; questions put and answered; the modest first person (“I think”, “I do not know”); a close that turns to the listener and asks for work done together.",
+  "echoes": [
+    "A short speech at a cemetery that says the living cannot add to what the dead have done, and charges them with the work left: the Gettysburg Address, 19 November 1863.",
+    "A nation divided over one question, which must become all one thing or all the other: the House Divided speech, Springfield, 16 June 1858.",
+    "Both sides prayed to the same God, and the war came anyway; a close with malice toward none: the Second Inaugural Address, 4 March 1865.",
+    "A letter that says plainly what the writer will and will not do, and why: the letter to Horace Greeley, 22 August 1862.",
+    "A plea to an angry party not to be enemies, but friends: the close of the First Inaugural Address, 4 March 1861.",
+    "A young man warns that the danger to a free country comes from within, from contempt for law: the Lyceum Address, Springfield, 27 January 1838."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as Lincoln would have said or written it. A rewrite that keeps the writer’s sentences and adds “fellow-citizens” has failed them.",
+    "Use plain words. Prefer the short native word to the long Latin one: “help”, not “facilitate”. Keep sentences clear enough to be heard once and understood.",
+    "State the other side’s view fairly before answering it, then follow a premise to its end: if this is so, then that must be.",
+    "Say exactly what a word means before leaning on it: “I mean …”, “that is, …”.",
+    "Speak in the first person, modestly: “I think”, “I do not know”, “I have no purpose to …”. Claim no more than the facts allow.",
+    "Repeat a key phrase, changing one word, so the listener can hold it: “of the people, by the people, for the people”.",
+    "Where the passage asks something of its reader, end by turning to them and asking for work done together: “let us …”."
+  ],
+  "moves": [
+    {
+      "id": "repeat",
+      "name": "The phrase said again",
+      "does": "The same words open clause after clause, or a phrase comes back with one word changed, so the listener can hold it.",
+      "pattern": "(^|[,;:—]\\s*)((\\w+ ){2,3})[^,;:—.]{2,60}[,;:—]\\s*\\2|\\b(of|by|for|with) the (\\w+),? (by|for|of|with) the \\5\\b|\\b(we|I|you|they) (can|cannot|can not|will|shall|did|do) not (\\w+)\\b[^.]{0,30}\\b\\7 \\8 not\\b",
+      "register": "any",
+      "hint": "Say a phrase twice and change one word: “we can not dedicate, we can not consecrate”."
+    },
+    {
+      "id": "ifthen",
+      "name": "Arguing from the premise",
+      "does": "A condition carried to its end: if this holds, then that must follow.",
+      "pattern": "\\bif (it|this|that|slavery|they|he|you|we|I|the \\w+) (is|be|was|were|are|has|have|does|did|shall|will|can|could|should|would)\\b[^.?]{0,80}, (then )?(it|this|that|they|he|you|we|I|nothing|there|the \\w+) (is|must|will|would|cannot|can|should|does|shall|may|had)\\b",
+      "register": "any",
+      "hint": "Take the other side’s claim and follow it: “If …, then …”."
+    },
+    {
+      "id": "plain",
+      "name": "The speaker’s own plain judgement",
+      "does": "The speaker says what he thinks and what he does not claim: “I think”, “I do not know”, “I have no purpose”.",
+      "pattern": "\\bI (do not|don[’']t) (know|think|believe|say|understand|propose|mean|wish|deny)\\b|\\bas I understand\\b|\\bso far as I know\\b|\\bI have no (doubt|purpose|objection|inclination|right|wish|lawful right)\\b|\\bI (suppose|believe|think)\\b",
+      "register": "any",
+      "hint": "Say what you think and no more: “I think …”, or “I do not know whether …”."
+    },
+    {
+      "id": "ask",
+      "name": "Turning to the listener",
+      "does": "The speaker turns to the audience and asks them to act together: “let us”, “I ask”, “my friends”.",
+      "pattern": "\\b(I ask|let us|my (friends|countrymen|fellow-citizens|fellow citizens)|fellow-citizens|gentlemen)\\b",
+      "register": "any",
+      "hint": "Turn to the reader and ask for work done together: “Let us …”."
+    },
+    {
+      "id": "question",
+      "name": "The question put, then answered",
+      "does": "A question the speaker asks so that he can answer it himself.",
+      "pattern": "^(can|shall|will|is|are|was|has|have|does|did|do|what|why|how|who|where|must|may|could)\\b[^?]{6,}\\?$",
+      "register": "any",
+      "hint": "Ask the question your reader is asking, then answer it in the next sentence."
+    },
+    {
+      "id": "exact",
+      "name": "The term made exact",
+      "does": "He stops to say exactly what he means: “I mean”, “that is”, “in this sense”.",
+      "pattern": "\\b(I mean|that is,|in (this|that|the same) sense|precisely|exactly|in so many words|neither more nor less|so far as|directly or indirectly)\\b",
+      "register": "any",
+      "hint": "Define the word you lean on: “By … I mean …”."
+    },
+    {
+      "id": "antithesis",
+      "name": "The cases set side by side",
+      "does": "Each possible case laid out in matching clauses, each with its result; or “not this, but that”.",
+      "pattern": "\\bnot\\b[^.;?]{2,50},?\\s+but\\b|\\bneither\\b[^.;]{2,50}\\bnor\\b|\\bif\\b[^;.]{5,90};\\s*(and |but )?if\\b",
+      "register": "any",
+      "hint": "Lay out the cases in clauses of the same shape: “If …, I would …; and if …, I would …”."
+    }
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order and its size. A small matter stays small; it may be stated more plainly, not made grander.",
+    "Add no politics, war, slavery or public cause the passage does not have. Borrow his manner, not his subjects.",
+    "A letter keeps the form of a letter: a plain opening, the writer’s own first person, a short close. His letters to Greeley, Hodges and Mrs. Bixby are the models.",
+    "Do not invent scripture or quotation. He quoted the Bible where it fit; the rewrite quotes nothing the writer did not.",
+    "Never use the period’s words for race or any sentence of the debates on social and political equality as a model."
+  ],
+  "family": "speakers",
+  "goodFor": [
+    "speech",
+    "argument",
+    "letter"
+  ],
+  "license": {
+    "source": "The Papers and Writings of Abraham Lincoln, ed. Arthur Brooks Lapsley (1905), Project Gutenberg ebooks 2653–2659, by way of the GITenberg mirror",
+    "note": "Written 1832–1865 and published in this edition in 1905: public domain in the US.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "papers1",
+      "title": "Papers and Writings, vol. 1: 1832–1843",
+      "year": 1843,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-1--1832-1843_2653",
+        "file": "2653.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "papers2",
+      "title": "Papers and Writings, vol. 2: 1843–1858",
+      "year": 1858,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-2--1843-1858_2654",
+        "file": "2654.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "debates1",
+      "title": "Papers and Writings, vol. 3: The Lincoln–Douglas Debates",
+      "year": 1858,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-3--The-Lincoln-Douglas-Debates_2655",
+        "file": "2655.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "debates2",
+      "title": "Papers and Writings, vol. 4: The Lincoln–Douglas Debates",
+      "year": 1858,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-4--The-Lincoln-Douglas-Debates_2656",
+        "file": "2656.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "papers5",
+      "title": "Papers and Writings, vol. 5: 1858–1862",
+      "year": 1862,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-5--1858-1862_2657",
+        "file": "2657.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "papers6",
+      "title": "Papers and Writings, vol. 6: 1862–1863",
+      "year": 1863,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-6--1862-1863_2658",
+        "file": "2658.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    },
+    {
+      "id": "papers7",
+      "title": "Papers and Writings, vol. 7: 1863–1865",
+      "year": 1865,
+      "source": {
+        "type": "lincoln",
+        "repo": "GITenberg/The-Papers-And-Writings-Of-Abraham-Lincoln---Volume-7--1863-1865_2659",
+        "file": "2659.txt",
+        "from": "^THE WRITINGS OF ABRAHAM LINCOLN, (1832-1843|Volume)"
+      }
+    }
+  ]
+}

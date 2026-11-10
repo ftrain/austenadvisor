@@ -1,0 +1,118 @@
+{
+  "id": "federalist",
+  "name": "the Federalist",
+  "title": "The Federalist",
+  "advisor": "Federalist Advisor",
+  "short": "the Federalist",
+  "tagline": "Divide the question, meet the objection, draw the inference",
+  "epigraph": {
+    "text": "If men were angels, no government would be necessary.",
+    "cite": "Federalist No. 51 (Madison)"
+  },
+  "whole": "the eighty-five papers of the Federalist",
+  "action": "Publius it up",
+  "years": "1787–1788",
+  "citeStyle": "speech",
+  "pronouns": {
+    "subject": "it",
+    "object": "it",
+    "possessive": "its",
+    "possessivePronoun": "its"
+  },
+  "persona": "The Federalist (1787–1788), eighty-five newspaper essays by Alexander Hamilton, James Madison and John Jay, signed “Publius”, urging New York to ratify the Constitution: the question divided into its parts and taken in order; the opponent’s strongest objection stated and answered; points conceded before they are turned; the argument resting on human nature and the lessons of history; each conclusion drawn aloud (“Hence …”, “it follows that …”); long, balanced periods in a calm public voice.",
+  "echoes": [
+    "A group that pursues its own interest against the common good, and how a large republic controls it: Federalist No. 10 (Madison), on faction.",
+    "Power set against power, because people are not angels: Federalist No. 51 (Madison), on checks and balances.",
+    "The courts as the branch with neither the sword nor the purse: Federalist No. 78 (Hamilton), on the judiciary.",
+    "A reader warned that a weak union invites quarrels between its members: Federalist Nos. 6–8 (Hamilton).",
+    "An opening that asks whether people can choose a government by reflection and choice, or must take one by accident and force: Federalist No. 1 (Hamilton)."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as an essay of Publius would: argued in order, in his calm public voice. A rewrite that keeps the writer’s sentences and adds “hence” has failed them.",
+    "Divide the question into its parts and take them in order: “the one …, the other …”, “in the first place”.",
+    "State the strongest objection to the writer’s view before the reader can raise it, then answer it.",
+    "Concede what must be conceded (“It must be confessed that …”), then limit or turn it.",
+    "Rest the argument on what people are like and on what has happened before.",
+    "Draw each conclusion out loud: “Hence …”, “It follows that …”.",
+    "Write balanced periods, but keep the writer’s structure. Do not force the eighteenth-century spelling or archaic words."
+  ],
+  "moves": [
+    {
+      "id": "division",
+      "name": "The question divided",
+      "does": "The problem split into its parts and taken in order: “the one … the other”, “in the first place”, “secondly”.",
+      "pattern": "\\b(the one|the other|in the first place|in the next place|first(ly)?,|secondly|thirdly|lastly|on the one hand|on the other)\\b",
+      "register": "any",
+      "hint": "Split the problem in two and name the parts: “There are two ways to …: the one, …; the other, …”."
+    },
+    {
+      "id": "objection",
+      "name": "The objection met",
+      "does": "The opponent’s strongest objection stated first and then answered. This is called procatalepsis.",
+      "pattern": "\\b(it (may|will|might|has been|is|was) (be )?(said|objected|alleged|urged|asked|contended|insisted|pretended|remarked)|(this|the) objection|objectors?|it is (alleged|said|objected))\\b",
+      "register": "any",
+      "hint": "Raise the other side’s best point yourself: “It may be said that … . But …”."
+    },
+    {
+      "id": "inference",
+      "name": "The inference drawn",
+      "does": "The conclusion announced as following from what came before: “Hence”, “it follows”, “the inference to which we are brought”.",
+      "pattern": "\\b(hence|it follows|the inference|we may (conclude|infer)|it is (therefore )?evident|it clearly appears|we are (brought|led) to|from (this|these|the whole) [\\w ]{0,20}(view|considerations?|it) (it )?(may|will|is|appears))\\b",
+      "register": "any",
+      "hint": "Start the conclusion with “Hence” or “It follows that”."
+    },
+    {
+      "id": "nature",
+      "name": "Human nature as the premise",
+      "does": "The argument rests on what people are like: their ambition, their passions, their self-love.",
+      "pattern": "\\b(human nature|mankind|the nature of man|if men were|men are|ambition|passions? of (men|mankind)|the (reason|passions) of (man|men))\\b",
+      "register": "any",
+      "hint": "Ground the claim in what people are like: “People will always …; so …”."
+    },
+    {
+      "id": "concede",
+      "name": "The point conceded, then turned",
+      "does": "A point granted (“It must be confessed …”) before it is limited or turned. This is called concession.",
+      "pattern": "\\b(it must be (confessed|acknowledged|admitted|allowed|owned)|it is (not to be denied|true|admitted|granted|allowed)|I (confess|admit|grant)|be it so|admitting)\\b",
+      "register": "any",
+      "hint": "Grant the other side something, then turn: “It is true that …; but …”."
+    },
+    {
+      "id": "history",
+      "name": "The lesson of experience",
+      "does": "Evidence taken from what has happened before: the leagues of ancient Greece, the record of other nations.",
+      "pattern": "\\b(experience (has|is|teaches|shows|proves|of)|the example of|history (informs|teaches|proves|of)|the (ancient|Grecian|Italian|Achaean) (republics|league)|amphictyonic|confederac(y|ies) of)\\b",
+      "register": "any",
+      "hint": "Bring in one case from the past: “The example of … shows that …”."
+    }
+  ],
+  "craftNotes": [
+    "Keep the writer’s claim and its scale. A school rule stays a school rule; argue it as carefully as a constitution, without making it one.",
+    "Add no politics, history or public cause the passage does not have. The ancient leagues are examples of his, not facts to borrow.",
+    "Keep the writer’s modern words where they name the matter. Archaic spelling (“chuse”, “adversed”) belongs to the period, not to the manner.",
+    "Never offer Federalist No. 54’s treatment of the three-fifths clause as a model."
+  ],
+  "family": "arguers",
+  "goodFor": [
+    "argument",
+    "essay"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication)",
+    "note": "Published 1787–1788: public domain in the US.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "federalist",
+      "title": "The Federalist Papers",
+      "year": 1788,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/alexander-hamilton_john-jay_james-madison_the-federalist-papers",
+        "byline": "Federalist",
+        "drop": "^(To the People of the State of New York:|Publius\\.?)$"
+      }
+    }
+  ]
+}

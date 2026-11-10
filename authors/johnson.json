@@ -1,0 +1,168 @@
+{
+  "id": "johnson",
+  "name": "Samuel Johnson",
+  "title": "Samuel Johnson",
+  "advisor": "Johnson Advisor",
+  "short": "Johnson",
+  "tagline": "The general truth, weighed in a balanced sentence",
+  "epigraph": {
+    "text": "Marriage has many pains, but celibacy has no pleasures.",
+    "cite": "Rasselas, ch. 26"
+  },
+  "whole": "Johnson’s essays and Rasselas",
+  "action": "Johnson it up",
+  "years": "1709–1784",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Samuel Johnson (1709–1784), English essayist, critic and maker of the Dictionary, in the Rambler, the Adventurer, the Idler and Rasselas: the moral essay that opens on a general truth, tests it against cases and closes on a verdict about human life; the balanced sentence whose halves are weighed against each other; abstract nouns doing the work; passions such as hope and vanity made the subjects of verbs; words in matched pairs; a grave, sure, steady voice.",
+  "echoes": [
+    "A young person who has everything wants to leave a happy valley to choose a way of life, and finds no choice brings happiness: Rasselas.",
+    "A person who means to begin a great task tomorrow, and keeps putting it off: the Idler on idleness (Nos. 31, 103) and the Rambler on procrastination (No. 134).",
+    "A letter from an invented correspondent who complains of a fault the essay then judges: the Rambler’s letters, such as Nos. 12 and 46.",
+    "A writer looks back on a long labour finished alone and without help: the Preface to the Dictionary, echoed in the Rambler No. 208.",
+    "Hope that runs ahead of what life gives: the Rambler No. 2 and Rasselas, ch. 47."
+  ],
+  "manner": [
+    "Go the whole way. The passage should read as a paper of Johnson’s would. A rewrite that keeps the writer’s sentences and lengthens a few words has failed them.",
+    "Open or close on a general truth the passage itself suggests: “It is common for …”, “No man …”.",
+    "Widen the case to human life as a whole, then return to the writer’s matter.",
+    "Balance the sentence: set two halves against each other with a semicolon or “but”, each of the same weight.",
+    "Let a passion act: “Hope is …”, “Idleness never …”.",
+    "Use words in matched pairs where they add sense: “of hope and fear”.",
+    "Keep his abstract nouns in check: one or two a sentence, never more than the sense needs."
+  ],
+  "moves": [
+    {
+      "id": "sententia",
+      "name": "The general truth",
+      "does": "A lesson about life stated as a law: “Such is …”, “It is common for …”, “No man …”.",
+      "pattern": "\\b(such is|such are|it is (common|natural|easy|seldom|always|the fate|the condition|the business|the lot|observed|not easy|difficult)|it has been (observed|remarked|long observed)|no man|every man|few men)\\b",
+      "register": "any",
+      "hint": "State the lesson as true of everyone: “It is common for …”, “No one …”."
+    },
+    {
+      "id": "mankind",
+      "name": "The verdict on human life",
+      "does": "The essay’s subject widened to human life as a whole.",
+      "pattern": "\\b(mankind|human (life|nature|wishes|beings|happiness|misery)|the mind of man|the life of man|men (are|have|seldom|will|commonly|naturally))\\b",
+      "register": "any",
+      "hint": "Widen one case to all of life: “Human life is …”."
+    },
+    {
+      "id": "balance",
+      "name": "The balanced sentence",
+      "does": "Two halves of a sentence weighed against each other, each of the same shape: “many pains … no pleasures”.",
+      "pattern": "\\b(the one|the other)\\b|\\bless\\b[^.]{3,60}\\bthan\\b|\\bnot so much\\b|;\\s+(but|yet|and|nor) (the|he|we|it|they|there)\\b|\\b(has|is|are|have) [^,;.]{2,40}[,;] but (\\w+ ){1,3}(has|is|are|have) (no|not|little|nothing)\\b",
+      "register": "any",
+      "hint": "Set two halves of the same shape against each other: “… has many …, but … has no …”."
+    },
+    {
+      "id": "abstract",
+      "name": "Abstract nouns doing the work",
+      "does": "Abstract nouns ending in -tion, -ity, -ence, -ment or -ness carry the sentence.",
+      "pattern": "\\b\\w{3,}(tion|ity|ence|ance|ment|ness)s?\\b[^.]*\\b\\w{3,}(tion|ity|ence|ance|ment|ness)s?\\b[^.]*\\b\\w{3,}(tion|ity|ence|ance|ment|ness)s?\\b",
+      "register": "any",
+      "hint": "Name the quality instead of the act: “his impatience” for “he could not wait”. Once is enough."
+    },
+    {
+      "id": "personified",
+      "name": "The passion made to act",
+      "does": "A passion or idea is the subject of the verb, as if it acted: “Hope is …”, “Curiosity …”. This is called personification.",
+      "pattern": "\\b(hope|fear|curiosity|time|fancy|imagination|envy|vanity|idleness|habit|custom|ambition|pride|avarice)\\s+(is|are|will|has|have|was|seldom|always|never|easily|soon|naturally|often|must)\\b",
+      "register": "any",
+      "hint": "Make the feeling the subject: “Hope seldom …”, “Idleness always …”."
+    },
+    {
+      "id": "pair",
+      "name": "Words in pairs",
+      "does": "Words in matched pairs, often two pairs set side by side: “of joy and grief … of hope and fear”.",
+      "pattern": "\\b(of|with|by|in) (\\w{3,}) and (\\w{3,})\\b[^.]{0,50}\\b(of|with|by|in) (\\w{3,}) and (\\w{3,})\\b|\\bthe (\\w+) and (the )?(\\w+) of\\b",
+      "register": "any",
+      "hint": "Pair two words that sharpen each other: “of hope and fear”."
+    }
+  ],
+  "craftNotes": [
+    "Keep the writer’s concrete things, named plainly. The general truth sits beside them; it never replaces them.",
+    "Keep the writer’s scale. A missed bus is not the vanity of human wishes; let the verdict be as large as the matter.",
+    "Keep modern spelling. “Dependance”, “publick” and “shew” belong to his printers, not his manner.",
+    "A letter keeps the form of a letter; the Rambler’s letters from correspondents are the models.",
+    "No more than one general truth a paragraph."
+  ],
+  "family": "essayists",
+  "goodFor": [
+    "essay",
+    "argument",
+    "review"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) for Rasselas; the Works of Samuel Johnson (Oxford, 1825) from Project Gutenberg, by way of the GITenberg mirror",
+    "note": "Published 1750–1760: public domain in the US.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "rasselas",
+      "title": "Rasselas",
+      "year": 1759,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/samuel-johnson_the-history-of-rasselas-prince-of-abyssinia"
+      }
+    },
+    {
+      "id": "rambler1",
+      "title": "The Rambler",
+      "year": 1750,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Works-of-Samuel-Johnson-LL.D.-in-Nine-Volumes-Volume-the-SecondThe-Rambler-Volume-I_43656",
+        "file": "43656-0.txt",
+        "chapter": "^No\\. \\d+\\. ",
+        "from": "^No\\. 1\\. TUESDAY, MARCH 20",
+        "skip": "^No\\. (30|44|97|100)\\. "
+      }
+    },
+    {
+      "id": "rambler2",
+      "title": "The Rambler",
+      "year": 1752,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Works-of-Samuel-Johnson-Volume-03--13-The-Rambler-Volume-II_11397",
+        "file": "11397.txt",
+        "chapter": "^No\\. \\d+\\. ",
+        "skip": "^No\\. (30|44|97|100)\\. "
+      }
+    },
+    {
+      "id": "adventurer",
+      "title": "The Adventurer",
+      "year": 1753,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Works-of-Samuel-Johnson-Volume-04--13-The-Adventurer--The-Idler_12050",
+        "file": "12050.txt",
+        "chapter": "^No\\. \\d+\\. ",
+        "until": "^ADVERTISEMENT\\.$",
+        "dropPara": "^\\[\\d+\\] "
+      }
+    },
+    {
+      "id": "idler",
+      "title": "The Idler",
+      "year": 1760,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Works-of-Samuel-Johnson-Volume-04--13-The-Adventurer--The-Idler_12050",
+        "file": "12050.txt",
+        "chapter": "^No\\. \\d+\\. ",
+        "from": "^No\\. 1\\. SATURDAY, APRIL 15, 1758",
+        "skip": "^No\\. (9|15|33|42|54|67|76|79|82|93|96|98)\\. "
+      }
+    }
+  ]
+}
