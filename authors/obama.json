@@ -1,0 +1,112 @@
+{
+  "id": "obama",
+  "name": "Barack Obama",
+  "title": "Barack Obama",
+  "tagline": "Plain talk, one story for many, measured hope",
+  "epigraph": {
+    "text": "I am asking you to believe. Not in my ability to bring about change — but in yours.",
+    "cite": "Farewell Address, 10 January 2017"
+  },
+  "advisor": "Obama Advisor",
+  "short": "Obama",
+  "whole": "President Obama’s weekly addresses and speeches",
+  "years": "2009–2017",
+  "action": "Obama it up",
+  "citeStyle": "speech",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "President Barack Obama (in office 2009–2017), in his weekly addresses and his set-piece speeches: measured and plain-spoken, a teacher’s patience; the story of one American standing for many; “not this, but that”; the turn from what happened to what it means and what we do about it; a shared “we”; cadences that build in threes and land on hope.",
+  "echoes": [
+    "Ordinary people marching for their rights, and what that means for us now: Selma, 7 March 2015.",
+    "Grief turned to grace after a killing: the eulogy for Clementa Pinckney, 26 June 2015.",
+    "A community mourning, and a call to be better than our worst moments: the Tucson memorial, 12 January 2011.",
+    "Saying goodbye and handing the work to the listener: the Farewell Address, 10 January 2017.",
+    "Graduates told that the world is theirs to improve: the commencement addresses."
+  ],
+  "manner": [
+    "Go the whole way: the passage should sound as if President Obama were delivering it, at a podium or in a weekly address, built as he builds a speech. A rewrite that keeps the writer’s sentences with “folks” and a comma added has failed them: rebuild each paragraph in his cadence, his turns and his order.",
+    "Speak it: plain words, contractions, sentences built to be said aloud, a short one after a long one; address the listener where it is natural (“Here’s the thing.”).",
+    "Let one person’s story stand for many: the particular detail first, then what it tells us about all of us.",
+    "Turn by antithesis: not this, but that; not because it was easy, but because it was right.",
+    "Build in threes and with repetition, and let the paragraph land on what it means and what comes next, with measured hope rather than a slogan.",
+    "Be fair to everyone in the story, including whoever is in the wrong: understanding first, then judgement."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person; the speaker is the writer, in his manner, not the President in office.",
+    "Add no politics, policy or public cause the passage does not have: his manner, not his platform.",
+    "Keep the writer’s degree of feeling; a small thing stays small, though it may be understood more widely."
+  ],
+  "moves": [
+    {
+      "id": "thatswhy",
+      "name": "From what happened to what we do",
+      "does": "The turn from the story to its meaning and purpose: “That’s why…”, “And that’s what…”.",
+      "pattern": "\\b(that’s why|that's why|that is why|and that’s what|that’s what|which is why)\\b",
+      "register": "any"
+    },
+    {
+      "id": "antithesis",
+      "name": "Not this, but that",
+      "does": "A claim turned by its opposite: not because it was easy, but because it was right.",
+      "pattern": "\\bnot (because|just|only|about|that)\\b[^.]*\\bbut\\b|\\bisn’t\\b[^.]*\\bit’s\\b",
+      "register": "any"
+    },
+    {
+      "id": "one",
+      "name": "One American’s story",
+      "does": "One person, named with a detail, standing for many.",
+      "pattern": "\\b(a woman named|a man named|a young (man|woman) named|wrote (me|to me)|I met|I think of|people like)\\b",
+      "register": "any"
+    },
+    {
+      "id": "plain",
+      "name": "Plain talk to the listener",
+      "does": "The speaker turns to the listener: “Here’s the thing.” “Let me be clear.” “Folks.”",
+      "pattern": "\\b(here’s the thing|here's the thing|let me be clear|folks|everybody|make no mistake|I’ll be honest)\\b",
+      "register": "any"
+    },
+    {
+      "id": "we",
+      "name": "The shared “we”",
+      "does": "What belongs to all of us: together, as a country, who we are.",
+      "pattern": "\\b(together|all of us|as Americans|as a country|as a nation|who we are|each other|one another)\\b",
+      "register": "any"
+    },
+    {
+      "id": "three",
+      "name": "Building in threes",
+      "does": "Three parallel phrases that build to the point.",
+      "pattern": "\\b(\\w+), (\\w+),? and (\\w+)\\b|\\b(we|it|you)\\b[^.]{3,40}\\. \\1\\b[^.]{3,40}\\. \\1\\b",
+      "register": "any"
+    }
+  ],
+  "works": [
+    {
+      "id": "weekly",
+      "title": "Weekly Addresses",
+      "year": 2010,
+      "source": {
+        "type": "speeches",
+        "file": "obama/speeches.json",
+        "kind": "weekly",
+        "url": "https://obamawhitehouse.archives.gov/briefing-room/weekly-address"
+      }
+    },
+    {
+      "id": "speeches",
+      "title": "Speeches",
+      "year": 2010,
+      "source": {
+        "type": "speeches",
+        "file": "obama/speeches.json",
+        "kind": "speech",
+        "url": "https://obamawhitehouse.archives.gov/briefing-room/speeches-and-remarks"
+      }
+    }
+  ],
+  "keepModern": true
+}

@@ -2,6 +2,7 @@
 // ops carried over both (the kernel's cross) and applied to the editor; a copy of the document kept here, so the
 // engine always reads what the writer sees.
 
+import type { RewriteProgress } from '../server/rewrite.ts';
 import { applyAll, cross, parse, write, type Doc, type Op } from 'tinylittleoffice/doc';
 
 export interface RoomState {
@@ -23,7 +24,7 @@ export interface SyncEvents {
   remote(ops: Op[], author: string): void;
   versions(v: RoomState['versions']): void;
   state(s: Partial<RoomState>): void;
-  status(text: string | null): void;
+  status(text: string | null, progress?: RewriteProgress | null): void;
   presence(online: { id: string; name: string }[]): void;
   connection(up: boolean): void;
 }
@@ -125,7 +126,7 @@ export class Sync {
         this.ev.state(msg);
         return;
       case 'status':
-        this.ev.status(msg.text);
+        this.ev.status(msg.text, msg.progress ?? null);
         return;
       case 'presence':
         this.ev.presence(msg.online);

@@ -3,6 +3,14 @@
   "name": "Jane Austen",
   "advisor": "Austen Advisor",
   "short": "Austen",
+  "title": "Jane Austen",
+  "tagline": "Irony, balanced periods, judgement in a word",
+  "epigraph": {
+    "text": "It is a truth universally acknowledged, that a single man in possession of a good fortune, must be in want of a wife.",
+    "cite": "Pride and Prejudice, ch. 1"
+  },
+  "whole": "Austen’s complete works",
+  "action": "Austen it up",
   "years": "1775–1817",
   "pronouns": {
     "subject": "she",
@@ -18,6 +26,22 @@
     "juvenilia"
   ],
   "persona": "Jane Austen (1775–1817), English novelist of the Regency: irony, free indirect discourse, balanced periodic sentences joined by semicolons, precise abstract nouns of judgement (sense, propriety, civility, esteem, amiable), and dialogue that reveals character.",
+  "echoes": [
+    "A single man of good fortune moves into the neighbourhood, and a mother schemes to marry her child to him: the opening of Pride and Prejudice.",
+    "A proposal made with more pride than tenderness, and refused: Darcy at Hunsford, Pride and Prejudice ch. 34.",
+    "A clever person makes a cruel joke at a picnic and is rebuked by a friend: Box Hill, Emma ch. 43.",
+    "A love confessed by letter in a crowded room: Captain Wentworth’s letter, Persuasion ch. 23.",
+    "A young person who reads too many thrillers imagines a crime in an ordinary house: Northanger Abbey.",
+    "A pompous man proposes as if conferring a favour: Mr Collins, Pride and Prejudice ch. 19."
+  ],
+  "manner": [
+    "Go the whole way. The writer wants the passage to read as a page of Austen’s, not as their own page tidied. A rewrite that keeps their sentences and swaps a few words has failed them.",
+    "Build her periods: most narrative sentences at or above her median length, clauses balanced by semicolons and “, and”, the main point arriving late. A short sentence stands only for a turn or a verdict.",
+    "Let the narrator judge. Name feeling and character in her abstract nouns of judgement; give feeling by conduct and countenance rather than by naming it; let a verdict arrive by understatement and litotes.",
+    "Where the passage invites it, let the narrator’s dry judgement fall on what is there: a general truth the matter itself suggests, a deflating last clause, the precision that is itself the irony. Never more than one a paragraph, never an opinion the writer did not hold, and many paragraphs need none.",
+    "Report speech in the narrator’s syntax, or tag it after its first clause (“said she”); what stays quoted must show character.",
+    "Where the passage gives a character’s thought, render it as free indirect discourse."
+  ],
   "moves": [
     {
       "id": "balance",

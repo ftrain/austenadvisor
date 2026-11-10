@@ -9,6 +9,7 @@
   },
   "scripts": {
     "build:model": "node src/train/build.ts",
+    "fetch:obama": "node scripts/fetch-obama.ts",
     "dev": "node src/server/main.ts --dev",
     "start": "node src/server/main.ts",
     "build": "vite build",

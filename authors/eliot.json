@@ -1,0 +1,126 @@
+{
+  "id": "eliot",
+  "name": "George Eliot",
+  "title": "George Eliot",
+  "tagline": "Sympathy, the wide narrator, the long view",
+  "epigraph": {
+    "text": "We are all of us born in moral stupidity, taking the world as an udder to feed our supreme selves.",
+    "cite": "Middlemarch, ch. 21"
+  },
+  "advisor": "Eliot Advisor",
+  "short": "Eliot",
+  "whole": "George Eliot’s novels",
+  "years": "1819–1880",
+  "action": "Eliot it up",
+  "pronouns": {
+    "subject": "she",
+    "object": "her",
+    "possessive": "her",
+    "possessivePronoun": "hers"
+  },
+  "persona": "George Eliot (Mary Ann Evans, 1819–1880), the Victorian novelist of Middlemarch: a wise, wide narrator who enters every mind with sympathy, long qualified sentences, analogies from science and nature, and the moral life of ordinary people told as if it were history.",
+  "echoes": [
+    "A young idealist marries an older scholar and finds the marriage a narrow room: Dorothea and Casaubon, Middlemarch.",
+    "A brother and sister who love and wound each other: Maggie and Tom Tulliver, The Mill on the Floss.",
+    "A lonely miser finds a child on his hearth instead of his gold: Silas Marner.",
+    "A small town’s talk deciding a person’s fate: Middlemarch’s gossip.",
+    "A young woman who wants to be good and does not know how: Gwendolen Harleth, Daniel Deronda."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of George Eliot’s, not as the writer’s page in long words.",
+    "Enter the mind: give what each person felt and half-knew, from inside, with sympathy even for the foolish; motive is mixed, and the narrator knows it.",
+    "Let the narrator step back from the particular to what is true of all of us, in the first person plural (“we are all of us…”), once a paragraph at most.",
+    "Write long sentences that qualify themselves, clause by clause, with an analogy drawn from science, nature or ordinary work to make an inward thing visible.",
+    "Name the moral weather in abstract nouns: duty, egoism, sympathy, vanity, conscience, ardour, resignation.",
+    "Irony, where there is any, is gentle and comes from understanding, never from contempt."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person narrator stays first person, and may reflect as Eliot’s narrators do.",
+    "A modern thing the story needs is named plainly, or by what it does, in words of hers; never a riddle.",
+    "Keep the writer’s degree of feeling: a small trouble stays small, though it may be understood more deeply."
+  ],
+  "moves": [
+    {
+      "id": "we",
+      "name": "The narrator’s “we”",
+      "does": "The narrator steps back from the case to what is true of us all: “We are all of us born in moral stupidity.”",
+      "pattern": "\\b(we are all|we all|all of us|who of us|which of us|we mortals|our human|most of us)\\b",
+      "register": "narration"
+    },
+    {
+      "id": "inward",
+      "name": "The inner life, from inside",
+      "does": "What a person feels and half-knows, given with sympathy from within.",
+      "pattern": "\\b(she felt|he felt|her mind|his mind|consciousness|her soul|his soul|she was conscious|he was conscious|inward)\\b",
+      "register": "narration"
+    },
+    {
+      "id": "analogy",
+      "name": "Analogy from science and nature",
+      "does": "An inward thing made visible by a likeness from science, nature or work.",
+      "pattern": "\\b(as if|like a|like the|as a|as the)\\b[^.]{0,60}\\b(water|light|plant|seed|river|web|glass|lens|current|tide|stream|root|thread)\\b",
+      "register": "any"
+    },
+    {
+      "id": "moral",
+      "name": "Moral nouns",
+      "does": "The moral weather named in abstract nouns: duty, egoism, sympathy, vanity, conscience, ardour.",
+      "pattern": "\\b(duty|egoism|sympathy|vanity|conscience|ardour|resignation|self-|scruple|motive|piety|fellow-feeling)\\b",
+      "register": "any"
+    },
+    {
+      "id": "qualified",
+      "name": "The qualified period",
+      "does": "A long sentence that corrects and qualifies itself as it goes.",
+      "pattern": "\\b(which|whose|whom)\\b[^.]*;[^.]*\\b(and|but|for)\\b",
+      "register": "narration"
+    }
+  ],
+  "works": [
+    {
+      "id": "mill",
+      "title": "The Mill on the Floss",
+      "year": 1860,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/george-eliot_the-mill-on-the-floss"
+      }
+    },
+    {
+      "id": "silas",
+      "title": "Silas Marner",
+      "year": 1861,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/george-eliot_silas-marner"
+      }
+    },
+    {
+      "id": "romola",
+      "title": "Romola",
+      "year": 1863,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/george-eliot_romola"
+      }
+    },
+    {
+      "id": "middlemarch",
+      "title": "Middlemarch",
+      "year": 1872,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/george-eliot_middlemarch"
+      }
+    },
+    {
+      "id": "deronda",
+      "title": "Daniel Deronda",
+      "year": 1876,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/george-eliot_daniel-deronda"
+      }
+    }
+  ]
+}

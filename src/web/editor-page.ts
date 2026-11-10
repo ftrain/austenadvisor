@@ -28,6 +28,7 @@ import type { Op } from 'tinylittleoffice/doc';
 import { SHE, get, h, me, post, quoteEl, setMyName, type Advice, type AuthorInfo, type Alternative, type Analysis, type Citation, type WordFlag } from './api.ts';
 import { ExplorePanel } from './explore.ts';
 import { renderAdvisor, renderStyle } from './panels.ts';
+import type { RewriteProgress } from '../server/rewrite.ts';
 import { Sync, type RoomState } from './sync.ts';
 
 const ADVISOR = 'advisor';
@@ -80,6 +81,26 @@ export async function editorPage(root: HTMLElement, docId: string) {
   const online = h('span', { class: 'aa-online' });
   const score = h('span', { class: 'aa-score-pill', title: 'How near Austen’s habits, 0–100' }, '—');
   const status = h('span', { class: 'aa-status', 'aria-live': 'polite' });
+  // A rewrite's progress, in the Rewrite card: the clock, the draft, the lookups, the last few steps.
+  const progressClock = h('span', { class: 'aa-progress-clock' });
+  const progressHead = h('div', { class: 'aa-progress-head' }, h('span', { class: 'aa-progress-dot' }), h('strong', {}, '…'), progressClock);
+  const progressLog = h('ol', { class: 'aa-progress-log' });
+  const progressEl = h('div', { class: 'aa-progress', hidden: true, 'aria-live': 'polite' }, progressHead, progressLog);
+  let progressAt = 0;
+  let progressElapsed = 0;
+  const clock = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
+  setInterval(() => {
+    if (!progressEl.hidden) progressClock.textContent = clock(progressElapsed + (Date.now() - progressAt));
+  }, 1000);
+  function showProgress(p: RewriteProgress & { elapsed: number; log: string[] }) {
+    progressAt = Date.now();
+    progressElapsed = p.elapsed;
+    progressClock.textContent = clock(p.elapsed);
+    const parts = [p.draft ? `draft ${p.draft}${p.problems ? `, ${p.problems} to mend` : ''}` : 'first draft', `${p.calls} lookup${p.calls === 1 ? '' : 's'}`];
+    progressHead.querySelector('strong')!.textContent = `${author.short} it up · ${parts.join(' · ')}`;
+    progressLog.replaceChildren(...p.log.map((l, i) => h('li', { class: i === p.log.length - 1 ? 'aa-now' : '' }, l)));
+    progressEl.hidden = false;
+  }
   const nameBtn = h('button', { class: 'aa-btn aa-ghost', title: 'Your name, as others see it', onclick: () => {
     const n = prompt('Your name, as others in this document see it:', me().name);
     if (n?.trim()) {
@@ -154,6 +175,7 @@ export async function editorPage(root: HTMLElement, docId: string) {
       analysis,
       ai,
       reviewPanel,
+      progress: progressEl,
       onApply: applyAdvice,
       onShow: showAdvice,
       onWord: (f) => { showWord(f); },
@@ -167,22 +189,28 @@ export async function editorPage(root: HTMLElement, docId: string) {
 
   function targetLabel(): string {
     const t = target();
-    if (!t) return 'Place the caret in a paragraph';
+    if (!t) return 'Nothing to rewrite yet';
+    if (t.whole) return `The whole document (${t.count} paragraph${t.count === 1 ? '' : 's'}); select some to rewrite only those`;
     return t.from === t.to ? `Paragraph ${t.from}` : `Paragraphs ${t.from}–${t.to}`;
   }
 
-  /** The paragraphs the selection or caret is in. */
-  function target(): { from: number; to: number } | null {
-    const s = words?.sel;
-    if (!s) return lastTarget;
-    const a = Math.min(s.anchor.block, s.focus.block);
-    const b = Math.max(s.anchor.block, s.focus.block);
-    const blocks = words!.model;
-    if (!blocks[a] || blocks[a]!.k === 'h') return lastTarget;
-    lastTarget = { from: a, to: b };
-    return lastTarget;
+  /** The paragraphs selected; with only a caret, or nothing selected, the whole document. Headings are never rewritten. */
+  function target(): { from: number; to: number; whole?: boolean; count?: number } | null {
+    const blocks = words?.model;
+    if (!blocks?.length) return null;
+    const s = words!.sel;
+    const collapsed = !s || (s.anchor.block === s.focus.block && s.anchor.offset === s.focus.offset);
+    if (s && !collapsed) {
+      let from = Math.min(s.anchor.block, s.focus.block);
+      let to = Math.max(s.anchor.block, s.focus.block);
+      while (from <= to && blocks[from]?.k === 'h') from++;
+      while (to >= from && blocks[to]?.k === 'h') to--;
+      if (from <= to) return { from, to };
+    }
+    const idx = blocks.map((b, i) => (b.k === 'h' ? -1 : i)).filter((i) => i >= 0);
+    if (!idx.length) return null;
+    return { from: idx[0]!, to: idx[idx.length - 1]!, whole: true, count: idx.length };
   }
-  let lastTarget: { from: number; to: number } | null = null;
 
   // Tracked changes: everyone's versions, the last one being the words as they are now.
   function stepsOf(): Step[] {
@@ -224,10 +252,10 @@ export async function editorPage(root: HTMLElement, docId: string) {
     }, delay);
   }
 
-  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-phrase', 'advisor-figure', 'advisor-focus'];
+  const HL = ['advisor-never', 'advisor-form', 'advisor-name', 'advisor-phrase', 'advisor-figure', 'advisor-advice', 'advisor-focus'];
   function highlight(focus?: { block: number; start: number; end: number }) {
     if (!words || !analysis || !('highlights' in CSS)) return;
-    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-phrase': [], 'advisor-figure': [], 'advisor-focus': [] };
+    const groups: Record<string, Range[]> = { 'advisor-never': [], 'advisor-form': [], 'advisor-name': [], 'advisor-phrase': [], 'advisor-figure': [], 'advisor-advice': [], 'advisor-focus': [] };
     for (const f of analysis.words) {
       const r = rangeAt(words, f.block, f.start, f.end);
       if (r) groups[`advisor-${f.kind === 'rare' ? 'form' : f.kind}`]!.push(r);
@@ -239,6 +267,10 @@ export async function editorPage(root: HTMLElement, docId: string) {
     for (const c of analysis.compounds ?? []) {
       const r = rangeAt(words, c.block, c.start, c.end);
       if (r) groups['advisor-phrase']!.push(r);
+    }
+    for (const a of fixable()) {
+      const r = rangeAt(words, a.block, a.start, a.end);
+      if (r) groups['advisor-advice']!.push(r);
     }
     if (focus) {
       const r = rangeAt(words, focus.block, focus.start, focus.end);
@@ -269,12 +301,82 @@ export async function editorPage(root: HTMLElement, docId: string) {
     if (!p) return null;
     return (analysis.figures ?? []).find((f) => f.block === p.block && p.offset >= f.start && p.offset <= f.end) ?? null;
   }
+  /** Advice with a fix in the text: a contraction written out, a likelier word, short sentences joined. */
+  function fixable(): Advice[] {
+    return (analysis?.advice ?? []).filter((a) => a.replacements?.length && (a.kind === 'word' || a.kind === 'sentence'));
+  }
+  function adviceAt(x: number, y: number, kind: Advice['kind']): Advice | null {
+    if (!words || !analysis) return null;
+    const p = posAt(words, x, y);
+    if (!p) return null;
+    return fixable().find((a) => a.kind === kind && a.block === p.block && p.offset >= a.start && p.offset <= a.end) ?? null;
+  }
+  const blockText = (i: number) => {
+    const b = words?.model[i];
+    return b && 'runs' in b ? b.runs.map((r) => (r.ic || r.fn !== undefined ? '￼' : r.t)).join('') : '';
+  };
+  /** The writer takes the advice at once, with no round through the margin. */
+  function takeAdvice(a: Advice) {
+    const reps = (a.replacements ?? []).map((r) => ({ ...r, block: r.block < 0 ? a.block : r.block }));
+    const stale = reps.some((r) => !words?.model[r.block] || blockText(r.block).length < r.end);
+    if (stale) return toast('The text has moved on since Advisor read it; a moment, and it reads again.');
+    hidePop(false);
+    const ops = [...reps].sort((p, q) => q.block - p.block || q.start - p.start).map((r) => ({ op: 'text', at: r.block, from: r.start, to: r.end, runs: [{ t: r.text }] }) as Op);
+    localEdit(ops);
+  }
+  let adviceFor: Advice | null = null;
+  function advicePop(a: Advice): HTMLElement {
+    const reps = a.replacements ?? [];
+    const was = reps.map((r) => blockText(r.block < 0 ? a.block : r.block).slice(r.start, r.end));
+    return h(
+      'div',
+      { class: 'aa-pop-in' },
+      h('div', { class: 'aa-pop-head' }, h('strong', {}, a.title), h('span', { class: 'aa-kind aa-kind-advice' }, a.kind === 'sentence' ? 'sentences' : 'advice')),
+      h('p', { class: 'aa-pop-note' }, a.message),
+      h('p', { class: 'aa-pop-sub' }, a.kind === 'sentence' ? `As ${author.short} might join them:` : `${author.short}’s way:`),
+      h(
+        'ol',
+        { class: 'aa-alts' },
+        ...reps.map((r, i) =>
+          h(
+            'li',
+            {},
+            h('button', { class: `aa-alt${a.kind === 'sentence' ? ' aa-alt-long' : ''}`, onclick: () => takeAdvice(a), title: `Put this in place of “${was[i]}”` }, r.text),
+            a.kind === 'word' && was[i] ? h('span', { class: 'aa-alt-why' }, `for “${was[i]}”`) : null,
+          ),
+        ),
+      ),
+      ...a.examples.slice(0, 1).map((c) => quoteEl(c, openCitation)),
+      h('div', { class: 'aa-pop-foot' }, h('button', { class: 'aa-link', onclick: () => { hidePop(false); void applyAdvice(a); } }, 'Suggest it as a tracked change instead →')),
+    );
+  }
+  function showAdvicePop(a: Advice) {
+    clearTimeout(hideTimer);
+    if (adviceFor === a && !pop.hidden) return;
+    adviceFor = a;
+    figFor = null;
+    popFor = null;
+    const r = words && rangeAt(words, a.block, a.start, Math.min(a.end, a.start + 40));
+    pop.replaceChildren(advicePop(a));
+    pop.hidden = false;
+    placePop(r?.getBoundingClientRect());
+  }
+  function placePop(rect: DOMRect | undefined) {
+    if (!rect) return;
+    const w = Math.min(380, window.innerWidth - 24);
+    pop.style.width = `${w}px`;
+    pop.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - w - 12))}px`;
+    const below = rect.bottom + 8;
+    const ph = pop.offsetHeight;
+    pop.style.top = `${below + ph > window.innerHeight - 8 ? Math.max(8, rect.top - ph - 8) : below}px`;
+  }
   let figFor: Fig | null = null;
   async function showFigurePop(f: Fig) {
     clearTimeout(hideTimer);
     if (figFor === f && !pop.hidden) return;
     figFor = f;
     popFor = null;
+    adviceFor = null;
     const r = words && rangeAt(words, f.block, f.start, Math.min(f.end, f.start + 40));
     const rect = r?.getBoundingClientRect();
     const list = h('div', {}, h('p', { class: 'aa-muted aa-small' }, `Finding ${author.short}’s…`));
@@ -289,12 +391,7 @@ export async function editorPage(root: HTMLElement, docId: string) {
       ),
     );
     pop.hidden = false;
-    if (rect) {
-      const w = Math.min(380, window.innerWidth - 24);
-      pop.style.width = `${w}px`;
-      pop.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - w - 12))}px`;
-      pop.style.top = `${rect.bottom + 8}px`;
-    }
+    placePop(rect);
     try {
       const info = await get<{ examples: Citation[] }>(`/api/figure?author=${author.id}&term=${f.term}&near=${encodeURIComponent(f.text.slice(0, 300))}&limit=2`);
       if (figFor === f) list.replaceChildren(...info.examples.map((c) => quoteEl(c, openCitation)));
@@ -311,6 +408,7 @@ export async function editorPage(root: HTMLElement, docId: string) {
 
   function showPop(f: WordFlag) {
     figFor = null;
+    adviceFor = null;
     clearTimeout(hideTimer);
     if (popFor === f && !pop.hidden) return;
     popFor = f;
@@ -318,18 +416,11 @@ export async function editorPage(root: HTMLElement, docId: string) {
     const rect = r?.getBoundingClientRect();
     pop.replaceChildren(wordPop(f));
     pop.hidden = false;
-    if (rect) {
-      const w = Math.min(380, window.innerWidth - 24);
-      pop.style.width = `${w}px`;
-      pop.style.left = `${Math.max(12, Math.min(rect.left, window.innerWidth - w - 12))}px`;
-      const below = rect.bottom + 8;
-      const ph = pop.offsetHeight;
-      pop.style.top = `${below + ph > window.innerHeight - 8 ? Math.max(8, rect.top - ph - 8) : below}px`;
-    }
+    placePop(rect);
   }
   function hidePop(soon = true) {
     clearTimeout(hideTimer);
-    hideTimer = window.setTimeout(() => { pop.hidden = true; popFor = null; }, soon ? 280 : 0);
+    hideTimer = window.setTimeout(() => { pop.hidden = true; popFor = null; figFor = null; adviceFor = null; }, soon ? 280 : 0);
   }
   pop.addEventListener('mouseenter', () => clearTimeout(hideTimer));
   pop.addEventListener('mouseleave', () => hidePop());
@@ -376,10 +467,6 @@ export async function editorPage(root: HTMLElement, docId: string) {
 
   async function applyAdvice(a: Advice) {
     if (!a.replacements?.length) return;
-    const blockText = (i: number) => {
-      const b = words?.model[i];
-      return b && 'runs' in b ? b.runs.map((r) => (r.ic || r.fn !== undefined ? '￼' : r.t)).join('') : '';
-    };
     const reps = a.replacements.map((r) => {
       const block = r.block < 0 ? a.block : r.block;
       return { block, start: r.start, end: r.end, text: r.text, expect: blockText(block).slice(r.start, r.end) };
@@ -429,10 +516,10 @@ export async function editorPage(root: HTMLElement, docId: string) {
 
   async function austenizeHere() {
     const t = target();
-    if (!t) return toast('Put the caret in the paragraph to rewrite.');
+    if (!t) return toast('There is nothing to rewrite yet.');
     try {
-      const r = await post<{ changes?: number }>(`/api/docs/${docId}/austenize`, t);
-      toast(r.changes ? `Advisor suggested ${r.changes} change${r.changes === 1 ? '' : 's'}, each from ${author.short}’s own usage.` : 'Advisor found nothing to change here.');
+      const r = await post<{ changes?: number }>(`/api/docs/${docId}/austenize`, { from: t.from, to: t.to });
+      toast(r.changes ? `Advisor suggested ${r.changes} change${r.changes === 1 ? '' : 's'}, each from ${author.short}’s own usage.` : `Nothing statistics are sure of in ${targetLabel().toLowerCase()}. “${author.short} it up” goes further.`);
     } catch (e) {
       toast(String((e as Error).message));
     }
@@ -440,10 +527,10 @@ export async function editorPage(root: HTMLElement, docId: string) {
 
   async function rewriteHere(instructions = '') {
     const t = target();
-    if (!t) return toast('Put the caret in the paragraph to rewrite, or select several.');
-    if (!ai) return toast('Rewrite with AI needs ANTHROPIC_API_KEY where the server runs. Try “Austenize” for the statistical rewrite.');
+    if (!t) return toast('There is nothing to rewrite yet.');
+    if (!ai) return toast(`“${author.short} it up” needs ANTHROPIC_API_KEY or DEEPSEEK_API_KEY where the server runs. Try “Tidy by statistics”.`);
     try {
-      await post(`/api/docs/${docId}/rewrite`, { ...t, instructions });
+      await post(`/api/docs/${docId}/rewrite`, { from: t.from, to: t.to, instructions, strength: 'full' });
       toast('Rewritten: see Advisor’s change and its sources in the margin.');
     } catch (e) {
       toast(String((e as Error).message));
@@ -454,8 +541,8 @@ export async function editorPage(root: HTMLElement, docId: string) {
   const REWRITE = command<Ctx>({
     id: 'advisor.rewrite',
     scope: 'advisor',
-    label: () => 'Rewrite with AI',
-    hint: () => `Advisor rewrites the paragraph in ${author.short}’s manner with Claude, checking every word against ${author.pronouns.possessive} works`,
+    label: () => `${author.short} it up`,
+    hint: () => `Advisor rewrites the paragraph as ${author.short} would have written it, with AI, checking every word against ${author.pronouns.possessive} works`,
     icon: iconNamed('sparkles'),
     keys: 'Mod+Shift+R',
     where: ['bar'],
@@ -464,8 +551,8 @@ export async function editorPage(root: HTMLElement, docId: string) {
   const AUSTENIZE = command<Ctx>({
     id: 'advisor.austenize',
     scope: 'advisor',
-    label: () => 'Austenize',
-    hint: () => `A statistical rewrite of the paragraph, with no language model: ${author.pronouns.possessive} words for yours, contractions written out, short sentences joined`,
+    label: () => 'Tidy by statistics',
+    hint: () => `A tidy of the paragraph by statistics, with no language model: contractions written out, ${author.pronouns.possessive} word for yours where it is sure, short sentences joined`,
     icon: iconNamed('feather'),
     keys: 'Mod+Shift+A',
     where: ['bar'],
@@ -504,9 +591,13 @@ export async function editorPage(root: HTMLElement, docId: string) {
           cancelAnimationFrame(raf);
           raf = requestAnimationFrame(() => {
             const f = flagAt(e.clientX, e.clientY);
-            const g = f ? null : figureAt(e.clientX, e.clientY);
+            const w = f ? null : adviceAt(e.clientX, e.clientY, 'word');
+            const g = f || w ? null : figureAt(e.clientX, e.clientY);
+            const s = f || w || g ? null : adviceAt(e.clientX, e.clientY, 'sentence');
             if (f && f.alternatives.length + (f.kind === 'name' ? 0 : 1) > 0) showPop(f);
+            else if (w) showAdvicePop(w);
             else if (g) showFigurePop(g);
+            else if (s) showAdvicePop(s);
             else if (!pop.matches(':hover')) hidePop();
           });
         });
@@ -538,9 +629,11 @@ export async function editorPage(root: HTMLElement, docId: string) {
       redraw();
       if (tab === 'advisor') renderSide();
     },
-    status(text) {
+    status(text, progress) {
       status.textContent = text ?? '';
       status.classList.toggle('on', !!text);
+      if (progress) showProgress(progress as RewriteProgress & { elapsed: number; log: string[] });
+      else progressEl.hidden = true;
     },
     presence(list) {
       for (const p of list) people.set(p.id, p.name);

@@ -49,11 +49,11 @@ export function buildCorpus(db: DatabaseSync, author: AuthorConfig, log = consol
     );
     author.works.forEach((work, wi) => {
       const chapters = readWork(work, sourcesDir);
-      insWork.run(work.id, wi, work.title, work.year, `https://github.com/${work.source.repo}`);
+      insWork.run(work.id, wi, work.title, work.year, work.source.type === 'speeches' ? work.source.url : `https://github.com/${work.source.repo}`);
       counts.works++;
       let workWords = 0;
       chapters.forEach((ch, ci) => {
-        const chapterId = Number(insChapter.run(work.id, ci + 1, ch.title || String(ci + 1)).lastInsertRowid);
+        const chapterId = Number(insChapter.run(work.id, ch.n ?? ci + 1, ch.title || String(ci + 1)).lastInsertRowid);
         counts.chapters++;
         ch.paragraphs.forEach((p, pi) => {
           const toks = tokenize(p.text);
@@ -61,7 +61,7 @@ export function buildCorpus(db: DatabaseSync, author: AuthorConfig, log = consol
           const words = wordCount(toks);
           const spoken = toks.filter((t) => t.kind === 'word' && t.quoted).length;
           const paraId = Number(
-            insPara.run(chapterId, pi + 1, p.kind, words, sents.length, words ? spoken / words : 0, p.text).lastInsertRowid,
+            insPara.run(chapterId, p.n ?? pi + 1, p.kind, words, sents.length, words ? spoken / words : 0, p.text).lastInsertRowid,
           );
           counts.paragraphs++;
           sents.forEach((s, si) => {

@@ -1,13 +1,46 @@
 # Austen Advisor
 
-A shared word processor where you write and **Advisor** writes beside you. Advisor is a statistical model of the complete works of Jane Austen. It is there to teach you to write, and to think like an author, not to write for you.
+Paste your prose, choose a voice, and press the button. **Advisor** rewrites it as Jane Austen would have written it, or Shakespeare, or the King James Bible, and shows you why in three columns:
+
+- **Yours**, with every word the voice never used underlined. Tap one for the words it did use in that place.
+- **The rewrite**, sentence by sentence. Hover a sentence to light the sentences of yours it renders. Tap it for why it was written so, the sentence of the original it follows, and its words: tap a word to see how often and where the original used it.
+- **Why**: each move the rewrite makes (balanced periods, litotes, speech reported, "And it came to pass", parallelism…), with a sentence of the original that shows it. Tap a citation to read it in its passage.
+
+How a rewrite runs, in about twenty-five seconds:
+
+1. **The engine briefs it.** From the voice's whole corpus: the words of yours the voice never used and its own words for them, its sentences nearest each of yours, its moves with examples, and its habits as targets (sentence length, punctuation, contractions).
+2. **A fast reader reads it for sense** (deepseek-flash, about ten seconds): only a contradiction, or a true echo of one of the voice's famous scenes. "New Neighbors" gives the new family a mother, then says the father is single; the rewrite makes the standoffish woman his sister, and notes that the whole is the opening of Pride and Prejudice.
+3. **The writer writes once** (deepseek-v4-pro, one transaction): first what kind of piece it is, how you built it, and how the voice would build it; then the rewrite, built to that plan; then the moves it made, the liberties it took (anything not in yours, said plainly) and the mendings of sense.
+4. **The engine checks and mends** without a second call: a word the voice never used is put by the voice's own where the engine is sure of one; a note whose words do not make its move, or that misquotes the rewrite, is dropped; each note's source is chosen by the engine (of the voice's sentences that make the move, the one nearest the note's words) with the move's words marked. Only a hard failure (a sentence of yours lost, a heading crossed) is sent back.
+
+Above the columns, **How it's built** sets your outline (claim, reason, objection, answer, call; or scene, turn, verdict) beside the voice's plan, each step with why. Below them, **Practise** gives up to three of the moves the rewrite made, each on a sentence of yours: rewrite it yourself and press Check, and the engine (no language model) says at once whether you made the move, what else you did, which words the voice never used, and how your sentences run against its.
+
+**Every term is defined where it is used.** A move's heading carries what it does (the voice's own account of its move, else the glossary's), and a term of rhetoric, poetics or grammar in a note, a plan or a lesson (*litotes*, *blank verse*, *periodic sentence*, *procatalepsis*) is underlined: tap it and its definition opens in the line. The glossary is [src/engine/glossary.ts](src/engine/glossary.ts), ninety-five terms, most with an example, written to `data/glossary.sqlite` (a row a term, a row for each name it goes by, and a full-text index) and rebuilt whenever the list changes. `GET /api/glossary`, `/api/glossary?q=objection`, `/api/glossary/anastrophe`; `npm run cli -- define tricolon`.
+
+[docs/eval/voices](docs/eval/voices/README.md) is how this was measured: every voice on every case, judged by Claude on fidelity, voice, sense, naturalness, notes, teaching and structure, round by round.
+
+The voices, each a statistical model of its whole corpus:
+
+| Voice | Corpus | Words |
+|---|---|---|
+| Jane Austen | the six novels, Lady Susan, the juvenilia, Sanditon (Standard Ebooks, Gutenberg) | 800,587 |
+| George Eliot | Middlemarch, The Mill on the Floss, Silas Marner, Romola, Daniel Deronda (Standard Ebooks) | 1,117,254 |
+| Mark Twain | eight books, from The Innocents Abroad to Joan of Arc (Standard Ebooks) | 903,501 |
+| The King James Bible | all 66 books, cited by book, chapter and verse (Gutenberg ebook 30) | 789,626 |
+| William Shakespeare | the 37 plays (Standard Ebooks), cited by act and scene, and the Sonnets (Gutenberg ebook 100), by number | 816,564 |
+| The Fairy Books | Andrew Lang's twelve coloured Fairy Books, Blue to Lilac (Gutenberg) | 1,247,250 |
+| Barack Obama | 281 weekly addresses and 48 speeches from the official White House archive, public domain as works of the federal government | 311,127 |
+
+The Obama corpus is fetched once with `npm run fetch:obama` before its build; it keeps only the President's own words (not the Vice President's or others' remarks on the same pages, nor the press office's summaries).
+
+The page was at first a shared word processor, and that editor still opens any document by its link (`/d/<id>`):
 
 - **Every word Austen never wrote is underlined as you type.** Hover one to see the words she did use in its place, ranked by meaning and fit. Each comes with a real sentence of hers and where to find it (work, chapter, paragraph). Click one to put it in.
-- **Advice with the numbers behind it.** Advisor flags contractions where she wrote the words out, and runs of short sentences she would have joined (with the join she would most likely use). It also flags a word she would more likely have written in that spot, and habits of yours that are not hers ("you use *really* 9 times in a thousand words; Austen, 0.7"). Every piece of advice cites her sentences.
+- **Advice with the numbers behind it.** Advisor flags contractions where she wrote the words out, and runs of short sentences she would have joined (with the join she would most likely use). It also flags a word she would more likely have written in that spot, and habits of yours that are not hers ("you use *really* 9 times in a thousand words; Austen, 0.7"). Every piece of advice cites her sentences. Advice with a fix is underlined in the text: hover it and click the fix to take it in place, or have Advisor suggest it as a tracked change.
 - **Explore her language as you write.** Select any word or phrase. You see how often she used it and in which novels, the words nearest it in her own usage, the words found beside it, and her sentences containing it. Each sentence opens into its paragraph.
 - **Figures of speech recognized and named.** Litotes, periphrasis, antithesis, tricolon, polysyndeton, inversion, the ironic generalization and aside, free indirect discourse and more are found by their form. They are underlined in your draft, named in every rewrite's reasons, and labelled on every Austen sentence shown. Hover one, or search one in Explore ("tricolon" gives "Emma Woodhouse, handsome, clever, and rich").
 - **The Style panel** measures your writing against hers: sentence and paragraph length, semicolons, commas, -ly adverbs, contractions, function-word habits (Burrows's Delta) and readability. Each measure is a habit you can practise.
-- **Advisor's suggestions are tracked changes.** You accept or reject them as you would a colleague's in Google Docs, and a thread in the margin explains each one. *Austenize* rewrites a paragraph by statistics alone. *Rewrite with AI* gives the passage to Claude together with the engine: Claude looks up words, checks idioms in the concordance, checks its own draft, and cites the sentences it learned from. Each quotation is verified against the corpus before you see it.
+- **Advisor's suggestions are tracked changes.** You accept or reject them as you would a colleague's in Google Docs, and a thread in the margin explains each one. *Austen it up* gives the passage to a language model (Claude, or DeepSeek) together with the engine and asks for the whole way: her periods, her judgement, her irony, every modern thing rendered in her world. The model looks up words, checks idioms in the concordance, checks its own draft, and cites the sentences it learned from. *Tidy by statistics* makes only the changes statistics are sure of: contractions written out, her word for yours where the sense is the same, short sentences joined. Each quotation is verified against the corpus before you see it.
 - **Shared, like a Google Doc.** Anyone with the link writes with you, live. Ask Advisor anything in a comment thread.
 
 ![Hovering a word Austen never wrote](docs/hover.png)
@@ -25,6 +58,12 @@ Node 24 or later.
 ```sh
 npm install
 npm run build:model -- austen   # ~3 minutes, once: fetches the works, WordNet and the Brown Corpus, trains the model
+npm run build:model -- kjv      # ~1 minute each: the other voices
+npm run build:model -- twain
+npm run build:model -- eliot
+npm run build:model -- fairy
+npm run build:model -- shakespeare
+npm run fetch:obama && npm run build:model -- obama
 npm run dev                     # http://localhost:4180
 ```
 
@@ -34,11 +73,14 @@ npm run dev                     # http://localhost:4180
 - `data/austen.sqlite`: the corpus, its full-text index, and the model.
 - `data/documents.sqlite`: the documents. The server writes this one as people use it.
 
-Rewrite with AI needs an API key where the server runs:
+Rewrite with AI needs an API key where the server runs. With an Anthropic key it uses Claude; with a DeepSeek key alone it uses DeepSeek through its Anthropic-compatible API, with the same prompts, tools and gate. `ADVISOR_MODEL` overrides the model (`claude-opus-5-5` and `deepseek-v4-pro` are the defaults).
 
 ```sh
 ANTHROPIC_API_KEY=… npm run dev
+DEEPSEEK_API_KEY=… npm run dev
 ```
+
+The writer is whichever model has a key: Claude with `ANTHROPIC_API_KEY` (best in our evaluation), else DeepSeek; or any OpenRouter model with `ADVISOR_WRITER=openrouter:<model>` and `OPENROUTER_API_KEY`. DeepSeek's fast model does the reading whenever `DEEPSEEK_API_KEY` is set. Every setting is in [.env.example](.env.example). Two caches keep it cheap: the voice's long system prompt is the same for every rewrite, so the provider caches it (DeepSeek on its own, about two-thirds of each request's input; Claude by its cache mark, kept through OpenRouter too); and each finished rewrite is kept on disk (`data/cache/rewrites`), keyed by the text, the voice, the models and a fingerprint of the prompt's code, so the same text in the same voice comes back in milliseconds and a change to the prompt retires the old answers. `ADVISOR_CACHE=off` turns the second off.
 
 Everything else needs no language model and no network once the model is built.
 
@@ -80,7 +122,7 @@ See [docs/engine.md](docs/engine.md). In short, the engine is built from a centu
 
 ## Another author
 
-The engine knows nothing particular to Austen. An author is a JSON file of works and sources, and `authors/twain.json` is already there:
+The engine knows nothing particular to Austen. An author is a JSON file of works and sources, with the button's words (`action`), what a full rewrite in that manner does (`manner`), the author's moves with a pattern each, and how sentences are cited (`citeStyle`). `authors/kjv.json` reads Project Gutenberg's numbered Bible (ebook 30) book by book, so that a verse is a paragraph and a citation reads "Genesis 1:3". `authors/twain.json` is there too:
 
 ```sh
 npm run build:model -- twain

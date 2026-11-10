@@ -1,0 +1,859 @@
+{
+  "id": "kjv",
+  "name": "the King James Bible",
+  "title": "The King James Bible",
+  "tagline": "And, and, and: the cadence of the Authorized Version",
+  "epigraph": {
+    "text": "In the beginning God created the heaven and the earth.",
+    "cite": "Genesis 1:1"
+  },
+  "advisor": "King James Advisor",
+  "short": "the King James Bible",
+  "whole": "the whole of the King James Bible",
+  "years": "1611",
+  "action": "King James it up",
+  "citeStyle": "verse",
+  "pronouns": {
+    "subject": "it",
+    "object": "it",
+    "possessive": "its",
+    "possessivePronoun": "its"
+  },
+  "epistolary": [
+    "romans",
+    "1corinthians",
+    "2corinthians",
+    "galatians",
+    "ephesians",
+    "philippians",
+    "colossians",
+    "1thessalonians",
+    "2thessalonians",
+    "1timothy",
+    "2timothy",
+    "titus",
+    "philemon",
+    "hebrews",
+    "james",
+    "1peter",
+    "2peter",
+    "1john",
+    "2john",
+    "3john",
+    "jude"
+  ],
+  "persona": "The Authorized Version of the Bible (1611), made by some fifty translators for King James I and read aloud in English churches for four hundred years: plain, old, concrete words; clause after clause joined by “and”; thou and thee, -eth and -est; the parallel halves of Hebrew verse; a grave cadence meant for the ear.",
+  "echoes": [
+    "A child who left home and squandered everything comes back, and is welcomed: the prodigal son, Luke 15.",
+    "A stranger helps someone everyone else passed by: the good Samaritan, Luke 10.",
+    "Someone runs away from what they were asked to do, and it goes badly: Jonah.",
+    "A friend refuses to leave: “whither thou goest, I will go”, Ruth 1.",
+    "Brothers who are jealous of the favourite: Joseph and his brothers, Genesis 37.",
+    "A time for every thing: Ecclesiastes 3."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a chapter of the King James Bible, not as the writer’s page in old spelling. A rewrite that keeps their sentences and swaps a few words has failed them.",
+    "Lay clause beside clause with “and”, and open most sentences with “And”; divide the halves of a sentence with a colon or a semicolon. Subordinate clauses are rare, and “because” is seldom where “for” will do.",
+    "Address one person as thou, thee, thy and thine, and many as ye, with the verbs that go with them (thou art, thou hast, thou knowest); give he and she the verb in -eth (he goeth, she saith).",
+    "Turn the story with “And it came to pass”; call attention with “behold”; use unto, upon, thereof, wherefore, whither and the like where the Bible would.",
+    "Where the passage invites it, say a thing twice in parallel halves, the second echoing the first in other words.",
+    "Give feeling by its sign, gravely and plainly: “and I wept”, “and his countenance fell”, “and my heart was heavy within me”. No irony, no knowing aside: the voice does not wink.",
+    "Speech is given without quotation marks, brought in plainly (“And he said unto me,”) and given in full; a question keeps its question mark."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much (“a whole pint”, “more snacks”). The narrator stays in the writer’s person: a first-person passage stays first person (“And I said…”, “and I went”).",
+    "A modern thing keeps the writer’s own name for it, set in the Bible’s sentence (“the charger of my phone”, “a canoe”, “the truck”): it is never turned into another thing, and never made a riddle. That is the joke and the truth of it. A riddle (“sweet food eaten cold” for ice cream, “the place where they sell drink” for a coffee shop) is worse than the modern word: say ice cream, say coffee shop.",
+    "Render what the writer meant, not the nearest phrase that sounds like scripture: “really cool” is liking and admiration, not beauty; “gross” is distaste, not sin.",
+    "Mind the words whose Bible sense a reader hears: to lie with or know a person is carnal; meat is any food; a charger is a dish; conversation is conduct; let is hinder; prevent is go before; quick is alive. Never use one where that sense would be heard: a bunkmate sleepeth beside thee, he does not lie with thee.",
+    "Add nothing religious the writer did not imply: no God, no prayer, no blessing, no sin, no moral, unless the passage has it. The voice is the Bible’s; the story stays the writer’s.",
+    "Short, old, concrete words; a Latinate abstract word only where the Bible itself has one (mercy, iniquity, righteousness, salvation).",
+    "A letter keeps the form of an epistle, without its piety: greeting at the head (“Unto my father and my mother, greeting.”), and at the foot the writer’s own hand (“The salutation of me Jake with mine own hand.”, after 2 Thessalonians 3:17), and a postscript as an afterword (“Moreover, …”)."
+  ],
+  "moves": [
+    {
+      "id": "and",
+      "name": "Clauses laid side by side with “and”",
+      "does": "Clause after clause joined by “and”, sentence after sentence opened by it, where English now would subordinate: “And God said, Let there be light: and there was light.”",
+      "pattern": "^\\W*and\\b|[:;,]\\s+and\\b[^.]*[:;,]\\s+and\\b",
+      "register": "any"
+    },
+    {
+      "id": "cametopass",
+      "name": "And it came to pass",
+      "does": "A new turn of the story opened by “And it came to pass”, or closed by “and it was so”.",
+      "pattern": "\\b(it came to pass|it was so|it shall come to pass)\\b",
+      "register": "any"
+    },
+    {
+      "id": "thou",
+      "name": "Thou and thee, -eth and -est",
+      "does": "The singular you as thou, thee, thy, thine, the plural as ye; the verb in -est after thou and in -eth for he and she: “thou knowest”, “he goeth”.",
+      "pattern": "\\b(thou|thee|thy|thine|ye|hath|doth|saith|shalt|wilt|hast|dost|art\\s+thou|\\w{3,}eth)\\b",
+      "register": "any"
+    },
+    {
+      "id": "behold",
+      "name": "Behold, lo, verily",
+      "does": "Attention called with “behold” or “lo”, an oath with “verily”.",
+      "pattern": "\\b(behold|lo|verily)\\b",
+      "register": "any"
+    },
+    {
+      "id": "unto",
+      "name": "Unto, thereof, wherefore",
+      "does": "The old prepositions and adverbs: unto, upon, thereof, therein, wherefore, whither, thence, hither, yea, nay.",
+      "pattern": "\\b(unto|thereof|therein|wherefore|whither|thence|hither|yea|nay|whereupon|thereupon)\\b",
+      "register": "any"
+    },
+    {
+      "id": "saidunto",
+      "name": "Speech brought in by “said unto”",
+      "does": "Speech introduced plainly, without quotation marks, by “And he said unto them,” and given in full.",
+      "pattern": "\\b(said|spake|answered|saith|cried)\\b[^,:]{0,30}\\b(unto|to)\\s+\\w+[,:]",
+      "register": "any"
+    },
+    {
+      "id": "parallel",
+      "name": "Parallelism",
+      "does": "One thought said twice, the second half echoing the first in other words, the halves divided by a colon or semicolon: “Pride goeth before destruction, and an haughty spirit before a fall.”",
+      "pattern": "^[^:;]{12,}[:;]\\s*(and|but|for|yet)?\\s*[^:;]{12,}$",
+      "register": "any"
+    },
+    {
+      "id": "of",
+      "name": "The genitive with “of”",
+      "does": "Possession and kind given by “of”: “the house of the LORD”, “the children of Israel”, “the day of his wrath”, not “the LORD’s house”.",
+      "pattern": "\\bthe\\s+\\w+\\s+of\\s+(the\\s+|his\\s+|my\\s+|thy\\s+)?\\w+",
+      "register": "any"
+    }
+  ],
+  "works": [
+    {
+      "id": "genesis",
+      "title": "Genesis",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 1
+      }
+    },
+    {
+      "id": "exodus",
+      "title": "Exodus",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 2
+      }
+    },
+    {
+      "id": "leviticus",
+      "title": "Leviticus",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 3
+      }
+    },
+    {
+      "id": "numbers",
+      "title": "Numbers",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 4
+      }
+    },
+    {
+      "id": "deuteronomy",
+      "title": "Deuteronomy",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 5
+      }
+    },
+    {
+      "id": "joshua",
+      "title": "Joshua",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 6
+      }
+    },
+    {
+      "id": "judges",
+      "title": "Judges",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 7
+      }
+    },
+    {
+      "id": "ruth",
+      "title": "Ruth",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 8
+      }
+    },
+    {
+      "id": "1samuel",
+      "title": "1 Samuel",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 9
+      }
+    },
+    {
+      "id": "2samuel",
+      "title": "2 Samuel",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 10
+      }
+    },
+    {
+      "id": "1kings",
+      "title": "1 Kings",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 11
+      }
+    },
+    {
+      "id": "2kings",
+      "title": "2 Kings",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 12
+      }
+    },
+    {
+      "id": "1chronicles",
+      "title": "1 Chronicles",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 13
+      }
+    },
+    {
+      "id": "2chronicles",
+      "title": "2 Chronicles",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 14
+      }
+    },
+    {
+      "id": "ezra",
+      "title": "Ezra",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 15
+      }
+    },
+    {
+      "id": "nehemiah",
+      "title": "Nehemiah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 16
+      }
+    },
+    {
+      "id": "esther",
+      "title": "Esther",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 17
+      }
+    },
+    {
+      "id": "job",
+      "title": "Job",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 18
+      }
+    },
+    {
+      "id": "psalms",
+      "title": "Psalms",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 19
+      }
+    },
+    {
+      "id": "proverbs",
+      "title": "Proverbs",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 20
+      }
+    },
+    {
+      "id": "ecclesiastes",
+      "title": "Ecclesiastes",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 21
+      }
+    },
+    {
+      "id": "songofsolomon",
+      "title": "Song of Solomon",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 22
+      }
+    },
+    {
+      "id": "isaiah",
+      "title": "Isaiah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 23
+      }
+    },
+    {
+      "id": "jeremiah",
+      "title": "Jeremiah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 24
+      }
+    },
+    {
+      "id": "lamentations",
+      "title": "Lamentations",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 25
+      }
+    },
+    {
+      "id": "ezekiel",
+      "title": "Ezekiel",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 26
+      }
+    },
+    {
+      "id": "daniel",
+      "title": "Daniel",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 27
+      }
+    },
+    {
+      "id": "hosea",
+      "title": "Hosea",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 28
+      }
+    },
+    {
+      "id": "joel",
+      "title": "Joel",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 29
+      }
+    },
+    {
+      "id": "amos",
+      "title": "Amos",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 30
+      }
+    },
+    {
+      "id": "obadiah",
+      "title": "Obadiah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 31
+      }
+    },
+    {
+      "id": "jonah",
+      "title": "Jonah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 32
+      }
+    },
+    {
+      "id": "micah",
+      "title": "Micah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 33
+      }
+    },
+    {
+      "id": "nahum",
+      "title": "Nahum",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 34
+      }
+    },
+    {
+      "id": "habakkuk",
+      "title": "Habakkuk",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 35
+      }
+    },
+    {
+      "id": "zephaniah",
+      "title": "Zephaniah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 36
+      }
+    },
+    {
+      "id": "haggai",
+      "title": "Haggai",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 37
+      }
+    },
+    {
+      "id": "zechariah",
+      "title": "Zechariah",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 38
+      }
+    },
+    {
+      "id": "malachi",
+      "title": "Malachi",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 39
+      }
+    },
+    {
+      "id": "matthew",
+      "title": "Matthew",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 40
+      }
+    },
+    {
+      "id": "mark",
+      "title": "Mark",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 41
+      }
+    },
+    {
+      "id": "luke",
+      "title": "Luke",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 42
+      }
+    },
+    {
+      "id": "john",
+      "title": "John",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 43
+      }
+    },
+    {
+      "id": "acts",
+      "title": "Acts",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 44
+      }
+    },
+    {
+      "id": "romans",
+      "title": "Romans",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 45
+      }
+    },
+    {
+      "id": "1corinthians",
+      "title": "1 Corinthians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 46
+      }
+    },
+    {
+      "id": "2corinthians",
+      "title": "2 Corinthians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 47
+      }
+    },
+    {
+      "id": "galatians",
+      "title": "Galatians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 48
+      }
+    },
+    {
+      "id": "ephesians",
+      "title": "Ephesians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 49
+      }
+    },
+    {
+      "id": "philippians",
+      "title": "Philippians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 50
+      }
+    },
+    {
+      "id": "colossians",
+      "title": "Colossians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 51
+      }
+    },
+    {
+      "id": "1thessalonians",
+      "title": "1 Thessalonians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 52
+      }
+    },
+    {
+      "id": "2thessalonians",
+      "title": "2 Thessalonians",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 53
+      }
+    },
+    {
+      "id": "1timothy",
+      "title": "1 Timothy",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 54
+      }
+    },
+    {
+      "id": "2timothy",
+      "title": "2 Timothy",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 55
+      }
+    },
+    {
+      "id": "titus",
+      "title": "Titus",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 56
+      }
+    },
+    {
+      "id": "philemon",
+      "title": "Philemon",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 57
+      }
+    },
+    {
+      "id": "hebrews",
+      "title": "Hebrews",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 58
+      }
+    },
+    {
+      "id": "james",
+      "title": "James",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 59
+      }
+    },
+    {
+      "id": "1peter",
+      "title": "1 Peter",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 60
+      }
+    },
+    {
+      "id": "2peter",
+      "title": "2 Peter",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 61
+      }
+    },
+    {
+      "id": "1john",
+      "title": "1 John",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 62
+      }
+    },
+    {
+      "id": "2john",
+      "title": "2 John",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 63
+      }
+    },
+    {
+      "id": "3john",
+      "title": "3 John",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 64
+      }
+    },
+    {
+      "id": "jude",
+      "title": "Jude",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 65
+      }
+    },
+    {
+      "id": "revelation",
+      "title": "Revelation",
+      "year": 1611,
+      "source": {
+        "type": "bible",
+        "repo": "GITenberg/The-Bible-King-James-Version-Complete_30",
+        "file": "30.txt",
+        "book": 66
+      }
+    }
+  ],
+  "keepModern": true
+}

@@ -9,7 +9,7 @@ import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import { extname, join } from 'node:path';
 import { WebSocketServer, type WebSocket } from 'ws';
 import type { Op } from 'tinylittleoffice/doc';
-import { ROOT, authorDbPath } from '../db.ts';
+import { ROOT, authorDbPath, getMeta, open } from '../db.ts';
 import { analyze, type Advice } from '../engine/analyze.ts';
 import { austenize } from '../engine/austenize.ts';
 import { blocksOfText, blocksOfTlo, tloOfBlocks } from '../engine/doc.ts';
@@ -18,7 +18,10 @@ import { concordance, styleSummary, withFigures, wordProfile } from '../engine/t
 import { FIGURES, figureExamples, findFigures } from '../engine/figures.ts';
 import { pronounsOf, readAuthor } from '../corpus/sources.ts';
 import { answerThread, applyAdvice, austenizeBlocks, rewriteBlocks, setFigureNamer, type AdvisorDeps } from './advisor.ts';
-import { aiAvailable, MODEL } from './rewrite.ts';
+import { AI_KEYS, aiAvailable, MODEL, PROVIDER, READER, WRITER_MODEL } from './rewrite.ts';
+import { MAX_CHARS, streamRewrite } from './page.ts';
+import { practiceCheck } from '../engine/practice.ts';
+import { Glossary } from '../engine/glossary.ts';
 import { ADVISOR, Room, type Replacement } from './room.ts';
 import { newId, Store } from './store.ts';
 
@@ -32,11 +35,27 @@ function authors() {
     .filter((f) => f.endsWith('.json'))
     .map((f) => {
       const a = readAuthor(ROOT, f.replace(/\.json$/, ''));
-      return { id: a.id, name: a.name, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), built: existsSync(authorDbPath(a.id)) };
+      return { id: a.id, name: a.name, title: a.title ?? a.name, tagline: a.tagline ?? '', epigraph: a.epigraph ?? null, action: a.action ?? `${a.short} it up`, whole: a.whole ?? `${a.short}’s complete works`, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), moves: (a.moves ?? []).map((m) => ({ id: m.id, name: m.name, does: m.does })), built: isBuilt(a.id) };
     });
 }
 
 const model = (id: string) => AuthorModel.load(id);
+
+/** A voice is built when its build has finished (the model is the last thing it writes), not when its file appears. */
+const builtOnes = new Set<string>();
+function isBuilt(id: string): boolean {
+  if (builtOnes.has(id)) return true;
+  if (!existsSync(authorDbPath(id))) return false;
+  try {
+    const db = open(authorDbPath(id), { readOnly: true });
+    const done = !!getMeta(db, 'model');
+    db.close();
+    if (done) builtOnes.add(id);
+    return done;
+  } catch {
+    return false;
+  }
+}
 
 function roomOf(id: string): Room | null {
   let r = rooms.get(id);
@@ -62,8 +81,8 @@ const deps: AdvisorDeps = {
     const s = room.state();
     room.broadcast({ type: 'state', comments: s.comments, reviews: s.reviews, versions: s.versions, people: s.people });
   },
-  status(room, text) {
-    room.broadcast({ type: 'status', text });
+  status(room, text, progress) {
+    room.broadcast({ type: 'status', text, progress: progress ?? null });
   },
 };
 
@@ -88,7 +107,26 @@ const route = (method: string, path: string, h: Handler) => routes.push([method,
 
 route('GET', '/api/health', (_q, res) => send(res, 200, { ok: true }));
 route('GET', '/api/authors', (_q, res) => send(res, 200, authors()));
-route('GET', '/api/ai', (_q, res) => send(res, 200, { available: aiAvailable(), model: MODEL }));
+route('GET', '/api/ai', (_q, res) => send(res, 200, { available: aiAvailable(), model: WRITER_MODEL, reader: READER, provider: PROVIDER }));
+// Practice: the writer's own attempt at a move, read by the engine at once.
+route('POST', '/api/practice', async (req, res) => {
+  const b = await body(req);
+  const id = String(b.author ?? 'austen');
+  if (!authors().some((a) => a.id === id && a.built)) return send(res, 404, { error: `No voice “${id}” is built here.` });
+  send(res, 200, practiceCheck(model(id), String(b.text ?? '').slice(0, 4000), String(b.move ?? '')));
+});
+// The page: a text rewritten in the author's manner, streamed as it is written.
+route('POST', '/api/rewrite', async (req, res) => {
+  const b = await body(req);
+  const id = String(b.author ?? 'austen');
+  const text = String(b.text ?? '');
+  if (!authors().some((a) => a.id === id && a.built)) return send(res, 404, { error: `No voice “${id}” is built here.` });
+  if (!aiAvailable()) return send(res, 503, { error: `The rewrite needs ${AI_KEYS} set where the server runs.` });
+  if (!text.trim()) return send(res, 400, { error: 'There is nothing to rewrite yet.' });
+  if (text.length > MAX_CHARS) return send(res, 413, { error: `That is ${text.length.toLocaleString()} characters; the most is ${MAX_CHARS.toLocaleString()}. Try a chapter at a time.` });
+  // fresh: write it again, not the kept answer (the evaluation asks for this).
+  await streamRewrite(res, model(id), text, String(b.instructions ?? ''), b.fresh === true);
+});
 route('GET', '/api/samples', (_q, res) => {
   const dir = join(ROOT, 'samples');
   send(res, 200, readdirSync(dir).filter((f) => f.endsWith('.txt')).map((f) => {
@@ -157,6 +195,15 @@ route('GET', '/api/figure', (_q, res, _p, url) => {
   send(res, 200, { term, ...FIGURES[term], examples: ex.map((c) => withFigures(m, c)) });
 });
 route('GET', '/api/figures', (_q, res) => send(res, 200, FIGURES));
+// The glossary: every term, or those a search finds (?q=), or one by any of its names (/api/glossary/anastrophe).
+route('GET', '/api/glossary', (_q, res, _p, url) => {
+  const q = url.searchParams.get('q');
+  send(res, 200, q ? Glossary.load().search(q) : Glossary.load().all());
+});
+route('GET', '/api/glossary/:name', (_q, res, [name]) => {
+  const t = Glossary.load().define(decodeURIComponent(name!));
+  t ? send(res, 200, t) : send(res, 404, { error: `No term “${decodeURIComponent(name!)}” in the glossary.` });
+});
 route('GET', '/api/style', (_q, res, _p, url) => {
   const m = model(url.searchParams.get('author') ?? 'austen');
   send(res, 200, { summary: styleSummary(m), profile: m.profile });
@@ -185,9 +232,9 @@ route('POST', '/api/docs/:id/austenize', async (req, res, [id]) => {
 route('POST', '/api/docs/:id/rewrite', async (req, res, [id]) => {
   const r = roomOf(id!);
   if (!r) return send(res, 404, { error: 'no such document' });
-  if (!aiAvailable()) return send(res, 503, { ok: false, error: 'Rewrite with AI needs ANTHROPIC_API_KEY set where the server runs.' });
+  if (!aiAvailable()) return send(res, 503, { ok: false, error: `Rewrite with AI needs ${AI_KEYS} set where the server runs.` });
   const b = await body(req);
-  const out = await rewriteBlocks(deps, r, Number(b.from), Number(b.to ?? b.from), String(b.instructions ?? ''));
+  const out = await rewriteBlocks(deps, r, Number(b.from), Number(b.to ?? b.from), String(b.instructions ?? ''), undefined, b.strength === 'light' ? 'light' : 'full');
   send(res, out.ok ? 200 : 409, { ok: out.ok, error: out.error, result: out.result && { ...out.result, toolCalls: out.result.toolCalls.length } });
 });
 route('POST', '/api/docs/:id/comments', async (req, res, [id]) => {
@@ -255,7 +302,7 @@ async function main() {
   let vite: import('vite').ViteDevServer | null = null;
   if (DEV) {
     const { createServer: createVite } = await import('vite');
-    vite = await createVite({ configFile: join(ROOT, 'vite.config.ts'), server: { middlewareMode: true, hmr: { port: PORT + 1 } }, appType: 'spa' });
+    vite = await createVite({ configFile: join(ROOT, 'vite.config.ts'), server: { middlewareMode: true, host: true, hmr: { port: PORT + 1 } }, appType: 'spa' });
   }
   const server = createServer(async (req, res) => {
     const url = new URL(req.url ?? '/', `http://${req.headers.host ?? 'localhost'}`);
@@ -328,7 +375,7 @@ async function main() {
     m.similarSentences('a warm start', 1);
     console.log(`${a.advisor}: ${m.totalWords.toLocaleString()} words of ${a.name}, ready in ${Math.round(performance.now() - t)}ms`);
   }
-  server.listen(PORT, () => console.log(`Advisor at http://localhost:${PORT}${aiAvailable() ? '' : ' (Rewrite with AI off: no ANTHROPIC_API_KEY)'}`));
+  server.listen(PORT, () => console.log(`Advisor at http://localhost:${PORT}${aiAvailable() ? ` (writer ${WRITER_MODEL}, reader ${READER})` : ` (Rewrite with AI off: no ${AI_KEYS})`}`));
 }
 
 void main();

@@ -4,9 +4,10 @@
 import type { Op } from 'tinylittleoffice/doc';
 import { analyze, type Advice } from '../engine/analyze.ts';
 import { austenize } from '../engine/austenize.ts';
+import { pronounsOf } from '../corpus/sources.ts';
 import { blockText, blocksOfTlo, type DocBlock } from '../engine/doc.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
-import { aiAvailable, rewriteWithAI, type RewriteResult } from './rewrite.ts';
+import { AI_KEYS, aiAvailable, rewriteWithAI, type RewriteProgress, type RewriteResult, type Strength } from './rewrite.ts';
 import { ADVISOR, type Replacement, type Room } from './room.ts';
 import { newId } from './store.ts';
 
@@ -27,7 +28,7 @@ export interface AdvisorDeps {
   commit: (room: Room, ops: Op[], author?: string) => string | null;
   /** The room's state told again (comments, versions). */
   refresh: (room: Room) => void;
-  status: (room: Room, text: string | null) => void;
+  status: (room: Room, text: string | null, progress?: RewriteProgress & { elapsed: number; log: string[] }) => void;
 }
 
 function comment(room: Room, c: Record<string, unknown>) {
@@ -118,7 +119,7 @@ export async function answerThread(
     parts.push(`I have suggested ${st.changes.length} change${st.changes.length === 1 ? '' : 's'} (score ${st.scoreBefore} → ${st.scoreAfter}), every one from ${short}’s own usage; accept or reject them below.`);
     for (const c of st.changes.slice(0, 5)) parts.push(`“${c.before}” → “${c.after}”. ${c.why}${c.example ? ` ${cite(c.example)}` : ''}`);
   } else if (!parts.length) parts.push(`I find nothing here ${short} would not have written.`);
-  if (wantsAI && !aiAvailable()) parts.push('(A rewrite by AI needs an ANTHROPIC_API_KEY on the server.)');
+  if (wantsAI && !aiAvailable()) parts.push(`(A rewrite by AI needs ${AI_KEYS} on the server.)`);
   comment(room, { thread_id: ask.thread_id, parent_id: ask.parent_id, text: parts.join('\n\n'), change_ids });
   deps.refresh(room);
 }
@@ -165,6 +166,7 @@ export async function rewriteBlocks(
   to: number,
   instructions = '',
   thread?: { thread_id: string; parent_id: string },
+  strength: Strength = 'full',
 ): Promise<{ ok: boolean; error?: string; result?: RewriteResult }> {
   const m = deps.model(room.author);
   const blocks = blocksOfTlo(room.text);
@@ -172,10 +174,15 @@ export async function rewriteBlocks(
   const passage = sub.map((b) => b.text).join('\n\n');
   const before = blocks.slice(Math.max(0, from - 2), from).map((b) => b.text).join('\n\n');
   const after = blocks.slice(to + 1, to + 3).map((b) => b.text).join('\n\n');
-  deps.status(room, `${m.author.advisor} is reading the passage…`);
+  const t0 = Date.now();
+  const log: string[] = [];
+  deps.status(room, `${m.author.advisor} is reading the passage…`, { what: 'reading the passage', calls: 0, draft: 0, problems: 0, elapsed: 0, log });
   let result: RewriteResult;
   try {
-    result = await rewriteWithAI(m, passage, { before, after, instructions }, (what) => deps.status(room, `${m.author.advisor}: ${what}…`));
+    result = await rewriteWithAI(m, sub, { before, after, instructions, strength }, (what, p) => {
+      log.push(what);
+      deps.status(room, `${m.author.advisor}: ${what}…`, { ...p, elapsed: Date.now() - t0, log: log.slice(-6) });
+    });
   } catch (e) {
     deps.status(room, null);
     return { ok: false, error: String((e as Error).message ?? e) };
@@ -184,15 +191,59 @@ export async function rewriteBlocks(
   // The document may have moved while the model wrote: the passage must still read as it did.
   const now = blocksOfTlo(room.text);
   if (now.slice(from, to + 1).map((b) => b.text).join('\n\n') !== passage) return { ok: false, error: 'The passage changed while it was being rewritten.' };
-  const paras = result.text.split(/\n\s*\n/).map((p) => p.trim()).filter(Boolean);
+  // The headings stand as they are: a rendering of one is not part of the rewrite.
+  const plain = (t: string) => t.trim().replace(/[.!?]+$/, '').toLowerCase();
+  const headingTexts = new Set(sub.filter((b) => b.kind === 'heading' || b.kind === 'title').map((b) => plain(b.text)));
+  const out = result.paragraphs
+    .map((p) => ({ ...p, sentences: p.sentences.filter((x) => !headingTexts.has(plain(x.text))) }))
+    .map((p) => ({ ...p, text: p.sentences.map((x) => x.text.trim()).join(' ') }))
+    .filter((p) => p.text.trim());
+  const paras = out.map((p) => p.text.trim());
+  // The blocks the rewrite may replace, by index in `sub`: headings and the title stand.
+  const rewritable = sub.map((b, i) => (b.kind === 'paragraph' || b.kind === 'quote' || b.kind === 'item' ? i : -1)).filter((i) => i >= 0);
   let ops: Op[] | { error: string };
-  if (paras.length === sub.length) {
+  if (paras.length === rewritable.length) {
     const reps: Replacement[] = [];
-    paras.forEach((p, i) => {
+    paras.forEach((p, k) => {
+      const i = rewritable[k]!;
       if (p !== sub[i]!.text) reps.push({ block: from + i, start: 0, end: sub[i]!.text.length, text: p, expect: sub[i]!.text });
     });
     ops = room.replacementOps(reps);
-  } else ops = room.spliceOps(from, to, paras);
+  } else if (rewritable.length === sub.length) ops = room.spliceOps(from, to, paras);
+  else {
+    // Paragraphs between headings: each run of them takes the rewrite's paragraphs that render it, last run first so
+    // that the earlier runs' places hold.
+    const runs: { start: number; end: number; paras: string[] }[] = [];
+    for (const i of rewritable) {
+      const last = runs[runs.length - 1];
+      if (last && last.end === i - 1) last.end = i;
+      else runs.push({ start: i, end: i, paras: [] });
+    }
+    // Sentence by sentence, each to the run its first source sentence is in; the model's paragraph breaks are kept
+    // within a run, and a run's border is a break whether the model made one or not.
+    let run = runs[0]!;
+    let cur = '';
+    const flush = () => {
+      if (cur.trim()) run.paras.push(cur.trim());
+      cur = '';
+    };
+    for (const p of out) {
+      for (const x of p.sentences) {
+        const i = x.source ? rewritable[x.source - 1] : undefined;
+        const next = i !== undefined ? (runs.find((r) => r.start <= i && i <= r.end) ?? run) : run;
+        if (next !== run) {
+          flush();
+          run = next;
+        }
+        cur = cur ? `${cur} ${x.text.trim()}` : x.text.trim();
+      }
+      flush();
+    }
+    ops = runs
+      .filter((r) => r.paras.length)
+      .sort((a, b) => b.start - a.start)
+      .flatMap((r) => room.spliceOps(from + r.start, from + r.end, r.paras));
+  }
   if ('error' in ops) return { ok: false, error: ops.error };
   const hash = deps.commit(room, ops);
   if (!hash) return { ok: false, error: 'The document changed; try again.' };
@@ -200,9 +251,9 @@ export async function rewriteBlocks(
   comment(room, {
     ...(thread ?? { quote: paras[0]!.split(/(?<=[.!?])\s/)[0], block: from, offset: 0 }),
     text: [
-      `Rewritten with AI (${result.model}), checked against ${short}’s works by the engine: score ${result.scoreBefore} → ${result.scoreAfter}. It consulted the engine ${result.toolCalls.length} times.`,
+      `Rewritten in ${short}’s manner by AI (${result.model}), every word checked against ${pronounsOf(m.author).possessive} works by the engine: score ${result.scoreBefore} → ${result.scoreAfter}. It consulted the engine ${result.toolCalls.length} times.`,
       result.explanation,
-      result.problems.length ? `The engine still found, after ${result.rounds} drafts:\n- ${result.problems.join('\n- ')}` : '',
+      result.problems.length ? `Left for you, after ${result.rounds} drafts:\n- ${result.problems.join('\n- ')}` : '',
       ...result.aligned.map(sentenceNote),
       result.notes.length ? `Moves to practise:\n${result.notes.map((n) => `${n.technique}: “${n.before}” → “${n.after}”. ${cite({ text: n.austen, cite: n.cite } as Citation)}`).join('\n')}` : '',
     ]

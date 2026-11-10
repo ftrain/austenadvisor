@@ -1,0 +1,436 @@
+{
+  "id": "shakespeare",
+  "name": "William Shakespeare",
+  "title": "William Shakespeare",
+  "tagline": "Blank verse, the image, the soliloquy",
+  "epigraph": {
+    "text": "All the world’s a stage, And all the men and women merely players.",
+    "cite": "As You Like It 2.7"
+  },
+  "advisor": "Shakespeare Advisor",
+  "short": "Shakespeare",
+  "whole": "Shakespeare’s plays and sonnets",
+  "years": "1564–1616",
+  "action": "Shakespeare it up",
+  "citeStyle": "play",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "William Shakespeare (1564–1616), in his thirty-seven plays and his sonnets: thought in images, one metaphor breeding the next; blank verse for passion and power, prose for wit and the tavern; the soliloquy, a mind overheard turning a feeling over; thou and you, inversion, apostrophe, antithesis, puns; and a rhyming couplet to close.",
+  "echoes": [
+    "Two lovers kept apart by their families, and a meeting at night: Romeo and Juliet, the balcony, 2.2.",
+    "Someone who cannot decide whether to act, and talks it over with himself: Hamlet, “To be, or not to be”, 3.1.",
+    "An old parent who divides what they have among children who flatter, and is cast out: King Lear, 1.1.",
+    "Two who quarrel at every meeting and are plainly in love: Beatrice and Benedick, Much Ado About Nothing.",
+    "A message misread, or a token misplaced, that turns a love to jealousy: Othello and the handkerchief.",
+    "A young man who wastes his days with low company and will one day surprise them all: Prince Hal, Henry IV.",
+    "Ambition talked into a terrible act, and the guilt after: Macbeth."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a speech from one of his plays, not as the writer’s page with “thee” in it. A narrator becomes a speaker, telling it to the audience (a soliloquy) or to the one it concerns; a letter is a letter read aloud in a play.",
+    "Heightened matter goes into blank verse: unrhymed lines of ten syllables and five stresses, ti-TUM five times, with the sense running on from line to line. Put each verse line on its own line by ending it with a newline (\\n) inside the sentence’s text. Plain, comic or low matter goes into his prose, as Falstaff, the Porter or Hamlet with the players speak it.",
+    "Think in images: what the writer says plainly, he says as a metaphor, and lets one image breed the next.",
+    "Thou and thee for the intimate, the beloved or the despised; you for respect; the verbs that go with them (thou art, thou hast; he doth, she hath).",
+    "Turn the feeling over: question it, set it against its opposite (antithesis), address the absent person or thing (“O …”), and close a speech on a rhyming couplet where it lands.",
+    "Wordplay where it comes naturally, never forced."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person: the writer is the speaker.",
+    "A modern thing the story needs is named by an image or a plain phrase in his words, recognisable at once; never a riddle the reader must puzzle out.",
+    "Keep the writer’s degree of feeling: a small trouble may be spoken grandly for comedy, but it stays the writer’s trouble; invent no death, no murder, no oath the writer did not imply.",
+    "Verse must scan, near enough: count the stresses. If a line will not scan, make it prose rather than bad verse."
+  ],
+  "moves": [
+    {
+      "id": "apostrophe",
+      "name": "Apostrophe",
+      "does": "The speaker turns to address someone absent, or a thing, a night, a feeling: “O, that this too too solid flesh would melt”.",
+      "pattern": "(^|[.!?;:]\\s+|—)\\s*O[,!]?\\s+\\w+|\\bO\\s+(thou|you|that|my|what|how)\\b",
+      "register": "any"
+    },
+    {
+      "id": "thou",
+      "name": "Thou and thee",
+      "does": "The intimate or contemptuous singular, and its verbs: thou art, thou hast, thy, thine.",
+      "pattern": "\\b(thou|thee|thy|thine|art thou|hast|dost|wilt|shalt|hath|doth)\\b",
+      "register": "any"
+    },
+    {
+      "id": "antithesis",
+      "name": "Antithesis",
+      "does": "A thing set against its opposite in balanced words: “Fair is foul, and foul is fair.”",
+      "pattern": "\\bnot\\b[^.]{1,40}\\bbut\\b|\\b(\\w+) is (\\w+),? and \\2 is \\1\\b",
+      "register": "any"
+    },
+    {
+      "id": "image",
+      "name": "The image",
+      "does": "A feeling or thing given as a metaphor or simile, and the image followed out: “a sea of troubles”.",
+      "pattern": "\\b(like|as) (a|an|the) \\w+|\\b(a|the) (sea|sun|storm|flower|rose|star|wound|crown|fire|tempest|night) of\\b",
+      "register": "any"
+    },
+    {
+      "id": "question",
+      "name": "The question turned over",
+      "does": "The speaker puts a question to himself or the hearer and answers it: the soliloquy’s engine.",
+      "pattern": "\\?\\s+\\S",
+      "register": "any"
+    },
+    {
+      "id": "interjection",
+      "name": "Oaths and interjections",
+      "does": "The speech of his people: alas, fie, marry, faith, prithee, forsooth, alack.",
+      "pattern": "\\b(alas|fie|marry|faith|zounds|i’faith|forsooth|prithee|alack|ay me|by my troth|go to)\\b",
+      "register": "any"
+    }
+  ],
+  "works": [
+    {
+      "id": "amidsummernightsdream",
+      "title": "A Midsummer Night’s Dream",
+      "year": 1595,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_a-midsummer-nights-dream"
+      }
+    },
+    {
+      "id": "allswellthatendswell",
+      "title": "All’s Well That Ends Well",
+      "year": 1604,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_alls-well-that-ends-well"
+      }
+    },
+    {
+      "id": "antonyandcleopatra",
+      "title": "Antony and Cleopatra",
+      "year": 1606,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_antony-and-cleopatra"
+      }
+    },
+    {
+      "id": "asyoulikeit",
+      "title": "As You Like It",
+      "year": 1599,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_as-you-like-it"
+      }
+    },
+    {
+      "id": "coriolanus",
+      "title": "Coriolanus",
+      "year": 1608,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_coriolanus"
+      }
+    },
+    {
+      "id": "cymbeline",
+      "title": "Cymbeline",
+      "year": 1610,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_cymbeline"
+      }
+    },
+    {
+      "id": "hamlet",
+      "title": "Hamlet",
+      "year": 1600,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_hamlet"
+      }
+    },
+    {
+      "id": "henryivparti",
+      "title": "Henry IV, Part 1",
+      "year": 1597,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-iv-part-i"
+      }
+    },
+    {
+      "id": "henryivpartii",
+      "title": "Henry IV, Part 2",
+      "year": 1598,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-iv-part-ii"
+      }
+    },
+    {
+      "id": "henryv",
+      "title": "Henry V",
+      "year": 1599,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-v"
+      }
+    },
+    {
+      "id": "henryviparti",
+      "title": "Henry VI, Part 1",
+      "year": 1591,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-vi-part-i"
+      }
+    },
+    {
+      "id": "henryvipartii",
+      "title": "Henry VI, Part 2",
+      "year": 1591,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-vi-part-ii"
+      }
+    },
+    {
+      "id": "henryvipartiii",
+      "title": "Henry VI, Part 3",
+      "year": 1591,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-vi-part-iii"
+      }
+    },
+    {
+      "id": "henryviii",
+      "title": "Henry VIII",
+      "year": 1613,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_henry-viii"
+      }
+    },
+    {
+      "id": "juliuscaesar",
+      "title": "Julius Caesar",
+      "year": 1599,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_julius-caesar"
+      }
+    },
+    {
+      "id": "kingjohn",
+      "title": "King John",
+      "year": 1596,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_king-john"
+      }
+    },
+    {
+      "id": "kinglear",
+      "title": "King Lear",
+      "year": 1606,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_king-lear"
+      }
+    },
+    {
+      "id": "loveslabourslost",
+      "title": "Love’s Labour’s Lost",
+      "year": 1595,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_loves-labours-lost"
+      }
+    },
+    {
+      "id": "macbeth",
+      "title": "Macbeth",
+      "year": 1606,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_macbeth"
+      }
+    },
+    {
+      "id": "measureformeasure",
+      "title": "Measure for Measure",
+      "year": 1604,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_measure-for-measure"
+      }
+    },
+    {
+      "id": "muchadoaboutnothing",
+      "title": "Much Ado About Nothing",
+      "year": 1599,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_much-ado-about-nothing"
+      }
+    },
+    {
+      "id": "othello",
+      "title": "Othello",
+      "year": 1604,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_othello"
+      }
+    },
+    {
+      "id": "pericles",
+      "title": "Pericles",
+      "year": 1608,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_pericles"
+      }
+    },
+    {
+      "id": "richardii",
+      "title": "Richard II",
+      "year": 1595,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_richard-ii"
+      }
+    },
+    {
+      "id": "richardiii",
+      "title": "Richard III",
+      "year": 1593,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_richard-iii"
+      }
+    },
+    {
+      "id": "romeoandjuliet",
+      "title": "Romeo and Juliet",
+      "year": 1595,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_romeo-and-juliet"
+      }
+    },
+    {
+      "id": "comedyoferrors",
+      "title": "The Comedy of Errors",
+      "year": 1594,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-comedy-of-errors"
+      }
+    },
+    {
+      "id": "merchantofvenice",
+      "title": "The Merchant of Venice",
+      "year": 1597,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-merchant-of-venice"
+      }
+    },
+    {
+      "id": "merrywivesofwindsor",
+      "title": "The Merry Wives of Windsor",
+      "year": 1600,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-merry-wives-of-windsor"
+      }
+    },
+    {
+      "id": "tamingoftheshrew",
+      "title": "The Taming of the Shrew",
+      "year": 1591,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-taming-of-the-shrew"
+      }
+    },
+    {
+      "id": "tempest",
+      "title": "The Tempest",
+      "year": 1611,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-tempest"
+      }
+    },
+    {
+      "id": "twogentlemenofverona",
+      "title": "The Two Gentlemen of Verona",
+      "year": 1590,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-two-gentlemen-of-verona"
+      }
+    },
+    {
+      "id": "winterstale",
+      "title": "The Winter’s Tale",
+      "year": 1611,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_the-winters-tale"
+      }
+    },
+    {
+      "id": "timonofathens",
+      "title": "Timon of Athens",
+      "year": 1606,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_timon-of-athens"
+      }
+    },
+    {
+      "id": "titusandronicus",
+      "title": "Titus Andronicus",
+      "year": 1592,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_titus-andronicus"
+      }
+    },
+    {
+      "id": "troilusandcressida",
+      "title": "Troilus and Cressida",
+      "year": 1602,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_troilus-and-cressida"
+      }
+    },
+    {
+      "id": "twelfthnight",
+      "title": "Twelfth Night",
+      "year": 1601,
+      "source": {
+        "type": "seplay",
+        "repo": "standardebooks/william-shakespeare_twelfth-night"
+      }
+    },
+    {
+      "id": "sonnets",
+      "title": "The Sonnets",
+      "year": 1609,
+      "source": {
+        "type": "shakespeare",
+        "repo": "GITenberg/The-Complete-Works-of-William-Shakespeare_100",
+        "file": "100-0.txt",
+        "title": "THE SONNETS"
+      }
+    }
+  ]
+}

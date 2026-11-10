@@ -20,11 +20,21 @@ export const post = <T>(path: string, body: unknown) =>
 export interface AuthorInfo {
   id: string;
   name: string;
+  /** “Jane Austen”, “The King James Bible”. */
+  title: string;
+  tagline: string;
+  epigraph: { text: string; cite: string } | null;
+  /** The button: “Austen it up”. */
+  action: string;
+  /** “Austen’s complete works”. */
+  whole: string;
   advisor: string;
   short: string;
   years: string;
   pronouns: Pronouns;
   works: string[];
+  /** The voice's moves, each with what it does: a note's heading is defined by it. */
+  moves: { id: string; name: string; does: string }[];
   built: boolean;
 }
 export interface Pronouns {

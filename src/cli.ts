@@ -5,10 +5,11 @@
 //   npm run cli -- word tolerable                   how the author used a word
 //   npm run cli -- concordance "at last"            the author's sentences with a phrase
 //   npm run cli -- similar "I went to the shop"     the author's sentences nearest in meaning
-//   npm run cli -- rewrite samples/store.txt        Claude with the engine as its tools (ANTHROPIC_API_KEY)
+//   npm run cli -- rewrite samples/store.txt        Claude (or DeepSeek) with the engine as its tools (ANTHROPIC_API_KEY or DEEPSEEK_API_KEY)
 //   --author twain                                   another advisor's model
 
 import { readFileSync } from 'node:fs';
+import { Glossary } from './engine/glossary.ts';
 import { analyze } from './engine/analyze.ts';
 import { austenize } from './engine/austenize.ts';
 import { blocksOfText, textOfBlocks } from './engine/doc.ts';
@@ -58,11 +59,19 @@ switch (cmd) {
   case 'concordance':
     for (const k of concordance(m, arg, 20)) console.log(`  ${k.left.slice(-50).padStart(50)} [${k.match}] ${k.right.slice(0, 50)}   — ${k.cite.cite}`);
     break;
+  case 'define': {
+    const g = Glossary.load();
+    const hits = g.define(arg) ? [g.define(arg)!] : g.search(arg, 5);
+    if (!hits.length) console.log(`No term “${arg}” in the glossary.`);
+    for (const t of hits) console.log(`${t.term} (${t.kind}): ${t.definition}${t.example ? `\n  “${t.example}”${t.source ? ` — ${t.source}` : ''}` : ''}`);
+    break;
+  }
   case 'similar':
     for (const c of m.similarSentences(arg, 8, { minWords: 8 })) console.log(`  (${c.sim.toFixed(2)}) “${c.text}” — ${c.cite}`);
     break;
   case 'rewrite': {
-    const r = await rewriteWithAI(m, textOfBlocks(blocksOfText(text())), {}, (s) => console.error(`… ${s}`));
+    const t0 = Date.now();
+    const r = await rewriteWithAI(m, textOfBlocks(blocksOfText(text())), {}, (s, p) => console.error(`… ${s}  [${Math.round((Date.now() - t0) / 1000)}s, ${p.calls} calls]`));
     console.log(r.text, `\n\n${r.explanation}\nScore ${r.scoreBefore} → ${r.scoreAfter}; ${r.toolCalls.length} calls to the engine.`);
     for (const n of r.notes) console.log(`  ${n.technique}: “${n.before}” → “${n.after}”\n    ${n.verified ? '✓' : '⚠'} “${n.austen}” — ${n.cite}`);
     break;
@@ -98,5 +107,5 @@ switch (cmd) {
     break;
   }
   default:
-    console.log('npm run cli -- analyze|austenize|word|concordance|similar|rewrite …');
+    console.log('npm run cli -- analyze|austenize|word|concordance|similar|define|rewrite …');
 }

@@ -193,6 +193,9 @@ const SIGNS: Record<string, RegExp> = {
   aside: /, (which|and that|and this) (was|is|were|had been) (at least|perhaps|scarcely|hardly|no more than|only|after all)/i,
 };
 
+/** Whether a sentence bears the cheap sign of a figure: false, and the detector need not be run. */
+export const mayShow = (term: string, text: string): boolean => !SIGNS[term] || SIGNS[term]!.test(text);
+
 /**
  * Sentences of the author's that show a figure, nearest in meaning to a passage: the candidates nearest first, each
  * confirmed by the figure's own detector (so a link names a sentence that truly shows it).

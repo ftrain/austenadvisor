@@ -9,7 +9,7 @@ import { Tagger, type TaggerModel } from '../nlp/tagger.ts';
 import { normWord, tokenize } from '../nlp/tokenize.ts';
 import { WordNet, type WnPos } from '../nlp/wordnet.ts';
 import { readAuthor, type AuthorConfig } from '../corpus/sources.ts';
-import { FIGURES, figureExamples, findFigures } from './figures.ts';
+import { FIGURES, figureExamples, findFigures, mayShow } from './figures.ts';
 import type { StyleProfile } from './profile.ts';
 
 /** How a sentence is told: in narration, in speech, or in a letter. */
@@ -217,7 +217,14 @@ export class AuthorModel {
       paragraph: r.paragraph,
       sentence: r.sentence,
       text: r.text,
-      cite: `${w.title}, ${chap}, ¶ ${r.paragraph}`,
+      cite:
+        this.author.citeStyle === 'verse'
+          ? `${w.title} ${r.chapter}:${r.paragraph}`
+          : this.author.citeStyle === 'speech'
+            ? `${r.chapterTitle}, ¶ ${r.paragraph}`
+            : this.author.citeStyle === 'play'
+              ? /^Sonnet/.test(r.chapterTitle) ? r.chapterTitle : `${w.title} ${r.chapterTitle}`
+            : `${w.title}, ${chap}, ¶ ${r.paragraph}`,
     };
     if (this.sentenceCache.size > 20000) this.sentenceCache.clear();
     this.sentenceCache.set(id, c);
@@ -366,7 +373,8 @@ export class AuthorModel {
     // A figure of speech is found by its own detector; the author's other moves by their pattern.
     if (move.id in FIGURES) {
       const want = move.id === 'irony' ? ['gnomic', 'aside'] : [move.id];
-      if (findFigures(this, t).some((f) => want.includes(f.term))) return true;
+      // The cheap sign first: the detector tokenizes and runs every figure's rule, and most sentences bear no sign.
+      if (want.some((w) => mayShow(w, t)) && findFigures(this, t).some((f) => want.includes(f.term))) return true;
     }
     return !!move.pattern && new RegExp(move.pattern, 'i').test(t);
   }

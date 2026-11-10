@@ -266,8 +266,61 @@ body {
   text-decoration-thickness: 2px;
   text-underline-offset: 5px;
 }
+::highlight(advisor-advice) {
+  text-decoration: underline dashed var(--aa-accent);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
 ::highlight(advisor-focus) {
   background-color: var(--aa-accent-soft);
+}
+
+/* A rewrite in progress. */
+.aa-progress {
+  margin-top: 10px;
+  padding: 8px 10px;
+  border: 1px solid var(--to-border, #ddd);
+  border-radius: 8px;
+  background: var(--to-surface-2, #f6f6f6);
+  font-size: 0.88rem;
+}
+.aa-progress[hidden] {
+  display: none;
+}
+.aa-progress-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.aa-progress-head strong {
+  flex: 1;
+  font-weight: 600;
+}
+.aa-progress-clock {
+  font-variant-numeric: tabular-nums;
+  color: var(--to-ink-3, #777);
+}
+.aa-progress-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--aa-accent);
+  animation: aa-pulse 1.2s ease-in-out infinite;
+}
+@keyframes aa-pulse {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 1; }
+}
+.aa-progress-log {
+  margin: 6px 0 0;
+  padding-left: 1.2em;
+  color: var(--to-ink-3, #777);
+}
+.aa-progress-log li {
+  margin: 2px 0;
+}
+.aa-progress-log li.aa-now {
+  color: var(--to-ink, #222);
 }
 
 /* The popover on a flagged word. */
@@ -320,6 +373,19 @@ body {
 .aa-alts {
   margin: 0;
   padding-left: 1.2em;
+}
+.aa-kind-advice {
+  background: var(--aa-accent-soft);
+  color: var(--aa-accent);
+}
+.aa-alt-long {
+  display: block;
+  text-align: left;
+  font-weight: 500;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  border-radius: 8px;
+  padding: 6px 10px;
 }
 .aa-alts li {
   margin: 6px 0 10px;

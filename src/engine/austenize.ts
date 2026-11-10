@@ -78,9 +78,15 @@ export function austenize(m: AuthorModel, blocks: DocBlock[]): Austenized {
   }
   // Words the author never used: the nearest in meaning she did.
   for (const f of first.words) {
-    // Only a word of the same main sense, which reads well in place: else the word stays, and is listed.
+    // Only a word of the same sense, one she used often, which reads well in place: else the word stays, and is listed.
+    // A broader or narrower term ("countenance" for "okay", "extension" for "phone") is never put in by statistics;
+    // that is the AI rewrite's work. The same rule read twice gives the same text: a second pass changes nothing.
     const best = f.alternatives.find(
-      (x) => x.source !== 'context' && x.weight >= (f.kind === 'name' ? 0.9 : 0.8) && x.fit / (x.text.split(' ').length + 2) > -14,
+      (x) =>
+        (x.source === 'synonym' || x.source === 'expansion' || x.source === 'spelling') &&
+        x.weight >= (f.kind === 'name' ? 0.9 : 0.7) &&
+        x.count >= 10 &&
+        x.fit / (x.text.split(' ').length + 2) > -14,
     );
     const covered = (edits.get(f.block) ?? []).some((e) => e.start < f.end && f.start < e.end);
     if (!best) {

@@ -47,6 +47,16 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(fix.why).toMatch(/“did not” \d[\d,]* times/);
   });
 
+  it('places a fix in the paragraph, not the sentence, when the sentence is not the first', () => {
+    const text = 'I needed milk. I didn’t want to be rude.';
+    const a = analyze(m, blocksOfText(text));
+    const fix = a.advice.find((x) => x.title.includes('did not'))!;
+    expect(text.slice(fix.start, fix.end)).toBe('didn’t');
+    const r = fix.replacements![0]!;
+    expect(text.slice(r.start, r.end)).toBe('didn’t');
+    expect(r.text).toBe('did not');
+  });
+
   it('joins a run of short sentences as she joins clauses', () => {
     const a = analyze(m, blocksOfText('I needed milk. I drove to the shop. It was crowded. I waited.'));
     const join = a.advice.find((x) => x.title.includes('short sentences'))!;
@@ -58,6 +68,16 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(r.scoreAfter).toBeGreaterThan(r.scoreBefore);
     expect(r.after[0]!.text).toContain('did not');
     expect(r.changes.length).toBeGreaterThan(2);
+  });
+
+  it('by statistics, puts in only a word of the same sense, and leaves the rest alone, so a second pass changes nothing', () => {
+    const text = 'He was already there, scrolling on his phone. I just nodded and said okay. My roommate thought I was overreacting.';
+    const r = austenize(m, blocksOfText(text));
+    const after = r.after[0]!.text;
+    for (const w of ['phone', 'scrolling', 'roommate']) expect(after).toContain(w);
+    expect(after).not.toMatch(/countenance|extension|roomy/);
+    const again = austenize(m, r.after);
+    expect(again.after[0]!.text).toBe(after);
   });
 
   it('explores a word: by work, neighbours, collocates, sentences', () => {
@@ -96,8 +116,12 @@ describe.skipIf(!built)('the Austen engine', () => {
     good.paragraphs[1]!.sentences[0]!.model = model;
     expect(gate(m, brief, good)).toEqual([]);
     const r = render(m, brief, good);
-    expect(r.notes[0]!.austen).toBe(m.cite(Number(model.slice(1)))!.text);
-    expect(r.notes[0]!.verified).toBe(true);
+    // The engine chooses the note's source: a sentence of hers, from the corpus, that makes the move, with its words marked.
+    const n0 = r.notes[0]!;
+    expect(m.cite(n0.id!)!.text).toBe(n0.austen);
+    expect(m.shows(m.author.moves!.find((x) => x.id === 'judgement')!, n0.austen)).toBe(true);
+    expect(n0.mark && n0.austen.slice(...n0.mark).length).toBeGreaterThan(2);
+    expect(n0.verified).toBe(true);
     expect(r.aligned[1]!.before).toEqual(['I grabbed my keys.', 'It was super crowded.']);
     // Every rewritten sentence: one sentence of why, from the template, and a real sentence of hers.
     for (const a of r.aligned) {

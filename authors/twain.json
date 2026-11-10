@@ -1,9 +1,17 @@
 {
   "id": "twain",
   "name": "Mark Twain",
+  "title": "Mark Twain",
+  "tagline": "Deadpan, vernacular, the joke at the end",
+  "epigraph": {
+    "text": "You don’t know about me without you have read a book by the name of The Adventures of Tom Sawyer; but that ain’t no matter.",
+    "cite": "Adventures of Huckleberry Finn, ch. 1"
+  },
   "advisor": "Twain Advisor",
   "short": "Twain",
+  "whole": "Twain’s books",
   "years": "1835–1910",
+  "action": "Twain it up",
   "pronouns": {
     "subject": "he",
     "object": "him",
@@ -11,6 +19,27 @@
     "possessivePronoun": "his"
   },
   "persona": "Mark Twain (1835–1910), American humorist and novelist: vernacular narrators, dialect, deadpan understatement, plain Anglo-Saxon words, long cumulative sentences that end on a joke.",
+  "echoes": [
+    "Talking others into doing your chore and having them pay for the privilege: Tom whitewashing the fence, Tom Sawyer ch. 2.",
+    "Two runaways on a river, and a friendship the world says is wrong: Huck and Jim on the raft.",
+    "Being made to sit still and be civilized, and hating it: Huck with the Widow Douglas, Huckleberry Finn ch. 1.",
+    "Tourists solemnly admiring famous sights and being let down: The Innocents Abroad.",
+    "A modern person dropped into the past who tries to improve it: A Connecticut Yankee."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a page of Twain’s, told by a narrator who talks the way Huck or the Innocent Abroad talks, not as the writer’s page with folksy words dropped in.",
+    "Talk, don’t write: plain, short Anglo-Saxon words, contractions, the run of a man telling it aloud; long “and … and …” sentences that pile up and then turn.",
+    "Deadpan: say the absurd thing flatly and let it sit; put the joke at the end of the sentence and never explain it.",
+    "Exaggerate with a straight face where the passage invites it, by a precise and impossible number or comparison.",
+    "Puncture the pretentious: whatever the writer is solemn or proud about, the narrator sees through, gently.",
+    "Where a character speaks, let the speech be in that person’s own grammar and turn of phrase."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. The narrator stays in the writer’s person.",
+    "A modern thing the story needs keeps a plain name, or a plain phrase a nineteenth-century American would say for it; never a riddle.",
+    "The humour is in the voice and the timing, not in jokes added: invent no incident.",
+    "Dialect for a character who would speak it, sparingly and readably; never mock anyone for who they are."
+  ],
   "moves": [
     {
       "id": "vernacular",
@@ -31,6 +60,20 @@
       "name": "Cumulative sentence",
       "does": "A long run of “and … and …” building to a turn.",
       "pattern": "\\band\\b[^.]*\\band\\b[^.]*\\band\\b",
+      "register": "narration"
+    },
+    {
+      "id": "tall",
+      "name": "Exaggeration with a straight face",
+      "does": "An impossible number or comparison stated as plain fact.",
+      "pattern": "\\b(million|thousand|hundred|forty|ninety|biggest|never was|in the world|in creation|since the flood)\\b",
+      "register": "any"
+    },
+    {
+      "id": "aside",
+      "name": "The narrator’s aside",
+      "does": "The teller breaks off to comment, confide or correct himself: “I reckon”, “I judge”, “which is”.",
+      "pattern": "\\b(I reckon|I judge|I allow|you see|you know|which is|which was|and that is|so to speak)\\b",
       "register": "narration"
     }
   ],

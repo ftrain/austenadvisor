@@ -1,0 +1,257 @@
+{
+  "id": "fairy",
+  "name": "the Fairy Books",
+  "title": "The Fairy Books",
+  "tagline": "Once upon a time, in threes, happily ever after",
+  "epigraph": {
+    "text": "Once upon a time in a certain country there lived a king whose palace was surrounded by a spacious garden.",
+    "cite": "The Blue Fairy Book, “The Bronze Ring”"
+  },
+  "advisor": "Fairy Book Advisor",
+  "short": "the Fairy Books",
+  "whole": "all twelve of Andrew Lang’s coloured Fairy Books",
+  "years": "1889–1910",
+  "action": "Make it a fairy tale",
+  "pronouns": {
+    "subject": "they",
+    "object": "them",
+    "possessive": "their",
+    "possessivePronoun": "theirs"
+  },
+  "persona": "Andrew Lang’s coloured Fairy Books (1889–1910), Blue to Lilac: the folk tales of the world as Lang, his wife Leonora and their translators retold them for children. Plain, clear, quick sentences; once upon a time; kings, youngest sons, old women and talking beasts; things in threes; wonders told as flatly as breakfast; and a happy ending.",
+  "echoes": [
+    "The youngest and least regarded child succeeds where the elder ones failed.",
+    "A girl kept down by a stepmother or sisters goes to the ball: Cinderella.",
+    "Children left in the wood find a house that is too good to be true: Hansel and Grettel.",
+    "Three tasks, three helpers, three nights.",
+    "A promise made lightly must be kept: Rumpelstiltzkin, The Frog Prince."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as a tale from one of the Fairy Books, not as the writer’s page with a crown on it.",
+    "Begin as a tale begins (“Once upon a time”, “There was once”) where the passage begins, and end, where it ends, as a tale ends.",
+    "Tell it plainly and quickly: short clear sentences joined by “and”, “so” and “then”; what happened, then what happened next.",
+    "Call people by their place in the story, where the writer gives no name (the mother, the new neighbour, the youngest); keep every name the writer gives.",
+    "Let things fall in threes where the passage has three, and state any wonder as plain fact.",
+    "Speech is quoted and quick: “…,” said the mother. Feelings are said plainly: she was very sad, he was greatly pleased.",
+    "Do not add magic, kings, witches or castles the passage does not have: the tale’s manner, not its furniture."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person: “Once upon a time I…”.",
+    "A modern thing the story needs is named plainly, in a word a child of 1900 would know, or by what it does; never a riddle.",
+    "Keep the writer’s degree of feeling; a tale is never knowing or sly about its own people."
+  ],
+  "moves": [
+    {
+      "id": "once",
+      "name": "Once upon a time",
+      "does": "The tale opened as tales open: once upon a time, there was once, long ago.",
+      "pattern": "\\b(once upon a time|there was once|there lived|long, long ago|long ago|in the days when)\\b",
+      "register": "narration"
+    },
+    {
+      "id": "three",
+      "name": "Things in threes",
+      "does": "Three sons, three tasks, three nights: the pattern a listener can feel coming.",
+      "pattern": "\\b(three|third|thrice)\\b",
+      "register": "any"
+    },
+    {
+      "id": "then",
+      "name": "And so, and then",
+      "does": "One thing after another, joined plainly by “and”, “so” and “then”.",
+      "pattern": "^\\W*(So|Then|Now|And|But|At last)\\b|\\b(and so|and then|so then)\\b",
+      "register": "narration"
+    },
+    {
+      "id": "said",
+      "name": "Speech that drives the tale",
+      "does": "Quick quoted speech, its speaker named after it: “…,” said the king.",
+      "pattern": "[,!?]”\\s*(said|cried|answered|replied|asked)\\s+(the\\s+)?\\w+",
+      "register": "any"
+    },
+    {
+      "id": "roles",
+      "name": "People by their place",
+      "does": "People called by their place in the story: the king, the youngest son, the old woman, the miller’s daughter.",
+      "pattern": "\\bthe (king|queen|prince|princess|youngest|eldest|old woman|old man|miller|woodcutter|stepmother|giant|witch|fisherman)\\b",
+      "register": "any"
+    },
+    {
+      "id": "ending",
+      "name": "The happy ending",
+      "does": "The tale closed: they lived happily ever after, and if they are not dead they are living still.",
+      "pattern": "\\b(lived happily|happy ever|ever after|to this day|and they were married|for ever after)\\b",
+      "register": "any"
+    }
+  ],
+  "works": [
+    {
+      "id": "blue",
+      "title": "The Blue Fairy Book",
+      "year": 1889,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Blue-Fairy-Book_503",
+        "file": "503-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "red",
+      "title": "The Red Fairy Book",
+      "year": 1890,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Red-Fairy-Book_540",
+        "file": "540-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "green",
+      "title": "The Green Fairy Book",
+      "year": 1892,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Green-Fairy-Book_7277",
+        "file": "7277-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "yellow",
+      "title": "The Yellow Fairy Book",
+      "year": 1894,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Yellow-Fairy-Book_640",
+        "file": "640.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "pink",
+      "title": "The Pink Fairy Book",
+      "year": 1897,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Pink-Fairy-Book_5615",
+        "file": "5615-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "grey",
+      "title": "The Grey Fairy Book",
+      "year": 1900,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Grey-Fairy-Book_6746",
+        "file": "6746-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "violet",
+      "title": "The Violet Fairy Book",
+      "year": 1901,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Violet-Fairy-Book_641",
+        "file": "641-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "crimson",
+      "title": "The Crimson Fairy Book",
+      "year": 1903,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Crimson-Fairy-Book_2435",
+        "file": "2435-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "brown",
+      "title": "The Brown Fairy Book",
+      "year": 1904,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Brown-Fairy-Book_3282",
+        "file": "3282-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "orange",
+      "title": "The Orange Fairy Book",
+      "year": 1906,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Orange-Fairy-Book_3027",
+        "file": "3027-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "olive",
+      "title": "The Olive Fairy Book",
+      "year": 1907,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Olive-Fairy-Book_27826",
+        "file": "27826.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    },
+    {
+      "id": "lilac",
+      "title": "The Lilac Fairy Book",
+      "year": 1910,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Lilac-Fairy-Book_3454",
+        "file": "3454-0.txt",
+        "chapter": "^_?[A-Z][A-Z ,.’'\\-!?()&;:]{3,}_?\\.?$",
+        "titleCase": true,
+        "skip": "^(CONTENTS|PREFACE|LIST OF|ILLUSTRATIONS|INTRODUCTION|THE [A-Z]+ FAIRY BOOK|FOOTNOTES?|INDEX|NOTES?$|EDITED BY|ANDREW LANG|DEDICATION|THE FAIRY BOOK SERIES|BY THE SAME|WORKS BY|WITH NUMEROUS|LONGMANS|PRINTED|TRANSCRIBER|COLOURED PLATES|PLATES|THE PLIMPTON|END OF)",
+        "drop": "^([IVXLC]+\\.?|From |Translated|Adapted|Grimm\\.?$|Andersen\\.?$|Perrault\\.?$|Story from|.*(Märchen|Mährchen|Mahrchen|Contes|Sagen|Volksmärchen|Skazki|Tales)\\.?$|.*\\b(by|from) (Mrs\\.|Miss|Mr\\.|the) .{0,40}$)"
+      }
+    }
+  ]
+}

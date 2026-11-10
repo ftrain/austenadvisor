@@ -16,6 +16,8 @@ export interface AdvisorPanelOpts {
   analysis: Analysis | null;
   ai: boolean;
   reviewPanel: HTMLElement;
+  /** Where a rewrite in progress reports itself. */
+  progress: HTMLElement;
   target: string;
   onApply(a: Advice): void;
   onShow(a: Advice): void;
@@ -43,15 +45,16 @@ export function renderAdvisor(o: AdvisorPanelOpts): HTMLElement {
       'section',
       { class: 'aa-card aa-actions' },
       h('h3', {}, 'Rewrite'),
-      h('p', { class: 'aa-muted' }, `${o.target}. Both make Advisor’s suggestions as tracked changes, each explained with ${author.short}’s own sentences.`),
+      h('p', { class: 'aa-muted' }, `${o.target}. “${author.short} it up” rewrites the passage as ${author.pronouns.subject} would have written it; “Tidy” makes only the changes statistics are sure of. Both arrive as tracked changes, each explained with ${author.pronouns.possessive} own sentences.`),
       h(
         'div',
         { class: 'aa-row' },
-        h('button', { class: 'aa-btn', onclick: () => o.onAustenize(), title: 'Statistics only: no language model' }, 'Austenize'),
-        h('button', { class: 'aa-btn aa-primary', onclick: () => o.onRewrite(instr.value), disabled: !o.ai, title: o.ai ? 'Claude, with the engine as its tools' : 'Needs ANTHROPIC_API_KEY on the server' }, '✦ Rewrite with AI'),
+        h('button', { class: 'aa-btn aa-primary', onclick: () => o.onRewrite(instr.value), disabled: !o.ai, title: o.ai ? `Rewritten in ${author.short}’s manner by AI, with the engine as its tools and its check on every word` : 'Needs ANTHROPIC_API_KEY or DEEPSEEK_API_KEY on the server' }, `✦ ${author.short} it up`),
+        h('button', { class: 'aa-btn', onclick: () => o.onAustenize(), title: `Statistics only, no language model: contractions written out, ${author.pronouns.possessive} word for yours where it is sure, short sentences joined` }, 'Tidy by statistics'),
       ),
       instr,
-      o.ai ? null : h('p', { class: 'aa-muted aa-small' }, 'Rewrite with AI is off: the server has no ANTHROPIC_API_KEY. Everything else here is statistics, with no language model.'),
+      o.progress,
+      o.ai ? null : h('p', { class: 'aa-muted aa-small' }, `“${author.short} it up” is off: the server has no ANTHROPIC_API_KEY or DEEPSEEK_API_KEY. Everything else here is statistics, with no language model.`),
     ),
     o.reviewPanel,
   );

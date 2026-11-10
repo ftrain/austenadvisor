@@ -212,7 +212,15 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
       sentenceCache.set(cacheKey, cached);
     }
     for (const f of cached.flags) words.push({ ...f, block: s.block, start: f.start + s.start, end: f.end + s.start });
-    for (const a of cached.advice) advice.push({ ...a, block: s.block, start: a.start + s.start, end: a.end + s.start });
+    // A replacement at block -1 is the sentence's own: it moves to the paragraph with the advice.
+    for (const a of cached.advice)
+      advice.push({
+        ...a,
+        block: s.block,
+        start: a.start + s.start,
+        end: a.end + s.start,
+        replacements: a.replacements?.map((r) => (r.block < 0 ? { ...r, start: r.start + s.start, end: r.end + s.start } : r)),
+      });
     for (const c of cached.compounds) compounds.push({ ...c, block: s.block, start: c.start + s.start, end: c.end + s.start });
     const dist = s.spoken ? P.sentenceLength.dialogue : P.sentenceLength.narration;
     sentenceInfos.push({
