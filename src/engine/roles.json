@@ -1,0 +1,98 @@
+{
+  "claim": {
+    "name": "Claim",
+    "definition": "The point the writer sets out to prove, stated so someone could disagree with it. Example: “Homework should be banned.”",
+    "opens": "states the point first",
+    "then": "says what it all means"
+  },
+  "reason": {
+    "name": "Reason",
+    "definition": "Why the claim is true: one cause the writer gives for believing it. Example: “First, it takes up the whole evening.”",
+    "opens": "begins with a reason",
+    "then": "gives reasons"
+  },
+  "evidence": {
+    "name": "Evidence",
+    "definition": "A fact, number, example or quotation that shows a reason is true. Example: “Students who start at 8:30 sleep an hour more.”",
+    "opens": "begins with the facts",
+    "then": "backs it with facts"
+  },
+  "objection": {
+    "name": "Objection",
+    "definition": "The other side’s case, stated fairly so the writer can answer it. Example: “Some people say homework teaches responsibility.”",
+    "opens": "begins with the other side’s case",
+    "then": "states the other side’s case"
+  },
+  "answer": {
+    "name": "Answer",
+    "definition": "The writer’s reply to an objection. Example: “But responsibility is learned in other ways too.”",
+    "opens": "begins with a reply",
+    "then": "answers it"
+  },
+  "call": {
+    "name": "Call",
+    "definition": "What the writer asks the reader to do or believe at the end. Example: “Vote for our side.”",
+    "opens": "begins with what the reader should do",
+    "then": "ends by saying what to do"
+  },
+  "stakes": {
+    "name": "Stakes",
+    "definition": "What is won or lost if the reader agrees or not. Example: “If nothing changes, tired students will keep driving to school.”",
+    "opens": "begins with what is at stake",
+    "then": "shows what is at stake"
+  },
+  "scene": {
+    "name": "Scene",
+    "definition": "The place, time and people of a story, set down before anything happens. Example: “The party was at Jessica’s house.”",
+    "opens": "begins from something that happened",
+    "then": "sets the scene"
+  },
+  "turn": {
+    "name": "Turn",
+    "definition": "The moment a story changes direction. Example: “Then I heard it again.”",
+    "opens": "begins at the moment things change",
+    "then": "turns the story"
+  },
+  "feeling": {
+    "name": "Feeling",
+    "definition": "What a person in the story feels, told or shown. Example: “My heart was beating really fast.”",
+    "opens": "begins with a feeling",
+    "then": "says how it felt"
+  },
+  "verdict": {
+    "name": "Verdict",
+    "definition": "The writer’s judgment of what the story meant, usually at the end. Example: “Maybe I was wrong about him.”",
+    "opens": "begins with the judgment",
+    "then": "says what it meant"
+  },
+  "greeting": {
+    "name": "Greeting",
+    "definition": "The line that names the person a letter or speech is for. Example: “Dear Mom and Dad,”",
+    "opens": "begins by naming the reader",
+    "then": "greets the reader"
+  },
+  "news": {
+    "name": "News",
+    "definition": "What the letter tells the reader: what has happened or how things stand. Example: “Camp is okay, I guess.”",
+    "opens": "begins with the news",
+    "then": "gives the news"
+  },
+  "request": {
+    "name": "Request",
+    "definition": "What the letter asks the reader to do. Example: “Can you send more snacks?”",
+    "opens": "begins with what it asks for",
+    "then": "asks for something"
+  },
+  "close": {
+    "name": "Close",
+    "definition": "The sign-off that ends a letter or speech: thanks, a farewell, a name. Example: “Love, Jake”",
+    "opens": "begins with a farewell",
+    "then": "signs off"
+  },
+  "part": {
+    "name": "Part",
+    "definition": "A paragraph whose job the engine cannot name with confidence.",
+    "opens": "begins without a clear first step",
+    "then": "goes on"
+  }
+}
