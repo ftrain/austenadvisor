@@ -1,4 +1,4 @@
-// SQLite, Node's own (node:sqlite): the author's corpus and model, the English resources and the documents.
+// SQLite, Node's own (node:sqlite): the author's corpus and model, and the English resources.
 
 import { DatabaseSync } from 'node:sqlite';
 import { mkdirSync } from 'node:fs';
@@ -19,7 +19,6 @@ export function open(file: string, opts: { readOnly?: boolean } = {}): DatabaseS
 
 export const authorDbPath = (id: string) => join(DATA, `${id}.sqlite`);
 export const englishDbPath = () => join(DATA, 'english.sqlite');
-export const docsDbPath = () => join(DATA, 'documents.sqlite');
 
 /** Many writes at once. */
 export function tx<T>(db: DatabaseSync, fn: () => T): T {

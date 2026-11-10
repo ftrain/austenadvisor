@@ -169,12 +169,6 @@ The figures are pointed out everywhere:
 
 An example offered for a figure is always confirmed by that figure's detector (`figureExamples`): the nearest sentences first, then the whole corpus sifted by a cheap sign of the figure.
 
-## Shared editing
-
-The page is Tiny Little Office's Word Processor (`mount('write', …)`). Each edit is a group of the kernel's ops. The server rebases a group over what came since its base (`rebase`) and applies it. It keeps the ops, the text and a version per author in SQLite, and tells everyone. Each page keeps one group in flight and the rest waiting, and carries the server's ops over both (`cross`). See `src/server/room.ts`, `src/web/sync.ts`, and `test/sync.test.ts` for two writers and Advisor converging.
-
-Advisor is a person in the document. Its suggestions are ops made under its own name, so the kit's redline draws them as tracked changes with its lozenge. Accept is a review. Reject is a review plus the kernel's `rejectOps`, which takes the change back exactly. Writers' own versions are settled (drawn plain), so the redline shows only what Advisor proposes. The margin (`<to-comments>`) has Advisor as its assistant. Ask it in any thread: it answers from the statistics, and suggests the statistical rewrite of the words in question as a change. If you ask it to "rewrite" and the server has a key, it calls the AI rewrite.
-
 ## Another author
 
 Everything above reads the author from `authors/<id>.json`: the works and their sources, the name, the pronouns the advisor uses for the author, and a line of persona for the AI. `npm run build:model -- twain` builds Twain Advisor (903,501 words from eight books) in under a minute. In his space, *reckon* sits beside *maybe, ain't, bet*.

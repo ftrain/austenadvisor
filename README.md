@@ -33,22 +33,6 @@ The voices, each a statistical model of its whole corpus:
 
 The Obama corpus is fetched once with `npm run fetch:obama` before its build; it keeps only the President's own words (not the Vice President's or others' remarks on the same pages, nor the press office's summaries).
 
-The page was at first a shared word processor, and that editor still opens any document by its link (`/d/<id>`):
-
-- **Every word Austen never wrote is underlined as you type.** Hover one to see the words she did use in its place, ranked by meaning and fit. Each comes with a real sentence of hers and where to find it (work, chapter, paragraph). Click one to put it in.
-- **Advice with the numbers behind it.** Advisor flags contractions where she wrote the words out, and runs of short sentences she would have joined (with the join she would most likely use). It also flags a word she would more likely have written in that spot, and habits of yours that are not hers ("you use *really* 9 times in a thousand words; Austen, 0.7"). Every piece of advice cites her sentences. Advice with a fix is underlined in the text: hover it and click the fix to take it in place, or have Advisor suggest it as a tracked change.
-- **Explore her language as you write.** Select any word or phrase. You see how often she used it and in which novels, the words nearest it in her own usage, the words found beside it, and her sentences containing it. Each sentence opens into its paragraph.
-- **Figures of speech recognized and named.** Litotes, periphrasis, antithesis, tricolon, polysyndeton, inversion, the ironic generalization and aside, free indirect discourse and more are found by their form. They are underlined in your draft, named in every rewrite's reasons, and labelled on every Austen sentence shown. Hover one, or search one in Explore ("tricolon" gives "Emma Woodhouse, handsome, clever, and rich").
-- **The Style panel** measures your writing against hers: sentence and paragraph length, semicolons, commas, -ly adverbs, contractions, function-word habits (Burrows's Delta) and readability. Each measure is a habit you can practise.
-- **Advisor's suggestions are tracked changes.** You accept or reject them as you would a colleague's in Google Docs, and a thread in the margin explains each one. *Austen it up* gives the passage to a language model (Claude, or DeepSeek) together with the engine and asks for the whole way: her periods, her judgement, her irony, every modern thing rendered in her world. The model looks up words, checks idioms in the concordance, checks its own draft, and cites the sentences it learned from. *Tidy by statistics* makes only the changes statistics are sure of: contractions written out, her word for yours where the sense is the same, short sentences joined. Each quotation is verified against the corpus before you see it.
-- **Shared, like a Google Doc.** Anyone with the link writes with you, live. Ask Advisor anything in a comment thread.
-
-![Hovering a word Austen never wrote](docs/hover.png)
-
-![Advisor's suggestions as tracked changes](docs/suggestions.png)
-
-The editor, margin, redline and review panel are [Tiny Little Office](https://github.com/aboard-io/tinylittleoffice)'s, from its `v2` branch. Its kernel orders everyone's edits on the server.
-
 See **[docs/rewrite-eval.md](docs/rewrite-eval.md)** for how the AI rewrite was designed and tested: three rounds of Claude Sonnet rewriting and Claude Opus judging, and what each round changed. See **[docs/before-after.md](docs/before-after.md)** for six everyday pieces (a trip to the store, a letter home from camp, a breakup…), each before and after the engine. Every change is listed with its reason and a sentence of Austen's.
 
 ## Running it
@@ -67,11 +51,10 @@ npm run fetch:obama && npm run build:model -- obama
 npm run dev                     # http://localhost:4180
 ```
 
-`npm run build:model` writes three files to `data/`:
+`npm run build:model` writes two files to `data/`:
 
 - `data/english.sqlite`: WordNet 3.1, and a part-of-speech tagger trained on the Brown Corpus. Both are shared by every author.
 - `data/austen.sqlite`: the corpus, its full-text index, and the model.
-- `data/documents.sqlite`: the documents. The server writes this one as people use it.
 
 Rewrite with AI needs an API key where the server runs. With an Anthropic key it uses Claude; with a DeepSeek key alone it uses DeepSeek through its Anthropic-compatible API, with the same prompts, tools and gate. `ADVISOR_MODEL` overrides the model (`claude-opus-5-5` and `deepseek-v4-pro` are the defaults).
 
@@ -85,7 +68,7 @@ The writer is whichever model has a key: Claude with `ANTHROPIC_API_KEY` (best i
 Everything else needs no language model and no network once the model is built.
 
 ```sh
-npm test                                   # the engine, the corpus readers, the sync
+npm test                                   # the engine, the corpus readers, the routes
 npm run cli -- analyze samples/store.txt   # what Advisor flags and advises
 npm run cli -- austenize samples/store.txt # the statistical rewrite, with reasons and sources
 npm run cli -- word tolerable              # how she used a word
@@ -128,7 +111,7 @@ The engine knows nothing particular to Austen. An author is a JSON file of works
 npm run build:model -- twain
 ```
 
-This builds Twain Advisor from Standard Ebooks' Twain. The page lists every advisor, and a new document chooses one.
+This builds Twain Advisor from Standard Ebooks' Twain. The page lists every voice that is built.
 
 ## Layout
 
@@ -138,7 +121,7 @@ src/corpus/       Standard Ebooks and Gutenberg into chapters, paragraphs, sente
 src/nlp/          tokenizer, tagger, WordNet, Kneser–Ney, SVD, ZIP
 src/train/        the build: english.sqlite and <author>.sqlite
 src/engine/       the model in memory; analysis, alternatives, austenize, tools (one set for the page, the API and Claude)
-src/server/       HTTP + WebSocket: documents, sync (Tiny Little Office's kernel), Advisor, the AI rewrite
-src/web/          the page: Tiny Little Office's Word Processor, margin and review panel, Advisor's panels
-vendor/           Tiny Little Office's library, built from its v2 branch (npm run vendor:tlo to refresh)
+src/server/       HTTP: app.ts serves the page and the API; routes/ holds one module per group of routes (listed in
+                  routes/index.ts); page.ts and rewrite.ts run the AI rewrite
+src/web/          the page: one route, three columns
 ```
