@@ -9,7 +9,6 @@
 
 import { button, get, h, type AuthorInfo, type Definer, type Drill, type FootFact, type HerSentence, type Note, type Para, type Quote, type Reading, type Row, type SketchRow } from './api.ts';
 import { fillVoices, RESTING, type Suggested } from './compose.ts';
-import type { GuessView } from './guesscard.ts';
 import type { MovesView } from './moves.ts';
 import { tryIt } from './tryit.ts';
 
@@ -63,7 +62,6 @@ export interface ResultOptions {
   voices: AuthorInfo[];
   terms: Definer;
   moves: MovesView;
-  guess: GuessView;
   onEdit(): void;
   /** The select or an arrow chose this voice. */
   onVoice(id: string): void;
@@ -127,10 +125,9 @@ export function result(o: ResultOptions): ResultView {
   const voiceHead = h('div', {});
   const colHead = h('div', { class: 'pg-cols pg-cols-head', 'aria-hidden': 'true' }, h('div', {}, 'Yours'), voiceHead, h('div', {}, 'Why'));
   const legendEl = h('p', { class: 'pg-legend', hidden: true });
-  const guessRow = h('div', { class: 'pg-cols pg-guess-row' }, h('div', {}), h('div', { class: 'pg-guess-slot' }), h('div', {}));
   const rowsEl = h('div', { class: 'pg-rows' });
   const factsEl = h('section', { class: 'pg-facts', hidden: true, 'aria-label': 'Facts' });
-  const el = h('section', { class: 'pg-result', hidden: true, 'aria-label': 'The rewrite' }, tools, askEl, restingEl, progressEl, shapeEl, styleEl, colHead, legendEl, guessRow, rowsEl, factsEl);
+  const el = h('section', { class: 'pg-result', hidden: true, 'aria-label': 'The rewrite' }, tools, askEl, restingEl, progressEl, shapeEl, styleEl, colHead, legendEl, rowsEl, factsEl);
   let state: ResultState | null = null;
 
   function step(d: number) {
@@ -156,7 +153,7 @@ export function result(o: ResultOptions): ResultView {
         { class: 'pg-line-body' },
         h('p', {}, h('span', { class: 'pg-who' }, 'Yours: '), ...o.terms.shape(r.shape.yours)),
         r.form && r.shape.form ? h('p', { class: 'pg-shape-form' }, h('span', { class: 'pg-who' }, ...o.terms.labelled(r.form.name, 'form'), ': '), ...o.terms.shape(r.shape.form)) : null,
-        // Only for a form the student chose: under Auto the form is the engine's guess at what the text already is.
+        // Only for a form the student chose: under Auto the form is the engine's reading of what the text already is.
         r.form && !r.form.auto && r.form.missing.length
           ? h('p', { class: 'pg-line-note pg-shape-missing' }, 'Not in yours: ', ...o.terms.shape(r.form.slots.filter((x) => x.missing).map((x) => x.name).join(' · ')))
           : null,
@@ -218,10 +215,6 @@ export function result(o: ResultOptions): ResultView {
     drawShape(s);
     progress(s);
 
-    const writing = !!run && !run.done && !run.failed && !run.resting && ![...run.rows.values()].some((r) => r.kind === 'paragraph' && r.hers);
-    guessRow.hidden = !writing;
-    // Only while the result is on view: after Edit the card belongs to COMPOSE.
-    if (writing && !el.hidden) guessRow.querySelector('.pg-guess-slot')!.replaceChildren(o.guess.el);
 
     const rows = rowsOf(s);
     // An open Try it, with what the student typed in it, stays in its row across a redraw.

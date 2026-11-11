@@ -1,5 +1,5 @@
 // The engine's reading of a student's text (POST /api/read): kind, never-used words, the shape sketch, voice ID and
-// suggestions, the guessing game and the page's boot data. The checks that need a voice run where its pack is built
+// suggestions and the page's boot data. The checks that need a voice run where its pack is built
 // (node scripts/build-packs.ts).
 import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import type { AddressInfo } from 'node:net';
@@ -111,7 +111,7 @@ describe.skipIf(packs.length < 3)('voice ID', () => {
   });
 });
 
-describe.skipIf(!hasAusten)('POST /api/read, GET /api/guess and GET /api/boot', () => {
+describe.skipIf(!hasAusten)('POST /api/read and GET /api/boot', () => {
   let server: Server;
   let base = '';
   beforeAll(async () => {
@@ -179,25 +179,6 @@ describe.skipIf(!hasAusten)('POST /api/read, GET /api/guess and GET /api/boot', 
     times.sort((a, b) => a - b);
     const p95 = times[Math.ceil(times.length * 0.95) - 1]!;
     expect(p95, times.map(Math.round).join(' ')).toBeLessThan(300);
-  });
-
-  it('deals guessing rounds among the voices asked for, each with its tells', async () => {
-    const asked = packs.map((p) => p.id).slice(0, 3);
-    const r = await fetch(`${base}/api/guess?voices=${asked.join(',')}&n=12&seed=7`);
-    expect(r.status).toBe(200);
-    const { rounds, names } = await r.json();
-    expect(rounds.length).toBe(12);
-    for (const g of rounds) {
-      expect(asked).toContain(g.answer);
-      expect(g.choices).toContain(g.answer);
-      expect(new Set(g.choices).size).toBe(g.choices.length);
-      for (const c of g.choices) expect(asked).toContain(c);
-      expect(g.tells).toHaveProperty('lengthPercentile');
-      expect(typeof names[g.answer]).toBe('string');
-    }
-    // The same seed deals the same rounds.
-    const again = await (await fetch(`${base}/api/guess?voices=${asked.join(',')}&n=12&seed=7`)).json();
-    expect(again.rounds.map((g: { id: string }) => g.id)).toEqual(rounds.map((g: { id: string }) => g.id));
   });
 
   it('boots the page in one request, naming no key', async () => {

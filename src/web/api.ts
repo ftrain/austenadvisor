@@ -6,10 +6,9 @@ import type { Drill, PracticeCheck } from '../engine/practice.ts';
 import type { GlossaryEntry } from '../engine/terms.ts';
 import type { FootFact, HerSentence, Note, Quote, Row, YourSentence } from '../server/page.ts';
 import type { NeverWord, Reading, SketchRow, StyleLine } from '../server/read.ts';
-import type { GuessCard } from '../server/routes/guess.ts';
 import type { Sample } from '../server/routes/samples.ts';
 
-export type { Citation, Drill, FootFact, GlossaryEntry, GuessCard, HerSentence, NeverWord, Note, PracticeCheck, Quote, Reading, Row, Sample, SketchRow, StyleLine, YourSentence };
+export type { Citation, Drill, FootFact, GlossaryEntry, HerSentence, NeverWord, Note, PracticeCheck, Quote, Reading, Row, Sample, SketchRow, StyleLine, YourSentence };
 export type Para = Extract<Row, { kind: 'paragraph' }>;
 
 async function json<T>(r: Response): Promise<T> {

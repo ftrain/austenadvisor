@@ -1,5 +1,5 @@
 // Which voices the server holds in memory. Every voice's pack stays resident: it is small, and the engine's quick
-// answers (guess rounds, shape sketches, examples of a move) come from it. Whole models are large, so only the six
+// answers (shape sketches, examples of a move) come from it. Whole models are large, so only the six
 // used last are kept; another is read from disk when asked for, in 2 to 7 s.
 //
 // Importing this module puts AuthorModel.load behind the LRU.

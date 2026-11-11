@@ -1,11 +1,10 @@
 // COMPOSE: the voice, the form, the text, and the engine's first reading of it as the student types. One native
 // select holds every voice: three suggested for this piece first, then the families, the styles last. Beside it a
 // second select holds the forms, "Auto" first; under them is one checkbox, "Add facts from Wikipedia". Under the box are the voice the text
-// already sounds like, the samples by kind, and the guess card. On a phone the select and the Rewrite button sit in
+// already sounds like and the samples by kind. On a phone the select and the Rewrite button sit in
 // a bar at the foot of the screen.
 
 import { button, cap, fill, h, type AuthorInfo, type Boot, type Definer, type Family, type Reading, type Sample } from './api.ts';
-import type { GuessView } from './guesscard.ts';
 
 export const FAMILY_NAMES: Record<Family, string> = { storytellers: 'Storytellers', speakers: 'Speakers', arguers: 'Arguers', essayists: 'Essayists', styles: 'Styles' };
 const FAMILY_ORDER: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists', 'styles'];
@@ -62,7 +61,6 @@ export interface ComposeOptions {
   boot: Boot;
   voices: AuthorInfo[];
   terms: Definer;
-  guess: GuessView;
   text: string;
   voice: AuthorInfo;
   onVoice(id: string): void;
@@ -135,7 +133,7 @@ export function compose(o: ComposeOptions): ComposeView {
     o.boot.samples.length ? button('Shuffle', shuffle, { class: 'pg-chip pg-chip-quiet' }) : null,
   );
 
-  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, options, epigraph, area, sounds, chips, sampleLine, notice, o.guess.el, resting);
+  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, options, epigraph, area, sounds, chips, sampleLine, notice, resting);
 
   function teachName(id: string): string {
     const t = o.terms.definition(id);
@@ -162,7 +160,6 @@ export function compose(o: ComposeOptions): ComposeView {
   function setSuggested(s: Suggested | null) {
     suggested = s;
     fillVoices(select, o.voices, voice.id, suggested, ready);
-    o.guess.load(s?.ids.length ? [voice.id, ...s.ids] : [voice.id]);
   }
 
   area.addEventListener('input', () => {
@@ -183,7 +180,6 @@ export function compose(o: ComposeOptions): ComposeView {
     fill(epigraph, h('span', { class: 'pg-epi-voice' }, `Rewrite it as ${v.title}`), v.epigraph ? h('q', {}, v.epigraph.text) : null, v.epigraph ? h('cite', {}, ` ${v.epigraph.cite}`) : null);
   }
   setVoice(voice);
-  o.guess.load([voice.id]);
   // A text kept from last time that is a sample is that sample again.
   sample = o.boot.samples.find((s) => s.text === o.text) ?? null;
 

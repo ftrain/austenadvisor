@@ -8,7 +8,6 @@ import { compose, RESTING, sortVoices } from './compose.ts';
 
 /** The most a text may hold, as the server counts it. */
 const MAX_CHARS = 24000;
-import { guessCard } from './guesscard.ts';
 import { movesBook } from './moves.ts';
 import { result, type ResultState, type Run } from './result.ts';
 
@@ -22,7 +21,6 @@ export async function rewritePage(app: HTMLElement) {
   let voice: AuthorInfo = byId.get(kept?.voice ?? '') ?? byId.get('austen') ?? voices[0]!;
   const terms = definer(boot.glossary);
   const moves = movesBook(voices, terms);
-  const guess = guessCard(terms);
 
   const readings = new Map<string, Promise<Reading | null>>();
   const runs = new Map<string, Run>();
@@ -103,7 +101,6 @@ export async function rewritePage(app: HTMLElement) {
     boot,
     voices,
     terms,
-    guess,
     text: kept?.text ?? '',
     voice,
     onVoice: (id) => setVoice(id),
@@ -117,7 +114,6 @@ export async function rewritePage(app: HTMLElement) {
     voices,
     terms,
     moves,
-    guess,
     onEdit: edit,
     onVoice: (id) => pickOnResult(id),
     onConfirm: (id) => {
@@ -160,7 +156,6 @@ export async function rewritePage(app: HTMLElement) {
     r.el.hidden = true;
     c.el.hidden = false;
     app.dataset.state = 'compose';
-    c.el.insertBefore(guess.el, c.el.querySelector('.pg-resting'));
     c.area.focus();
     window.scrollTo?.({ top: 0 });
   }

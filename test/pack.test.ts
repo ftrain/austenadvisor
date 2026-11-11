@@ -6,7 +6,7 @@ import { describe, expect, it } from 'vitest';
 import { ROOT, authorDbPath } from '../src/db.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { FIGURES, figureExamples } from '../src/engine/figures.ts';
-import { forgetPack, packPaths, percentileIn, punctSkeleton, readSif, tagSkeleton, unigramScores, writeSif } from '../src/engine/pack.ts';
+import { forgetPack, packPaths, punctSkeleton, readSif, tagSkeleton, unigramScores, writeSif } from '../src/engine/pack.ts';
 import { Lru, loadPacks, suggestedVoices } from '../src/server/models.ts';
 
 const voices = readdirSync(join(ROOT, 'authors'))
@@ -31,13 +31,9 @@ describe('the pack format', () => {
     }
   });
 
-  it('reads shape in tags and punctuation, and a length against a distribution', () => {
+  it('reads shape in tags and punctuation', () => {
     expect(tagSkeleton(['AT', 'NN', 'BEDZ', 'JJ', '.'])).toBe('DNVJ.');
     expect(punctSkeleton('“When is it, Lizzy?” she asked – softly...')).toBe(',?—…');
-    const d = { n: 1, mean: 0, sd: 0, p10: 5, p25: 10, p50: 20, p75: 30, p90: 40 };
-    expect(percentileIn(d, 20)).toBe(50);
-    expect(percentileIn(d, 15)).toBe(38);
-    expect(percentileIn(d, 100)).toBe(100);
   });
 
   it('scores a passage by which voice’s words it uses, leaving a sentence’s own words out of its voice', () => {
@@ -86,7 +82,6 @@ describe.skipIf(!built.length)('the built voices’ packs', () => {
     for (const p of packs) {
       expect(p.shape.length).toBeGreaterThan(1000);
       expect(p.shapeVecs.length).toBe(p.shape.length * p.dims);
-      expect(p.guess.length).toBeGreaterThan(100);
       expect(p.structure.order.length).toBeGreaterThan(0);
     }
   });

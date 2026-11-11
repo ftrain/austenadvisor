@@ -1,6 +1,6 @@
 // Builds each voice's pack (src/engine/pack.ts) from its built model: data/packs/<id>.json and data/packs/<id>.sif.
-// Run it after building or rebuilding a model, and again after adding a voice, since the signature words and the
-// guessing game measure each voice against all the others.
+// Run it after building or rebuilding a model, and again after adding a voice, since the signature words
+// measure each voice against all the others.
 //
 //   node scripts/build-packs.ts             every built voice
 //   node scripts/build-packs.ts kjv obama   these voices (measured against every built voice)
@@ -15,13 +15,10 @@ import {
   forgetPack,
   packDir,
   packPaths,
-  percentileIn,
   punctSkeleton,
   tagSkeleton,
-  unigramScores,
   writeSif,
   type Fingerprint,
-  type GuessRound,
   type PackFile,
   type ShapeEntry,
   type SignatureWord,
@@ -32,7 +29,6 @@ import { tokenize } from '../src/nlp/tokenize.ts';
 
 /** Sentences kept for each move and figure. */
 const EXEMPLARS = 8;
-const GUESS_ROUNDS = 500;
 const SHAPE_SENTENCES = 8000;
 const SIGNATURE_WORDS = 40;
 
@@ -206,53 +202,6 @@ function fingerprintProfile(m: AuthorModel): Fingerprint {
   };
 }
 
-function guessRounds(m: AuthorModel, rows: Row[], tables: UnigramTable[], ratio: (w: string) => number, own: UnigramTable): GuessRound[] {
-  const exclude = new Set(m.author.linkExclude ?? []);
-  const pool = shuffled(
-    rows.filter((r) => r.words >= 10 && r.words <= 35 && !exclude.has(r.work)),
-    11,
-  ).slice(0, GUESS_ROUNDS * 6);
-  const scored: { r: Row; margin: number; distractors: string[] }[] = [];
-  for (const r of pool) {
-    const s = unigramScores(tables, r.text, m.author.id);
-    const rank = s.findIndex((x) => x.voice === m.author.id);
-    // A round the classifier ranks the voice no better than third gives the reader no fair chance.
-    if (tables.length > 1 && rank > 1) continue;
-    const others = s.filter((x) => x.voice !== m.author.id);
-    const mine = s[rank]!.score;
-    scored.push({ r, margin: others.length ? Math.round((mine - others[0]!.score) * 1000) / 1000 : 0, distractors: others.slice(0, 2).map((x) => x.voice) });
-  }
-  // Spread over the margins, easy to hard.
-  scored.sort((a, b) => b.margin - a.margin);
-  const step = Math.max(1, scored.length / GUESS_ROUNDS);
-  const picked: typeof scored = [];
-  for (let i = 0; i < scored.length && picked.length < GUESS_ROUNDS; i += step) picked.push(scored[Math.floor(i)]!);
-  return picked.map(({ r, margin, distractors }) => {
-    const seen = new Set<string>();
-    const tellWords: { word: string; ratio: number }[] = [];
-    for (const t of tokenize(r.text)) {
-      const w = t.norm;
-      if (t.kind !== 'word') continue;
-      if (seen.has(w) || (own.counts.get(w) ?? 0) < 3) continue;
-      seen.add(w);
-      const x = ratio(w);
-      if (x >= 2) tellWords.push({ word: w, ratio: Math.round(x * 10) / 10 });
-    }
-    tellWords.sort((a, b) => b.ratio - a.ratio);
-    const figures = [...new Set(findFigures(m, r.text, { spoken: r.spoken }).map((f) => f.term))];
-    const dist = r.spoken ? m.profile.sentenceLength.dialogue : m.profile.sentenceLength.narration;
-    return {
-      id: r.id,
-      text: r.text,
-      cite: m.cite(r.id)?.cite ?? '',
-      words: r.words,
-      margin,
-      distractors,
-      tells: { words: tellWords.slice(0, 3), figures, lengthPercentile: percentileIn(dist, r.words) },
-    };
-  });
-}
-
 /** About SHAPE_SENTENCES sentences: the openings of letters first, so a salutation has its like, then the rest at random. */
 function shapeIndex(m: AuthorModel, rows: Row[]): { entries: ShapeEntry[]; vecs: Float32Array } {
   const exclude = new Set(m.author.linkExclude ?? []);
@@ -295,7 +244,6 @@ export function buildPack(id: string, against: string[] = builtVoices(), log: (s
   lap(`${rows.length.toLocaleString()} sentences, vectors ready`);
   const own = wordTable(id);
   const others = against.filter((x) => x !== id).map(wordTable);
-  const tables: UnigramTable[] = [own, ...others];
 
   const { exemplars, moveExemplars } = exemplarsOf(m, rows);
   const tables_ = [...Object.values(exemplars), ...Object.values(moveExemplars)];
@@ -303,8 +251,6 @@ export function buildPack(id: string, against: string[] = builtVoices(), log: (s
   const sig = signatureOf(m, own, others);
   const goodFor = ((m.author as { goodFor?: Kind[] }).goodFor ?? []).filter((k) => KINDS.includes(k));
   const structure = typicalOrder(m, goodFor[0] ? { kind: goodFor[0] } : {});
-  const guess = guessRounds(m, rows, tables, sig.ratio, own);
-  lap(`${guess.length} guess rounds`);
   const shape = shapeIndex(m, rows);
   lap(`${shape.entries.length} sentences in the shape index`);
 
@@ -328,7 +274,6 @@ export function buildPack(id: string, against: string[] = builtVoices(), log: (s
     moveExemplars,
     profile: fingerprintProfile(m),
     structure: { kind: structure.kind, order: structure.order, support: structure.support, passages: structure.passages, signature: structure.signature },
-    guess,
     shape: shape.entries,
     vectorWords,
     dims,

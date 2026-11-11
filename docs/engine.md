@@ -83,7 +83,7 @@ The page asks the engine everything it can answer without a model call. These mo
 
 | Module | What it does |
 |---|---|
-| `src/engine/pack.ts` | A voice's pack, built by `scripts/build-packs.ts` into `data/packs/<id>.json` and `<id>.sif`. The JSON holds the signature words, up to eight real sentences for each move and figure, the profile in brief, the usual order of parts, 500 rounds of the guessing game and a shape index of 8,000 sentences. The `.sif` holds the vectors: the shape index's, the word vectors, and the whole corpus's sentence vectors, which `AuthorModel` reads in place of building them. Every pack stays in memory; only six whole models do (`src/server/models.ts`). A pack is rebuilt when its model's fingerprint changes. |
+| `src/engine/pack.ts` | A voice's pack, built by `scripts/build-packs.ts` into `data/packs/<id>.json` and `<id>.sif`. The JSON holds the signature words, up to eight real sentences for each move and figure, the profile in brief, the usual order of parts and a shape index of 8,000 sentences. The `.sif` holds the vectors: the shape index's, the word vectors, and the whole corpus's sentence vectors, which `AuthorModel` reads in place of building them. Every pack stays in memory; only six whole models do (`src/server/models.ts`). A pack is rebuilt when its model's fingerprint changes. |
 | `src/engine/structure.ts` | What kind of writing a text is (argument, story, letter, speech, essay, review), what job each paragraph does (claim, reason, objection, scene, turn, call…), and the order a voice usually puts those jobs in. It works from cue words and position, and says "part" where it cannot tell. The roles and their plain names are in `roles.json`. |
 | `src/engine/voiceid.ts` | Which voice a passage sounds like, from the packs alone. It adds two scores: the words, by each voice's word counts, and the build, by each voice's tag trigrams. From these come the three voices the select puts first: the best voice for the kind, the voice it sounds like, and a stretch. |
 | `src/engine/shape.ts` | For a student's sentence, the voice's real sentence built most like it: half the score from word classes in order (by edit distance), a fifth from punctuation in order, the rest from meaning. Below a score of 0.5 it offers nothing. This fills the voice's column when there is no rewrite. |
@@ -91,7 +91,6 @@ The page asks the engine everything it can answer without a model call. These mo
 | `src/engine/notes.ts` | The Why column. For each paragraph of a rewrite it compares every new sentence with the student's sentences it renders, finds the moves and figures the new one makes that the old did not, and quotes a sentence of the voice's that makes the same move, with the move's words marked. At most two notes a paragraph, and no move twice on a page. `moveKey` gives every name of a move one id ("understatement" is litotes). |
 | `src/engine/practice.ts` | Try it. `practiceCheck` reads a student's attempt at a move with the same detector that checks the notes, and says whether the move is there, its length against the voice's, what else it does and which words the voice never used; a miss gets a hint and an example. `drillsFor` chooses what to practise: after a rewrite, only moves the rewrite was shown to make; with none, only gaps the engine finds (sentences much shorter than the voice's, no joined clauses, no move at all). |
 | `src/engine/glossary.ts`, `terms.ts` | The glossary: 132 terms (the forms' names and the plain style's kinds of needless word among them), each one plain sentence, most with an example, written to `data/glossary.sqlite`. `findTerms` finds them in any text, so the page can underline a term where it is used. |
-| `src/server/routes/guess.ts` | The guessing game: a sentence from one of three voices, and after a guess, the words that gave it away. The rounds come from the packs. |
 
 ## The rewrite (`src/engine/brief.ts`, `src/server/rewrite.ts`, `src/server/page.ts`)
 
@@ -150,6 +149,6 @@ Everything above reads the voice from `authors/<id>.json`: the works and their s
 
 ```sh
 npm run build:model -- <id>       # the corpus and the model, data/<id>.sqlite
-node scripts/build-packs.ts       # every pack again: signature words and the guessing game measure each voice against the rest
+node scripts/build-packs.ts       # every pack again: signature words measure each voice against the rest
 node scripts/index-samples.ts     # a sample that lists the voice under pending moves it to bestVoices
 ```

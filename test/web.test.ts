@@ -27,7 +27,6 @@ function answer(path: string, body: unknown): Response {
   if (path === '/api/boot') return json(boot);
   if (path === '/api/read') return json(reading);
   if (path.startsWith('/api/ready')) return json({ hash: '', voices: [] });
-  if (path.startsWith('/api/guess')) return json({ rounds: [], names: {} });
   if (path === '/api/rewrite') return new Response(ndjson, { status: 200, headers: { 'content-type': 'application/x-ndjson' } });
   if (path === '/api/practice/drills') return json({ drills: [] });
   return json({ error: 'not found' }, 404);
@@ -198,7 +197,7 @@ describe('the page', () => {
     expect(app().dataset.state).not.toBe('result');
   });
 
-  it('keeps the guess card in COMPOSE after Edit while a rewrite still streams, and keeps an open Try it across a redraw', async () => {
+  it('goes back to COMPOSE on Edit while a rewrite still streams, and keeps an open Try it across a redraw', async () => {
     const lines = ndjson.trim().split('\n');
     let push: (s: string) => void = () => {};
     let end: () => void = () => {};
@@ -223,7 +222,8 @@ describe('the page', () => {
     // A line that redraws the run (the plan again) arrives while COMPOSE is on view.
     push(lines[0]!);
     await new Promise((r) => setTimeout(r, 20));
-    expect(app().querySelector('.pg-compose .pg-guess')).not.toBeNull();
+    expect(app().querySelector<HTMLElement>('.pg-compose')!.hidden).toBe(false);
+    expect(app().querySelector<HTMLElement>('.pg-result')!.hidden).toBe(true);
 
     // Back to the result: the part arrives, a Try it is opened and typed in, then the stream ends and redraws.
     app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();

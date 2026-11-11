@@ -2,7 +2,7 @@
 // it at build time as data/packs/<id>.json and data/packs/<id>.sif, and the server keeps every pack in memory.
 //
 // The .json holds the voice's signature words, its sentences that make each move and figure, its profile in brief,
-// its usual order of parts, the rounds of the guessing game and a shape index of its sentences. The .sif holds the
+// its usual order of parts, and a shape index of its sentences. The .sif holds the
 // numbers: the shape index's sentence vectors, the voice's word vectors, and the whole corpus's sentence vectors,
 // which AuthorModel reads in place of building them (about 3 s a voice).
 
@@ -28,25 +28,6 @@ export interface SignatureWord {
   /** The voice's rate over the other voices' pooled rate. */
   ratio: number;
   sentence: { id: number; text: string; cite: string } | null;
-}
-
-/** One round of the guessing game: a sentence of the voice's, the voices most like it, and what gives it away. */
-export interface GuessRound {
-  id: number;
-  text: string;
-  cite: string;
-  words: number;
-  /** Mean log-probability a word, the voice's against the best other voice's. Small margins make hard rounds. */
-  margin: number;
-  /** The other voices the unigram classifier rates most likely, nearest first. */
-  distractors: string[];
-  tells: {
-    /** Words in the sentence the voice uses far more than the other voices. */
-    words: { word: string; ratio: number }[];
-    figures: string[];
-    /** Where the sentence's length falls among the voice's sentences, 0 to 100. */
-    lengthPercentile: number;
-  };
 }
 
 /** A sentence in the shape index: its words, and its shape in tags and punctuation. */
@@ -80,7 +61,7 @@ export interface PackFile {
   builtAt: string;
   /** The model the pack was built from; see fingerprintOf. */
   fingerprint: string;
-  /** The voices the signature words and the guess rounds were measured against. */
+  /** The voices the signature words were measured against. */
   against: string[];
   /** Word counts for the unigram classifier and SIF weights: every word used twice or more, and every word with a vector. */
   total: number;
@@ -95,7 +76,6 @@ export interface PackFile {
   moveExemplars: Record<string, number[]>;
   profile: Fingerprint;
   structure: { kind: Kind; order: Role[]; support: number; passages: number; signature: string };
-  guess: GuessRound[];
   shape: ShapeEntry[];
   /** The words of the .sif's word vectors, in order. */
   vectorWords: string[];
@@ -372,22 +352,4 @@ export function skeletonsOf(text: string): { tags: string; punct: string } {
     eng.close();
   }
   return { tags: tagSkeleton(tagger.tagTokens(tokenize(text))), punct: punctSkeleton(text) };
-}
-
-/** Where a value falls in a distribution given by its percentiles, 0 to 100. */
-export function percentileIn(d: Dist, x: number): number {
-  const pts: [number, number][] = [
-    [d.p10, 10],
-    [d.p25, 25],
-    [d.p50, 50],
-    [d.p75, 75],
-    [d.p90, 90],
-  ];
-  if (x <= pts[0]![0]) return Math.max(0, Math.round((10 * x) / Math.max(1, pts[0]![0])));
-  for (let i = 1; i < pts.length; i++) {
-    const [a, pa] = pts[i - 1]!;
-    const [b, pb] = pts[i]!;
-    if (x <= b) return Math.round(b === a ? pb : pa + ((x - a) / (b - a)) * (pb - pa));
-  }
-  return Math.min(100, Math.round(90 + (10 * (x - d.p90)) / Math.max(1, d.p90)));
 }

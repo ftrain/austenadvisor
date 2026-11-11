@@ -19,8 +19,6 @@ The rewrite is written by a language model, in one call for each part of the tex
 
 When no rewrite is available (no key, or the day's budget spent), the student still gets the engine's view: for each paragraph, the voice's own sentences built most like the student's, and moves to try where the engine finds a gap, such as sentences much shorter than the voice's.
 
-While the page waits, and on the compose screen, a card asks **Guess whose sentence this is**: a real sentence from one of three voices. After a guess it names the writer, the source, and the words that gave it away.
-
 ## Form, facts and what was added
 
 Before the writer is called, the engine does three things with no model.
@@ -74,7 +72,7 @@ Each voice is a statistical model of the whole corpus below. All are public doma
 
 **The plain style** stands apart from the twenty writers, under Styles. It is a manner with rules: formal, declarative prose with everything extra removed. Its models are Ulysses S. Grant's Personal Memoirs and William Strunk's The Elements of Style of 1918 (240,245 words). Its moves are rules the engine checks ([src/engine/plain.ts](src/engine/plain.ts)): needless words cut, the active voice, positive form, no hedges or intensifiers, one idea a sentence, the concrete word. The student's modern words stay. In place of words the voice never wrote, the Yours column marks the student's needless words: the hedges, intensifiers and stock phrases the rules cut.
 
-Each voice has a pack (`data/packs/<id>.json` and `.sif`), built from its model: its signature words, real sentences that make each of its moves, the rounds of the guessing game, and a shape index of its sentences. The server keeps every pack in memory, and the whole models of only the six voices used last.
+Each voice has a pack (`data/packs/<id>.json` and `.sif`), built from its model: its signature words, real sentences that make each of its moves, and a shape index of its sentences. The server keeps every pack in memory, and the whole models of only the six voices used last.
 
 [docs/eval/voices](docs/eval/voices/README.md) records how the voices were measured: every voice on every case, judged on fidelity, voice, sense, naturalness, notes, teaching and structure.
 
@@ -131,7 +129,7 @@ npm run cli -- concordance "at last"       # the voice's sentences with a phrase
 npm run cli -- similar "I went to the shop to buy bread"
 ```
 
-The page's API: `/api/boot` (voices, forms, samples, glossary, which samples are ready), `/api/read` (the engine's view of a text; `form` is `auto` or a form's id), `/api/facts` (the facts for a text), `/api/rewrite` (the rewrite, as lines of JSON; it takes `form`, and `facts`, which is on unless false; with `job: true` it answers with a job id, and `GET /api/rewrite/<job>?after=n` gives the lines from the n-th on), `/api/ready`, `/api/practice` and `/api/practice/drills` (Try it), `/api/guess`, `/api/glossary`, `/api/health`.
+The page's API: `/api/boot` (voices, forms, samples, glossary, which samples are ready), `/api/read` (the engine's view of a text; `form` is `auto` or a form's id), `/api/facts` (the facts for a text), `/api/rewrite` (the rewrite, as lines of JSON; it takes `form`, and `facts`, which is on unless false; with `job: true` it answers with a job id, and `GET /api/rewrite/<job>?after=n` gives the lines from the n-th on), `/api/ready`, `/api/practice` and `/api/practice/drills` (Try it), `/api/glossary`, `/api/health`.
 
 ## How it works
 
