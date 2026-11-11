@@ -18,7 +18,7 @@ import { blocksOfText, type DocBlock } from '../engine/doc.ts';
 import { slotSentence, type Form } from '../engine/forms.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
 import type { Role } from '../engine/structure.ts';
-import { notesFor, type NoteRow } from '../engine/notes.ts';
+import { NOTES_PER_PARAGRAPH, notesFor, type NoteRow } from '../engine/notes.ts';
 import {
   findPrecomputed,
   inFlight,
@@ -97,6 +97,12 @@ export interface Note {
   id?: string;
   /** For a move: the glossary id that defines it. */
   term?: string;
+  /** For a figure of speech: the words of `after` that make it, as offsets (quotation marks curled). */
+  span?: [number, number];
+  /** A figure the writer made in their own sentence, which the rewrite kept. */
+  yours?: boolean;
+  /** A figure's second note on the page, in fewer words. */
+  again?: boolean;
 }
 export type Row =
   | { kind: 'heading'; index: number; text: string; title: boolean }
@@ -264,7 +270,7 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
       ...(structure[k] ? { structure: structure[k] } : {}),
       ...(must[k] ? { structureFirst: true } : {}),
     }));
-    const notes = notesFor(m, noteRows, { sense: r.sense ?? [], liberties: r.liberties ?? [], seen: opts.seen, exemplars: opts.exemplars });
+    const notes = notesFor(m, noteRows, { sense: r.sense ?? [], liberties: r.liberties ?? [], seen: opts.seen, exemplars: opts.exemplars, perParagraph: NOTES_PER_PARAGRAPH });
     rows.forEach((row, k) => (row.notes = notes[k] ?? []));
     return rows;
   }

@@ -2,12 +2,18 @@
 // beside the writer's sentences it renders, finds the moves and figures of speech the new sentence makes that the
 // writer's did not, and takes for each a sentence of the voice's own that makes the same move. No note quotes the
 // model that wrote the rewrite: every example is a sentence from the corpus, checked by the same test that found the
-// move. A paragraph gets at most two notes, and no move is noted twice on a page. A paragraph
-// the form moved, or one written to fill a part the form lacked, always carries its Structure note.
+// move.
+//
+// A paragraph gets at most three notes. Where the rewrite makes a figure of speech, one note is the figure's: a
+// voice's habits of diction (“thou”, “unto”) cannot crowd it out. A figure may be noted twice on a page, the second
+// time in fewer words and some way on; any other move once. A figure the writer made and the rewrite kept is noted
+// too, as the writer's own. A paragraph the form moved, or one written to fill a part the form lacked, always
+// carries its Structure note.
 
-import { FIGURES, findFigures } from './figures.ts';
+import { FIGURES, figureExamples, findFigures, periphrasisFor } from './figures.ts';
 import { termOf } from './glossary.ts';
 import type { AuthorModel, Citation, Register } from './model.ts';
+import { isPlainRule, keepsRule, plainFaults, type PlainRule } from './plain.ts';
 
 /** A sentence of the voice's, with the words that make the move marked. */
 export interface NoteQuote {
@@ -34,6 +40,12 @@ export interface EngineNote {
   id?: string;
   /** For a move: the glossary id that defines it, when the glossary has one. */
   term?: string;
+  /** For a figure of speech: the words of `after` that make it, as offsets, where they are a phrase. */
+  span?: [number, number];
+  /** A figure the writer made in their own sentence, which the rewrite kept. */
+  yours?: boolean;
+  /** A figure's second note on the page, in fewer words. */
+  again?: boolean;
 }
 
 /** A paragraph of the rewrite: the writer's sentences beside it, and its own sentences with those they render. */
@@ -45,9 +57,12 @@ export interface NoteRow {
   /** Where the paragraph's matter came from, already said (“Brings together your paragraphs 2 and 3.”). */
   structure?: string;
   /** The structure note is one the writer must see (a paragraph the form moved, a part the form lacked): it comes
-   * before the moves, so two other notes cannot crowd it out. */
+   * before the moves, so the other notes cannot crowd it out. */
   structureFirst?: boolean;
 }
+
+/** What became of a move or figure the engine found: `shown`, `again` and `kept` are notes; the rest say why not. */
+export type NoteFate = 'shown' | 'again' | 'kept' | 'off' | 'yours' | 'seen' | 'room' | 'noquote';
 
 export interface NoteOptions {
   /** Where the writer's sense was mended. */
@@ -57,14 +72,46 @@ export interface NoteOptions {
   register?: Register;
   /** A pack's table of sentence ids for each move and figure, checked before use. */
   exemplars?: Record<string, number[]>;
-  /** Moves already noted on this page (by earlier parts); updated as notes are written. */
+  /** Moves already noted on this page (by earlier parts); updated as notes are written. A figure noted twice is
+   * there twice, the second time as `<id>#2`. */
   seen?: Set<string>;
   /** The most notes a paragraph may hold. */
   perParagraph?: number;
+  /** Told what became of every move and figure found, for measuring. */
+  trace?: (e: { paragraph: number; after: string; id: string; figure: boolean; fate: NoteFate }) => void;
 }
 
-/** Figures too weak a sign to teach on their own. Irony is no form; a question alone is not free indirect discourse. */
-const SKIP = new Set(['irony', 'fid', 'periphrasis']);
+/** The most notes a paragraph holds, unless the caller says otherwise. */
+export const NOTES_PER_PARAGRAPH = 3;
+
+/**
+ * Figures the engine will not teach from. Irony has no form: the engine can find a generalization or an aside, and
+ * names those. Free indirect discourse is found only as a question or exclamation in the narration, and in the
+ * rewrites of students' own pieces every such sentence was the writer's plain question (“Can you send more
+ * snacks?”), never a character's thought.
+ */
+const OFF = new Set(['irony', 'fid']);
+/** Figures not worth praise in the writer's own sentence: a string of “and”s there is as often a run-on. */
+const NO_PRAISE = new Set(['polysyndeton', 'periphrasis']);
+/** Figures that are a build of the whole sentence, with no phrase to point at. */
+const WHOLE = new Set(['polysyndeton', 'anaphora', 'inversion']);
+
+/** What each figure does for a reader, in a line, for its first note on a page. */
+const USE: Record<string, string> = {
+  litotes: 'The modest wording leaves the reader to supply the stronger word.',
+  periphrasis: 'The reader pictures the thing before hearing its name.',
+  antithesis: 'The matching shapes make the difference plain.',
+  tricolon: 'Three items feel complete, and the last one lands hardest.',
+  polysyndeton: 'Each “and” gives the next item its own weight.',
+  anaphora: 'The repeated opening ties the clauses together and builds force.',
+  hyperbole: 'The reader knows it is too much and hears the feeling in it.',
+  inversion: 'The words moved to the front take the stress.',
+  parenthesis: 'The writer comments without stopping the sentence.',
+  gnomic: 'The one case is made to look like the common rule.',
+  aside: 'The afterthought undercuts what came before it.',
+};
+/** A figure's name in the middle of a sentence: “You wrote a tricolon here”. */
+const NAMED: Record<string, string> = { tricolon: 'a tricolon', gnomic: 'a generalization', aside: 'an aside', parenthesis: 'a parenthesis', inversion: 'an inversion' };
 
 const norm = (t: string) => t.toLowerCase().replace(/[’']/g, "'").replace(/[^\p{L}\p{N}']+/gu, ' ').trim();
 const curly = (t: string) => t.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
@@ -88,53 +135,114 @@ interface Candidate {
   id: string;
   key: string;
   label: string;
+  /** For a move of the voice's: what it does. For a figure the note is written from its definition. */
   text: string;
   term?: string;
   after: string;
   before: string;
-  /** A voice's own move ranks before a figure any writer may make. */
-  own: boolean;
+  /** A figure of speech, found by its own detector in the new sentence. */
+  figure: boolean;
+  /** The writer's own figure, kept. */
+  kept: boolean;
+  /** The words that make the figure, as offsets in the new sentence (with its quotation marks curled). */
+  span?: [number, number];
+  /** For periphrasis: the writer's word the description stands for. */
+  stands?: string;
+  /** For a kept figure: the writer's words that made it. */
+  theirs?: string;
 }
 
-/** The moves and figures a sentence makes that the sentences it renders do not. */
-function movesIn(m: AuthorModel, after: string, before: string, register?: Register, named: string[] = []): Candidate[] {
-  if (!after.trim() || norm(after) === norm(before)) return [];
+/** The sentence's rivals: the other new sentences that render one of the same sentences of the writer's. */
+interface Siblings {
+  texts: string[];
+  self: number;
+}
+
+/**
+ * Whether a new sentence mends a fault of the writer's against a rule of the plain style. The writer's sentence
+ * must break the rule, and where it became several sentences, the fault belongs to the one that holds its words:
+ * “kids sort of throw most of it away, which is not good for the budget” loses its hedge in “kids throw most of
+ * it away”, and “This hurts the budget” mends nothing. A sentence the writer never wrote mends nothing either.
+ */
+function mendsRule(m: AuthorModel, rule: PlainRule, after: string, before: string, sib: Siblings): boolean {
+  if (!/\p{L}/u.test(before) || !keepsRule(m.plain, rule, curly(after))) return false;
+  const text = curly(before);
+  const faults = plainFaults(m.plain, text, [rule]);
+  if (!faults.length) return false;
+  if (sib.texts.length < 2) return true;
+  return faults.some((f) => {
+    // The fault's neighbourhood: its own words and a few either side.
+    const near = wordSet(text.slice(Math.max(0, f.start - 40), Math.min(text.length, f.end + 40)));
+    const share = (t: string) => [...wordSet(t)].filter((w) => near.has(w)).length;
+    const scores = sib.texts.map(share);
+    return scores[sib.self]! > 0 && scores[sib.self]! >= Math.max(...scores);
+  });
+}
+
+/** The moves and figures a sentence makes: those the sentences it renders do not, and the figures they share. */
+function movesIn(m: AuthorModel, after: string, before: string, sib: Siblings, register: Register | undefined, named: string[], off: (id: string, fate: NoteFate) => void): Candidate[] {
+  if (!after.trim()) return [];
+  const same = norm(after) === norm(before);
   const look = (id: string) => (id === 'saidshe' ? curly : narration);
   const out: Candidate[] = [];
   const moves = m.author.moves ?? [];
-  const fresh = (mv: { id: string; pattern?: string }) => m.shows(mv, look(mv.id)(after)) && !m.shows(mv, look(mv.id)(before));
-  for (const mv of moves) {
-    if (mv.id === 'irony' || !fresh(mv)) continue;
-    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: moveTerm(mv.id)?.id ?? moveTerm(mv.name)?.id, after, before, own: true });
-  }
-  // Moves another reading credits to the sentence (explainSentence's), where the patterns confirm them.
-  for (const id of named) {
-    const mv = moves.find((x) => x.id === id);
-    if (!mv || mv.id === 'irony' || out.some((c) => c.id === id) || !fresh(mv)) continue;
-    out.push({ id: mv.id, key: moveKey(mv.id, mv.name), label: mv.name, text: mv.does, term: moveTerm(mv.id)?.id ?? moveTerm(mv.name)?.id, after, before, own: true });
-  }
   const letter = register === 'letter';
-  const had = new Set(findFigures(m, before, { letter }).map((f) => f.term));
-  for (const f of findFigures(m, after, { letter })) {
-    if (SKIP.has(f.term) || had.has(f.term)) continue;
+  const mine = findFigures(m, before, { letter });
+  const hers = findFigures(m, after, { letter });
+  const text = curly(after);
+  const fresh = (mv: { id: string; pattern?: string; rule?: string }) =>
+    isPlainRule(mv.rule) ? mendsRule(m, mv.rule, after, before, sib) : m.shows(mv, look(mv.id)(after)) && !m.shows(mv, look(mv.id)(before));
+  // The voice's own moves, and those another reading credits to the sentence (explainSentence's), where the
+  // patterns confirm them.
+  const own = same ? [] : [...moves, ...named.map((id) => moves.find((x) => x.id === id)).filter((x): x is NonNullable<typeof x> => !!x)];
+  for (const mv of own) {
+    if (mv.id === 'irony' || out.some((c) => c.id === mv.id) || !fresh(mv)) continue;
+    const key = moveKey(mv.id, mv.name);
+    // A move that goes by a figure's name is the figure only where the figure's detector finds it; where the
+    // voice's looser pattern alone matches, the note keeps the voice's words and claims no term.
+    const f = key in FIGURES ? hers.find((x) => x.term === key) : undefined;
+    if (key in FIGURES && (!f || mine.some((x) => x.term === key))) {
+      if (!f) out.push({ id: mv.id, key: `${mv.id}*`, label: mv.name, text: mv.does, after, before, figure: false, kept: false });
+      continue;
+    }
+    out.push({ id: mv.id, key, label: mv.name, text: mv.does, term: moveTerm(mv.id)?.id ?? moveTerm(mv.name)?.id, after, before, figure: !!f, kept: false, ...(f ? { span: [f.start, f.end] as [number, number] } : {}) });
+  }
+  const push = (f: { term: string; start: number; end: number }, extra: Partial<Candidate>) => {
     const key = moveKey(f.term);
-    if (out.some((c) => c.key === key)) continue;
-    const t = termOf(f.term);
-    out.push({ id: f.term, key, label: f.name, text: t?.definition ?? f.gloss, term: t?.id, after, before, own: false });
+    if (out.some((c) => c.key === key)) return;
+    out.push({ id: f.term, key, label: FIGURES[f.term]!.name, text: '', term: termOf(f.term)?.id, after, before, figure: true, kept: false, span: [f.start, f.end], ...extra });
+  };
+  // Periphrasis is read against the writer's sentence: a description where the writer had the name.
+  const around = same ? null : periphrasisFor(m, before, after);
+  if (around) push(around, { stands: around.stands });
+  for (const f of hers) {
+    if (OFF.has(f.term)) {
+      off(f.term, 'off');
+      continue;
+    }
+    // A settled periphrasis (“the fair sex”) stands by its form; the looser kind only by the writer's own word.
+    if (f.term === 'periphrasis' && (f.loose || around)) continue;
+    const theirs = mine.find((x) => x.term === f.term);
+    if (!theirs && same) continue;
+    if (theirs && NO_PRAISE.has(f.term)) {
+      off(f.term, 'yours');
+      continue;
+    }
+    push(f, theirs ? { kept: true, theirs: theirs.text } : {});
   }
   return out;
 }
 
 /** Where in a sentence its move is made, for the page to mark. */
 function markOf(m: AuthorModel, id: string, text: string): [number, number] | undefined {
+  if (id in FIGURES) {
+    const f = findFigures(m, text).find((x) => x.term === id && !x.loose);
+    if (f) return [f.start, f.end];
+  }
   const mv = m.author.moves?.find((x) => x.id === id);
   if (mv?.pattern) {
     const hit = new RegExp(mv.pattern, 'i').exec(curly(text));
     if (hit) return [hit.index, hit.index + hit[0].length];
-  }
-  if (id in FIGURES) {
-    const f = findFigures(m, text).find((x) => x.term === id);
-    if (f) return [f.start, f.end];
   }
   return undefined;
 }
@@ -143,16 +251,31 @@ function markOf(m: AuthorModel, id: string, text: string): [number, number] | un
 function exampleOf(m: AuthorModel, c: Candidate, exemplars?: Record<string, number[]>, used: Set<number> = new Set()): NoteQuote | null {
   const exclude = new Set(m.author.linkExclude ?? []);
   const mv = m.author.moves?.find((x) => x.id === c.id) ?? { id: c.id };
-  const ok = (x: Citation | null | undefined): x is Citation =>
-    !!x && !!x.text && !used.has(x.id) && !exclude.has(x.work) && norm(x.text) !== norm(c.after) && m.shows(mv, mv.id === 'saidshe' ? x.text : narration(x.text));
-  const fromPack = (exemplars?.[c.id] ?? []).map((id) => m.cite(id)).filter(ok);
-  const hit = fromPack[0] ?? m.moveExamples(c.id, c.after, 6).find(ok);
+  // A figure's example shows the figure by its detector, whatever looser pattern the voice's move of that name has.
+  const shows = (t: string) => (c.figure ? findFigures(m, t).some((f) => f.term === c.key && !f.loose) : m.shows(mv, mv.id === 'saidshe' ? t : narration(t)));
+  const ok = (x: Citation | null | undefined): x is Citation => !!x && !!x.text && !used.has(x.id) && !exclude.has(x.work) && norm(x.text) !== norm(c.after) && shows(x.text);
+  const fromPack = [...(exemplars?.[c.id] ?? []), ...(c.figure && c.key !== c.id ? (exemplars?.[c.key] ?? []) : [])].map((id) => m.cite(id)).filter(ok);
+  const hit = fromPack[0] ?? m.moveExamples(c.id, c.after, 6).find(ok) ?? (c.figure ? figureExamples(m, c.key, c.after, 6).find(ok) : undefined);
   if (!hit) return null;
   used.add(hit.id);
   const q: NoteQuote = { id: hit.id, text: hit.text, cite: hit.cite };
-  const mark = markOf(m, c.id, hit.text);
+  const mark = markOf(m, c.figure ? c.key : c.id, hit.text);
   if (mark) q.mark = mark;
   return q;
+}
+
+/** What a figure's note says: its definition always; the words that make it; and, the first time, what it does. */
+function figureText(c: Candidate, again: boolean): string {
+  const definition = termOf(c.key)?.definition ?? FIGURES[c.key]?.gloss ?? '';
+  const words = c.span && !WHOLE.has(c.key) && c.span[1] - c.span[0] <= 90 ? curly(c.after).slice(c.span[0], c.span[1]).trim().replace(/^[,;—\s]+|[,;—\s]+$/g, '') : '';
+  if (c.kept) {
+    const name = NAMED[c.key] ?? (termOf(c.key)?.term ?? FIGURES[c.key]!.name).replace(/\s*\(.*\)$/, '').toLowerCase();
+    const theirs = c.theirs && !WHOLE.has(c.key) && c.theirs.length <= 90 ? `: “${c.theirs.trim().replace(/^[,;—\s]+|[,;—\s]+$/g, '')}”` : '';
+    return `You wrote ${name} here, and the rewrite keeps it${theirs}. ${definition}`;
+  }
+  if (again) return `${words ? `Again: “${words}”.` : 'Again.'} ${definition}`;
+  const here = c.stands && words ? `Here “${words}” stands for your “${c.stands}”.` : words ? `Here: “${words}”.` : '';
+  return [definition, here, USE[c.key] ?? ''].filter(Boolean).join(' ');
 }
 
 /** “2”, “2 and 3”, “1, 2 and 3”. */
@@ -160,12 +283,16 @@ const listOf = (ns: number[]) => (ns.length < 2 ? String(ns[0] ?? '') : `${ns.sl
 
 /**
  * The WHY notes for each paragraph of a rewrite, in order of what the writer most needs to hear: where their sense
- * was mended, then a move the voice made, then words the voice added, then where the paragraph's matter came from.
- * At most two notes a paragraph; no move twice on the page; a move only with a sentence of the voice's that makes it.
+ * was mended, then a figure of speech, then the voice's moves and further figures by turns, then words the voice
+ * added, then where the paragraph's matter came from. At most three notes a paragraph; a figure at most twice on the
+ * page and any other move once; a move only with a sentence of the voice's that makes it.
  */
 export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}): EngineNote[][] {
-  const limit = opts.perParagraph ?? 2;
+  const limit = opts.perParagraph ?? NOTES_PER_PARAGRAPH;
   const seen = opts.seen ?? new Set<string>();
+  const times = (key: string) => (seen.has(`${key}#2`) ? 2 : seen.has(key) ? 1 : 0);
+  // The paragraph of a figure's first note: its second waits two paragraphs.
+  const firstAt = new Map<string, number>();
   // No sentence of the voice's is shown twice on the page.
   const quoted = new Set<number>();
   const short = m.author.short;
@@ -209,18 +336,63 @@ export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}
     const structureNote: EngineNote | null = structure ? { kind: 'structure', technique: 'Structure', before: '', after: '', text: structure, quote: null, verified: true } : null;
     if (structureNote && r.structureFirst) notes.length < limit ? notes.push(structureNote) : (notes[limit - 1] = structureNote);
 
-    // Moves: the voice's own first, in the order its sentences come.
-    if (room() && r.hers) {
+    if (r.hers) {
       const byN = new Map(r.yours.map((y) => [y.n, y.text]));
-      const all = r.hers.flatMap((s) => movesIn(m, s.text, s.from.map((n) => byN.get(n) ?? '').join(' '), opts.register, s.moves));
-      const ranked = [...all.filter((c) => c.own), ...all.filter((c) => !c.own)];
-      for (const c of ranked) {
-        if (!room()) break;
-        if (seen.has(c.key)) continue;
+      const hers = r.hers;
+      const all = hers.flatMap((s, j) => {
+        // The other new sentences that render one of the same sentences of the writer's.
+        const group = hers.map((x, i) => ({ x, i })).filter(({ x }) => x.from.some((n) => s.from.includes(n)));
+        const sib: Siblings = { texts: group.map(({ x }) => x.text), self: Math.max(0, group.findIndex(({ i }) => i === j)) };
+        return movesIn(m, s.text, s.from.map((n) => byN.get(n) ?? '').join(' '), sib, opts.register, s.moves ?? [], (id, fate) => opts.trace?.({ paragraph: k, after: s.text, id, figure: true, fate }));
+      });
+      const tell = (c: Candidate, fate: NoteFate) => opts.trace?.({ paragraph: k, after: c.after, id: c.key, figure: c.figure, fate });
+      // A figure the rewrite made comes before one it kept, and a first note before a second.
+      const rank = (c: Candidate) => (times(c.key) ? 2 : 0) + (c.kept ? 1 : 0);
+      const figures = all.filter((c) => c.figure).sort((a, b) => rank(a) - rank(b));
+      const others = all.filter((c) => !c.figure);
+      // A figure first, then the voice's moves and further figures by turns.
+      const order: Candidate[] = [];
+      for (let i = 0; i < Math.max(figures.length, others.length); i++) {
+        if (figures[i]) order.push(figures[i]!);
+        if (others[i]) order.push(others[i]!);
+      }
+      const here = new Set<string>();
+      for (const c of order) {
+        const n = times(c.key);
+        const first = firstAt.get(c.key);
+        const spent = here.has(c.key) || n >= (c.figure ? 2 : 1) || (n === 1 && first !== undefined && k - first < 2);
+        if (spent) {
+          tell(c, 'seen');
+          continue;
+        }
+        if (!room()) {
+          tell(c, 'room');
+          continue;
+        }
         const quote = exampleOf(m, c, opts.exemplars, quoted);
-        if (!quote) continue;
-        seen.add(c.key);
-        notes.push({ kind: 'move', technique: c.label, before: c.before, after: c.after, text: c.text, quote, verified: true, id: c.key, ...(c.term ? { term: c.term } : {}) });
+        if (!quote) {
+          tell(c, 'noquote');
+          continue;
+        }
+        const again = n === 1;
+        seen.add(again ? `${c.key}#2` : c.key);
+        if (!again) firstAt.set(c.key, k);
+        here.add(c.key);
+        tell(c, c.kept ? 'kept' : again ? 'again' : 'shown');
+        notes.push({
+          kind: 'move',
+          technique: c.label,
+          before: c.before,
+          after: c.after,
+          text: c.figure ? figureText(c, again) : c.text,
+          quote,
+          verified: true,
+          id: c.key.replace(/\*$/, ''),
+          ...(c.term ? { term: c.term } : {}),
+          ...(c.figure && c.span ? { span: c.span } : {}),
+          ...(c.kept ? { yours: true } : {}),
+          ...(again ? { again: true } : {}),
+        });
       }
     }
 

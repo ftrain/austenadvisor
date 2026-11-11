@@ -150,10 +150,10 @@ describe.skipIf(!built)('the rewrite, part by part', { timeout: 120_000 }, () =>
     expect(parts).toHaveLength(3);
     expect(parts.every((p) => !p.error && p.cached === false)).toBe(true);
 
-    // Rows: the engine's notes, at most two a paragraph, and no "why" or "model" on a sentence of the rewrite.
-    const rows = parts.flatMap((p) => p.rows as { hers: Record<string, unknown>[]; notes: { kind: string; technique: string; quote: unknown }[] }[]);
+    // Rows: the engine's notes, at most three a paragraph, and no "why" or "model" on a sentence of the rewrite.
+    const rows = parts.flatMap((p) => p.rows as { hers: Record<string, unknown>[]; notes: { kind: string; technique: string; quote: unknown; again?: boolean }[] }[]);
     for (const r of rows) {
-      expect(r.notes.length).toBeLessThanOrEqual(2);
+      expect(r.notes.length).toBeLessThanOrEqual(3);
       for (const h of r.hers) {
         expect(h).not.toHaveProperty('why');
         expect(h).not.toHaveProperty('model');
@@ -162,8 +162,10 @@ describe.skipIf(!built)('the rewrite, part by part', { timeout: 120_000 }, () =>
     const moves = rows.flatMap((r) => r.notes).filter((n) => n.kind === 'move');
     expect(moves.length).toBeGreaterThan(0);
     expect(moves.every((n) => n.quote)).toBe(true);
-    // No move twice on the page.
-    expect(new Set(moves.map((n) => n.technique)).size).toBe(moves.length);
+    // No move twice on the page, but a figure of speech, whose second note is marked as its second.
+    const firsts = moves.filter((n) => !n.again);
+    expect(new Set(firsts.map((n) => n.technique)).size).toBe(firsts.length);
+    for (const n of moves.filter((x) => x.again)) expect(firsts.map((x) => x.technique)).toContain(n.technique);
 
     const edited = [three[0], 'I was cross, so I went to look for her in the kitchen. She said she had only driven to the shop and back, which I doubted.', three[2]].join('\n\n');
     const second = await collectRewrite(austen, edited, { cache, writer, precomputed: null });

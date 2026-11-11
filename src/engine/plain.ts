@@ -415,6 +415,9 @@ function abstractFaults(text: string): Fault[] {
   return out;
 }
 
+/** Participles of verbs that take two objects, so a noun may follow them in the passive: “was given leave”. */
+const GIVES = new Set('given sent offered told shown handed paid promised taught asked denied granted awarded called named made elected appointed allowed refused left lent sold brought owed'.split(' '));
+
 function passiveFaults(ctx: PlainContext, text: string): Fault[] {
   const out: Fault[] = [];
   const { toks, tags } = tagged(ctx, text);
@@ -433,6 +436,9 @@ function passiveFaults(ctx: PlainContext, text: string): Fault[] {
     if (!/^VBN/.test(tag) && !(byAgent && /^VBD/.test(tag))) continue;
     // “Is made of”: a state, not an action done to the subject.
     if (next?.norm === 'of') continue;
+    // “They are frozen food”: the participle describes the noun after it. (“Was given leave” is a passive: verbs
+    // that take two objects are let through.)
+    if (next?.kind === 'word' && /^NNS?$/.test(tags[j + 1] ?? '') && !GIVES.has(p.norm)) continue;
     let agent: string | null = null;
     let end = p.end;
     if (byAgent) {

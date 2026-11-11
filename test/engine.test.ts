@@ -156,6 +156,67 @@ describe.skipIf(!built)('the Austen engine', () => {
     for (const t of ['litotes', 'antithesis', 'tricolon', 'gnomic']) for (const c of figureExamples(m, t, 'a quiet evening at home', 2)) expect(terms(c.text)).toContain(t);
   });
 
+  it('finds litotes in its set forms, and not in a plain denial, a command or a count', () => {
+    const lit = (t: string) => findFigures(m, t).filter((f) => f.term === 'litotes').map((f) => f.text);
+    expect(lit('He was not a little pleased, and she was not displeased.')).toEqual(['not a little', 'not displeased']);
+    expect(lit('The plan was not without merit.')).toEqual(['not without merit']);
+    expect(lit('He was no fool, and it was not a bad evening.')).toEqual(['no fool', 'not a bad']);
+    expect(lit('The proposal is not, I think, an unreasonable one.')).toEqual(['not, I think, an unreasonable']);
+    expect(lit('He wasn’t unkind.')).toEqual(['wasn’t unkind']);
+    for (const t of [
+      'He was not informed of it.',
+      'She was not disposed to go.',
+      'She could not without pain think of it.',
+      'There was no little boy in the room.',
+      'Do not be uneasy.',
+      'Was she not unhappy?',
+      'She had never been so unhappy.',
+      'Touch no unclean thing.',
+      'They were not so unjust to him as the others were.',
+    ])
+      expect(lit(t), t).toEqual([]);
+  });
+
+  it('finds periphrasis by a settled phrase or a place’s use, and marks the looser form loose', () => {
+    const per = (t: string) => findFigures(m, t).filter((f) => f.term === 'periphrasis');
+    expect(per('He was a great favourite with the fair sex.').map((f) => [f.text, !!f.loose])).toEqual([['the fair sex', false]]);
+    expect(per('We met at one of those houses where coffee is sold.').map((f) => [f.text, !!f.loose])).toEqual([['one of those houses where coffee is sold', false]]);
+    expect(per('He spoke upon that instrument by which the voice is carried to a distance.')[0]).toMatchObject({ text: 'that instrument by which the voice is carried to a distance' });
+    expect(per('He was busy with the instrument in his hand.').map((f) => [f.text, f.loose])).toEqual([['the instrument in his hand', true]]);
+    // A description after “is” says what a thing is; “thing” describes nothing.
+    expect(per('A telephone is an instrument by which the voice is carried.')).toEqual([]);
+    expect(per('I read the whole thing in two days.')).toEqual([]);
+    // An example offered for the figure is never the loose form.
+    for (const c of figureExamples(m, 'periphrasis', 'the lady he loved', 3)) expect(per(c.text).some((f) => !f.loose), c.text).toBe(true);
+  });
+
+  it('finds the figures of a sentence’s build, and leaves an ordinary sentence alone', () => {
+    const terms = (t: string) => findFigures(m, t).map((f) => f.term);
+    const texts = (term: string, t: string) => findFigures(m, t).filter((f) => f.term === term).map((f) => f.text);
+    expect(texts('tricolon', 'It was strange, awkward, and distressing.')).toEqual(['strange, awkward, and distressing']);
+    expect(texts('tricolon', 'She wished to know where they came from, what they did for a living, and whether they went to church.')).toEqual(['where they came from, what they did for a living, and whether they went to church']);
+    expect(texts('tricolon', 'I cleaned the gutters, fixed the sink, and called my grandmother.')).toEqual(['cleaned the gutters, fixed the sink, and called my grandmother']);
+    expect(texts('tricolon', 'We bought eggs, milk, and bread.')).toEqual([]);
+    expect(texts('tricolon', 'She was proud, vain, idle, and selfish.')).toEqual([]);
+    expect(terms('We talked of this and that and the other.')).toContain('polysyndeton');
+    expect(terms('I made clean the gutters, and repaired the sink, and called my grandmother.')).toContain('polysyndeton');
+    // Three “and”s in a long sentence are not a series.
+    expect(terms('I wanted to cry, but did not; I only nodded, and said that it was all very well; and then I walked home in the rain, and ate a whole pint of ice cream.')).not.toContain('polysyndeton');
+    expect(terms('There was jealousy and envy in Sparta and Athens.')).not.toContain('polysyndeton');
+    expect(terms('She gets the front seat, she gets to stay out later, she got her own room first.')).toContain('anaphora');
+    expect(terms('The father, who is a lawyer, seems a good sort of man, and the mother, who lives with him, is his sister, who keeps his house.')).not.toContain('anaphora');
+    expect(texts('antithesis', 'The fault was not mine but his own.')).toEqual(['not mine but his own']);
+    expect(texts('antithesis', 'He was rather reserved than affable.')).toEqual(['rather reserved than affable']);
+    expect(terms('I do not love the place, but I do not hate it either.')).not.toContain('antithesis');
+    expect(terms('My memory of it is more vivid than the memory of many places.')).not.toContain('antithesis');
+    expect(terms('Never had she seen such a thing.')).toContain('inversion');
+    expect(terms('Here is a brief piece of news.')).not.toContain('inversion');
+    expect(terms('Domestic happiness is the first of blessings.')).not.toContain('inversion');
+    expect(terms('The witnesses were stupid, as witnesses always are.')).toContain('gnomic');
+    expect(terms('He had the look of a man who is not at ease.')).not.toContain('gnomic');
+    expect(terms('She was late, as she always is.')).not.toContain('gnomic');
+  });
+
   it('names what a rewrite did with each word she never wrote: replaced, rendered by periphrasis, or dropped', () => {
     const w = explainSentence(m, ['He talked on his phone and wore a hoodie.'], 'He was busy with the instrument in his hand.', null);
     expect(w.why).toMatch(/renders “phone” \(“the instrument in his hand”\) by periphrasis/);

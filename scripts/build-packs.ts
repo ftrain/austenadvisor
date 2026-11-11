@@ -130,7 +130,8 @@ function exemplarsOf(m: AuthorModel, rows: Row[]): { exemplars: Record<string, n
   for (const r of pool) {
     if (!open.size) break;
     let terms: Set<string> | null = null;
-    const termsOf = () => (terms ??= new Set(findFigures(m, r.text).map((f) => f.term)));
+    // A figure found only by a loose form is fit for a try, never for a model sentence.
+    const termsOf = () => (terms ??= new Set(findFigures(m, r.text).filter((f) => !f.loose).map((f) => f.term)));
     for (const key of [...open]) {
       const ws = perWork[key]!;
       if (manyWorks && (ws.get(r.work) ?? 0) >= 3) continue;

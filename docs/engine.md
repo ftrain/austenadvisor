@@ -88,7 +88,7 @@ The page asks the engine everything it can answer without a model call. These mo
 | `src/engine/voiceid.ts` | Which voice a passage sounds like, from the packs alone. It adds two scores: the words, by each voice's word counts, and the build, by each voice's tag trigrams. From these come the three voices the select puts first: the best voice for the kind, the voice it sounds like, and a stretch. |
 | `src/engine/shape.ts` | For a student's sentence, the voice's real sentence built most like it: half the score from word classes in order (by edit distance), a fifth from punctuation in order, the rest from meaning. Below a score of 0.5 it offers nothing. This fills the voice's column when there is no rewrite. |
 | `src/server/read.ts` | The engine's view of a text against one voice (`/api/read`): kind and roles, up to five words the voice never wrote with its own word where the engine is sure, a style line (words a sentence and one joining mark against the voice's), the suggested voices, and the shape sketches. |
-| `src/engine/notes.ts` | The Why column. For each paragraph of a rewrite it compares every new sentence with the student's sentences it renders, finds the moves and figures the new one makes that the old did not, and quotes a sentence of the voice's that makes the same move, with the move's words marked. At most two notes a paragraph, and no move twice on a page. `moveKey` gives every name of a move one id ("understatement" is litotes). |
+| `src/engine/notes.ts` | The Why column. For each paragraph of a rewrite it compares every new sentence with the student's sentences it renders, finds the moves and figures the new one makes that the old did not, and quotes a sentence of the voice's that makes the same move, with the move's words marked. At most three notes a paragraph. Where the rewrite makes a figure of speech, the figure's note comes first, so a voice's habits of diction cannot crowd it out. A figure's note gives the term's definition, the words that make the figure, and what the figure does; a figure may be noted twice on a page (the second time in fewer words, two paragraphs on or more), any other move once. A figure the student made and the rewrite kept is noted as the student's own. A rule of the plain style is credited only to the sentence that mends a fault the student's sentence had. `moveKey` gives every name of a move one id ("understatement" is litotes). |
 | `src/engine/practice.ts` | Try it. `practiceCheck` reads a student's attempt at a move with the same detector that checks the notes, and says whether the move is there, its length against the voice's, what else it does and which words the voice never used; a miss gets a hint and an example. `drillsFor` chooses what to practise: after a rewrite, only moves the rewrite was shown to make; with none, only gaps the engine finds (sentences much shorter than the voice's, no joined clauses, no move at all). |
 | `src/engine/glossary.ts`, `terms.ts` | The glossary: 132 terms (the forms' names and the plain style's kinds of needless word among them), each one plain sentence, most with an example, written to `data/glossary.sqlite`. `findTerms` finds them in any text, so the page can underline a term where it is used. |
 
@@ -120,15 +120,15 @@ The language model writes the voice's sentences and nothing else on the page.
 
 Classical rhetoric's figures are recognized by their form: the words, their tags and their order. Each is named with its standard term and glossed in a line:
 
-- **Litotes,** by principle rather than by list: a negative before a word whose negative prefix, taken off, leaves a quality-word of hers ("not unwilling", "not intolerable", but not "not understand" or "not … indeed"), or "no small" and its kind.
-- **Periphrasis:** a thing named by a generic head and what it does ("the instrument in his hand", "a shop where coffee was served", "the persons set over us").
-- **The generalization laid over a case** (the gnomic statement, the usual vehicle of her irony), and **the ironic aside** (", which was at least consistent with the occasion").
+- **Litotes** (saying less than you mean by denying the opposite), by principle rather than by list: a negative before a word whose negative prefix, taken off, leaves a quality-word of hers ("not unwilling", "not intolerable", but not "not understand" or "not informed"), or before a word of smallness ("no small difficulty", "not a little"), or one of its set forms ("not without merit", "no fool", "not bad"). A command, a question, a condition and a comparison ("do not be uneasy", "not so unjust as") deny in earnest and are left alone.
+- **Periphrasis** (naming a thing by a description of it), in two strengths. The form alone proves a settled phrase ("the fair sex", "the object of his affections", "the Father of Waters"), a place named by what is done there ("a house where coffee is sold"), and a made thing named by its use in the passive ("that instrument by which the voice is carried"). A looser form ("the instrument in his hand", "my little machine for writing") is marked `loose`: in a book it is as often the plain name of the thing, so it serves a student's try and is never quoted as a model. In a rewrite the looser form is proved by the student's own sentence (`periphrasisFor`): the rewrite describes a thing, the student named one of that sort (by WordNet's broader terms: a tool, a place, people, food), and the name is gone. The note then says which word the description stands for.
+- **The generalization laid over a case** (the gnomic statement, the usual vehicle of her irony: "as witnesses always are", "a man will fidget who…"), and **the ironic aside** (", which was at least consistent with the occasion").
 - **Free indirect discourse:** a question or exclamation in the narration (not in a letter, which is direct address).
 - **Patterns of the sentence:**
-  - antithesis;
-  - tricolon;
-  - polysyndeton;
-  - anaphora;
+  - antithesis ("not this, but that" where this and that are of one kind; "rather reserved than affable");
+  - tricolon (three words of one class, or three members built alike: "where they came from, what they did, and whether they went to church"; four is a list);
+  - polysyndeton ("this and that and the other"; after a pause, "and" bringing in each member of a series);
+  - anaphora (three members running that open on the same word);
   - parenthesis;
   - inversion (anastrophe);
   - hyperbole.
@@ -137,11 +137,11 @@ Irony itself has no form. It is credited only where one of its vehicles is there
 
 The figures are used in three places:
 
-- **The Why column:** a note names the figure the rewrite made, defines it, and quotes a sentence of the voice's that makes it.
+- **The Why column:** a note names the figure the rewrite made, defines it, points at the words that make it, and quotes a sentence of the voice's that makes it. Irony and free indirect discourse are never noted: irony has no form, and in students' own pieces every question the detector took for a character's thought was the writer's plain question.
 - **Try it:** the same detector says whether the student's attempt makes the figure, and names any other figures in it ("Also in it: ironic verdict").
 - **The packs:** each voice's pack keeps real sentences for each figure it uses, so a note or a hint finds its example at once.
 
-An example offered for a figure is always confirmed by that figure's detector (`figureExamples`): the nearest sentences first, then the whole corpus sifted by a cheap sign of the figure.
+An example offered for a figure is always confirmed by that figure's detector as it stands today (`figureExamples`): the pack's sentences that pass it, nearest first; where none passes (a pack built under an older detector), the corpus is sifted once for each voice and figure, in about a second, and the result kept.
 
 ## Another author
 
