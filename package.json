@@ -19,7 +19,8 @@
     "typecheck": "tsc --noEmit -p ."
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^1.6.0"
+    "@anthropic-ai/sdk": "^1.6.0",
+    "@pef/wikiproxy": "file:../wikiproxy"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",

@@ -11,3 +11,4 @@ import './rewrite.ts';
 import './read.ts';
 import './guess.ts';
 import './boot.ts';
+import './facts.ts';
