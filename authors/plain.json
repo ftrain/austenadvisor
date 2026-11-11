@@ -1,0 +1,136 @@
+{
+  "id": "plain",
+  "name": "Plain style",
+  "title": "Plain: formal and declarative, with everything extra removed",
+  "advisor": "Plain Advisor",
+  "short": "Plain style",
+  "tagline": "",
+  "epigraph": {
+    "text": "Vigorous writing is concise.",
+    "cite": "Strunk, The Elements of Style, rule 13"
+  },
+  "whole": "Grant’s Personal Memoirs and Strunk’s Elements of Style",
+  "action": "Make it plain",
+  "years": "1885–1918",
+  "style": true,
+  "keepModern": true,
+  "pronouns": {
+    "subject": "it",
+    "object": "it",
+    "possessive": "its",
+    "possessivePronoun": "its"
+  },
+  "persona": "Plain style is a manner, not one writer: formal, declarative prose with everything extra removed. Its models are Ulysses S. Grant’s Personal Memoirs (1885), which state what happened in the order it happened, and William Strunk’s The Elements of Style (1918), which gives the rules: omit needless words, use the active voice, put statements in positive form, prefer the specific word to the general. The sentences state one thing each and stop. The words are the writer’s own, of any period.",
+  "manner": [
+    "Go the whole way. Every sentence states its matter directly, and no word stays that does no work. A rewrite that leaves the hedges and the padding in has failed the writer.",
+    "Omit needless words. Cut the stock phrase to its one word: “because” for “due to the fact that”, “to” for “in order to”, “now” for “at this point in time”.",
+    "Use the active voice. Name who did the thing, and make that the subject.",
+    "Put statements in positive form. Say what is so: “dishonest” for “not honest”, “forgot” for “did not remember”.",
+    "Remove hedges and intensifiers: “very”, “really”, “sort of”, “I think”, “it seems”. State the thing, or leave it out.",
+    "Give each sentence one idea. Split a sentence that carries three.",
+    "Prefer the concrete word to the abstract: the thing itself for “situation”, “aspect”, “factor”, “issue”.",
+    "Keep a formal register: no slang, no exclamation, no address to the reader. Write contractions out."
+  ],
+  "moves": [
+    {
+      "id": "needless",
+      "name": "Needless words cut",
+      "does": "The sentence has no stock phrase that one word would replace: “because” stands where “due to the fact that” stood.",
+      "pattern": "",
+      "rule": "needless",
+      "register": "any",
+      "hint": "Find the phrase that one word replaces, and use the word: “To win, we trained daily” for “In order to win, we trained on a daily basis”."
+    },
+    {
+      "id": "active",
+      "name": "Active voice",
+      "does": "The one who acts is the subject of the sentence: “The committee rejected the plan”, where the passive has “The plan was rejected by the committee”.",
+      "pattern": "",
+      "rule": "active",
+      "register": "any",
+      "hint": "Ask who did it, and start with them: “The dog ate my lunch” for “My lunch was eaten by the dog”."
+    },
+    {
+      "id": "positive",
+      "name": "Positive form",
+      "does": "The sentence says what is so, in one word, where a “not” said what is not: “dishonest” for “not honest”.",
+      "pattern": "",
+      "rule": "positive",
+      "register": "any",
+      "hint": "Trade “not” and its word for one word: “He forgot” for “He did not remember”; “trifling” for “not important”."
+    },
+    {
+      "id": "hedge",
+      "name": "Hedges and intensifiers removed",
+      "does": "The sentence states its matter with no hedge (“sort of”, “I think”) and no intensifier (“very”, “really”) before it.",
+      "pattern": "",
+      "rule": "hedge",
+      "register": "any",
+      "hint": "Cut the hedge and the intensifier and let the statement stand: “The room was cold” for “I think the room was really very cold”."
+    },
+    {
+      "id": "oneidea",
+      "name": "One idea a sentence",
+      "does": "The sentence states one thing and stops; the next thing gets a sentence of its own.",
+      "pattern": "",
+      "rule": "oneidea",
+      "register": "any",
+      "hint": "Split at the “and” or the “but”: “The bus was late. We missed the start.”"
+    },
+    {
+      "id": "concrete",
+      "name": "The concrete word",
+      "does": "The sentence names the thing itself, where an abstract word (“situation”, “aspect”, “factor”) stood for it.",
+      "pattern": "",
+      "rule": "concrete",
+      "register": "any",
+      "hint": "Name the thing: “The rain delayed us” for “The weather situation was a factor in the delay”."
+    }
+  ],
+  "craftNotes": [
+    "Keep every fact the writer gave, in its order. Cut what states nothing.",
+    "Keep the writer’s own words for modern things, and the writer’s names. Plain style belongs to no period: do not make the passage sound old.",
+    "Borrow the build of the model sentences, not their subjects: add no armies, rivers or rules of grammar.",
+    "A first-person passage stays first person. A letter keeps its greeting and its close.",
+    "Do not make every sentence short. A long sentence is plain when each of its words does work."
+  ],
+  "family": "styles",
+  "goodFor": [
+    "essay",
+    "argument",
+    "review",
+    "letter"
+  ],
+  "license": {
+    "source": "Standard Ebooks (public domain dedication) and Project Gutenberg",
+    "note": "Published 1885 and 1918: public domain in the US.",
+    "basis": "age"
+  },
+  "works": [
+    {
+      "id": "memoirs",
+      "title": "Personal Memoirs of Ulysses S. Grant",
+      "year": 1885,
+      "source": {
+        "type": "standardebooks",
+        "repo": "standardebooks/ulysses-s-grant_personal-memoirs-of-ulysses-s-grant"
+      }
+    },
+    {
+      "id": "elements",
+      "title": "The Elements of Style",
+      "year": 1918,
+      "source": {
+        "type": "gutenberg",
+        "repo": "GITenberg/The-Elements-of-Style_37134",
+        "file": "37134.txt",
+        "from": "^I\\. INTRODUCTORY$",
+        "until": "^VI\\. SPELLING$",
+        "chapter": "^[IVX]+\\. [A-Z ,]+$",
+        "speakers": "^\\d+\\.\\s+",
+        "dropIndented": true,
+        "strip": "="
+      }
+    }
+  ]
+}

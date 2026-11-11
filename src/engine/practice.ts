@@ -15,6 +15,7 @@ import { FIGURES, findFigures } from './figures.ts';
 import { termOf } from './glossary.ts';
 import type { AuthorModel, Citation } from './model.ts';
 import { moveKey } from './notes.ts';
+import { isPlainRule, plainFaults } from './plain.ts';
 import { skeletonsOf } from './pack.ts';
 import { editSimilarity, lineClass, WEIGHTS } from './shape.ts';
 
@@ -64,7 +65,7 @@ export interface Drill {
   /** The writer's sentence to say again with the move. */
   sentence: string;
   /** A move the rewrite made, or a gap the engine found. */
-  reason: 'rewrite' | 'short' | 'joins' | 'figures';
+  reason: 'rewrite' | 'short' | 'joins' | 'figures' | 'fault';
 }
 
 /** A note from the rewrite's WHY column, as the page holds it. */
@@ -182,6 +183,7 @@ function nameOf(t: Target): string {
 const MASS = new Set([
   'litotes', 'hyperbole', 'periphrasis', 'polysyndeton', 'asyndeton', 'anaphora', 'epistrophe', 'parallelism', 'isocolon',
   'personification', 'irony', 'inversion', 'free indirect discourse', 'deadpan', 'understatement', 'imagery', 'alliteration',
+  'active voice', 'positive form',
 ]);
 /** Single-word names of a thing one can make one of. */
 const COUNT = new Set(['antithesis', 'chiasmus', 'tricolon', 'metaphor', 'simile', 'conceit', 'image', 'apostrophe', 'zeugma', 'climax', 'anticlimax', 'epigram', 'paradox', 'aphorism', 'generalization', 'ironic verdict', 'ironic aside', 'parenthesis', 'cumulative sentence']);
@@ -250,6 +252,7 @@ export function practiceCheck(m: AuthorModel, attempt: string, moveName = ''): P
   const parts: string[] = [];
   if (!text) parts.push('Write a sentence first.');
   else if (target && made) parts.push(`Yes, that’s ${withArticle(nameOf(target))}.`, lengthLine);
+  else if (target && isPlainRule(target.move?.rule)) parts.push(`Not yet. ${plainFaults(m.plain, text, [target.move.rule])[0]?.reason ?? target.hint}`);
   else if (target) parts.push(`Not yet. ${target.hint}`);
   else parts.push(lengthLine);
   if (never.length) parts.push(`${cap(short)} never used ${never.map((w) => `“${w.word}”`).join(', ')}.`);
@@ -311,6 +314,17 @@ export function drillsFor(m: AuthorModel, text: string, notes?: DrillNote[] | nu
 
   const ss = ordinarySentences(text);
   if (!ss.length) return out;
+
+  // A style: a drill for each rule the text breaks, on the first sentence that breaks it.
+  if (m.author.style) {
+    for (const mv of m.author.moves ?? []) {
+      if (!isPlainRule(mv.rule)) continue;
+      const rule = mv.rule;
+      const mine = ss.find((s) => plainFaults(m.plain, s, [rule]).length);
+      if (mine) offer({ id: mv.id, key: moveKey(mv.id, mv.name), name: mv.name, does: mv.does, hint: hintOf(mv), move: mv }, mine, 'fault');
+    }
+    return out;
+  }
   const lens = ss.map((s) => lengthsOf(s).reduce((a, b) => a + b, 0));
   const mean = lens.reduce((a, b) => a + b, 0) / lens.length;
   const P = m.profile;

@@ -11,7 +11,7 @@ const voiceList = readdirSync(join(ROOT, 'authors'))
   .filter((f) => f.endsWith('.json'))
   .map((f) => {
     const a = readAuthor(ROOT, f.replace(/\.json$/, ''));
-    return { id: a.id, name: a.name, title: a.title ?? a.name, tagline: a.tagline ?? '', epigraph: a.epigraph ?? null, action: a.action ?? `${a.short} it up`, whole: a.whole ?? `${a.short}’s complete works`, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), moves: (a.moves ?? []).map((m) => ({ id: m.id, name: m.name, does: m.does })) };
+    return { id: a.id, style: !!a.style, name: a.name, title: a.title ?? a.name, tagline: a.tagline ?? '', epigraph: a.epigraph ?? null, action: a.action ?? `${a.short} it up`, whole: a.whole ?? `${a.short}’s complete works`, advisor: a.advisor, short: a.short, years: a.years, pronouns: pronounsOf(a), works: a.works.map((w) => w.title), moves: (a.moves ?? []).map((m) => ({ id: m.id, name: m.name, does: m.does })) };
   });
 
 export function authors() {

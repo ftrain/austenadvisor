@@ -18,6 +18,7 @@ import type { AuthorModel } from '../engine/model.ts';
 import type { Dist } from '../engine/profile.ts';
 import { lmKey } from '../engine/profile.ts';
 import type { Pack } from '../engine/pack.ts';
+import { needlessWords, type FaultKind, type PlainRule } from '../engine/plain.ts';
 import { lineClass, nearest } from '../engine/shape.ts';
 import { ROLES, shapeLine, type Kind, type ParagraphRoles, type Role } from '../engine/structure.ts';
 import { suggest, type Suggestion, type VoiceInfo } from '../engine/voiceid.ts';
@@ -47,8 +48,22 @@ export interface NeverWord {
   lemmaCount: number;
   /** The voice's own word for it, where the engine is sure of the sense. */
   alternative: { text: string; count: number; relation: string } | null;
-  /** "Lincoln never wrote “honestly”; he wrote “in truth” (41 times)." */
+  /** "Lincoln never wrote “honestly”; he wrote “in truth” (41 times)." For a needless word, the reason to cut it. */
   note: string;
+  /** For a style (plain), the entry is a needless word, and these say what it is: its kind, the move that cuts it,
+   * the glossary term that defines the kind, and the word to write in its place (null: cut it). */
+  kind?: FaultKind;
+  rule?: PlainRule;
+  term?: string;
+  instead?: string | null;
+}
+
+/** At most this many needless words are marked for a style. */
+export const NEEDLESS_LIMIT = 12;
+
+/** A style's needless words (plain.ts), in the shape of the words a voice never wrote, so the page marks them alike. */
+function needless(m: AuthorModel, paragraphs: string[]): NeverWord[] {
+  return needlessWords(m.plain, paragraphs, NEEDLESS_LIMIT).map((w) => ({ ...w, lemmaCount: 0, alternative: null }));
 }
 
 export interface StyleLine {
@@ -108,6 +123,8 @@ export interface Reading {
   /** The SHAPE line: the student's parts in order, the form's, and the voice's usual order. */
   shape: { yours: string; form: string; voice: string | null; signature: string | null };
   never: NeverWord[];
+  /** What `never` holds: words the voice never wrote, or, for a style, the writer's needless words. */
+  marks: 'never' | 'needless';
   style: StyleLine;
   suggest: Suggestion;
   sketch: SketchRow[];
@@ -313,7 +330,8 @@ export function readText(voice: string, text: string, form = 'auto'): Reading {
     roles,
     form: formView(structure),
     shape: { yours: shapeLine(structure.sequence), form: formLine(structure.form), voice: p ? shapeLine(p.structure.order) : null, signature: p?.structure.signature ? cap(p.structure.signature) : null },
-    never: neverWords(m, sentences),
+    never: m.author.style ? needless(m, paragraphs) : neverWords(m, sentences),
+    marks: m.author.style ? 'needless' : 'never',
     style: styleOf(short, sentences, profile.sentenceLength, profile.punctuationPerSentence),
     suggest: suggest(builtPacks(), voiceInfos(), structure.kind, text),
     sketch,

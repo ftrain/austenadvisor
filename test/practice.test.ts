@@ -33,7 +33,8 @@ describe.skipIf(!voices.length).each(voices)('practiceCheck in the voice of %s',
     }
   });
 
-  it('finds no move in a modern sentence, and names the words the voice never used', () => {
+  // A style (plain) limits no words, and a sentence that breaks no rule shows its moves: test/voices.test.ts reads it.
+  it.skipIf(!!m.author.style)('finds no move in a modern sentence, and names the words the voice never used', () => {
     const { mv } = moves[0]!;
     const r = practiceCheck(m, MODERN, mv.name);
     expect(r.move?.made).toBe(false);
@@ -54,6 +55,7 @@ describe.skipIf(!voices.length).each(voices)('practiceCheck in the voice of %s',
       expect(yes.made).toBe(true);
       expect(yes.shape?.score, `${id}: ${mv.id}`).toBeGreaterThan(0);
       expect(yes.shape!.score).toBeLessThanOrEqual(1);
+      if (m.author.style) continue;
       const no = practiceCheck(m, MODERN, mv.id);
       expect(no.verdict, `${id}: ${mv.id}`).not.toMatch(bad);
       expect(no.verdict).toMatch(/^Not yet\. /);

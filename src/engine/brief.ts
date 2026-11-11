@@ -10,6 +10,7 @@ import { analyze } from './analyze.ts';
 import { FIGURES } from './figures.ts';
 import type { DocBlock } from './doc.ts';
 import type { AuthorModel, Citation, Register } from './model.ts';
+import { plainFaults } from './plain.ts';
 
 export interface BriefSentence {
   n: number;
@@ -18,6 +19,8 @@ export interface BriefSentence {
   register: Register;
   words: number;
   never: { word: string; alternatives: string[]; synonym?: boolean }[];
+  /** For a style: where the sentence breaks a rule of the style, and what to do. A writer's voice has none. */
+  faults?: { rule: string; words: string; instead: string | null; reason: string }[];
   models: Citation[];
 }
 
@@ -73,7 +76,8 @@ export function buildBrief(m: AuthorModel, blocks: DocBlock[]): Brief {
           synonym: w.alternatives.some((x) => (x.source === 'synonym' || x.source === 'expansion') && x.weight >= 0.7 && x.count >= 5),
         }));
       const models = m.similarSentences(text, 1, { minWords: register === 'speech' ? 5 : 10, maxWords: 70, register });
-      sentences.push({ n: sentences.length + 1, paragraph, text, register, words: s.words, never, models });
+      const faults = m.author.style ? plainFaults(m.plain, text).map((f) => ({ rule: f.rule, words: f.kind === 'loaded' ? '' : f.text, instead: f.instead, reason: f.reason })) : undefined;
+      sentences.push({ n: sentences.length + 1, paragraph, text, register, words: s.words, never, ...(faults ? { faults } : {}), models });
     }
   });
   return {
@@ -132,6 +136,7 @@ export function renderBrief(m: AuthorModel, b: Brief): string {
     }
     out.push(`<sentence n="${s.n}" register="${s.register}" words="${s.words}">`, esc(s.text));
     for (const w of s.never) out.push(`  <never word="${esc(w.word)}">${short} never wrote it. ${w.alternatives.length ? `${cap(pr.possessive)} words: ${esc(w.alternatives.join('; '))}` : `${short} has no word near it: rephrase.`}</never>`);
+    for (const f of s.faults ?? []) out.push(`  <fault rule="${esc(f.rule)}">${esc(f.reason)}</fault>`);
     for (const c of s.models) out.push(`  <nearest>${esc(c.text)} (${esc(c.cite)})</nearest>`);
     out.push(`</sentence>`);
   }

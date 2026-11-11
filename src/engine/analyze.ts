@@ -272,8 +272,9 @@ export function analyze(m: AuthorModel, blocks: DocBlock[], opts: AnalyzeOptions
   advice.sort((a, b) => a.block - b.block || a.start - b.start || order[a.severity] - order[b.severity]);
   return {
     author: { id: m.author.id, name: m.author.name, short, advisor: m.author.advisor },
-    words,
-    compounds,
+    // A style's corpus supplies model sentences. It does not limit the writer's words, so none is flagged.
+    words: m.author.style ? [] : words,
+    compounds: m.author.style ? [] : compounds,
     figures,
     sentences: sentenceInfos,
     advice,

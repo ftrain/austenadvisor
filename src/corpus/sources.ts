@@ -64,6 +64,10 @@ export interface GutenbergSource {
   letters?: string;
   /** A speaker's name at the head of a paragraph in a dialogue, removed: “^(CYRIL|VIVIAN)\.\s+”. */
   speakers?: string;
+  /** Leave out every block set in from the margin: a manual's examples, many of them faults shown to be mended. */
+  dropIndented?: boolean;
+  /** Marks removed from every paragraph before it is made plain: “=” where the text sets bold as “=All right.=”. */
+  strip?: string;
 }
 
 /** What a piece in Lincoln's papers is, by its heading. */
@@ -120,9 +124,9 @@ export function sourceUrl(work: WorkConfig): string {
   return s.type === 'speeches' || s.type === 'html' ? s.url : `https://github.com/${s.repo}`;
 }
 
-/** The four families of voices, in the order the picker shows them. */
-export type Family = 'storytellers' | 'speakers' | 'arguers' | 'essayists';
-export const FAMILIES: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists'];
+/** The families of voices, in the order the picker shows them. A style (plain) is a manner, not one writer. */
+export type Family = 'storytellers' | 'speakers' | 'arguers' | 'essayists' | 'styles';
+export const FAMILIES: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists', 'styles'];
 
 /** The kinds of writing a voice may suit: the kinds the engine reads a piece as. */
 export type { Kind };
@@ -164,6 +168,11 @@ export interface AuthorConfig {
   whole?: string;
   /** How a sentence is cited: by chapter and paragraph (“Emma, ch. 3, ¶ 12”), or by chapter and verse (“Genesis 1:3”). */
   citeStyle?: 'chapter' | 'verse' | 'speech' | 'play';
+  /**
+   * A style, not a writer: its moves are rules (plain.ts), and the page marks the writer's needless words in place
+   * of the words the voice never wrote. Its corpus supplies model sentences; it does not limit the writer's words.
+   */
+  style?: boolean;
   /** A modern noun of the writer's may stand in the rewrite (the King James Bible says “phone”, not “lamp”). */
   keepModern?: boolean;
   /** Scenes of the author's that a writer's passage may echo, for the model to recognise and name. */
@@ -186,8 +195,10 @@ export interface Move {
   id: string;
   name: string;
   does: string;
-  /** A sentence that shows the move matches this (case-insensitive). */
+  /** A sentence that shows the move matches this (case-insensitive). Empty for a move found by a rule. */
   pattern: string;
+  /** A style's move is a rule the engine checks (plain.ts) in place of a pattern: “needless”, “active”, “positive”. */
+  rule?: string;
   register: 'narration' | 'speech' | 'any';
   /** How to try the move, for a student who has not yet made it: a form to fill, not the definition. “Try ‘not because …, but because …’.” */
   hint?: string;
@@ -534,6 +545,7 @@ export function readGutenberg(dir: string, src: Omit<GutenbergSource, 'type' | '
   const dropPara = src.dropPara ? new RegExp(src.dropPara) : null;
   const letters = src.letters ? new RegExp(src.letters, 'i') : null;
   const speakers = src.speakers ? new RegExp(src.speakers) : null;
+  const strip = src.strip ? new RegExp(src.strip, 'g') : null;
   const wrap = src.wrap ?? 1;
   const chapters: SourceChapter[] = [];
   let current: SourceChapter | null = null;
@@ -571,8 +583,10 @@ export function readGutenberg(dir: string, src: Omit<GutenbergSource, 'type' | '
     }
     if (!current) continue;
     if (dropPara?.test(tight.join(' '))) continue;
+    if (src.dropIndented && b.lines.every((l) => /^\s{2,}/.test(l))) continue;
     let raw = b.lines.join(' ');
     if (speakers) raw = raw.trim().replace(speakers, '');
+    if (strip) raw = raw.replace(strip, '');
     const text = plainGutenberg(raw);
     if (!text || /^[\s*.—]+$/.test(text)) continue;
     const indented = b.lines.every((l) => /^\s{2,}/.test(l));

@@ -142,7 +142,7 @@ function exemplarsOf(m: AuthorModel, rows: Row[]): { exemplars: Record<string, n
       if (key.startsWith('move:')) {
         const move = moves.find((x) => x.id === id)!;
         const reg = move.register === 'any' || r.register === move.register || (move.register === 'narration' && r.register === 'letter');
-        if (!reg || !m.shows(move, r.text)) continue;
+        if (!reg || !m.exemplifies(move, r.text)) continue;
       } else {
         const want = id === 'irony' ? ['gnomic', 'aside'] : [id];
         if (id === 'fid' && r.spoken) continue;

@@ -148,6 +148,17 @@ const BASE: Term[] = [
   T('participle', 'Participle', 'sentence', 'A verb form in -ing or -ed used as a describing word: “looking up”, “tired out”.', { also: ['participles', 'participial'] }),
   T('intensifier', 'Intensifier', 'diction', 'A word that strengthens the word after it: “quite”, “perfectly”, “absolutely”.', { also: ['intensifiers'] }),
   T('analogy', 'Analogy', 'figure', 'Explaining one thing by its likeness to another, point by point.', { example: 'The heart is a pump.', also: ['analogies'] }),
+  // Plain style: the rules its moves are made of (plain.ts), and the names its notes give a fault.
+  T('needlesswords', 'Needless words', 'diction', 'Words a sentence can lose with no loss of meaning.', { example: '“in order to win” for “to win”', also: ['needless word', 'needless words cut'] }),
+  T('stockphrase', 'Stock phrase', 'diction', 'A ready-made run of words used where one word would do.', { example: '“due to the fact that” for “because”' }),
+  T('hedge', 'Hedge', 'diction', 'Words that soften a statement, so the writer need not stand behind it.', { example: '“sort of”, “I think”, “it seems”', also: ['hedging', 'hedges and intensifiers removed'] }),
+  T('activevoice', 'Active voice', 'sentence', 'The subject of the sentence does the action.', { example: 'The dog bit the man.' }),
+  T('passivevoice', 'Passive voice', 'sentence', 'The subject of the sentence receives the action; the one who acts is left out or put after “by”.', { example: 'The man was bitten by the dog.', also: ['the passive'] }),
+  T('positiveform', 'Positive form', 'sentence', 'Saying what is so, in place of what is not.', { example: '“He forgot” for “He did not remember”', also: ['positive statement'] }),
+  T('abstractword', 'Abstract word', 'diction', 'A word for an idea or a class of things, which names no particular thing.', { example: '“situation”, “factor”, “aspect”' }),
+  T('concreteword', 'Concrete word', 'diction', 'A word for a particular thing the reader can see, hear or touch.', { example: '“rain” for “bad weather”', also: ['the concrete word', 'concrete language'] }),
+  T('oneidea', 'One idea a sentence', 'sentence', 'A sentence that states one thing and stops, and leaves the next thing to the next sentence.', { example: 'The bus was late. We missed the start.' }),
+  T('declarative', 'Declarative sentence', 'sentence', 'A sentence that states a fact, where another kind asks, orders or exclaims.', { example: 'The bridge was down.', also: ['declarative'] }),
 ];
 
 /**

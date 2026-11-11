@@ -11,6 +11,7 @@ import { WordNet, type WnPos } from '../nlp/wordnet.ts';
 import { readAuthor, type AuthorConfig } from '../corpus/sources.ts';
 import { FIGURES, figureExamples, findFigures, mayShow } from './figures.ts';
 import { fingerprintOf, loadPack, readFullSif, type Pack, type SifIndex } from './pack.ts';
+import { isPlainRule, keepsRule, modelsRule, type PlainContext } from './plain.ts';
 import type { StyleProfile } from './profile.ts';
 
 /** How a sentence is told: in narration, in speech, or in a letter. */
@@ -440,6 +441,12 @@ export class AuthorModel {
     return this.sif;
   }
 
+  private plainCtx: PlainContext | null = null;
+  /** What the plain-style detectors need: the tagger, and whether a word is an English describing word. */
+  get plain(): PlainContext {
+    return (this.plainCtx ??= { tagger: this.tagger, known: (w) => this.wn.senses(w, 'a').length > 0 });
+  }
+
   /**
    * Whether words show a move: its pattern, and for understatement the principled test as well, a negative before a
    * word whose negative prefix, taken off, leaves a word of the author's (“not intolerable”: tolerable; “not
@@ -447,6 +454,9 @@ export class AuthorModel {
    */
   shows(move: { id: string; pattern?: string }, text: string): boolean {
     const t = text.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
+    // A style's move is a rule: the sentence shows it where it breaks the rule nowhere.
+    const rule = this.author.moves?.find((x) => x.id === move.id)?.rule;
+    if (isPlainRule(rule)) return keepsRule(this.plain, rule, t);
     // A figure of speech is found by its own detector; the author's other moves by their pattern.
     if (move.id in FIGURES) {
       const want = move.id === 'irony' ? ['gnomic', 'aside'] : [move.id];
@@ -454,6 +464,15 @@ export class AuthorModel {
       if (want.some((w) => mayShow(w, t)) && findFigures(this, t).some((f) => want.includes(f.term))) return true;
     }
     return !!move.pattern && new RegExp(move.pattern, 'i').test(t);
+  }
+
+  /**
+   * Whether a sentence of the author's is fit to quote as a model of a move. For a writer's move, any sentence that
+   * shows it. For a style's rule, a sentence that shows the rule at work (plain.ts), since most sentences break none.
+   */
+  exemplifies(move: { id: string; pattern?: string }, text: string): boolean {
+    const rule = this.author.moves?.find((x) => x.id === move.id)?.rule;
+    return isPlainRule(rule) ? modelsRule(this.plain, rule, text) : this.shows(move, text);
   }
 
   /**
@@ -470,7 +489,7 @@ export class AuthorModel {
     const opts = {
       minWords: 6,
       maxWords: 60,
-      test: (t: string, reg: Register) => this.shows(move, t) && (move.register === 'any' || reg === move.register || (move.register === 'narration' && reg === 'letter')),
+      test: (t: string, reg: Register) => this.exemplifies(move, t) && (move.register === 'any' || reg === move.register || (move.register === 'narration' && reg === 'letter')),
     };
     const near1 = near ? this.similarSentences(near, k, opts) : [];
     // Words the author never used give no meaning to be near: then near the move itself.
