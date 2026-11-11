@@ -36,7 +36,7 @@ import { readForm } from '../engine/forms.ts';
 import { briefForm, fitText } from './fit.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-11.form-facts';
+export const PROMPT_VERSION = '2026-11-11.you';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -311,6 +311,7 @@ const FORM_AND_FACTS = `<form_and_facts>
 The brief may name a form (an essay, an anecdote) with its parts in order. The engine has already put the writer's paragraphs in that order: keep it. Where the form marks a part as missing, follow the form's own instruction for it; a new paragraph takes the part's role, and each of its sentences has an empty "from" and "added" true.
 The brief may list facts, each a sentence from Wikipedia with an id. You may state a fact where it helps the paragraph it is given for, in a sentence of its own: keep its numbers, dates and names exactly, put the rest in the voice's words, name the fact's id in "facts", give it an empty "from" and set "added" true. Use few; a short passage needs one or two, and many need none. State no number, date or name that is in neither the passage nor a supplied fact.
 Set "added" true on every sentence that says something the writer's text did not, and false on the rest. Added sentences are shown to the writer in a highlight, so the marking must be honest. A missing part or a fact is no liberty: do not report it in liberties.
+In every note, speak to the writer as “you”. You do not know whether the writer is a man or a woman: never call the writer, or the “I” of the passage, he or she. Where the third person is needed, say “the writer” or “they”.
 </form_and_facts>`;
 
 export function systemPrompt(m: AuthorModel): string {
@@ -454,6 +455,7 @@ export async function readForSense(m: AuthorModel, passage: string, client: Anth
   const pr = pronounsOf(a);
   const system = `You are an editor. A writer's passage is about to be rewritten in the manner of ${a.title ?? a.name}; first you read it for sense, and for nothing else.
 List every person in it and everything said of each, then ask whether it all agrees.
+In every note, speak to the writer as “you”. You do not know whether the writer is a man or a woman: never call the writer, or the “I” of the passage, he or she. Where the third person is needed, say “the writer” or “they”.
 Report only a contradiction (two statements that cannot both be true of the same person, thing or time), with the mending that makes everything agree with the least change: a woman who moved in with a single man's household is not his wife; she might be his sister. At most two. Usually none.
 ${a.echoes?.length ? `Report too any scene of ${pr.possessive} that the passage truly echoes. Among ${pr.possessive} scenes:\n${a.echoes.map((e) => `- ${e}`).join('\n')}\n` : ''}Style is not sense: say nothing of it.`;
   const response = (await client.beta.messages.create({
