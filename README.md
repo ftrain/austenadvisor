@@ -4,7 +4,7 @@ Advisor helps a student write better by showing how a great writer would have wr
 
 - **Yours**: the student's paragraph, with up to five words the voice never wrote underlined. Tap one for the voice's own word. For the plain style the underlined words are the student's needless ones, each with the reason to cut it.
 - **The voice**: the same paragraph rewritten in that voice. Text the rewrite added is highlighted, and a sentence that states a fact carries a footnote.
-- **Why**: at most two notes a row. Each names a move the rewrite made, says what it does, and quotes a real sentence of the voice's that makes it, cited by work and chapter. A paragraph the form moved, and a part written to fill the form, each say so.
+- **Why**: at most three notes a row. Each names a move the rewrite made, says what it does, and quotes a real sentence of the voice's that makes it, cited by work and chapter. A paragraph the form moved, and a part written to fill the form, each say so.
 
 The rewrite is written by a language model, in one call for each part of the text. Everything else on the page comes from the engine, which has no language model: a statistical model of each voice built from its complete works, the fitting of the text to its form, the facts and the checks on what was added.
 

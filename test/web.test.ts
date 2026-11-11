@@ -245,13 +245,13 @@ describe('the page', () => {
     const part = lines.find((l) => l.type === 'part');
     const first = part.rows[0];
     const extra = { kind: 'liberty', technique: 'Added by Austen', before: '', after: 'not a little strange', text: 'An understatement.', quote: null, verified: true };
-    first.notes = [...first.notes, extra, extra];
+    first.notes = [...first.notes, extra, extra, extra];
     // The second row repeats the first row's move: it must not show again.
     part.rows[1].notes = [first.notes[0], ...part.rows[1].notes];
     override = (path) => (path === '/api/rewrite' ? new Response(lines.map((l) => JSON.stringify(l)).join('\n')) : undefined);
     await onResult();
     const rows = [...app().querySelectorAll('.pg-row')];
-    for (const r of rows) expect(r.querySelectorAll('.pg-why .pg-note').length).toBeLessThanOrEqual(2);
+    for (const r of rows) expect(r.querySelectorAll('.pg-why .pg-note').length).toBeLessThanOrEqual(3);
     const heads = [...app().querySelectorAll('.pg-why .pg-note:not(.pg-note-liberty) .pg-note-head')].map((x) => x.textContent);
     expect(new Set(heads).size).toBe(heads.length);
   });

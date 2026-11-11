@@ -88,7 +88,7 @@ export interface ResultView {
 }
 
 /** Notes shown in the WHY column of one row, at most. */
-export const NOTES_PER_ROW = 2;
+export const NOTES_PER_ROW = 3;
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 const listOf = (xs: (string | number)[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`);
 /** A footnote links only to Wikipedia: any other address is shown as its title alone. */
@@ -475,13 +475,13 @@ export function result(o: ResultOptions): ResultView {
     }
     cells.append(theirs);
 
-    // WHY: two notes at most, no move twice on the page.
+    // WHY: three notes at most. A move shows once on the page; a figure may show a second time, more briefly.
     const why = h('div', { class: 'pg-cell pg-why' }, label('Why'));
     let n = 0;
     for (const note of r.notes) {
       if (n >= NOTES_PER_ROW) break;
       if (note.kind === 'move') {
-        const k = note.id ?? note.technique.toLowerCase();
+        const k = (note.id ?? note.technique.toLowerCase()) + ((note as { again?: boolean }).again ? '#2' : '');
         if (seen.has(k)) continue;
         seen.add(k);
       }
@@ -625,8 +625,10 @@ export function result(o: ResultOptions): ResultView {
       actions.append(read);
     }
     const mine = r.yours.find((y) => n.before && norm(y.text).includes(norm(n.before).slice(0, 40)))?.text ?? (n.before && n.before.length < 240 ? n.before : r.yours[0]?.text ?? '');
-    actions.append(tryButton(s, row, { move: n.id ?? n.technique, name: n.technique, sentence: mine }));
-    return h('div', { class: 'pg-note' }, h('p', { class: 'pg-note-head' }, ...o.terms.defined(head)), n.text ? h('p', { class: 'pg-note-text' }, ...o.terms.defined(n.text)) : null, n.quote ? quoteEl(n.quote) : null, actions, passage);
+    // A figure the student made themselves is praise, and needs no drill.
+    const own = !!(n as { yours?: boolean }).yours;
+    if (!own) actions.append(tryButton(s, row, { move: n.id ?? n.technique, name: n.technique, sentence: mine }));
+    return h('div', { class: own ? 'pg-note pg-note-yours' : 'pg-note' }, h('p', { class: 'pg-note-head' }, ...o.terms.defined(head)), n.text ? h('p', { class: 'pg-note-text' }, ...o.terms.defined(n.text)) : null, n.quote ? quoteEl(n.quote) : null, actions, passage);
   }
 
   function drillEl(s: ResultState, d: Drill, row: HTMLElement): HTMLElement {
