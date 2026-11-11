@@ -633,13 +633,14 @@ function formFigures(m: AuthorModel, text: string, toks: Token[], tags: string[]
       }
     }
 
-    // Alliteration: three content words running that open on one consonant sound, with at most a small word between.
+    // Alliteration: four content words running that open on one consonant sound, with at most a small word between.
+    // Three fall together by chance too often to name.
     {
       let run: number[] = [];
       let sound = '';
       let gap = 0;
       const flush = () => {
-        if (run.length >= 3) span('alliteration', run[0]!, run[run.length - 1]!);
+        if (run.length >= 4) span('alliteration', run[0]!, run[run.length - 1]!);
         run = [];
         sound = '';
         gap = 0;

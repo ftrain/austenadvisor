@@ -442,9 +442,8 @@ describe.skipIf(!existsSync(authorDbPath('plain')))('a style’s writer', () => 
     expect(x([{ term: 'metaphor', quote: 'a' }, { term: 'irony', quote: 'reached' }, { term: 'metonymy', quote: 'life' }])).toEqual([{ term: 'irony', quote: 'reached' }]);
     expect(x('metaphor')).toEqual([]);
     expect(x(undefined)).toEqual([]);
-    // Free indirect discourse is the narrator's sentence: words inside quotation marks are speech.
-    expect(x([{ term: 'fid', quote: 'Why should she go' }], 'She said, “Why should she go?”')).toEqual([]);
-    expect(x([{ term: 'fid', quote: 'Why should she go' }], 'Why should she go?')).toEqual([{ term: 'fid', quote: 'Why should she go' }]);
+    // Free indirect discourse is not on the list.
+    expect(x([{ term: 'fid', quote: 'Why should she go' }], 'Why should she go?')).toEqual([]);
     expect(SUBMIT.input_schema.properties.paragraphs.items.properties.sentences.items.required).toContain('figures');
   });
 });

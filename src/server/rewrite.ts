@@ -36,7 +36,7 @@ import { readForm } from '../engine/forms.ts';
 import { briefForm, fitText } from './fit.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-11.figures';
+export const PROMPT_VERSION = '2026-11-11.figures2';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -156,12 +156,12 @@ export function submitted(input: Record<string, unknown>, id = `toolu_${Math.ran
 export type Strength = 'full';
 
 /** The figures the writer of a rewrite may name in its own sentences: those the engine has no form to find. */
-export const CLAIMABLE = ['metaphor', 'personification', 'metonymy', 'synecdoche', 'zeugma', 'oxymoron', 'irony', 'fid'];
+export const CLAIMABLE = ['metaphor', 'personification', 'metonymy', 'synecdoche', 'zeugma', 'oxymoron', 'irony'];
 
 /**
  * The figures a sentence was said to make, kept only where they can stand: a term from the list, a quotation of at
- * least two letters that is in the sentence word for word, and for free indirect discourse, words outside quotation
- * marks. One a sentence.
+ * least two letters that is in the sentence word for word. One a sentence. Free indirect discourse is not on the
+ * list: the first rewrite to name it named a reported question.
  */
 export function claimedFigures(x: SubmittedSentence): { term: string; quote: string }[] {
   const out: { term: string; quote: string }[] = [];
@@ -170,7 +170,6 @@ export function claimedFigures(x: SubmittedSentence): { term: string; quote: str
     const quote = f.quote.trim().replace(/^[“"‘']+|[”"’'.,;:!?]+$/g, '');
     const at = quote.length > 1 && /\p{L}{2}/u.test(quote) ? x.text.indexOf(quote) : -1;
     if (at < 0) continue;
-    if (f.term === 'fid' && (x.text.slice(0, at).match(/[“"]/g)?.length ?? 0) > (x.text.slice(0, at).match(/[”]/g)?.length ?? 0)) continue;
     out.push({ term: f.term, quote });
     break;
   }
@@ -404,7 +403,7 @@ Each sentence has a "figures" list. Leave it empty unless the sentence plainly m
 - zeugma: one word used with two others in two senses ("lost her keys and her temper").
 - oxymoron: two words of opposite meaning joined ("cruel kindness").
 - irony: words that say one thing so that the reader understands another.
-- fid (free indirect discourse): a character's thought given in the narrator's own sentence, with no "she thought" and no quotation marks.
+A figure the writer made counts as much as one of yours: where your sentence keeps the writer's own figure ("Time had stolen his hair" is personification), name it, so the writer is told what they did well.
 Name a figure only where a careful teacher would agree at once. A dead metaphor ("the leg of the table", "time flies") is none. One figure a sentence at most; most sentences have none. The engine finds the other figures itself: name no others.
 </figures>`;
 

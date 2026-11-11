@@ -273,12 +273,10 @@ describe.skipIf(!built)('the Austen engine', () => {
       ['s', 'k', 'f', 'f', 'n', 'r', 'h', 'w', '', 'k', 'ch', 'j', 'g', 'w', 'y', 's', ''],
     );
     const texts = (t: string) => findFigures(m, t).filter((f) => f.term === 'alliteration').map((f) => f.text);
-    expect(texts('The counselors keep a close watch on us.')).toEqual(['counselors keep a close']);
-    expect(texts('The city sent six cellists to the hall.')).toEqual(['city sent six cellists']);
+    expect(texts('The city sent seven solemn cellists to the hall.')).toEqual(['city sent seven solemn cellists']);
     expect(texts('He took the phone and found a fine photograph.')).toEqual(['phone and found a fine photograph']);
-    expect(texts('He knew no nicer neighbour.')).toEqual(['knew no nicer neighbour']);
-    // One letter, two sounds; two words are not three; a word repeated is not alliteration; small words do not count.
-    for (const t of ['The cat sat in the city centre.', 'She had a big brown dog.', 'It was a long, long lane.', 'We can’t cork that bottle.', 'The printers came, the paper presently died.']) expect(texts(t), t).toEqual([]);
+    // One letter, two sounds; three words are not four; a word repeated is not alliteration; small words do not count.
+    for (const t of ['The counselors keep a close watch on us.', 'He knew no nicer neighbour.', 'The cat sat in the city centre.', 'She had a big brown dog.', 'It was a long, long lane.', 'We can’t cork that bottle.', 'The printers came, the paper presently died.']) expect(texts(t), t).toEqual([]);
   });
 
   it('finds the periodic sentence, apostrophe, simile and correction by their forms', () => {
