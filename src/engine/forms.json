@@ -1,0 +1,96 @@
+[
+  {
+    "id": "essay",
+    "name": "Essay",
+    "kind": "essay",
+    "definition": "A short piece that states a claim, gives reasons with evidence, answers the other side and closes.",
+    "slots": [
+      { "role": "claim", "required": true, "says": "opens with its claim" },
+      { "role": "reason", "required": true, "says": "gives its reasons after the claim" },
+      { "role": "evidence", "required": false, "beside": "reason", "says": "backs each reason with evidence" },
+      { "role": "objection", "required": true, "beside": "reason", "says": "states the other side’s case fairly" },
+      { "role": "answer", "required": true, "beside": "reason", "says": "answers the other side" },
+      { "role": "call", "required": true, "says": "closes by saying what the reader should now believe or do" }
+    ]
+  },
+  {
+    "id": "argument",
+    "name": "Argument",
+    "kind": "argument",
+    "definition": "A piece written to win the reader over: a claim, the reasons for it, and a call to act.",
+    "slots": [
+      { "role": "claim", "required": true, "says": "states its claim first" },
+      { "role": "reason", "required": true, "says": "gives the reasons for its claim" },
+      { "role": "evidence", "required": false, "beside": "reason", "says": "backs each reason with facts" },
+      { "role": "objection", "required": false, "beside": "reason", "says": "states the other side’s case fairly" },
+      { "role": "answer", "required": false, "beside": "reason", "says": "answers the other side" },
+      { "role": "stakes", "required": false, "beside": "reason", "says": "shows what is won or lost" },
+      { "role": "call", "required": true, "says": "ends by asking the reader to act" }
+    ]
+  },
+  {
+    "id": "anecdote",
+    "name": "Anecdote",
+    "kind": "story",
+    "short": true,
+    "definition": "A short account of one thing that happened, told to make a point.",
+    "slots": [
+      { "role": "scene", "required": true, "says": "sets the scene in a line or two" },
+      { "role": "turn", "required": true, "says": "tells the moment things changed" },
+      { "role": "verdict", "required": true, "says": "ends on its point" }
+    ]
+  },
+  {
+    "id": "story",
+    "name": "Story",
+    "kind": "story",
+    "definition": "An account of events in the order they happened: a scene, a turn, and what it meant.",
+    "slots": [
+      { "role": "scene", "required": true, "says": "begins by setting the scene" },
+      { "role": "turn", "required": true, "says": "turns on a moment of change" },
+      { "role": "feeling", "required": false, "beside": "turn", "says": "shows how the moment felt" },
+      { "role": "verdict", "required": false, "says": "ends by saying what it meant" }
+    ]
+  },
+  {
+    "id": "letter",
+    "name": "Letter",
+    "kind": "letter",
+    "definition": "A piece written to one reader: a greeting, the news, what the writer asks for, and a sign-off.",
+    "slots": [
+      { "role": "greeting", "required": true, "says": "begins by naming its reader" },
+      { "role": "news", "required": true, "says": "gives the news" },
+      { "role": "request", "required": false, "beside": "news", "says": "asks for what the writer wants" },
+      { "role": "close", "required": true, "says": "ends with a sign-off" }
+    ]
+  },
+  {
+    "id": "speech",
+    "name": "Speech",
+    "kind": "speech",
+    "definition": "A piece written to be heard: it greets the listeners, argues a claim and ends on a call.",
+    "slots": [
+      { "role": "greeting", "required": true, "says": "greets its listeners first" },
+      { "role": "claim", "required": true, "says": "states its claim early" },
+      { "role": "reason", "required": true, "says": "gives the reasons for its claim" },
+      { "role": "evidence", "required": false, "beside": "reason", "says": "backs each reason with facts" },
+      { "role": "objection", "required": false, "beside": "reason", "says": "states the other side’s case fairly" },
+      { "role": "answer", "required": false, "beside": "reason", "says": "answers the other side" },
+      { "role": "stakes", "required": false, "beside": "reason", "says": "shows what is won or lost" },
+      { "role": "call", "required": true, "says": "asks its listeners to act" },
+      { "role": "close", "required": false, "says": "ends with thanks or a farewell" }
+    ]
+  },
+  {
+    "id": "review",
+    "name": "Review",
+    "kind": "review",
+    "definition": "A judgement of a book, a film or other work, with the reasons for it.",
+    "slots": [
+      { "role": "claim", "required": true, "says": "gives its judgement first" },
+      { "role": "reason", "required": true, "says": "gives the reasons for its judgement" },
+      { "role": "evidence", "required": false, "beside": "reason", "says": "points to moments in the work" },
+      { "role": "call", "required": false, "says": "ends by telling the reader whether to seek the work out" }
+    ]
+  }
+]

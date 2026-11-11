@@ -2,6 +2,7 @@
 // the student types and while a rewrite is on its way:
 //
 // - kind and roles: what sort of writing it is, and what each paragraph does (structure.ts);
+// - form: the form asked for, or the form of the kind, with the text fitted to it (forms.ts);
 // - never: up to five words the voice never wrote, the rarest first, each with the voice's own word where the
 //   engine is sure of it;
 // - style: words a sentence and one joining mark, the student's against the voice's;
@@ -12,12 +13,13 @@ import { ROOT } from '../db.ts';
 import { cap, goodForOf, pronounsOf, readAuthor } from '../corpus/sources.ts';
 import { alternatives, type Alternative, type Slot } from '../engine/alternatives.ts';
 import { blocksOfText } from '../engine/doc.ts';
+import { formLine, readForm, type AlignedSlot, type Move } from '../engine/forms.ts';
 import type { AuthorModel } from '../engine/model.ts';
 import type { Dist } from '../engine/profile.ts';
 import { lmKey } from '../engine/profile.ts';
 import type { Pack } from '../engine/pack.ts';
 import { lineClass, nearest } from '../engine/shape.ts';
-import { readStructure, ROLES, shapeLine, type Kind, type ParagraphRoles, type Role } from '../engine/structure.ts';
+import { ROLES, shapeLine, type Kind, type ParagraphRoles, type Role } from '../engine/structure.ts';
 import { suggest, type Suggestion, type VoiceInfo } from '../engine/voiceid.ts';
 import { isProperTag } from '../nlp/tagger.ts';
 import { looksProper, sentences as splitSentences, tokenize, type Token } from '../nlp/tokenize.ts';
@@ -74,14 +76,37 @@ export interface SketchRow {
   match: { id: number; text: string; cite: string; score: number } | null;
 }
 
+/** The form the text is read for, and how the text fits it. Paragraph numbers are indexes in `paragraphs`. */
+export interface FormView {
+  id: string;
+  name: string;
+  definition: string;
+  /** True when the student asked for no form and the engine took the form of the kind. */
+  auto: boolean;
+  /** The form's parts in order: "Claim · Reason · Evidence · Objection · Answer · Call". */
+  line: string;
+  /** Each slot with the paragraphs that fill it, and its role's name as a label shows it. */
+  slots: (AlignedSlot & { name: string })[];
+  /** The paragraphs in the form's order. */
+  order: number[];
+  /** The paragraphs the form puts elsewhere, each with the reason. */
+  moved: Move[];
+  /** The required parts the text lacks. */
+  missing: Role[];
+}
+
+/** Thrown for a form id that names no form. */
+export class UnknownForm extends Error {}
+
 export interface Reading {
   voice: string;
   kind: Kind;
   /** The paragraphs as read: the indexes in roles, never and sketch refer to these. */
   paragraphs: string[];
   roles: (ParagraphRoles & { name: string })[];
-  /** The SHAPE line: the student's parts in order, and the voice's usual order. */
-  shape: { yours: string; voice: string | null; signature: string | null };
+  form: FormView;
+  /** The SHAPE line: the student's parts in order, the form's, and the voice's usual order. */
+  shape: { yours: string; form: string; voice: string | null; signature: string | null };
   never: NeverWord[];
   style: StyleLine;
   suggest: Suggestion;
@@ -242,14 +267,32 @@ function voiceInfos(): VoiceInfo[] {
 /** Every built voice's pack that is in memory or on disk. */
 export const builtPacks = (): Pack[] => loadPacks(voiceInfos().map((v) => v.id));
 
-/** The engine's reading of a text against a built voice. */
-export function readText(voice: string, text: string): Reading {
+/** A form reading as the page is sent it. */
+export function formView(r: NonNullable<ReturnType<typeof readForm>>): FormView {
+  const { form, auto, alignment: a } = r;
+  return {
+    id: form.id,
+    name: form.name,
+    definition: form.definition,
+    auto,
+    line: formLine(form),
+    slots: a.slots.map((s) => ({ ...s, name: ROLES[s.role].name })),
+    order: a.order,
+    moved: a.moved,
+    missing: a.missing,
+  };
+}
+
+/** The engine's reading of a text against a built voice, fitted to a form: a form id, or 'auto' for the form of
+ * the kind the text is. Throws UnknownForm for any other id. */
+export function readText(voice: string, text: string, form = 'auto'): Reading {
   const t0 = performance.now();
   const m = model(voice);
   const p = pack(voice);
   const short = m.author.short;
   const { paragraphs, sentences } = sentencesOfText(text);
-  const structure = readStructure(text);
+  const structure = readForm(text, form);
+  if (!structure) throw new UnknownForm(`No form “${form}” is known here.`);
   const roles = structure.roles.map((r) => ({ ...r, name: ROLES[r.role as Role].name }));
   const sketch: SketchRow[] = sentences.map((s) => {
     const hit = p ? nearest(s.text, p) : null;
@@ -268,7 +311,8 @@ export function readText(voice: string, text: string): Reading {
     kind: structure.kind,
     paragraphs,
     roles,
-    shape: { yours: shapeLine(structure.sequence), voice: p ? shapeLine(p.structure.order) : null, signature: p?.structure.signature ? cap(p.structure.signature) : null },
+    form: formView(structure),
+    shape: { yours: shapeLine(structure.sequence), form: formLine(structure.form), voice: p ? shapeLine(p.structure.order) : null, signature: p?.structure.signature ? cap(p.structure.signature) : null },
     never: neverWords(m, sentences),
     style: styleOf(short, sentences, profile.sentenceLength, profile.punctuationPerSentence),
     suggest: suggest(builtPacks(), voiceInfos(), structure.kind, text),

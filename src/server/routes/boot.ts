@@ -1,11 +1,12 @@
 // Everything the page needs to draw itself, in one request: the voices with their families and the kinds they
-// suit, the samples with their text, the glossary, whether full rewrites of a student's own text are available, and
+// suit, the forms a student can ask for, the samples with their text, the glossary, whether full rewrites of a student's own text are available, and
 // which voices each sample is already rewritten in.
 
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { DATA, ROOT } from '../../db.ts';
 import { familyOf, goodForOf, readAuthor, type AuthorConfig } from '../../corpus/sources.ts';
+import { FORMS } from '../../engine/forms.ts';
 import { Glossary } from '../../engine/glossary.ts';
 import { route, send } from '../http.ts';
 import { aiAvailable } from '../rewrite.ts';
@@ -48,6 +49,7 @@ export function boot() {
   return {
     voices,
     samples,
+    forms: FORMS.map(({ id, name, definition }) => ({ id, name, definition })),
     glossary: Glossary.load().all(),
     ai: { available: aiAvailable() },
     ready: readyMap(

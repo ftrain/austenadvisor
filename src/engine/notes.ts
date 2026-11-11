@@ -68,10 +68,11 @@ const curly = (t: string) => t.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, 
 const narration = (t: string) => curly(t).replace(/“[^”]*”?/g, (q) => ' '.repeat(q.length));
 const wordSet = (t: string) => new Set(t.toLowerCase().match(/[\p{L}'’]{3,}/gu) ?? []);
 
-/** The glossary term for a move's id or name. A role (“turn”, “objection”) names a paragraph's work, not a move. */
+/** The glossary term for a move's id or name. A role (“turn”, “objection”) names a paragraph's work, not a move,
+ * and a form (“essay”) names a whole piece. */
 const moveTerm = (name: string) => {
   const t = termOf(name);
-  return t && t.kind !== 'role' ? t : undefined;
+  return t && t.kind !== 'role' && t.kind !== 'form' ? t : undefined;
 };
 
 /** The one id a move goes by, whatever the voice or the glossary calls it. */

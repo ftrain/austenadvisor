@@ -14,7 +14,7 @@ import { FIGURES } from './figures.ts';
 import type { GlossaryEntry } from './terms.ts';
 export { findTerms, type GlossaryEntry } from './terms.ts';
 
-export type TermKind = 'figure' | 'sound' | 'verse' | 'sentence' | 'narrative' | 'argument' | 'diction' | 'role';
+export type TermKind = 'figure' | 'sound' | 'verse' | 'sentence' | 'narrative' | 'argument' | 'diction' | 'role' | 'form';
 
 export interface Term {
   id: string;
@@ -185,11 +185,43 @@ function loadRoles(): Term[] {
   }
 }
 
-/** Every term: the list above, then the roles. */
-export const TERMS: Term[] = [...BASE, ...loadRoles()];
+/**
+ * The forms a student can ask for (essay, anecdote, letter), from src/engine/forms.json, so the page can define a
+ * form's name where it shows one. Like a role, a form's name is an everyday word: it is defined where the page
+ * shows it as a label, by formTerm, and never marked in running prose.
+ */
+export function formsOf(raw: unknown, taken: Term[] = BASE): Term[] {
+  const names = new Set(taken.flatMap(namesOf));
+  const out: Term[] = [];
+  for (const f of Array.isArray(raw) ? (raw as { id?: string; name?: string; definition?: string }[]) : []) {
+    if (!f?.id || typeof f.definition !== 'string') continue;
+    const name = (f.name ?? f.id).trim();
+    if (names.has(name.toLowerCase())) continue;
+    names.add(name.toLowerCase());
+    out.push(T(`form-${f.id}`, name[0]!.toUpperCase() + name.slice(1), 'form', f.definition.trim(), { unless: '^' }));
+  }
+  return out;
+}
+
+const FORMS_FILE = join(dirname(fileURLToPath(import.meta.url)), 'forms.json');
+function loadForms(taken: Term[]): Term[] {
+  try {
+    return existsSync(FORMS_FILE) ? formsOf(JSON.parse(readFileSync(FORMS_FILE, 'utf8')), taken) : [];
+  } catch {
+    return [];
+  }
+}
+
+const ROLE_TERMS = loadRoles();
+
+/** Every term: the list above, then the roles, then the forms. */
+export const TERMS: Term[] = [...BASE, ...ROLE_TERMS, ...loadForms([...BASE, ...ROLE_TERMS])];
 
 /** The glossary id of a role word: “claim” is defined under “role-claim”. */
 export const roleTerm = (role: string): string => `role-${role}`;
+
+/** The glossary id of a form's name: “essay” is defined under “form-essay”. */
+export const formTerm = (form: string): string => `form-${form}`;
 
 let byName: Map<string, Term> | null = null;
 /**
