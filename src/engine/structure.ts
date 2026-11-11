@@ -1,7 +1,8 @@
 // How a piece is built, read without a language model: what kind of writing it is (argument, story, letter, speech,
 // essay or review), what job each paragraph does in it (claim, reason, scene, close), and, over an author's corpus,
 // the order that author usually puts those jobs in. Everything here is cue words and position, so it runs in
-// milliseconds and says "part" where it cannot tell.
+// milliseconds and says "part" where it cannot tell. A label below GUESS_BELOW rests on where the paragraph stands
+// and how it reads, with no cue word to back it: the page shows it as a guess.
 
 import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -17,17 +18,21 @@ export type Role =
   | 'claim' | 'reason' | 'evidence' | 'objection' | 'answer' | 'call' | 'stakes'
   | 'scene' | 'turn' | 'feeling' | 'verdict'
   | 'greeting' | 'news' | 'request' | 'close'
+  | 'background' | 'occasion' | 'description' | 'question'
   | 'part';
 
+const ARGUED: Role[] = ['claim', 'reason', 'evidence', 'objection', 'answer', 'call', 'stakes', 'background', 'question', 'description', 'scene', 'verdict'];
+
 /** The roles each kind of writing is read for. A speech, an essay and a review are read as arguments, with a
- * speech's greeting and close. */
+ * speech's greeting and close. An argument may open with background or a question, tell a scene as its example,
+ * and end on a verdict. */
 export const ROLES_BY_KIND: Record<Kind, Role[]> = {
-  argument: ['claim', 'reason', 'evidence', 'objection', 'answer', 'call', 'stakes'],
+  argument: ARGUED,
   story: ['scene', 'turn', 'feeling', 'verdict'],
   letter: ['greeting', 'news', 'request', 'close'],
-  speech: ['greeting', 'claim', 'reason', 'evidence', 'objection', 'answer', 'call', 'stakes', 'close'],
-  essay: ['claim', 'reason', 'evidence', 'objection', 'answer', 'call', 'stakes'],
-  review: ['claim', 'reason', 'evidence', 'objection', 'answer', 'call', 'stakes'],
+  speech: ['greeting', ...ARGUED, 'close'],
+  essay: ARGUED,
+  review: ARGUED,
 };
 
 export interface RoleInfo {
@@ -44,6 +49,8 @@ export const ROLES: Record<Role, RoleInfo> = JSON.parse(readFileSync(join(dirnam
 
 /** Below this, a label is not shown: the paragraph or span is called "part". */
 export const ROLE_THRESHOLD = 0.5;
+/** Below this, a label is a guess from position and manner, with no cue word behind it. */
+export const GUESS_BELOW = 0.6;
 
 export interface RoleSpan {
   role: Role;
@@ -198,20 +205,48 @@ interface Cue {
   confidence: number;
 }
 
-const ENUMERATOR = /^(first(ly)?|first of all|to begin with|second(ly)?|third(ly)?|fourth|also|another (reason|thing|problem)|in addition|additionally|moreover|furthermore|finally|plus|on top of that|besides)\b/i;
+// “First period is a nightmare” counts nothing: a counting word enumerates only before a comma or “of all”.
+const ENUMERATOR = /^(first(ly)?,|second(ly)?,|third(ly)?,|fourth,|(first of all|first off|to begin with|also|another (reason|thing|problem)|in addition|additionally|moreover|furthermore|finally|plus|on top of that|besides)\b)/i;
+const STEP = /^(first|second|third|next|then|finally)[, ]+(make sure|you (need|have) to|preheat|add|mix|mash|pour|put|take|get|open|turn|cut|stir|bake)\b/i;
 const OBJECTION = /^(some (people|students|parents|teachers|critics|say|might|may|argue|think|believe)|others? (say|argue|think|believe|might)|critics|opponents|my opponent|people (say|think|argue)|it is said|it['’]s true that|you (might|may) (say|think)|one (might|may|could) (say|argue)|of course,? some|many (people|believe|say)|[\p{Lu}][\p{L}]+ (say|says|argue|argues|claim|claims) )/iu;
-const OBJECTION_ANY = /\b(my opponent (says|said|claims|argues)|they (say|said|claim|argue)|critics (say|argue))\b/i;
+const CONCEDE = /^(although|even though|while (some|it|many|that)|granted|admittedly|it is true|not everyone|i know (that )?(some|it))\b/i;
+const LIMITS = /\b(some|a few|possible|the|sources? of) (errors?|limitations?|weakness(es)?)\b/i;
+const OBJECTION_ANY = /\b(my opponent (says|said|claims|argues)|critics (say|argue))\b/i;
+// “They say” is the other side only where the other side is already speaking: after “Scientists have studied this” it is evidence.
+const THEY_SAY = /\bthey (say|said|claim|argue)\b/i;
 const ANSWER = /^(but|however|yet|still|even so|that is not|that['’]s not|this is not|that doesn['’]t|okay,? but|true,? but|while that|the problem is|in fact|actually)\b/i;
 const CALL_LEAD = /^(that is why|that['’]s why|this is why|so|therefore|in conclusion|for (all )?these reasons|it is time|it['’]s time|together|remember|let us|let['’]s|please|vote|join|sign|ask)\b/i;
-const CALL_WORD = /\b(should|must|need to|ought to|vote|let['’]s|it is time|it['’]s time|join us|sign up)\b/i;
+const CALL_WORD = /\b(should|must|need to|ought to|vote|let['’]s|it is time|it['’]s time|join us|sign up|recommend)\b/i;
+const IMPERATIVE = /^(remember|imagine|think about|try|go|make|take|do|don['’]t|stop|start|give|ask|tell|read|buy|write|call)\b/i;
 const EVIDENCE = /\b(for example|for instance|according to|studies|a study|research(ers)? (show|shows|found|says)|scientists|experts|survey|statistics|percent)\b|\d+(\.\d+)?\s?%|\([A-Z][a-z]+,? \d+\)|[“"][^”"]{30,}[”"]/i;
 const STAKES = /\b(at stake|matters because|it matters|what happens if|if we (don['’]t|do not|keep)|will (suffer|fall behind|lose|get worse|go down)|dangerous|in danger|the real issue|the cost of)\b/i;
 const CLAIM_WORD = /\b(should|shouldn['’]t|must|ought|is wrong|are wrong|is right|bad idea|good idea|i believe|i think|i would give|is (one of )?the best|is (one of )?the worst|deserves?|worth it)\b/i;
 
+// What an argument, an essay, a review or a speech does besides argue: it sets out what the reader must know,
+// asks its question, tells a scene as an example, and sums up.
+const THESIS = /\b(best(?! friend)|worst|the most \p{L}+|too (early|late|much|many|long|hard|expensive|short|strict|young|old|easy)|better than|worse than|different (in|from)|similar (in|to)|more important than|(really|very|truly|honestly|super) (interesting|important|good|bad|great))\b/iu;
+const BACKGROUND = /\b(today|these days|nowadays|in today['’]s|every day|everyone has|(many|most) (people|teenagers|students|kids|teens)|a (big|huge|large) part of)\b|^in the (story|book|novel|poem|play|movie|film|article|essay|text)\b|\bthe (main character|narrator)\b/i;
+const ASKS = /\b(the purpose of|the question (is|was)|to (see|find out|test|learn|figure out) (if|whether|how|why|what))\b/i;
+const SUMS_UP = /^(overall|all in all|in the end|at the end of the day|in summary|to sum up|so (i think|i guess|in the end|basically)|i think)\b/i;
+const SHOWS = /\b(this|it) (just )?(proves|shows|means|suggests)\b|\bthese results\b/i;
+const MEASURED = /\b\d+(\.\d+)?\s?(cm|mm|km|kg|lbs?|pounds|inches|feet|degrees|percent)\b/i;
+const INTERPRETS = /\b(is a (symbol|metaphor)|represents|symboli[sz]es)\b/i;
+const MEMORY = /^(one (time|day|night|morning)|last (year|week|month|summer|night)|when (i|we|[\p{Lu}][\p{L}]+) (was|were|first|started|met)|in (high|middle|elementary) school|in \p{L}+ grade|every (summer|year|winter|weekend|morning|day)|once,|a few (days|weeks|months|years) ago|yesterday)\b/iu;
+const JUDGES = /^(but |also |and )?(the|its|their|his|her|it|they)\b[^.?!]{0,30}(\b(is|are|was|were)|['’]s|['’]re)\b[^.?!]{0,20}\b(good|great|bad|terrible|amazing|awesome|fine|okay|strong|weak|cheap|boring|realistic|relatable|comfortable|annoying|clear|slow|fast|worth it)\b/i;
+const PLEDGE = /\b(if i win|if elected|i promise|i want to (make|help|change|bring|fix)|i(['’]m| am) going to (make|fix|change|bring|work|fight))\b/i;
+const CREDENTIAL = /\bi (was|am|have been|served as) (the|a|an)\b|\bi(['’]m| am) (a|an|really|very)\b/i;
+const DESCRIBES = /^(there (is|are|was|were)\b|there['’]s\b|the [\p{L} ]{1,25} (is|are)\b|it['’]s\b|it is\b|you (can )?(see|hear|smell)\b|when you walk\b|sometimes there)/iu;
+const FIRST_PERSON = /\b(i|we|my|me|our)\b/i;
+
 const TURN = /^(then|suddenly|but then|all of a sudden|that['’]s when|that is when|one day|finally|until|just then|out of nowhere|without warning|it turns out|it turned out|later)\b|\b(suddenly|all of a sudden|it was just|turned out|that['’]s when)\b/i;
 const FEELING = /\b(i|we|he|she|they) (felt|feel|was|were) (so |really |very |kind of |totally |a little |pretty )?(scared|afraid|sad|angry|mad|happy|nervous|embarrassed|relieved|stupid|lonely|excited|out of place|terrible|awful|guilty|proud|hurt|upset|furious|shocked|confused)\b|\b(wanted to cry|it (still )?hurt|my heart|tears|i panicked|basically panicked|cried)\b/i;
 const VERDICT = /^(maybe|looking back|in the end|honestly|sometimes|anyway|i realized|i learned|now i know|it just shows|that['’]s when i knew|i will never forget|i['’]ll never forget)\b|\b(i realized|i learned|it just shows|i will never forget|the best day|the worst day|turn out to be|wrong about|was right about|taught me)\b/i;
-const SCENE = /^(it was|there (was|were)|the [\p{L}]+ (was|were|is)|on [\p{Lu}]|last [\p{L}]+|when i|my [\p{L}]+ (and i|was|is)|our [\p{L}]+ (was|to)|[\p{Lu}][\p{L}]+ (texted|called|moved))/iu;
+const VERDICT_END = /^so (i think|i guess|maybe|now i)\b|^(it|that|this) was (a |an |the )?(really |pretty |very |so )?(interesting|good|great|fun|weird|awkward|bad|terrible|worth it|best|worst)\b/i;
+const SUPERLATIVE = /\b(was|is) the (best|worst|greatest|most \p{L}+)\b[^.?!]*\bever\b/iu;
+const WONDERS = /\bi (also |still |just )?(keep|kept) thinking\b|\bi (can['’]t|couldn['’]t) stop thinking\b|\bwhat if\b|\bi (really )?(hope|hoped|wish|wished)\b|\bi don['’]t (even |really )?(know|care)\b/i;
+const SCENE = /^(it was|there (was|were)|the (?!(thing|problem|point|truth|fact) )([\p{L}'’]+ ){1,3}(was|were|is)|on [\p{Lu}]|last [\p{L}]+|when i|my [\p{L}]+ (and i|was|is)|our [\p{L}]+ (was|to)|[\p{Lu}][\p{L}]+ (texted|called|moved))/iu;
+// A paragraph that opens by moving the clock or the place begins a new scene.
+const SHIFT = /^(the next (day|morning|week|year)|that (night|day|morning|afternoon|evening)|at (lunch|dinner|recess|practice|school|home|the end)|after (the|that|school|lunch|dinner|class|practice)|by (the time|\p{L}+ grade|then|the end)|in (the (morning|afternoon|evening|car)|\p{L}+ grade)|when (i|we) (got|came|went|walked|arrived|woke)|we ended up|[\p{L}\d]+ (minutes|hours|days|weeks|months|years) later)\b/iu;
 
 const REQUEST = /\b(can you|could you|would you|will you|please|i would like|i['’]d like|i am writing to (apply|ask|request)|i['’]m writing to (apply|ask)|i hope you (will|can|could)|i ask that|i would (love|appreciate)|i would be grateful)\b/i;
 const CLOSE_LINE = /\b(thank you (so much |again )?(for your time|for everything|for reading|for listening|and)|i look forward to hearing|have a great|see you soon|miss you|write back|talk soon|thanks again)\b/i;
@@ -237,25 +272,47 @@ function cueOf(
   }
   if (at.kind === 'story') {
     if (VERDICT.test(s) && at.paragraph >= at.paragraphs - 2) return { role: 'verdict', confidence: 0.75 };
+    if (VERDICT_END.test(s) && at.paragraph >= at.paragraphs - 2 && at.paragraph > 0) return { role: 'verdict', confidence: 0.65 };
     if (FEELING.test(s)) return { role: 'feeling', confidence: 0.7 };
     if (TURN.test(s) && !firstOfPiece) return { role: 'turn', confidence: 0.7 };
     if (at.paragraph === 0) return { role: 'scene', confidence: SCENE.test(s) ? 0.75 : 0.6 };
-    if (SCENE.test(s) && at.sentence === 0) return { role: 'scene', confidence: 0.55 };
+    if (WONDERS.test(s)) return { role: 'feeling', confidence: 0.6 };
+    if (at.sentence === 0 && (SCENE.test(s) || SHIFT.test(s))) return { role: 'scene', confidence: 0.55 };
+    if (SUPERLATIVE.test(s)) return { role: 'verdict', confidence: 0.55 };
     return null;
   }
 
   // Argument, speech, essay, review.
   if (at.kind === 'speech' && inLast && SPEECH_END.test(s) && /thank you!?$/i.test(s)) return { role: 'close', confidence: 0.8 };
-  if (OBJECTION.test(s) || OBJECTION_ANY.test(s)) return { role: 'objection', confidence: 0.8 };
+  if (at.kind === 'speech' && inLast && SPEECH_END.test(s)) return { role: 'call', confidence: 0.75 };
+  const they = /^they\b/i.test(s);
+  if ((OBJECTION.test(s) && !they) || OBJECTION_ANY.test(s) || (THEY_SAY.test(s) && (at.sentence === 0 || at.prev === 'objection'))) return { role: 'objection', confidence: 0.8 };
+  if (CONCEDE.test(s) && !firstOfPiece) return { role: 'objection', confidence: 0.7 };
   if (at.prev === 'objection' && ANSWER.test(s)) return { role: 'answer', confidence: 0.8 };
   if (lastOfPiece && (CALL_LEAD.test(s) || CALL_WORD.test(s))) return { role: 'call', confidence: 0.8 };
   if (inLast && CALL_LEAD.test(s) && CALL_WORD.test(s)) return { role: 'call', confidence: 0.75 };
   if (firstOfPiece && CLAIM_WORD.test(s)) return { role: 'claim', confidence: 0.85 };
-  if (ENUMERATOR.test(s)) return { role: 'reason', confidence: 0.8 };
+  // “First, preheat the oven” is a step, not a reason.
+  if (ENUMERATOR.test(s) && !STEP.test(s)) return { role: 'reason', confidence: 0.8 };
   if (EVIDENCE.test(s)) return { role: 'evidence', confidence: 0.7 };
   if (STAKES.test(s)) return { role: 'stakes', confidence: 0.6 };
   if (at.paragraph === 0 && CLAIM_WORD.test(s)) return { role: 'claim', confidence: 0.7 };
+  if (inLast && at.paragraphs > 1 && SUMS_UP.test(s)) return { role: 'verdict', confidence: 0.65 };
+  if (inLast && at.paragraphs > 1 && at.sentence === at.sentences - 1 && IMPERATIVE.test(s)) return { role: 'call', confidence: 0.7 };
+  if (at.paragraph === 0 && ASKS.test(s)) return { role: 'question', confidence: 0.65 };
+  if (at.kind !== 'speech' && at.paragraph === 0 && at.sentence <= 1 && THESIS.test(s)) return { role: 'claim', confidence: 0.65 };
+  if (MEASURED.test(s)) return { role: 'evidence', confidence: 0.6 };
+  if ((at.kind === 'essay' || at.kind === 'review') && INTERPRETS.test(s)) return { role: 'claim', confidence: 0.6 };
+  if ((at.kind === 'essay' || at.kind === 'review') && SHOWS.test(s) && !firstOfPiece) return { role: 'verdict', confidence: 0.6 };
+  if (at.sentence === 0 && MEMORY.test(s) && FIRST_PERSON.test(at.text)) return { role: 'scene', confidence: 0.6 };
+  if (at.kind === 'review' && JUDGES.test(s)) return { role: 'reason', confidence: 0.6 };
+  if (at.kind === 'speech' && PLEDGE.test(s)) return { role: 'claim', confidence: 0.6 };
   if (/\bbecause\b/i.test(s)) return { role: 'reason', confidence: 0.55 };
+  // From here on the label is a guess: no cue word, only where the sentence stands and how it reads.
+  if (firstOfPiece && at.paragraphs > 1 && /\?$/.test(s)) return { role: 'question', confidence: 0.55 };
+  if (at.paragraph === 0 && at.sentence === 0 && BACKGROUND.test(s)) return { role: 'background', confidence: 0.55 };
+  if (LIMITS.test(s) && at.paragraph > 0) return { role: 'objection', confidence: 0.55 };
+  if (at.kind === 'speech' && CREDENTIAL.test(s)) return { role: 'evidence', confidence: 0.55 };
   return null;
 }
 
@@ -280,7 +337,7 @@ export function labelRoles(paragraphs: string[], kind: Kind): ParagraphRoles[] {
     sents.forEach((s, si) => {
       const cue = cueOf(s, { kind, text, paragraph: pi, paragraphs: paras.length, tail, sentence: si, sentences: sents.length, prev });
       const cur = spans.at(-1);
-      if (cue && (!cur || (cue.role !== cur.role && cue.confidence >= 0.6))) {
+      if (cue && (!cur || cur.role === 'part' || (cue.role !== cur.role && cue.confidence >= 0.6))) {
         spans.push({ role: cue.role, confidence: cue.confidence, from: si, to: si + 1 });
       } else if (cur) {
         cur.to = si + 1;
@@ -301,14 +358,22 @@ export function labelRoles(paragraphs: string[], kind: Kind): ParagraphRoles[] {
       } else merged.push({ ...sp });
     }
     if (!merged.length) merged.push({ role: 'part', confidence: 0, from: 0, to: 0 });
+    // An essay's paragraph with no cue at all, most of whose sentences say what a thing is or what is there, describes.
+    if (kind === 'essay' && merged.every((sp) => sp.confidence < GUESS_BELOW) && sents.length && sents.filter((x) => DESCRIBES.test(x.trim())).length * 2 >= sents.length)
+      merged.splice(0, merged.length, { role: 'description', confidence: 0.55, from: 0, to: sents.length });
     // The paragraph's role is its surest span, the first of equals: a paragraph that opens with the claim is the claim's.
     const main = merged.reduce((a, b) => (b.confidence > a.confidence ? b : a));
     return { paragraph: pi, role: main.role, confidence: main.confidence, spans: merged };
   });
 }
 
-/** The roles of a piece in reading order, span by span. */
-export const roleSequence = (labels: ParagraphRoles[]): Role[] => labels.flatMap((p) => p.spans.map((s) => s.role));
+/** The roles of a piece in reading order, span by span. A paragraph with a named span is that span's: its
+ * sentences with no cue are not listed. Only a paragraph with no named span at all counts as "part". */
+export const roleSequence = (labels: ParagraphRoles[]): Role[] =>
+  labels.flatMap((p) => {
+    const named = p.spans.filter((s) => s.role !== 'part').map((s) => s.role);
+    return named.length ? named : ['part' as Role];
+  });
 
 /** The kind and the roles of a text in one call. */
 export function readStructure(input: string | DocBlock[]): { kind: Kind; roles: ParagraphRoles[]; sequence: Role[] } {
@@ -317,8 +382,18 @@ export function readStructure(input: string | DocBlock[]): { kind: Kind; roles: 
   return { kind, roles, sequence: roleSequence(roles) };
 }
 
-/** A role sequence as the SHAPE line prints it: "Claim · Reason · Reason · Call". */
-export const shapeLine = (seq: Role[]): string => seq.map((r) => ROLES[r].name).join(' · ');
+/** A role sequence as the SHAPE line prints it: "Claim · Reason · Reason · Call". A run of paragraphs the engine
+ * could not name is one "…", never the word "Part". */
+export const shapeLine = (seq: Role[]): string => {
+  const out: string[] = [];
+  for (const r of seq) {
+    if (r !== 'part') out.push(ROLES[r].name);
+    else if (out.at(-1) !== UNNAMED) out.push(UNNAMED);
+  }
+  return out.join(' · ');
+};
+/** What the SHAPE line shows for a run of paragraphs with no role. */
+export const UNNAMED = '…';
 
 // ---------------------------------------------------------------------------------------------------------------
 // An author's usual order

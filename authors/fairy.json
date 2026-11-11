@@ -94,6 +94,104 @@
   "goodFor": [
     "story"
   ],
+  "shapes": [
+    {
+      "work": "“Little Red Riding-Hood”",
+      "cite": "The Blue Fairy Book, “Little Red Riding-Hood”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a girl, a village and how she got her name.",
+          "quote": "Once upon a time there lived in a certain village a little country girl"
+        },
+        {
+          "role": "request",
+          "says": "Her mother sends her on an errand.",
+          "quote": "Go, my dear, and see how thy grandmamma does"
+        },
+        {
+          "role": "turn",
+          "says": "She meets the wolf in the wood.",
+          "quote": "she met with Gaffer Wolf"
+        },
+        {
+          "role": "question",
+          "says": "The same question and answer, over and over, each worse than the last.",
+          "quote": "Grandmamma, what great arms you have got!"
+        },
+        {
+          "role": "close",
+          "says": "Ends at once, with no rescue.",
+          "quote": "ate her all up"
+        }
+      ]
+    },
+    {
+      "work": "“Rumpelstiltzkin”",
+      "cite": "The Blue Fairy Book, “Rumpelstiltzkin”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a poor miller and his boast.",
+          "quote": "There was once upon a time a poor miller who had a very beautiful daughter"
+        },
+        {
+          "role": "stakes",
+          "says": "The King says what happens if she fails.",
+          "quote": "you shall die"
+        },
+        {
+          "role": "request",
+          "says": "A little man offers help, at a price.",
+          "quote": "What will you give me if I spin it for you?"
+        },
+        {
+          "role": "turn",
+          "says": "A year later he comes for what she promised.",
+          "quote": "Now give me what you promised"
+        },
+        {
+          "role": "close",
+          "says": "Ends when his name is said.",
+          "quote": "tore himself in two"
+        }
+      ]
+    },
+    {
+      "work": "“Cinderella”",
+      "cite": "The Blue Fairy Book, “Cinderella, or the Little Glass Slipper”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a second marriage and a proud wife.",
+          "quote": "Once there was a gentleman who married, for his second wife"
+        },
+        {
+          "role": "feeling",
+          "says": "She cannot finish saying what she wishes.",
+          "quote": "I wish I could"
+        },
+        {
+          "role": "turn",
+          "says": "Her godmother promises she shall go.",
+          "quote": "be but a good girl, and I will contrive that thou shalt go"
+        },
+        {
+          "role": "stakes",
+          "says": "The gift comes with one condition.",
+          "quote": "not to stay till after midnight"
+        },
+        {
+          "role": "close",
+          "says": "Ends with her kindness to the sisters.",
+          "quote": "matched them with two great lords of the Court"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Project Gutenberg, by way of the GITenberg mirror",
     "note": "Andrew Lang’s Fairy Books, published 1889–1910: public domain in the US.",

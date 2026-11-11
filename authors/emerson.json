@@ -25,6 +25,104 @@
     "essay",
     "speech"
   ],
+  "shapes": [
+    {
+      "work": "“Self-Reliance”",
+      "cite": "Essays: First Series, “Self-Reliance”",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Begins with something he read the other day.",
+          "quote": "I read the other day some verses written by an eminent painter"
+        },
+        {
+          "role": "claim",
+          "says": "States the claim as a definition of genius.",
+          "quote": "that is genius"
+        },
+        {
+          "role": "call",
+          "says": "Gives the order the essay is known for.",
+          "quote": "Trust thyself: every heart vibrates to that iron string."
+        },
+        {
+          "role": "objection",
+          "says": "Takes up the fear of contradicting oneself.",
+          "quote": "A foolish consistency is the hobgoblin of little minds"
+        },
+        {
+          "role": "answer",
+          "says": "Answers with a list of great names.",
+          "quote": "To be great is to be misunderstood."
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on two sentences that begin alike.",
+          "quote": "Nothing can bring you peace but yourself."
+        }
+      ]
+    },
+    {
+      "work": "the first chapter of Nature",
+      "cite": "Nature, ch. 1",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with a claim about being alone.",
+          "quote": "To go into solitude, a man needs to retire as much from his chamber as from society."
+        },
+        {
+          "role": "evidence",
+          "says": "Offers the stars as the test.",
+          "quote": "But if a man would be alone, let him look at the stars."
+        },
+        {
+          "role": "scene",
+          "says": "Tells one walk across a common at dusk.",
+          "quote": "Crossing a bare common, in snow puddles, at twilight"
+        },
+        {
+          "role": "feeling",
+          "says": "Says what he felt, in the strangest image of the book.",
+          "quote": "I become a transparent eye-ball"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends with a caution: the joy is in the man too.",
+          "quote": "Nature always wears the colors of the spirit."
+        }
+      ]
+    },
+    {
+      "work": "the Introduction to Nature",
+      "cite": "Nature, Introduction",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with a charge against his own time.",
+          "quote": "Our age is retrospective."
+        },
+        {
+          "role": "question",
+          "says": "Asks why the living should not see for themselves.",
+          "quote": "Why should not we also enjoy an original relation to the universe?"
+        },
+        {
+          "role": "call",
+          "says": "Makes the demand.",
+          "quote": "Let us demand our own works and laws and worship."
+        },
+        {
+          "role": "background",
+          "says": "Only then defines his terms.",
+          "quote": "Philosophically considered, the universe is composed of Nature and the Soul."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for the Essays and Representative Men; Project Gutenberg ebooks 29433 and 39827 for Nature and The Conduct of Life, by way of the GITenberg mirror",
     "note": "Published 1836–1860: public domain in the US.",

@@ -101,6 +101,121 @@
     "review",
     "letter"
   ],
+  "shapes": [
+    {
+      "work": "Strunk’s rule “Omit needless words”",
+      "cite": "The Elements of Style, III, rule 13",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "States the rule in four words.",
+          "quote": "Vigorous writing is concise."
+        },
+        {
+          "role": "reason",
+          "says": "Gives the reason by two comparisons.",
+          "quote": "a drawing should have no unnecessary lines and a machine no unnecessary parts"
+        },
+        {
+          "role": "answer",
+          "says": "Heads off a misreading: short is not the point.",
+          "quote": "but that he make every word tell"
+        },
+        {
+          "role": "evidence",
+          "says": "Lists common phrases, each with its shorter form.",
+          "quote": "Many expressions in common use violate this principle"
+        },
+        {
+          "role": "call",
+          "says": "Ends with one phrase to strike out everywhere.",
+          "quote": "should be revised out of every sentence in which it occurs"
+        }
+      ]
+    },
+    {
+      "work": "Strunk’s rule “Use the active voice”",
+      "cite": "The Elements of Style, III, rule 11",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "States the rule and its reason together.",
+          "quote": "The active voice is usually more direct and vigorous than the passive"
+        },
+        {
+          "role": "reason",
+          "says": "Sets one sentence beside its passive form and says what was lost.",
+          "quote": "The latter sentence is less direct, less bold, and less concise."
+        },
+        {
+          "role": "objection",
+          "says": "Grants that the passive has its uses.",
+          "quote": "This rule does not, of course, mean that the writer should entirely discard the passive voice"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends by saying what the habit does for prose.",
+          "quote": "The habitual use of the active voice makes for forcible writing."
+        }
+      ]
+    },
+    {
+      "work": "Grant at Appomattox",
+      "cite": "Personal Memoirs of U. S. Grant, ch. 67",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with how he was dressed, and why.",
+          "quote": "When I had left camp that morning I had not expected so soon the result"
+        },
+        {
+          "role": "feeling",
+          "says": "Gives his own feeling plainly, and will not guess at Lee’s.",
+          "quote": "sad and depressed"
+        },
+        {
+          "role": "description",
+          "says": "Describes Lee’s uniform and sword.",
+          "quote": "General Lee was dressed in a full uniform which was entirely new"
+        },
+        {
+          "role": "background",
+          "says": "The two talk of the old army.",
+          "quote": "We soon fell into a conversation about old army times."
+        },
+        {
+          "role": "turn",
+          "says": "Lee brings them back to business.",
+          "quote": "called my attention to the object of our meeting"
+        }
+      ]
+    },
+    {
+      "work": "Grant’s letter to Lee",
+      "cite": "Personal Memoirs of U. S. Grant, ch. 66",
+      "kind": "letter",
+      "parts": [
+        {
+          "role": "reason",
+          "says": "Begins with the fact that makes the request fair.",
+          "quote": "The result of the last week must convince you of the hopelessness of further resistance"
+        },
+        {
+          "role": "stakes",
+          "says": "Says what further fighting would cost.",
+          "quote": "any further effusion of blood"
+        },
+        {
+          "role": "request",
+          "says": "Asks for the surrender in the same sentence.",
+          "quote": "by asking of you the surrender"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) and Project Gutenberg",
     "note": "Published 1885 and 1918: public domain in the US.",

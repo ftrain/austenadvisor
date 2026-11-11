@@ -112,6 +112,126 @@
     "story",
     "letter"
   ],
+  "shapes": [
+    {
+      "work": "the first chapter of Pride and Prejudice",
+      "cite": "Pride and Prejudice, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with a general truth that the chapter then tests.",
+          "quote": "It is a truth universally acknowledged"
+        },
+        {
+          "role": "news",
+          "says": "A wife brings her husband the news.",
+          "quote": "Netherfield Park is let at last"
+        },
+        {
+          "role": "request",
+          "says": "She says what she wants of him; he teases.",
+          "quote": "you must visit him as soon as he comes"
+        },
+        {
+          "role": "verdict",
+          "says": "The narrator sums up both in a paragraph.",
+          "quote": "Mr. Bennet was so odd a mixture of quick parts"
+        }
+      ]
+    },
+    {
+      "work": "the opening of Emma",
+      "cite": "Emma, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Describes the heroine in one sentence, with a warning in its last words.",
+          "quote": "Emma Woodhouse, handsome, clever, and rich"
+        },
+        {
+          "role": "background",
+          "says": "Fills in the family and the governess.",
+          "quote": "Sixteen years had Miss Taylor been in Mr. Woodhouse’s family"
+        },
+        {
+          "role": "stakes",
+          "says": "Names the danger the book will be about.",
+          "quote": "The real evils, indeed, of Emma’s situation"
+        },
+        {
+          "role": "turn",
+          "says": "Begins the story with one change.",
+          "quote": "Miss Taylor married."
+        }
+      ]
+    },
+    {
+      "work": "Darcy’s letter, in Pride and Prejudice",
+      "cite": "Pride and Prejudice, ch. 35",
+      "kind": "letter",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Begins by saying what the letter will not do.",
+          "quote": "Be not alarmed, Madam, on receiving this letter"
+        },
+        {
+          "role": "objection",
+          "says": "Restates the two charges made against him.",
+          "quote": "Two offences of a very different nature"
+        },
+        {
+          "role": "answer",
+          "says": "Answers the first, on her sister.",
+          "quote": "I had not been long in Hertfordshire"
+        },
+        {
+          "role": "answer",
+          "says": "Answers the second with a history.",
+          "quote": "Mr. Wickham is the son of a very respectable man"
+        },
+        {
+          "role": "evidence",
+          "says": "Names a witness she can ask.",
+          "quote": "the testimony of Colonel Fitzwilliam"
+        },
+        {
+          "role": "close",
+          "says": "Closes in five words.",
+          "quote": "I will only add, God bless you."
+        }
+      ]
+    },
+    {
+      "work": "Mr. Collins’s letter, in Pride and Prejudice",
+      "cite": "Pride and Prejudice, ch. 13",
+      "kind": "letter",
+      "parts": [
+        {
+          "role": "background",
+          "says": "Begins with the old quarrel between the families.",
+          "quote": "The disagreement subsisting between yourself and my late honoured father"
+        },
+        {
+          "role": "news",
+          "says": "Gives his news, which is his patroness.",
+          "quote": "having received ordination at Easter"
+        },
+        {
+          "role": "request",
+          "says": "Invites himself for a week and names the day.",
+          "quote": "I propose myself the satisfaction of waiting on you"
+        },
+        {
+          "role": "close",
+          "says": "Signs off at length.",
+          "quote": "I remain, dear sir"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication); the early and unfinished works from Project Gutenberg, by way of the GITenberg mirror",
     "note": "Written 1787–1817 and published by 1925: public domain in the US.",

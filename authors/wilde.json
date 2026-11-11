@@ -26,6 +26,99 @@
     "review",
     "story"
   ],
+  "shapes": [
+    {
+      "work": "the Preface to The Picture of Dorian Gray",
+      "cite": "The Picture of Dorian Gray, Preface",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with a definition, stated as fact.",
+          "quote": "The artist is the creator of beautiful things."
+        },
+        {
+          "role": "answer",
+          "says": "Answers the critics who called his book immoral.",
+          "quote": "There is no such thing as a moral or an immoral book."
+        },
+        {
+          "role": "stakes",
+          "says": "Warns the reader who looks for more.",
+          "quote": "Those who go beneath the surface do so at their peril."
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on five words that sound like an insult and are a defence.",
+          "quote": "All art is quite useless."
+        }
+      ]
+    },
+    {
+      "work": "“The Decay of Lying”",
+      "cite": "Intentions, “The Decay of Lying”",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "objection",
+          "says": "Lets a friend urge him to go out and enjoy nature.",
+          "quote": "don’t coop yourself up all day in the library"
+        },
+        {
+          "role": "answer",
+          "says": "Answers by turning the friend’s words over.",
+          "quote": "Enjoy Nature! I am glad to say that I have entirely lost that faculty."
+        },
+        {
+          "role": "claim",
+          "says": "States the claim, and owns that it is a paradox.",
+          "quote": "Life imitates art far more than Art imitates life"
+        },
+        {
+          "role": "evidence",
+          "says": "Gives the London fogs as his example.",
+          "quote": "those wonderful brown fogs"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on the doctrine the title promised.",
+          "quote": "Lying, the telling of beautiful untrue things, is the proper aim of Art."
+        }
+      ]
+    },
+    {
+      "work": "the opening of “The Canterville Ghost”",
+      "cite": "“The Canterville Ghost”, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "news",
+          "says": "Begins with a purchase.",
+          "quote": "bought Canterville Chase"
+        },
+        {
+          "role": "objection",
+          "says": "The seller owns that his family will not live there.",
+          "quote": "We have not cared to live in the place ourselves"
+        },
+        {
+          "role": "answer",
+          "says": "The buyer answers as a man of business.",
+          "quote": "I will take the furniture and the ghost at a valuation"
+        },
+        {
+          "role": "scene",
+          "says": "The family finds a stain on the floor.",
+          "quote": "It is the blood of Lady Eleanore de Canterville"
+        },
+        {
+          "role": "turn",
+          "says": "The son deals with it, and the joke of the story is set.",
+          "quote": "Pinkerton’s Champion Stain Remover and Paragon Detergent will clean it up in no time"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for the novel, the stories and the plays; Project Gutenberg ebook 887 for Intentions, by way of the GITenberg mirror",
     "note": "Published 1887–1899: public domain in the US.",

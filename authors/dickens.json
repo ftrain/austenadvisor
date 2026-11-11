@@ -25,6 +25,121 @@
     "story",
     "speech"
   ],
+  "shapes": [
+    {
+      "work": "the opening of Bleak House",
+      "cite": "Bleak House, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Sets the place and season in fragments, with no verb.",
+          "quote": "Michaelmas term lately over"
+        },
+        {
+          "role": "description",
+          "says": "Spreads fog over everything, one clause at a time.",
+          "quote": "Fog everywhere."
+        },
+        {
+          "role": "turn",
+          "says": "Closes in on the one man at the centre of it.",
+          "quote": "at the very heart of the fog, sits the Lord High Chancellor"
+        },
+        {
+          "role": "verdict",
+          "says": "Passes judgement on the court.",
+          "quote": "Suffer any wrong that can be done you rather than come here!"
+        }
+      ]
+    },
+    {
+      "work": "the opening of A Christmas Carol",
+      "cite": "A Christmas Carol, stave 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Begins with one fact, stated flat.",
+          "quote": "Marley was dead, to begin with."
+        },
+        {
+          "role": "stakes",
+          "says": "Says why the fact matters to the story.",
+          "quote": "This must be distinctly understood"
+        },
+        {
+          "role": "description",
+          "says": "Describes Scrooge in a heap of adjectives.",
+          "quote": "a tight-fisted hand at the grindstone"
+        },
+        {
+          "role": "scene",
+          "says": "Only then starts the story, on a named day.",
+          "quote": "old Scrooge sat busy in his counting house"
+        }
+      ]
+    },
+    {
+      "work": "the opening of A Tale of Two Cities",
+      "cite": "A Tale of Two Cities, book 1, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Describes the age in pairs of opposites.",
+          "quote": "It was the best of times, it was the worst of times"
+        },
+        {
+          "role": "claim",
+          "says": "Says the age was much like the present one.",
+          "quote": "the period was so far like the present period"
+        },
+        {
+          "role": "background",
+          "says": "Names who ruled in each country.",
+          "quote": "There were a king with a large jaw and a queen with a plain face, on the throne of England"
+        },
+        {
+          "role": "evidence",
+          "says": "Gives each country its follies in turn.",
+          "quote": "France, less favoured on the whole"
+        },
+        {
+          "role": "close",
+          "says": "Closes the survey and lets the year go on its way.",
+          "quote": "Thus did the year one thousand seven hundred and seventy-five"
+        }
+      ]
+    },
+    {
+      "work": "Gradgrind’s speech, in Hard Times",
+      "cite": "Hard Times, book 1, ch. 1",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with what the speaker wants, in six words.",
+          "quote": "Now, what I want is, Facts."
+        },
+        {
+          "role": "reason",
+          "says": "Gives his reason as a rule about minds.",
+          "quote": "You can only form the minds of reasoning animals upon Facts"
+        },
+        {
+          "role": "call",
+          "says": "Ends with an order.",
+          "quote": "Stick to Facts, sir!"
+        },
+        {
+          "role": "description",
+          "says": "Then describes the speaker, feature by feature, to judge him.",
+          "quote": "The emphasis was helped by the speaker’s square wall of a forehead"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1843–1861: public domain in the US.",

@@ -98,6 +98,131 @@
     "story",
     "essay"
   ],
+  "shapes": [
+    {
+      "work": "“What to the Slave Is the Fourth of July?”",
+      "cite": "My Bondage and My Freedom, “What to the Slave Is the Fourth of July?”, 5 July 1852",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "question",
+          "says": "Opens by asking why he, of all men, was invited to speak today.",
+          "quote": "why am I called upon to speak here to-day?"
+        },
+        {
+          "role": "turn",
+          "says": "Turns the holiday against his hearers.",
+          "quote": "This Fourth of July is yours, not mine."
+        },
+        {
+          "role": "objection",
+          "says": "Lets a hearer object that he should argue more and denounce less.",
+          "quote": "But I fancy I hear some one of my audience say"
+        },
+        {
+          "role": "answer",
+          "says": "Answers that there is nothing left to argue.",
+          "quote": "Must I undertake to prove that the slave is a man?"
+        },
+        {
+          "role": "verdict",
+          "says": "Asks his title question again, and answers it.",
+          "quote": "What to the American slave is your Fourth of July?"
+        }
+      ]
+    },
+    {
+      "work": "the fight with Covey, in the Narrative",
+      "cite": "Narrative of the Life of Frederick Douglass, ch. 10",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Tells the first six months under Covey, and what they did to him.",
+          "quote": "I was broken in body, soul, and spirit."
+        },
+        {
+          "role": "feeling",
+          "says": "Stops the story to speak to the ships on the bay.",
+          "quote": "You are loosed from your moorings, and are free"
+        },
+        {
+          "role": "turn",
+          "says": "Announces the turn in one balanced sentence.",
+          "quote": "You have seen how a man was made a slave; you shall see how a slave was made a man."
+        },
+        {
+          "role": "scene",
+          "says": "Tells the fight, blow by blow.",
+          "quote": "I resolved to fight"
+        },
+        {
+          "role": "verdict",
+          "says": "Says what the fight meant for the rest of his life.",
+          "quote": "the turning-point in my career as a slave"
+        }
+      ]
+    },
+    {
+      "work": "learning to read, in the Narrative",
+      "cite": "Narrative of the Life of Frederick Douglass, ch. 6",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a kind mistress who teaches him his letters.",
+          "quote": "she very kindly commenced to teach me the A.B.C.s"
+        },
+        {
+          "role": "turn",
+          "says": "The master forbids it, and gives his reason.",
+          "quote": "unlawful, as well as unsafe, to teach a slave to read"
+        },
+        {
+          "role": "verdict",
+          "says": "Says what the master’s words taught him.",
+          "quote": "It was a new and special revelation"
+        },
+        {
+          "role": "claim",
+          "says": "States the lesson as a set of opposites.",
+          "quote": "What he most dreaded, that I most desired."
+        }
+      ]
+    },
+    {
+      "work": "the letter to his old master",
+      "cite": "My Bondage and My Freedom, “Letter to His Old Master”",
+      "kind": "letter",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Explains why he writes to his old master in public.",
+          "quote": "The long and intimate, though by no means friendly, relation"
+        },
+        {
+          "role": "scene",
+          "says": "Recalls the morning he ran, ten years before.",
+          "quote": "I have selected this day on which to address you, because it is the anniversary of my emancipation"
+        },
+        {
+          "role": "reason",
+          "says": "Argues that in running away he took nothing that was his master’s.",
+          "quote": "I am myself; you are yourself; we are two distinct persons"
+        },
+        {
+          "role": "news",
+          "says": "Tells how he lives now.",
+          "quote": "So far as my domestic affairs are concerned"
+        },
+        {
+          "role": "close",
+          "says": "Signs himself with one line that sums up the letter.",
+          "quote": "I am your fellow-man, but not your slave."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for the Narrative; Project Gutenberg ebook 202 for My Bondage and My Freedom, by way of the GITenberg mirror",
     "note": "Published 1845 and 1855: public domain in the US.",

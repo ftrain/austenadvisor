@@ -86,6 +86,94 @@
     "story",
     "essay"
   ],
+  "shapes": [
+    {
+      "work": "the opening of Silas Marner",
+      "cite": "Silas Marner, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "background",
+          "says": "Begins with the time, and a kind of man found in it.",
+          "quote": "In the days when the spinning-wheels hummed busily in the farmhouses"
+        },
+        {
+          "role": "reason",
+          "says": "Explains why country people feared such men.",
+          "quote": "how was a man to be explained unless you at least knew somebody who knew his father and mother?"
+        },
+        {
+          "role": "scene",
+          "says": "Comes down to one weaver in one village.",
+          "quote": "such a linen-weaver, named Silas Marner"
+        },
+        {
+          "role": "description",
+          "says": "Describes him as the village boys saw him.",
+          "quote": "large brown protuberant eyes"
+        }
+      ]
+    },
+    {
+      "work": "the opening of The Mill on the Floss",
+      "cite": "The Mill on the Floss, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Begins with the river and the plain, and no people.",
+          "quote": "A wide plain, where the broadening Floss hurries on"
+        },
+        {
+          "role": "feeling",
+          "says": "Brings in an “I” who remembers the place.",
+          "quote": "I remember those large dipping willows"
+        },
+        {
+          "role": "scene",
+          "says": "Finds a little girl watching the mill.",
+          "quote": "That little girl is watching it too"
+        },
+        {
+          "role": "turn",
+          "says": "Wakes, and shows the scene was a dream of years ago.",
+          "quote": "Ah, my arms are really benumbed."
+        }
+      ]
+    },
+    {
+      "work": "Dorothea in Rome, in Middlemarch",
+      "cite": "Middlemarch, ch. 20",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a young wife crying alone.",
+          "quote": "sobbing bitterly"
+        },
+        {
+          "role": "objection",
+          "says": "Grants that such grief is common, and so is not pitied.",
+          "quote": "we do not expect people to be deeply moved by what is not unusual"
+        },
+        {
+          "role": "claim",
+          "says": "Claims there is tragedy in what is common.",
+          "quote": "That element of tragedy which lies in the very fact of frequency"
+        },
+        {
+          "role": "reason",
+          "says": "Says why we cannot bear to feel it.",
+          "quote": "it would be like hearing the grass grow and the squirrel’s heart beat"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on a hard word for all of us.",
+          "quote": "well wadded with stupidity"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1860–1876: public domain in the US.",

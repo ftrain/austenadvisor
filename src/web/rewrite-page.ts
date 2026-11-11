@@ -207,7 +207,7 @@ export async function rewritePage(app: HTMLElement) {
     let run = runs.get(k);
     const fresh = !run || (run.done && (!!run.failed || !!run.partial || run.resting === 'busy'));
     if (fresh) {
-      run = { voice: v.id, text, form: c.form(), facts: c.facts(), rows: new Map(), roles: new Map(), done: false, started: Date.now() };
+      run = { voice: v.id, text, form: c.form(), facts: c.facts(), rows: new Map(), roles: new Map(), whys: new Map(), done: false, started: Date.now() };
       runs.set(k, run);
     }
     shown = { run: run!, reading: null };
@@ -276,8 +276,11 @@ export async function rewritePage(app: HTMLElement) {
       const part = msg.part as number;
       for (const [k, row] of run.rows) if (row.kind === 'paragraph' && row.part === part) run.rows.delete(k);
       for (const row of (msg.rows as Row[]) ?? []) run.rows.set(row.index, row);
-      const plan = (msg.reading as { plan?: { role: string }[] } | undefined)?.plan;
-      if (plan?.length) run.roles.set(part, plan.map((x) => x.role));
+      const plan = (msg.reading as { plan?: { role: string; why?: string }[] } | undefined)?.plan;
+      if (plan?.length) {
+        run.roles.set(part, plan.map((x) => x.role));
+        run.whys?.set(part, plan.map((x) => x.why));
+      }
     } else if (msg.type === 'progress') {
       const log = (msg.log as string[]) ?? [];
       run.at = { done: Number(msg.done) || 0, parts: Number(msg.parts) || 1, note: log.at(-1) ?? '' };

@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { blocksOfText, type DocBlock } from './doc.ts';
-import { detectKind, labelRoles, roleSequence, shapeLine, type Kind, type ParagraphRoles, type Role } from './structure.ts';
+import { detectKind, GUESS_BELOW, labelRoles, roleSequence, shapeLine, type Kind, type ParagraphRoles, type Role } from './structure.ts';
 
 export type FormId = 'essay' | 'argument' | 'anecdote' | 'story' | 'letter' | 'speech' | 'review';
 
@@ -177,7 +177,7 @@ function buriedClaim(paragraphs: string[], roles: ParagraphRoles[], kind: Kind):
   if (roles.some((r) => r.role === 'claim' || r.spans.some((s) => s.role === 'claim'))) return -1;
   for (let i = 1; i < roles.length; i++) {
     const r = roles[i]!;
-    if (!(r.role === 'part' || (r.role === 'reason' && r.confidence < 0.6))) continue;
+    if (!(r.role === 'part' || r.confidence < GUESS_BELOW)) continue;
     // A second paragraph keeps the reading from taking the paragraph for the end of the piece.
     const alone = labelRoles([paragraphs[i]!, 'And so on.'], kind)[0];
     if (alone?.spans[0]?.role === 'claim') return i;

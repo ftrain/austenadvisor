@@ -1,5 +1,11 @@
 // RESULT and WRITING: the student's text and the voice's in three columns, yours, theirs and why, a row to each
 // paragraph. Above the rows are one SHAPE line (how the piece is built) and one STYLE line (how its sentences run).
+//
+// SHAPE has a line for the student's piece, one for the form, and one for the voice. The student's line names what
+// each paragraph does; a run of paragraphs the engine could not name is a quiet “…”, and when the rewrite arrives,
+// the role its reading gave each such paragraph is shown in its place, lighter, as a reading and not a finding.
+// The voice's line is the outline of a real piece the voice wrote, and opens to show what each part does, with a
+// phrase quoted from it.
 // Until the rewrite of a paragraph arrives, its middle column holds a SKETCH: for each sentence of yours, the voice's
 // own sentence built most like it. Nothing here opens over the page: every tap opens a line in place.
 //
@@ -30,6 +36,8 @@ export interface Run {
   rows: Map<number, Row>;
   /** The writer's role for each paragraph, by part. */
   roles: Map<number, string[]>;
+  /** The writer's reason for each of those, where it gave one. */
+  whys?: Map<number, (string | undefined)[]>;
   done: boolean;
   /** Why the rewrite failed. */
   failed?: string;
@@ -106,6 +114,45 @@ export function plainText(rows: Row[]): string {
   return `${body}\n\nNotes\n${notes.map((x) => `${x.n}. “${x.fact.text}” ${x.fact.title}, Wikipedia${x.fact.url ? `, ${x.fact.url}` : ''}`).join('\n')}`;
 }
 
+/** A role the rewrite's reading gives a paragraph the engine could not name, and its reason. */
+export interface Borrowed {
+  name: string;
+  why?: string;
+}
+
+/** What the page shows for a run of paragraphs with no role. */
+export const GAP = '…';
+const GAP_TITLE = 'The engine could not name what these paragraphs do';
+const GUESS_TITLE = 'A guess, from where the paragraph stands and how it reads';
+/** Below this confidence a role is a guess (GUESS_BELOW in structure.ts). */
+const GUESS = 0.6;
+const capFirst = (x: string) => (x ? x[0]!.toUpperCase() + x.slice(1) : x);
+
+/**
+ * For each paragraph of the student's the engine could not name, the role the writer's reading gave the paragraph
+ * that renders it. `at` gives each row's paragraph in the engine's reading; a row that carries `from` names the
+ * student's paragraphs itself, counted from 1. A part written to fill the form renders no paragraph of the student's.
+ */
+export function rolesFromRewrite(reading: Reading | null, run: Run | null, rows: Row[], at: Map<Row, number | null>): Map<number, Borrowed> {
+  const out = new Map<number, Borrowed>();
+  if (!reading || !run) return out;
+  const per = new Map<number, number>();
+  for (const r of rows) {
+    if (r.kind !== 'paragraph') continue;
+    const k = per.get(r.part) ?? 0;
+    per.set(r.part, k + 1);
+    const name = run.roles.get(r.part)?.[k]?.trim();
+    if (!r.hers || r.filled || !name || /^part$/i.test(name)) continue;
+    const mine = r.from?.length ? r.from.map((n) => n - 1) : [at.get(r) ?? -1];
+    for (const i of mine) {
+      if (reading.roles[i]?.role !== 'part' || out.has(i)) continue;
+      const why = run.whys?.get(r.part)?.[k];
+      out.set(i, { name: capFirst(name), ...(why ? { why } : {}) });
+    }
+  }
+  return out;
+}
+
 /** The name over the middle column: a writer's full name; for a style, its short name, since its title is a sentence. */
 const headOf = (v: AuthorInfo) => (v.style ? v.short : v.title);
 const mmss = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
@@ -129,6 +176,8 @@ export function result(o: ResultOptions): ResultView {
   const factsEl = h('section', { class: 'pg-facts', hidden: true, 'aria-label': 'Facts' });
   const el = h('section', { class: 'pg-result', hidden: true, 'aria-label': 'The rewrite' }, tools, askEl, restingEl, progressEl, shapeEl, styleEl, colHead, legendEl, rowsEl, factsEl);
   let state: ResultState | null = null;
+  let lastBorrowed = new Map<number, Borrowed>();
+  let lastReading: Reading | null = null;
 
   function step(d: number) {
     if (!state || state.flip.length < 2) return;
@@ -140,25 +189,101 @@ export function result(o: ResultOptions): ResultView {
   // -----------------------------------------------------------------------------------------------------------
   // The lines above the rows
 
-  function drawShape(s: ResultState) {
+  // The voice's outline on view, and whether it is open: kept across redraws, which come once a second while a
+  // rewrite streams in. The block is built again only when what it shows has changed, so an open definition stays.
+  let outlineAt = 0;
+  let outlineOpen = false;
+  let shapeDrawn = '';
+
+  /** A role word, defined on tap. A guess, or a role read from the rewrite, is lighter and says what it is. */
+  function roleWord(name: string, title?: string): Node[] {
+    const word = o.terms.labelled(name) as Node[];
+    return title ? [h('span', { class: 'pg-guess', title }, ...word)] : word.map((x) => (typeof x === 'string' ? document.createTextNode(x) : x));
+  }
+
+  /** The student's line: each paragraph's roles in order, and “…” for a run the engine could not name. */
+  function yoursLine(r: Reading, borrowed: Map<number, Borrowed>, v: AuthorInfo): { nodes: (Node | string)[]; guessed: boolean; read: boolean } {
+    const items: ({ name: string; title?: string } | null)[] = [];
+    let guessed = false;
+    let read = false;
+    r.roles.forEach((p, i) => {
+      const named = (p.spans ?? []).filter((x) => x.role !== 'part');
+      if (named.length) {
+        for (const x of named) {
+          const guess = x.confidence < GUESS;
+          guessed ||= guess;
+          items.push({ name: x.role === p.role ? p.name : capFirst(x.role), ...(guess ? { title: GUESS_TITLE } : {}) });
+        }
+      } else if (p.role !== 'part') items.push({ name: p.name });
+      else if (borrowed.has(i)) {
+        read = true;
+        items.push({ name: borrowed.get(i)!.name, title: fromRewrite(borrowed.get(i)!, v) });
+      } else if (items.at(-1) !== null) items.push(null);
+    });
+    const nodes = items.flatMap((x, i) => [...(i ? [' · '] : []), ...(x ? roleWord(x.name, x.title) : [h('span', { class: 'pg-gap', title: GAP_TITLE, 'aria-label': GAP_TITLE }, GAP)])]);
+    return { nodes, guessed, read };
+  }
+  const fromRewrite = (b: Borrowed, v: AuthorInfo) => `Read from the rewrite: what ${v.short}’s version of this paragraph does.${b.why ? ` ${b.why}` : ''}`;
+
+  /** The voice's line: a real piece of the voice's, its parts named on one line. It opens to show each part. */
+  function voiceLines(r: Reading, v: AuthorInfo): (HTMLElement | null)[] {
+    const outs = r.shape.outlines ?? [];
+    if (!outs.length) return [];
+    const out = outs[outlineAt % outs.length]!;
+    const list = h(
+      'ol',
+      { class: 'pg-outline', id: 'pg-outline', hidden: !outlineOpen },
+      ...out.parts.map((x) => h('li', {}, h('span', { class: 'pg-outline-role' }, ...o.terms.labelled(x.name)), h('span', { class: 'pg-outline-says' }, x.says, ' ', h('q', {}, x.quote)))),
+      h('li', { class: 'pg-outline-cite' }, h('span', {}), h('cite', {}, out.cite)),
+    );
+    const open = button(outlineOpen ? 'Hide parts' : 'Show parts', () => {
+      outlineOpen = !outlineOpen;
+      list.hidden = !outlineOpen;
+      open.textContent = outlineOpen ? 'Hide parts' : 'Show parts';
+      open.setAttribute('aria-expanded', String(outlineOpen));
+    }, { class: 'pg-link pg-outline-open', 'aria-expanded': String(outlineOpen), 'aria-controls': 'pg-outline' });
+    const another =
+      outs.length > 1
+        ? button('Another', () => {
+            outlineAt = (outlineAt + 1) % outs.length;
+            shapeDrawn = '';
+            if (state) drawShape(state);
+            shapeEl.querySelector<HTMLButtonElement>('.pg-outline-next')?.focus();
+          }, { class: 'pg-link pg-outline-next', title: `${outs.length} pieces of this kind by ${v.short}` })
+        : null;
+    return [h('p', { class: 'pg-shape-voice' }, h('span', { class: 'pg-who' }, `${capFirst(v.short)}, in ${out.work}: `), ...o.terms.shape(out.line), ' ', open, another ? ' ' : null, another), list];
+  }
+
+  function drawShape(s: ResultState, borrowed: Map<number, Borrowed> = lastBorrowed) {
+    lastBorrowed = borrowed;
     const r = s.reading;
     shapeEl.hidden = !r;
     styleEl.hidden = !r;
-    if (!r) return;
+    if (!r) {
+      shapeDrawn = '';
+      return;
+    }
     const v = s.voice;
+    const outs = r.shape.outlines ?? [];
+    const key = JSON.stringify([v.id, r.voice, r.paragraphs.length, r.shape.yours, r.form?.id, r.form?.auto, outs.map((x) => x.work), outlineAt, [...borrowed]]);
+    if (key === shapeDrawn && lastReading === r) return;
+    if (lastReading !== r) outlineAt = 0;
+    lastReading = r;
+    shapeDrawn = key;
+    const yours = r.roles?.length ? yoursLine(r, borrowed, v) : { nodes: o.terms.shape(r.shape.yours), guessed: false, read: false };
+    const keyLine = yours.read ? 'Lighter words are a guess, or read from the rewrite.' : yours.guessed ? 'Lighter words are a guess.' : '';
     shapeEl.replaceChildren(
       h('span', { class: 'pg-line-label' }, 'Shape'),
       h(
         'div',
         { class: 'pg-line-body' },
-        h('p', {}, h('span', { class: 'pg-who' }, 'Yours: '), ...o.terms.shape(r.shape.yours)),
+        h('p', { class: 'pg-shape-yours' }, h('span', { class: 'pg-who' }, 'Yours: '), ...yours.nodes, keyLine ? h('span', { class: 'pg-shape-key' }, ` ${keyLine}`) : null),
         r.form && r.shape.form ? h('p', { class: 'pg-shape-form' }, h('span', { class: 'pg-who' }, ...o.terms.labelled(r.form.name, 'form'), ': '), ...o.terms.shape(r.shape.form)) : null,
         // Only for a form the student chose: under Auto the form is the engine's reading of what the text already is.
         r.form && !r.form.auto && r.form.missing.length
           ? h('p', { class: 'pg-line-note pg-shape-missing' }, 'Not in yours: ', ...o.terms.shape(r.form.slots.filter((x) => x.missing).map((x) => x.name).join(' · ')))
           : null,
-        r.shape.voice ? h('p', {}, h('span', { class: 'pg-who' }, `${v.short}: `), ...o.terms.shape(r.shape.voice)) : null,
-        r.shape.signature ? h('p', { class: 'pg-line-note' }, ...o.terms.defined(r.shape.signature)) : null,
+        ...voiceLines(r, v),
       ),
     );
     const st = r.style;
@@ -212,11 +337,21 @@ export function result(o: ResultOptions): ResultView {
     const run = s.run;
     restingEl.hidden = !(run?.resting || (s.resting && !run?.rows.size));
     restingEl.textContent = run?.resting === 'busy' ? 'Another rewrite from this page is still running. Try this one when it finishes.' : RESTING;
-    drawShape(s);
     progress(s);
 
-
     const rows = rowsOf(s);
+    // Which paragraph of the engine's reading each row is, and the roles the rewrite's reading lends the paragraphs
+    // the engine could not name.
+    const at = new Map<Row, number | null>();
+    let cursor = 0;
+    for (const r of rows) {
+      if (r.kind !== 'paragraph') continue;
+      const idx = paragraphOf(s.reading, r, cursor);
+      if (idx !== null) cursor = idx + 1;
+      at.set(r, idx);
+    }
+    const borrowed = rolesFromRewrite(s.reading, s.run, rows, at);
+    drawShape(s, borrowed);
     // An open Try it, with what the student typed in it, stays in its row across a redraw.
     const focused = document.activeElement;
     const open = new Map<string, HTMLElement>();
@@ -228,7 +363,6 @@ export function result(o: ResultOptions): ResultView {
     const marked = new Set<string>();
     const notes = numberFacts(rows);
     const noteOf = new Map(notes.map((x) => [x.fact.id, x.n]));
-    let from = 0;
     // Each paragraph's place in its part, for the writer's role of it.
     const place = new Map<Row, number>();
     const per = new Map<number, number>();
@@ -240,9 +374,7 @@ export function result(o: ResultOptions): ResultView {
     rowsEl.replaceChildren(
       ...rows.map((r) => {
         if (r.kind === 'heading') return h('h2', { class: `pg-heading${r.title ? ' pg-heading-title' : ''}` }, r.text);
-        const idx = paragraphOf(s.reading, r, from);
-        if (idx !== null) from = idx + 1;
-        return paraRow(s, r, idx, place.get(r) ?? 0, seen, marked, noteOf);
+        return paraRow(s, r, at.get(r) ?? null, place.get(r) ?? 0, seen, marked, noteOf, borrowed);
       }),
     );
     // One legend line, and only when something was added; the facts under the rows, and only when there are some.
@@ -281,10 +413,14 @@ export function result(o: ResultOptions): ResultView {
     return i >= 0 ? i : null;
   }
 
-  function paraRow(s: ResultState, r: Para, idx: number | null, at: number, seen: Set<string>, marked: Set<string>, noteOf: Map<string, number>): HTMLElement {
+  function paraRow(s: ResultState, r: Para, idx: number | null, at: number, seen: Set<string>, marked: Set<string>, noteOf: Map<string, number>, borrowed: Map<number, Borrowed> = new Map()): HTMLElement {
     const v = s.voice;
     const reading = s.reading;
-    const roleYours = idx !== null ? reading?.roles[idx]?.name : undefined;
+    // The engine's role for the paragraph; where it has none, the role the rewrite's reading gives it, marked as that.
+    const mine = idx !== null ? reading?.roles[idx] : undefined;
+    const lent = idx !== null && mine?.role === 'part' ? borrowed.get(idx) : undefined;
+    const roleYours = mine && mine.role !== 'part' ? mine.name : lent?.name;
+    const roleTitle = lent ? fromRewrite(lent, v) : mine && mine.role !== 'part' && mine.confidence < GUESS ? GUESS_TITLE : undefined;
     const roleHers = r.hers ? s.run?.roles.get(r.part)?.[at] : undefined;
     const row = h('div', { class: 'pg-row', 'data-index': String(r.index) });
     const cells = h('div', { class: 'pg-cols' });
@@ -321,7 +457,7 @@ export function result(o: ResultOptions): ResultView {
       h(
         'div',
         { class: 'pg-cell pg-yours' },
-        label('Yours', r.filled ? undefined : roleYours, r.from?.length && r.from.length > 1 ? `your paragraphs ${listOf(r.from)}` : r.moved && r.from?.length ? `your paragraph ${r.from[0]}` : undefined),
+        label('Yours', r.filled ? undefined : roleYours, r.from?.length && r.from.length > 1 ? `your paragraphs ${listOf(r.from)}` : r.moved && r.from?.length ? `your paragraph ${r.from[0]}` : undefined, roleTitle),
         text,
         r.filled ? null : more,
         opened,
@@ -365,8 +501,8 @@ export function result(o: ResultOptions): ResultView {
   }
 
   /** A cell's label: the column's name, always read aloud and shown on a phone, and the paragraph's role. */
-  function label(col: string, role?: string, extra?: string): HTMLElement {
-    return h('p', { class: 'pg-cell-label' }, h('span', { class: 'pg-colname' }, col), role ? h('span', { class: 'pg-role' }, ...o.terms.labelled(role)) : null, extra ? h('span', { class: 'pg-from' }, extra) : null);
+  function label(col: string, role?: string, extra?: string, guess?: string): HTMLElement {
+    return h('p', { class: 'pg-cell-label' }, h('span', { class: 'pg-colname' }, col), role ? h('span', { class: `pg-role${guess ? ' pg-guess' : ''}`, title: guess }, ...o.terms.labelled(role)) : null, extra ? h('span', { class: 'pg-from' }, extra) : null);
   }
 
   function yourSentence(n: number, text: string, nevers: Reading['never'], marked: Set<string>, opened: HTMLElement): HTMLElement {

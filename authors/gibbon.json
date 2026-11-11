@@ -26,6 +26,94 @@
     "argument",
     "review"
   ],
+  "shapes": [
+    {
+      "work": "the opening of the Decline and Fall",
+      "cite": "The Decline and Fall of the Roman Empire, ch. 1",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Opens with the empire at its height, in one sentence.",
+          "quote": "the empire of Rome comprehended the fairest part of the earth"
+        },
+        {
+          "role": "claim",
+          "says": "Says what the chapters to come will show.",
+          "quote": "It is the design of this, and of the two succeeding chapters"
+        },
+        {
+          "role": "background",
+          "says": "Goes back to who made the conquests.",
+          "quote": "The principal conquests of the Romans were achieved under the republic"
+        },
+        {
+          "role": "reason",
+          "says": "Gives the first emperor’s reasons for stopping.",
+          "quote": "Rome, in her present exalted situation, had much less to hope than to fear"
+        }
+      ]
+    },
+    {
+      "work": "the happiest age, in the Decline and Fall",
+      "cite": "The Decline and Fall of the Roman Empire, ch. 3",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "States the claim as a challenge any man would answer the same way.",
+          "quote": "If a man were called to fix the period in the history of the world"
+        },
+        {
+          "role": "reason",
+          "says": "Gives the reason: absolute power in good hands.",
+          "quote": "under the guidance of virtue and wisdom"
+        },
+        {
+          "role": "objection",
+          "says": "Then names the weakness in that happiness.",
+          "quote": "the instability of a happiness which depended on the character of single man"
+        },
+        {
+          "role": "evidence",
+          "says": "Calls the bad emperors by name, each with his adjective.",
+          "quote": "The dark, unrelenting Tiberius"
+        }
+      ]
+    },
+    {
+      "work": "the rise of Christianity, in the Decline and Fall",
+      "cite": "The Decline and Fall of the Roman Empire, ch. 15",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens by claiming the subject for history.",
+          "quote": "A candid but rational inquiry into the progress and establishment of Christianity"
+        },
+        {
+          "role": "question",
+          "says": "Asks how the new faith won.",
+          "quote": "by what means the Christian faith obtained so remarkable a victory"
+        },
+        {
+          "role": "answer",
+          "says": "Gives the expected answer, and grants it.",
+          "quote": "an obvious but satisfactory answer may be returned"
+        },
+        {
+          "role": "turn",
+          "says": "Then asks leave to look for causes nearer the ground.",
+          "quote": "what were the secondary causes"
+        },
+        {
+          "role": "reason",
+          "says": "Lists five, and the chapter takes them in order.",
+          "quote": "the five following causes"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1776–1789: public domain in the US.",

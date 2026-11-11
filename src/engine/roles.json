@@ -43,13 +43,13 @@
   },
   "scene": {
     "name": "Scene",
-    "definition": "The place, time and people of a story, set down before anything happens. Example: “The party was at Jessica’s house.”",
+    "definition": "The place, time and people of a story, set down before anything happens; in an essay or a speech, a moment told as it happened. Example: “The party was at Jessica’s house.”",
     "opens": "begins by setting the scene",
     "then": "sets the scene"
   },
   "turn": {
     "name": "Turn",
-    "definition": "The moment a story changes direction. Example: “Then I heard it again.”",
+    "definition": "The moment a piece changes direction: the event a story hinges on, or the “but” an argument swings round. Example: “Then I heard it again.”",
     "opens": "begins at the moment things change",
     "then": "turns the story"
   },
@@ -61,7 +61,7 @@
   },
   "verdict": {
     "name": "Verdict",
-    "definition": "The writer’s judgement of what the story meant, usually at the end. Example: “Maybe I was wrong about him.”",
+    "definition": "The writer’s judgement of what it all meant, usually at the end. Example: “Maybe I was wrong about him.”",
     "opens": "begins with the judgement",
     "then": "says what it meant"
   },
@@ -85,13 +85,37 @@
   },
   "close": {
     "name": "Close",
-    "definition": "The sign-off that ends a letter or speech: thanks, a farewell, a name. Example: “Love, Jake”",
+    "definition": "The lines that end a letter, a speech or a story: thanks, a farewell, a name, a last word. Example: “Love, Jake”",
     "opens": "begins with a farewell",
     "then": "signs off"
   },
+  "background": {
+    "name": "Background",
+    "definition": "What the reader must know before the point is made: how things stand, or what came before. Example: “Almost every student now carries a phone.”",
+    "opens": "begins with what the reader must know",
+    "then": "fills in what came before"
+  },
+  "occasion": {
+    "name": "Occasion",
+    "definition": "Why the writer speaks now: the event, the place or the letter that calls for the piece. Example: “We are met on a great battle-field of that war.”",
+    "opens": "begins with why the piece is written now",
+    "then": "says why the piece is written now"
+  },
+  "description": {
+    "name": "Description",
+    "definition": "What a thing looks, sounds or works like, set down so the reader can see it. Example: “The walls are yellow. There is a TV in the corner.”",
+    "opens": "begins by describing",
+    "then": "describes"
+  },
+  "question": {
+    "name": "Question",
+    "definition": "The question the piece sets out to answer, asked outright. Example: “Does light change how a plant grows?”",
+    "opens": "begins with a question",
+    "then": "asks the question"
+  },
   "part": {
     "name": "Part",
-    "definition": "A paragraph whose job the engine cannot name with confidence.",
+    "definition": "A paragraph whose job the engine cannot name. The page shows “…” for it.",
     "opens": "begins without a clear first step",
     "then": "goes on"
   }

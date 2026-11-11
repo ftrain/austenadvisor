@@ -96,6 +96,114 @@
     "argument",
     "essay"
   ],
+  "shapes": [
+    {
+      "work": "the speech at Selma",
+      "cite": "50th Anniversary of the Selma to Montgomery Marches, 7 March 2015",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with one young man on the morning of the march, and what was in his knapsack.",
+          "quote": "heroics were not on his mind"
+        },
+        {
+          "role": "claim",
+          "says": "Says what this place is: one where the nation’s course was decided.",
+          "quote": "there are places and moments in America where this nation’s destiny has been decided"
+        },
+        {
+          "role": "objection",
+          "says": "Recalls that the marchers were called un-American at the time.",
+          "quote": "many in power condemned rather than praised them"
+        },
+        {
+          "role": "answer",
+          "says": "Answers with a question.",
+          "quote": "what could be more American than what happened in this place?"
+        },
+        {
+          "role": "question",
+          "says": "Turns from honouring the past to asking what is owed for it.",
+          "quote": "just how might we repay that debt?"
+        },
+        {
+          "role": "call",
+          "says": "Ends by handing the march to the young.",
+          "quote": "our march is not yet finished"
+        }
+      ]
+    },
+    {
+      "work": "the Farewell Address",
+      "cite": "Farewell Address, 10 January 2017",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "greeting",
+          "says": "Greets the room as a neighbour.",
+          "quote": "It’s good to be home!"
+        },
+        {
+          "role": "claim",
+          "says": "States the belief the whole speech rests on.",
+          "quote": "change only happens when ordinary people get involved"
+        },
+        {
+          "role": "stakes",
+          "says": "Names the subject, then three threats to it, one at a time.",
+          "quote": "The state of our democracy."
+        },
+        {
+          "role": "call",
+          "says": "Asks each citizen to do the work.",
+          "quote": "It needs you."
+        },
+        {
+          "role": "close",
+          "says": "Closes on the words his campaigns began with.",
+          "quote": "Yes, we did. Yes, we can."
+        }
+      ]
+    },
+    {
+      "work": "a weekly address on the minimum wage",
+      "cite": "Weekly Address, 15 February 2014",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "greeting",
+          "says": "Greets the listener in two words.",
+          "quote": "Hi, everybody."
+        },
+        {
+          "role": "news",
+          "says": "Says what he did this week.",
+          "quote": "And this week, I took action"
+        },
+        {
+          "role": "reason",
+          "says": "Gives the reason before asking for anything.",
+          "quote": "We know why this is important."
+        },
+        {
+          "role": "evidence",
+          "says": "Puts the bill in one number that is easy to say.",
+          "quote": "That’s easy to remember: ten-ten."
+        },
+        {
+          "role": "call",
+          "says": "Tells the listener what to ask their representative.",
+          "quote": "ask them “why not?”"
+        },
+        {
+          "role": "close",
+          "says": "Signs off as he greeted.",
+          "quote": "Thanks, and have a great weekend."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "The Obama White House archive (obamawhitehouse.archives.gov)",
     "note": "Speeches and weekly addresses of the President, works of the US government: public domain in the US (17 U.S.C. § 105). The voice is a model of the style, not his words.",

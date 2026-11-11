@@ -98,6 +98,99 @@
     "argument",
     "review"
   ],
+  "shapes": [
+    {
+      "work": "the poet’s business, in Rasselas",
+      "cite": "Rasselas, ch. 10",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "background",
+          "says": "Begins with how every nation ranks poetry.",
+          "quote": "poetry was considered as the highest learning"
+        },
+        {
+          "role": "reason",
+          "says": "Says what resolving to be a poet did to his eyes.",
+          "quote": "I saw everything with a new purpose"
+        },
+        {
+          "role": "claim",
+          "says": "States the poet’s business as a rule.",
+          "quote": "to examine, not the individual, but the species"
+        },
+        {
+          "role": "evidence",
+          "says": "Gives the rule one example.",
+          "quote": "He does not number the streaks of the tulip"
+        },
+        {
+          "role": "call",
+          "says": "Ends by saying what a poet must be.",
+          "quote": "the interpreter of nature and the legislator of mankind"
+        }
+      ]
+    },
+    {
+      "work": "Rambler No. 4, on fiction",
+      "cite": "The Rambler, No. 4, 31 March 1750",
+      "kind": "review",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Begins by saying what the new kind of book is.",
+          "quote": "exhibit life in its true state"
+        },
+        {
+          "role": "stakes",
+          "says": "Says who reads such books, and why that matters.",
+          "quote": "written chiefly to the young, the ignorant, and the idle"
+        },
+        {
+          "role": "objection",
+          "says": "Takes up the defence that a book only shows the world as it is.",
+          "quote": "It is therefore not a sufficient vindication of a character, that it is drawn as it appears"
+        },
+        {
+          "role": "call",
+          "says": "Ends with what an author ought to do.",
+          "quote": "should always disgust"
+        }
+      ]
+    },
+    {
+      "work": "the opening of Rasselas",
+      "cite": "Rasselas, ch. 1–3",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "greeting",
+          "says": "Calls on the kind of reader the tale is for.",
+          "quote": "Ye who listen with credulity to the whispers of fancy"
+        },
+        {
+          "role": "background",
+          "says": "Names the prince and his father.",
+          "quote": "Rasselas was the fourth son of the mighty Emperor"
+        },
+        {
+          "role": "description",
+          "says": "Describes the valley he is shut in.",
+          "quote": "The place which the wisdom or policy of antiquity had destined"
+        },
+        {
+          "role": "question",
+          "says": "The prince asks why he alone is unhappy.",
+          "quote": "makes the difference between man and all the rest of the animal creation"
+        },
+        {
+          "role": "verdict",
+          "says": "He finds his own answer.",
+          "quote": "give me something to desire"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for Rasselas; the Works of Samuel Johnson (Oxford, 1825) from Project Gutenberg, by way of the GITenberg mirror",
     "note": "Published 1750–1760: public domain in the US.",

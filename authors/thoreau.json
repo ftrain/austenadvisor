@@ -26,6 +26,136 @@
     "argument",
     "story"
   ],
+  "shapes": [
+    {
+      "work": "“Where I Lived, and What I Lived For”, in Walden",
+      "cite": "Walden, “Where I Lived, and What I Lived For”",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "States why he went, in one sentence.",
+          "quote": "I went to the woods because I wished to live deliberately"
+        },
+        {
+          "role": "objection",
+          "says": "Looks at how his neighbours live.",
+          "quote": "Still we live meanly, like ants"
+        },
+        {
+          "role": "call",
+          "says": "Gives the remedy in one word, three times.",
+          "quote": "Simplicity, simplicity, simplicity!"
+        },
+        {
+          "role": "evidence",
+          "says": "Takes the railroad as his example.",
+          "quote": "We do not ride on the railroad; it rides upon us."
+        },
+        {
+          "role": "close",
+          "says": "Closes on an image of time as a stream.",
+          "quote": "Time is but the stream I go a-fishing in."
+        }
+      ]
+    },
+    {
+      "work": "“Civil Disobedience”",
+      "cite": "“On the Duty of Civil Disobedience”",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens by accepting a motto and pushing it further.",
+          "quote": "That government is best which governs least"
+        },
+        {
+          "role": "answer",
+          "says": "Parts himself from those who want no government at all.",
+          "quote": "but at once a better government"
+        },
+        {
+          "role": "question",
+          "says": "Asks the question the essay turns on.",
+          "quote": "Must the citizen ever for a moment, or in the least degree, resign his conscience to the legislator?"
+        },
+        {
+          "role": "scene",
+          "says": "Tells his one night in jail.",
+          "quote": "I was put into a jail once on this account, for one night"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends by saying what a free state would be.",
+          "quote": "There will never be a really free and enlightened State"
+        }
+      ]
+    },
+    {
+      "work": "the battle of the ants, in Walden",
+      "cite": "Walden, “Brute Neighbors”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins at his woodpile with two ants.",
+          "quote": "I observed two large ants"
+        },
+        {
+          "role": "description",
+          "says": "Widens to a whole war, named as if it were men’s.",
+          "quote": "the red republicans on the one hand, and the black imperialists on the other"
+        },
+        {
+          "role": "feeling",
+          "says": "Owns that it moved him.",
+          "quote": "I was myself excited somewhat even as if they had been men."
+        },
+        {
+          "role": "evidence",
+          "says": "Sets the fight beside Concord and Bunker Hill.",
+          "quote": "Concord Fight"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends without learning who won.",
+          "quote": "I never learned which party was victorious, nor the cause of the war"
+        }
+      ]
+    },
+    {
+      "work": "the Conclusion of Walden",
+      "cite": "Walden, “Conclusion”",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "reason",
+          "says": "Says why he left, as plainly as why he came.",
+          "quote": "I left the woods for as good a reason as I went there."
+        },
+        {
+          "role": "evidence",
+          "says": "Gives the path his feet wore as proof of habit.",
+          "quote": "my feet wore a path from my door to the pond-side"
+        },
+        {
+          "role": "claim",
+          "says": "States what the two years taught him.",
+          "quote": "I learned this, at least, by my experiment"
+        },
+        {
+          "role": "call",
+          "says": "Tells the reader what to do with a dream.",
+          "quote": "If you have built castles in the air"
+        },
+        {
+          "role": "close",
+          "says": "Closes on a morning image.",
+          "quote": "The sun is but a morning star."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1849–1866: public domain in the US.",

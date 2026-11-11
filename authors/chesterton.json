@@ -26,6 +26,104 @@
     "essay",
     "review"
   ],
+  "shapes": [
+    {
+      "work": "“The Maniac”, in Orthodoxy",
+      "cite": "Orthodoxy, ch. 2",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a remark a publisher once made to him.",
+          "quote": "That man will get on; he believes in himself."
+        },
+        {
+          "role": "answer",
+          "says": "Answers the remark with where such men are found.",
+          "quote": "Shall I tell you where the men are who believe most in themselves?"
+        },
+        {
+          "role": "evidence",
+          "says": "Gives his examples in pairs.",
+          "quote": "Poets do not go mad; but chess-players do."
+        },
+        {
+          "role": "verdict",
+          "says": "Sums up the difference in one picture.",
+          "quote": "It is the logician who seeks to get the heavens into his head."
+        },
+        {
+          "role": "claim",
+          "says": "States the claim as a reversal of the common saying.",
+          "quote": "The madman is the man who has lost everything except his reason."
+        }
+      ]
+    },
+    {
+      "work": "the first chapter of Heretics",
+      "cite": "Heretics, ch. 1",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with what one word’s new use shows.",
+          "quote": "the extraordinary use which is made nowadays of the word “orthodox.”"
+        },
+        {
+          "role": "background",
+          "says": "Recalls what a heretic once was.",
+          "quote": "In former days the heretic was proud of not being a heretic."
+        },
+        {
+          "role": "reason",
+          "says": "Says why a man’s view of the universe matters most.",
+          "quote": "the most practical and important thing about a man is still his view of the universe"
+        },
+        {
+          "role": "scene",
+          "says": "Ends with a small story of a street and a lamp.",
+          "quote": "Suppose that a great commotion arises in the street about something"
+        },
+        {
+          "role": "verdict",
+          "says": "Lets the story make the point.",
+          "quote": "we now must discuss in the dark"
+        }
+      ]
+    },
+    {
+      "work": "“The Blue Cross”",
+      "cite": "The Innocence of Father Brown, “The Blue Cross”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with a boat coming in at morning.",
+          "quote": "the boat touched Harwich"
+        },
+        {
+          "role": "claim",
+          "says": "Stops the story for a general remark.",
+          "quote": "The most incredible thing about miracles is that they happen."
+        },
+        {
+          "role": "evidence",
+          "says": "Sets down small odd facts, one by one, beginning with salt in the sugar.",
+          "quote": "He wondered why they should keep salt in it."
+        },
+        {
+          "role": "turn",
+          "says": "The little priest shows he knew the trick all along.",
+          "quote": "Yes, I’ve heard of it before."
+        },
+        {
+          "role": "verdict",
+          "says": "Says how he knew the thief was no priest.",
+          "quote": "You attacked reason"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1905–1925: public domain in the US.",

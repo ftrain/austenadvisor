@@ -416,6 +416,54 @@
 .pg-who {
   color: var(--ink-3);
 }
+/* A role that is a guess, or read from the rewrite: lighter than one the engine found by its cue words. */
+.pg-guess,
+.pg-guess .pg-term {
+  color: var(--ink-3);
+}
+.pg-role.pg-guess {
+  font-weight: 400;
+}
+.pg-gap {
+  color: var(--ink-3);
+  cursor: help;
+}
+.pg-shape-key {
+  color: var(--ink-3);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+/* The voice's outline: one line, and under it, when opened, a line to each part. */
+.pg-outline-open,
+.pg-outline-next {
+  margin-left: 6px;
+  white-space: nowrap;
+}
+.pg-outline {
+  list-style: none;
+  margin: 4px 0 6px;
+  padding: 6px 0 2px;
+  border-top: 1px dotted var(--rule);
+}
+.pg-outline li {
+  display: grid;
+  grid-template-columns: 7.5em minmax(0, 1fr);
+  gap: 10px;
+  padding: 2px 0;
+}
+.pg-outline-role {
+  font-weight: 600;
+}
+.pg-outline q {
+  color: var(--ink-2);
+  font-family: var(--serif);
+  font-style: italic;
+}
+.pg-outline-cite cite {
+  color: var(--ink-3);
+  font-size: 0.85rem;
+  font-style: normal;
+}
 .pg-line-note {
   color: var(--ink-2);
   font-family: var(--serif);
@@ -807,6 +855,15 @@
   .pg-line {
     grid-template-columns: minmax(0, 1fr);
     gap: 2px;
+  }
+  .pg-outline li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+    padding: 4px 0;
+  }
+  .pg-shape-key {
+    display: block;
+    white-space: normal;
   }
   .pg-bars,
   .pg-line-note {

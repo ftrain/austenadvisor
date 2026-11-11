@@ -98,6 +98,126 @@
     "speech",
     "story"
   ],
+  "shapes": [
+    {
+      "work": "Antony’s funeral speech",
+      "cite": "Julius Caesar 3.2",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "greeting",
+          "says": "Asks a hostile crowd for a hearing.",
+          "quote": "Friends, Romans, countrymen, lend me your ears"
+        },
+        {
+          "role": "objection",
+          "says": "States the other side’s charge as if he granted it.",
+          "quote": "Hath told you Caesar was ambitious"
+        },
+        {
+          "role": "evidence",
+          "says": "Sets three facts against the charge, each ending in a question.",
+          "quote": "He hath brought many captives home to Rome"
+        },
+        {
+          "role": "turn",
+          "says": "Turns from the facts to the crowd’s own love.",
+          "quote": "You all did love him once, not without cause"
+        },
+        {
+          "role": "feeling",
+          "says": "Breaks off, as if grief had stopped him.",
+          "quote": "My heart is in the coffin there with Caesar"
+        }
+      ]
+    },
+    {
+      "work": "the St. Crispin’s Day speech",
+      "cite": "Henry V 4.3",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "answer",
+          "says": "Answers a wish for more men by turning it round.",
+          "quote": "The fewer men, the greater share of honour"
+        },
+        {
+          "role": "request",
+          "says": "Offers any man who fears the fight his passage home.",
+          "quote": "he which hath no stomach to this fight"
+        },
+        {
+          "role": "scene",
+          "says": "Pictures the old soldier years from now, showing his scars.",
+          "quote": "He that shall live this day, and see old age"
+        },
+        {
+          "role": "verdict",
+          "says": "Names what the few will be to each other.",
+          "quote": "We few, we happy few, we band of brothers"
+        }
+      ]
+    },
+    {
+      "work": "Hamlet’s soliloquy",
+      "cite": "Hamlet 3.1",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "question",
+          "says": "States the question in ten syllables.",
+          "quote": "To be, or not to be: that is the question"
+        },
+        {
+          "role": "reason",
+          "says": "Gives the case for death: it is only sleep.",
+          "quote": "To die: to sleep"
+        },
+        {
+          "role": "turn",
+          "says": "Catches on one word and turns.",
+          "quote": "ay, there’s the rub"
+        },
+        {
+          "role": "evidence",
+          "says": "Lists the wrongs a man bears sooner than risk it.",
+          "quote": "For who would bear the whips and scorns of time"
+        },
+        {
+          "role": "verdict",
+          "says": "Concludes that thought stops action.",
+          "quote": "Thus conscience does make cowards of us all"
+        }
+      ]
+    },
+    {
+      "work": "the death of Ophelia, as the Queen tells it",
+      "cite": "Hamlet 4.7",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins with the place: a willow over a brook.",
+          "quote": "There is a willow grows aslant a brook"
+        },
+        {
+          "role": "turn",
+          "says": "A branch breaks.",
+          "quote": "an envious sliver broke"
+        },
+        {
+          "role": "description",
+          "says": "Holds the moment while her clothes keep her up.",
+          "quote": "Her clothes spread wide"
+        },
+        {
+          "role": "close",
+          "says": "Ends on two plain words.",
+          "quote": "To muddy death."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for the plays; Project Gutenberg ebook 100 for the sonnets",
     "note": "Written 1590–1613 and published by 1623: public domain in the US.",

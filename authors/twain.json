@@ -87,6 +87,131 @@
     "story",
     "essay"
   ],
+  "shapes": [
+    {
+      "work": "the opening of Huckleberry Finn",
+      "cite": "Adventures of Huckleberry Finn, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "greeting",
+          "says": "Speaks straight to the reader, and admits there was an earlier book.",
+          "quote": "You don’t know about me without you have read a book"
+        },
+        {
+          "role": "background",
+          "says": "Sums up how that book ended.",
+          "quote": "Now the way that the book winds up is this"
+        },
+        {
+          "role": "scene",
+          "says": "Sets down where he lives now, and what is wrong with it.",
+          "quote": "allowed she would sivilize me"
+        },
+        {
+          "role": "feeling",
+          "says": "Ends the day alone at a window.",
+          "quote": "I felt so lonesome I most wished I was dead."
+        }
+      ]
+    },
+    {
+      "work": "the whitewashed fence, in Tom Sawyer",
+      "cite": "The Adventures of Tom Sawyer, ch. 2",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Sets a fine morning against a boy with a job to do.",
+          "quote": "Saturday morning was come"
+        },
+        {
+          "role": "feeling",
+          "says": "Gives his despair in grand words.",
+          "quote": "Life to him seemed hollow"
+        },
+        {
+          "role": "turn",
+          "says": "An idea comes to him at the worst moment.",
+          "quote": "an inspiration burst upon him"
+        },
+        {
+          "role": "evidence",
+          "says": "Shows the trick at work on the first boy.",
+          "quote": "Does a boy get a chance to whitewash a fence every day?"
+        },
+        {
+          "role": "verdict",
+          "says": "Draws a law of human action from it.",
+          "quote": "it is only necessary to make the thing difficult to attain"
+        }
+      ]
+    },
+    {
+      "work": "Huck’s decision, in Huckleberry Finn",
+      "cite": "Adventures of Huckleberry Finn, ch. 31",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "feeling",
+          "says": "Tries to pray and finds he cannot.",
+          "quote": "You can’t pray a lie"
+        },
+        {
+          "role": "scene",
+          "says": "Remembers the river, in one long run of “and”.",
+          "quote": "talking and singing and laughing"
+        },
+        {
+          "role": "stakes",
+          "says": "Says what he must choose between.",
+          "quote": "betwixt two things"
+        },
+        {
+          "role": "turn",
+          "says": "Chooses, in six words.",
+          "quote": "All right, then, I’ll go to hell"
+        },
+        {
+          "role": "verdict",
+          "says": "Judges his own words and lets them stand.",
+          "quote": "It was awful thoughts and awful words, but they was said."
+        }
+      ]
+    },
+    {
+      "work": "the coyote, in Roughing It",
+      "cite": "Roughing It, ch. 5",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Describes the animal in one long sentence of insults.",
+          "quote": "The coyote is a long, slim, sick and sorry-looking skeleton"
+        },
+        {
+          "role": "claim",
+          "says": "Sums him up in a short one.",
+          "quote": "He is always hungry."
+        },
+        {
+          "role": "scene",
+          "says": "Sets a proud dog to chase him.",
+          "quote": "But if you start a swift-footed dog after him"
+        },
+        {
+          "role": "turn",
+          "says": "The coyote stops pretending.",
+          "quote": "business is business"
+        },
+        {
+          "role": "verdict",
+          "says": "Leaves the dog alone in the desert to think it over.",
+          "quote": "alone in the midst of a vast solitude"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1869–1896: public domain in the US.",

@@ -97,6 +97,109 @@
     "argument",
     "essay"
   ],
+  "shapes": [
+    {
+      "work": "Federalist No. 10",
+      "cite": "Federalist No. 10 (Madison)",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Opens with the claim: a well-built Union breaks and controls faction.",
+          "quote": "break and control the violence of faction"
+        },
+        {
+          "role": "background",
+          "says": "Defines a faction before arguing about it.",
+          "quote": "By a faction, I understand"
+        },
+        {
+          "role": "objection",
+          "says": "Weighs the cure of removing the causes, and rejects it.",
+          "quote": "Liberty is to faction what air is to fire"
+        },
+        {
+          "role": "reason",
+          "says": "Finds the causes in human nature, so only the effects can be controlled.",
+          "quote": "The latent causes of faction are thus sown in the nature of man"
+        },
+        {
+          "role": "answer",
+          "says": "Gives the cure: a large republic, where no one faction can rule.",
+          "quote": "Extend the sphere"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends by naming what has been found.",
+          "quote": "a republican remedy for the diseases most incident to republican government"
+        }
+      ]
+    },
+    {
+      "work": "Federalist No. 51",
+      "cite": "Federalist No. 51 (Madison)",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "question",
+          "says": "Opens with the question the paper answers.",
+          "quote": "To what expedient, then, shall we finally resort"
+        },
+        {
+          "role": "claim",
+          "says": "Answers it: each branch must have the means and the motive to resist the others.",
+          "quote": "Ambition must be made to counteract ambition."
+        },
+        {
+          "role": "reason",
+          "says": "Gives the reason in two sentences about angels.",
+          "quote": "If men were angels, no government would be necessary."
+        },
+        {
+          "role": "evidence",
+          "says": "Applies the rule to the American case, with its two layers of government.",
+          "quote": "In the compound republic of America"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on what government is for.",
+          "quote": "Justice is the end of government."
+        }
+      ]
+    },
+    {
+      "work": "Federalist No. 1",
+      "cite": "Federalist No. 1 (Hamilton)",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Begins with why the reader is being written to: the present government has failed.",
+          "quote": "After an unequivocal experience of the inefficacy"
+        },
+        {
+          "role": "stakes",
+          "says": "Says what the vote will decide for all mankind.",
+          "quote": "reflection and choice"
+        },
+        {
+          "role": "objection",
+          "says": "Names who will oppose the plan, and grants that some of them are honest.",
+          "quote": "Among the most formidable of the obstacles"
+        },
+        {
+          "role": "claim",
+          "says": "Declares his own side openly.",
+          "quote": "I am clearly of opinion it is your interest to adopt it"
+        },
+        {
+          "role": "call",
+          "says": "Lays out the papers to come, for the reader to weigh.",
+          "quote": "I propose, in a series of papers, to discuss the following interesting particulars"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1787–1788: public domain in the US.",

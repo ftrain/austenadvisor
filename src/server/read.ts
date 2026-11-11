@@ -2,6 +2,7 @@
 // the student types and while a rewrite is on its way:
 //
 // - kind and roles: what sort of writing it is, and what each paragraph does (structure.ts);
+// - shape: the student's parts on one line, the form's, and the outline of a real piece by the voice (outline.ts);
 // - form: the form asked for, or the form of the kind, with the text fitted to it (forms.ts);
 // - never: up to five words the voice never wrote, the rarest first, each with the voice's own word where the
 //   engine is sure of it;
@@ -17,6 +18,7 @@ import { formLine, readForm, type AlignedSlot, type Move } from '../engine/forms
 import type { AuthorModel } from '../engine/model.ts';
 import type { Dist } from '../engine/profile.ts';
 import { lmKey } from '../engine/profile.ts';
+import { outlineOf, shapesFor, shapesOf, type Outline } from '../engine/outline.ts';
 import type { Pack } from '../engine/pack.ts';
 import { needlessWords, type FaultKind, type PlainRule } from '../engine/plain.ts';
 import { lineClass, nearest } from '../engine/shape.ts';
@@ -120,8 +122,10 @@ export interface Reading {
   paragraphs: string[];
   roles: (ParagraphRoles & { name: string })[];
   form: FormView;
-  /** The SHAPE line: the student's parts in order, the form's, and the voice's usual order. */
-  shape: { yours: string; form: string; voice: string | null; signature: string | null };
+  /** The SHAPE line: the student's parts in order (a run the engine could not name is "…"), the form's, and the
+   * outlines of real pieces by the voice: those of the text's kind, or of the form asked for; else of the nearest
+   * kind the voice has. The page shows the first and steps through the rest. */
+  shape: { yours: string; form: string; outlines: Outline[] };
   never: NeverWord[];
   /** What `never` holds: words the voice never wrote, or, for a style, the writer's needless words. */
   marks: 'never' | 'needless';
@@ -329,7 +333,7 @@ export function readText(voice: string, text: string, form = 'auto'): Reading {
     paragraphs,
     roles,
     form: formView(structure),
-    shape: { yours: shapeLine(structure.sequence), form: formLine(structure.form), voice: p ? shapeLine(p.structure.order) : null, signature: p?.structure.signature ? cap(p.structure.signature) : null },
+    shape: { yours: shapeLine(structure.sequence), form: formLine(structure.form), outlines: shapesFor(shapesOf(m.author as { shapes?: unknown }), structure.form.kind).map(outlineOf) },
     never: m.author.style ? needless(m, paragraphs) : neverWords(m, sentences),
     marks: m.author.style ? 'needless' : 'never',
     style: styleOf(short, sentences, profile.sentenceLength, profile.punctuationPerSentence),

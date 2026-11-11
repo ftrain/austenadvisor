@@ -96,6 +96,94 @@
   "goodFor": [
     "story"
   ],
+  "shapes": [
+    {
+      "work": "“Hills Like White Elephants”",
+      "cite": "Men Without Women, “Hills Like White Elephants”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Sets the place in plain statements, with no one named.",
+          "quote": "The hills across the valley of the Ebro were long and white."
+        },
+        {
+          "role": "description",
+          "says": "Lets the girl say what the hills look like.",
+          "quote": "They look like white elephants"
+        },
+        {
+          "role": "turn",
+          "says": "The man names the subject, though never by its name.",
+          "quote": "It’s really an awfully simple operation, Jig"
+        },
+        {
+          "role": "feeling",
+          "says": "Shows her feeling in a request.",
+          "quote": "Would you please please please please please please please stop talking?"
+        },
+        {
+          "role": "close",
+          "says": "Ends on a line the story has shown to be untrue.",
+          "quote": "There’s nothing wrong with me. I feel fine."
+        }
+      ]
+    },
+    {
+      "work": "the first chapter of A Farewell to Arms",
+      "cite": "A Farewell to Arms, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Sets the house, the river and the mountains in one sentence.",
+          "quote": "In the late summer of that year we lived in a house in a village"
+        },
+        {
+          "role": "description",
+          "says": "Describes troops and falling leaves in the same breath.",
+          "quote": "the leaves fell early that year"
+        },
+        {
+          "role": "turn",
+          "says": "The season changes, and sickness comes with it.",
+          "quote": "with the rain came the cholera"
+        },
+        {
+          "role": "verdict",
+          "says": "Gives the cost as if it were small.",
+          "quote": "only seven thousand died of it in the army"
+        }
+      ]
+    },
+    {
+      "work": "“Indian Camp”",
+      "cite": "In Our Time, “Indian Camp”",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins at the shore with the boats waiting.",
+          "quote": "At the lake shore there was another rowboat drawn up."
+        },
+        {
+          "role": "turn",
+          "says": "The doctor finds what the father has done.",
+          "quote": "His throat had been cut from ear to ear."
+        },
+        {
+          "role": "question",
+          "says": "The boy asks short questions on the way home.",
+          "quote": "Why did he kill himself, Daddy?"
+        },
+        {
+          "role": "feeling",
+          "says": "Ends on what the boy feels, which the reader knows is wrong.",
+          "quote": "he felt quite sure that he would never die"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Published 1925–1929: public domain in the US. Still under copyright in many other countries until the end of 2031.",

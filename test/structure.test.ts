@@ -11,6 +11,7 @@ import {
   ROLES,
   ROLES_BY_KIND,
   detectKind,
+  GUESS_BELOW,
   labelRoles,
   looksLikeLetter,
   readStructure,
@@ -18,6 +19,7 @@ import {
   shapeLine,
   signatureOf,
   typicalOrder,
+  UNNAMED,
   type Kind,
 } from '../src/engine/structure.ts';
 
@@ -75,13 +77,59 @@ describe('labelRoles', () => {
     expect(roles.at(-1)!.role).toBe('close');
   });
 
-  it('calls a paragraph with no clear cue "part"', () => {
-    const roles = labelRoles(['The walls are yellow. There is a TV in the corner.', 'There are plastic chairs.'], 'essay');
-    for (const r of roles) {
+  it('calls a paragraph with no clear cue "part", and shows a run of them as one “…”', () => {
+    const roles = labelRoles(['He took the bus. She took the train.', 'Nobody waved.', 'In conclusion, the school should buy a bus.'], 'argument');
+    for (const r of roles.slice(0, 2)) {
       expect(r.role).toBe('part');
       expect(r.confidence).toBeLessThan(ROLE_THRESHOLD);
       for (const s of r.spans) expect(s.role).toBe('part');
     }
+    expect(roleSequence(roles)).toEqual(['part', 'part', 'call']);
+    expect(shapeLine(roleSequence(roles))).toBe(`${UNNAMED} · Call`);
+    expect(shapeLine(roleSequence(roles))).not.toMatch(/Part/);
+  });
+
+  it('names a paragraph by its surest span, and leaves its uncued sentences out of the sequence', () => {
+    const roles = labelRoles(['It rained. Some people say rain is good for the crops.', 'More rain came.'], 'argument');
+    expect(roles[0]!.spans.map((s) => s.role)).toEqual(['part', 'objection']);
+    expect(roleSequence(roles)).toEqual(['objection', 'part']);
+  });
+
+  it('reads position and manner where there is no cue word, and marks the label a guess', () => {
+    const essay = labelRoles(
+      ['The laundromat on Fifth Street is a really interesting place.', 'The walls are yellow. There is a TV in the corner. There are plastic chairs.', 'One time I left my keys in a dryer and a stranger ran after me with them.', 'Overall it is a place where people help each other.'],
+      'essay',
+    );
+    expect(essay.map((r) => r.role)).toEqual(['claim', 'description', 'scene', 'verdict']);
+    expect(essay[1]!.confidence).toBeLessThan(GUESS_BELOW);
+    const opening = labelRoles(['Phones are a big part of our lives today.', 'Also phones can be used for learning.'], 'argument');
+    expect(opening.map((r) => r.role)).toEqual(['background', 'reason']);
+    expect(opening[0]!.confidence).toBeLessThan(GUESS_BELOW);
+    expect(labelRoles(['The purpose of this lab was to see if light affects how plants grow.', 'Plant A was 14 cm and Plant B was 9 cm.'], 'essay').map((r) => r.role)).toEqual(['question', 'evidence']);
+  });
+
+  it('opens a new scene in a story where the time or the place moves, and hears wondering as feeling', () => {
+    const roles = labelRoles(['Ryan texted me at midnight.', 'The next day we met at a coffee shop downtown.', 'I keep thinking about what he said. What if he meant it?', 'So I think it was never going to work.'], 'story');
+    expect(roles.map((r) => r.role)).toEqual(['scene', 'scene', 'feeling', 'verdict']);
+  });
+
+  it('does not take “First period” for a first reason, a step for a reason, or “They say” after the scientists for the other side', () => {
+    const roles = labelRoles(['School starts too early. Scientists have studied this. They say school should start later. First period is a nightmare.', 'It is time for a change.'], 'argument');
+    const spans = roles[0]!.spans.map((s) => s.role);
+    expect(spans).not.toContain('objection');
+    expect(spans).not.toContain('reason');
+    expect(labelRoles(['This is the best banana bread. First, make sure you preheat the oven.', 'Let it cool.'], 'essay')[0]!.spans.map((s) => s.role)).toEqual(['claim']);
+  });
+
+  it('leaves at most one paragraph in ten of the samples without a role', () => {
+    let all = 0;
+    let unnamed = 0;
+    for (const e of index) {
+      const { roles } = readStructure(sample(e.file));
+      all += roles.length;
+      unnamed += roles.filter((r) => r.role === 'part').length;
+    }
+    expect(unnamed / all).toBeLessThan(0.1);
   });
 
   it('gives every named role a confidence at or above the threshold, from the roles of its kind', () => {
@@ -108,7 +156,8 @@ describe('labelRoles', () => {
 
 describe('roles.json', () => {
   it('defines every role plainly, with the words a signature needs', () => {
-    const all = new Set([...Object.values(ROLES_BY_KIND).flat(), 'part' as const]);
+    const all = Object.keys(ROLES) as (keyof typeof ROLES)[];
+    for (const r of [...Object.values(ROLES_BY_KIND).flat(), 'occasion' as const, 'part' as const]) expect(all).toContain(r);
     for (const r of all) {
       const info = ROLES[r];
       expect(info, r).toBeDefined();

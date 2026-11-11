@@ -24,6 +24,89 @@
   "goodFor": [
     "story"
   ],
+  "shapes": [
+    {
+      "work": "the Flitcraft story, in The Maltese Falcon",
+      "cite": "The Maltese Falcon, ch. 7",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "States the case as a detective’s report would.",
+          "quote": "A man named Flitcraft had left his real-estate-office"
+        },
+        {
+          "role": "turn",
+          "says": "Gives the accident that changed him.",
+          "quote": "A beam or something fell eight or ten stories down"
+        },
+        {
+          "role": "feeling",
+          "says": "Says how it felt, in the man’s own kind of words.",
+          "quote": "He felt like somebody had taken the lid off life and let him look at the works."
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on the point, and does not explain it.",
+          "quote": "he adjusted himself to them not falling"
+        }
+      ]
+    },
+    {
+      "work": "the opening of The Maltese Falcon",
+      "cite": "The Maltese Falcon, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "description",
+          "says": "Describes the detective’s face, feature by feature.",
+          "quote": "Samuel Spade’s jaw was long and bony"
+        },
+        {
+          "role": "scene",
+          "says": "A client is shown in.",
+          "quote": "Shoo her in, darling"
+        },
+        {
+          "role": "request",
+          "says": "She tries to say what she wants, and cannot begin.",
+          "quote": "Could you—? I thought—I—that is—"
+        },
+        {
+          "role": "turn",
+          "says": "His partner takes the job.",
+          "quote": "I’ll look after it myself"
+        }
+      ]
+    },
+    {
+      "work": "the opening of Red Harvest",
+      "cite": "Red Harvest, ch. 1",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "background",
+          "says": "Begins with the town’s nickname, and where he first heard it.",
+          "quote": "I first heard Personville called “Poisonville”"
+        },
+        {
+          "role": "occasion",
+          "says": "Calls his client to say he has come.",
+          "quote": "told him I had arrived"
+        },
+        {
+          "role": "description",
+          "says": "Describes the city in flat statements.",
+          "quote": "The city wasn’t pretty."
+        },
+        {
+          "role": "turn",
+          "says": "Learns his client is dead before they meet.",
+          "quote": "gone to sit on the right hand of God"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication)",
     "note": "Red Harvest and The Dain Curse (1929), The Maltese Falcon (1930) and the Continental Op stories (1923–1930): public domain in the US.",

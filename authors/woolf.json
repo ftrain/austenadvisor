@@ -26,6 +26,131 @@
     "essay",
     "review"
   ],
+  "shapes": [
+    {
+      "work": "the first chapter of A Room of One’s Own",
+      "cite": "A Room of One’s Own, ch. 1",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "objection",
+          "says": "Opens with the reader’s objection to her title.",
+          "quote": "But, you may say, we asked you to speak about women and fiction"
+        },
+        {
+          "role": "claim",
+          "says": "Gives her one opinion early, and calls it minor.",
+          "quote": "a woman must have money and a room of her own if she is to write fiction"
+        },
+        {
+          "role": "scene",
+          "says": "Then tells how she came to hold it, beginning by a river.",
+          "quote": "sitting on the banks of a river"
+        },
+        {
+          "role": "turn",
+          "says": "A man stops her from walking on the grass.",
+          "quote": "Instantly a man’s figure rose to intercept me."
+        },
+        {
+          "role": "verdict",
+          "says": "Ends the day with a thought that cuts both ways.",
+          "quote": "how it is worse perhaps to be locked in"
+        }
+      ]
+    },
+    {
+      "work": "Shakespeare’s sister, in A Room of One’s Own",
+      "cite": "A Room of One’s Own, ch. 3",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "question",
+          "says": "Asks what would have happened to a woman with Shakespeare’s gift.",
+          "quote": "what would have happened had Shakespeare had a wonderfully gifted sister"
+        },
+        {
+          "role": "scene",
+          "says": "Tells her life as a story, beside his.",
+          "quote": "She was as adventurous, as imaginative, as agog to see the world as he was."
+        },
+        {
+          "role": "turn",
+          "says": "Ends the story at a crossroads.",
+          "quote": "killed herself one winter’s night"
+        },
+        {
+          "role": "verdict",
+          "says": "Draws the conclusion the story was told for.",
+          "quote": "any woman born with a great gift in the sixteenth century would certainly have gone crazed"
+        }
+      ]
+    },
+    {
+      "work": "the opening of Mrs. Dalloway",
+      "cite": "Mrs. Dalloway",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Begins in the middle of a morning, with an errand and no introduction.",
+          "quote": "Mrs. Dalloway said she would buy the flowers herself."
+        },
+        {
+          "role": "feeling",
+          "says": "Gives her delight in two exclamations.",
+          "quote": "What a lark! What a plunge!"
+        },
+        {
+          "role": "background",
+          "says": "Drops back thirty years inside the same sentence.",
+          "quote": "plunged at Bourton into the open air"
+        },
+        {
+          "role": "description",
+          "says": "Comes back to the street and the clock.",
+          "quote": "There! Out it boomed."
+        },
+        {
+          "role": "verdict",
+          "says": "Ends the paragraph on what she loves.",
+          "quote": "life; London; this moment of June"
+        }
+      ]
+    },
+    {
+      "work": "“Modern Fiction”",
+      "cite": "The Common Reader, “Modern Fiction”",
+      "kind": "review",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Judges three admired novelists in one word.",
+          "quote": "these three writers are materialists"
+        },
+        {
+          "role": "turn",
+          "says": "Turns from their books to the mind itself.",
+          "quote": "Look within"
+        },
+        {
+          "role": "reason",
+          "says": "Says what life is like, by two pictures.",
+          "quote": "Life is not a series of gig lamps symmetrically arranged"
+        },
+        {
+          "role": "evidence",
+          "says": "Brings in a writer who tries to set that down.",
+          "quote": "Mr. Joyce is spiritual"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends by refusing to make a rule.",
+          "quote": "everything is the proper stuff of fiction"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Standard Ebooks (public domain dedication) for the novels; Project Gutenberg ebook 64457 for The Common Reader; Project Gutenberg Australia for A Room of One’s Own",
     "note": "Published 1925–1929: public domain in the US.",

@@ -112,6 +112,136 @@
     "argument",
     "letter"
   ],
+  "shapes": [
+    {
+      "work": "the Gettysburg Address",
+      "cite": "Address at Gettysburg, 19 November 1863",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "background",
+          "says": "Begins eighty-seven years back, at the founding and the proposition it was founded on.",
+          "quote": "Four score and seven years ago"
+        },
+        {
+          "role": "stakes",
+          "says": "Names the war as the test of whether such a nation can last.",
+          "quote": "testing whether that nation"
+        },
+        {
+          "role": "occasion",
+          "says": "Comes to this field and says why the crowd stands on it.",
+          "quote": "We are met on a great battle-field of that war"
+        },
+        {
+          "role": "turn",
+          "says": "Turns: the living cannot hallow ground the dead have hallowed already.",
+          "quote": "But, in a larger sense, we can not dedicate"
+        },
+        {
+          "role": "call",
+          "says": "Charges the living with the work the dead left unfinished.",
+          "quote": "It is for us the living, rather, to be dedicated"
+        }
+      ]
+    },
+    {
+      "work": "the “House Divided” speech",
+      "cite": "Speech at Springfield, 17 June 1858",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "question",
+          "says": "Asks where the country stands before saying what to do.",
+          "quote": "If we could first know where we are"
+        },
+        {
+          "role": "claim",
+          "says": "States the claim in one line from scripture, then in his own words.",
+          "quote": "A house divided against itself cannot stand."
+        },
+        {
+          "role": "evidence",
+          "says": "Sets out the record piece by piece: the Nebraska bill, the Dred Scott decision.",
+          "quote": "working points of that machinery"
+        },
+        {
+          "role": "reason",
+          "says": "Reasons from the fit of the pieces to a common plan.",
+          "quote": "We cannot absolutely know that all these exact adaptations are the result of preconcert"
+        },
+        {
+          "role": "answer",
+          "says": "Answers those in his party who would follow Douglas.",
+          "quote": "a living dog is better than a dead lion"
+        },
+        {
+          "role": "call",
+          "says": "Ends by telling his party to stand firm.",
+          "quote": "We shall not fail"
+        }
+      ]
+    },
+    {
+      "work": "the letter to Horace Greeley",
+      "cite": "To Horace Greeley, 22 August 1862",
+      "kind": "letter",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Says he has read Greeley’s letter and will not quarrel with its tone.",
+          "quote": "I have just read yours of the 19th"
+        },
+        {
+          "role": "claim",
+          "says": "States his policy in five words.",
+          "quote": "I would save the Union."
+        },
+        {
+          "role": "reason",
+          "says": "Tests the policy against each case: free every slave, free none, free some.",
+          "quote": "My paramount object in this struggle"
+        },
+        {
+          "role": "close",
+          "says": "Closes by parting his official duty from his personal wish.",
+          "quote": "my oft expressed personal wish"
+        }
+      ]
+    },
+    {
+      "work": "the Second Inaugural Address",
+      "cite": "Second Inaugural Address, 4 March 1865",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Says a second oath needs a shorter speech than the first.",
+          "quote": "At this second appearing to take the oath"
+        },
+        {
+          "role": "background",
+          "says": "Looks back four years to how the war came.",
+          "quote": "and the war came."
+        },
+        {
+          "role": "claim",
+          "says": "Names slavery as the cause both sides knew.",
+          "quote": "somehow the cause of the war"
+        },
+        {
+          "role": "turn",
+          "says": "Turns from blame to judgement: both sides prayed to the same God.",
+          "quote": "Both read the same Bible"
+        },
+        {
+          "role": "call",
+          "says": "Ends on the work ahead, in one long sentence.",
+          "quote": "With malice toward none"
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "The Papers and Writings of Abraham Lincoln, ed. Arthur Brooks Lapsley (1905), Project Gutenberg ebooks 2653–2659, by way of the GITenberg mirror",
     "note": "Written 1832–1865 and published in this edition in 1905: public domain in the US.",

@@ -140,6 +140,131 @@
     "speech",
     "story"
   ],
+  "shapes": [
+    {
+      "work": "Paul on charity",
+      "cite": "1 Corinthians 13",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Makes the claim three times, each by a case: every gift is nothing without charity.",
+          "quote": "Though I speak with the tongues of men and of angels"
+        },
+        {
+          "role": "description",
+          "says": "Says what charity is like, in short clauses.",
+          "quote": "Charity suffereth long, and is kind"
+        },
+        {
+          "role": "reason",
+          "says": "Sets charity, which lasts, against the gifts, which end.",
+          "quote": "Charity never faileth"
+        },
+        {
+          "role": "turn",
+          "says": "Turns to his own growing up.",
+          "quote": "When I was a child, I spake as a child"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends by ranking three things.",
+          "quote": "And now abideth faith, hope, charity, these three"
+        }
+      ]
+    },
+    {
+      "work": "Psalm 23",
+      "cite": "Psalms 23",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "States the whole psalm in its first verse.",
+          "quote": "The LORD is my shepherd; I shall not want."
+        },
+        {
+          "role": "evidence",
+          "says": "Shows it in what the shepherd does.",
+          "quote": "He maketh me to lie down in green pastures"
+        },
+        {
+          "role": "turn",
+          "says": "Turns to the worst case, and from “he” to “thou”.",
+          "quote": "Yea, though I walk through the valley of the shadow of death"
+        },
+        {
+          "role": "verdict",
+          "says": "Ends on what will follow, for ever.",
+          "quote": "Surely goodness and mercy shall follow me"
+        }
+      ]
+    },
+    {
+      "work": "the parable of the prodigal son",
+      "cite": "Luke 15:11–32",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Sets the scene in eight words.",
+          "quote": "A certain man had two sons"
+        },
+        {
+          "role": "turn",
+          "says": "The son, starving, changes his mind.",
+          "quote": "And when he came to himself"
+        },
+        {
+          "role": "scene",
+          "says": "The father sees him far off and runs.",
+          "quote": "But when he was yet a great way off"
+        },
+        {
+          "role": "objection",
+          "says": "The elder brother objects, and his case is stated fairly.",
+          "quote": "Lo, these many years do I serve thee"
+        },
+        {
+          "role": "verdict",
+          "says": "The father’s answer ends the story.",
+          "quote": "for this thy brother was dead, and is alive again"
+        }
+      ]
+    },
+    {
+      "work": "the parable of the good Samaritan",
+      "cite": "Luke 10:25–37",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "question",
+          "says": "A lawyer asks a question, and the story is the answer.",
+          "quote": "And who is my neighbour?"
+        },
+        {
+          "role": "scene",
+          "says": "A man is robbed on the road and left.",
+          "quote": "A certain man went down from Jerusalem to Jericho"
+        },
+        {
+          "role": "turn",
+          "says": "Two pass by; the third stops.",
+          "quote": "But a certain Samaritan"
+        },
+        {
+          "role": "question",
+          "says": "The teller hands the question back.",
+          "quote": "Which now of these three"
+        },
+        {
+          "role": "call",
+          "says": "Ends with an order in six words.",
+          "quote": "Go, and do thou likewise."
+        }
+      ]
+    }
+  ],
   "license": {
     "source": "Project Gutenberg ebook 30, by way of the GITenberg mirror",
     "note": "Published 1611: public domain in the US.",

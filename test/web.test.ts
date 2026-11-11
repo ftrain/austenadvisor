@@ -3,7 +3,7 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { numberFacts, plainText } from '../src/web/result.ts';
+import { GAP, numberFacts, plainText, rolesFromRewrite, type Run } from '../src/web/result.ts';
 import { rewritePage } from '../src/web/rewrite-page.ts';
 
 const FX = join(import.meta.dirname, 'fixtures');
@@ -418,5 +418,95 @@ describe('the form, the facts and what was added', () => {
     expect(app().textContent).not.toMatch(/never wrote/);
     // The column is headed by the style's short name: its title is a sentence.
     expect(app().querySelector('.pg-cols-head > :nth-child(2)')!.textContent).toBe('Plain style');
+  });
+
+  // -----------------------------------------------------------------------------------------------------------
+  // SHAPE: the student's line, and the voice's outline
+
+  const part = { role: 'part', name: 'Part', confidence: 0, spans: [{ role: 'part', confidence: 0, from: 0, to: 2 }] };
+  /** The debate reading with its second and third paragraphs unnamed, as the engine leaves some. */
+  const gappy = () => ({ ...reading, roles: reading.roles.map((r: { paragraph: number }, i: number) => (i === 1 || i === 2 ? { ...part, paragraph: r.paragraph } : r)) });
+
+  it('shows the voice’s shape as the outline of a real piece, on one line until it is opened', async () => {
+    await onResult();
+    const out = reading.shape.outlines[0];
+    const line = app().querySelector('.pg-shape-voice')!;
+    expect(line.querySelector('.pg-who')!.textContent).toBe(`Austen, in ${out.work}: `);
+    expect([...line.querySelectorAll('.pg-term')].map((b) => b.textContent)).toEqual(out.parts.map((p: { name: string }) => p.name));
+    const list = app().querySelector<HTMLElement>('.pg-outline')!;
+    expect(list.hidden).toBe(true);
+    const open = line.querySelector<HTMLButtonElement>('.pg-outline-open')!;
+    expect(open.textContent).toBe('Show parts');
+    open.click();
+    expect(list.hidden).toBe(false);
+    expect(open.getAttribute('aria-expanded')).toBe('true');
+    const items = [...list.querySelectorAll('li:not(.pg-outline-cite)')];
+    expect(items).toHaveLength(out.parts.length);
+    expect(items[0]!.textContent).toContain(out.parts[0].says);
+    expect(items[0]!.querySelector('q')!.textContent).toBe(out.parts[0].quote);
+    expect(list.querySelector('.pg-outline-cite')!.textContent).toBe(out.cite);
+    expect(app().querySelector('.pg-shape')!.textContent).not.toMatch(/begins from something that happened/);
+    // One piece of this kind: nothing to step to.
+    expect(line.querySelector('.pg-outline-next')).toBeNull();
+  });
+
+  it('steps through the voice’s pieces of one kind, and keeps the outline open', async () => {
+    const [a] = reading.shape.outlines;
+    const b = { ...a, work: 'the opening of Emma', cite: 'Emma, ch. 1', line: 'Description · Turn', parts: [{ role: 'description', name: 'Description', says: 'Describes the heroine.', quote: 'handsome, clever, and rich' }, { role: 'turn', name: 'Turn', says: 'Begins the story.', quote: 'Miss Taylor married.' }] };
+    override = (path) => (path === '/api/read' ? json({ ...reading, shape: { ...reading.shape, outlines: [a, b] } }) : undefined);
+    await onResult();
+    app().querySelector<HTMLButtonElement>('.pg-outline-open')!.click();
+    app().querySelector<HTMLButtonElement>('.pg-outline-next')!.click();
+    expect(app().querySelector('.pg-shape-voice .pg-who')!.textContent).toBe('Austen, in the opening of Emma: ');
+    expect(app().querySelector<HTMLElement>('.pg-outline')!.hidden).toBe(false);
+    expect(app().querySelector('.pg-outline q')!.textContent).toBe('handsome, clever, and rich');
+    app().querySelector<HTMLButtonElement>('.pg-outline-next')!.click();
+    expect(app().querySelector('.pg-shape-voice .pg-who')!.textContent).toBe(`Austen, in ${a.work}: `);
+  });
+
+  it('shows “…” for paragraphs the engine could not name, and never the word “Part”', async () => {
+    override = (path) => (path === '/api/read' ? json(gappy()) : path === '/api/rewrite' ? json({ error: 'Rewrites are resting.', budget: 'resting' }, 503) : undefined);
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: debate }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(app().querySelector('.pg-shape-yours')).not.toBeNull());
+    const yours = app().querySelector('.pg-shape-yours')!;
+    // Two unnamed paragraphs in a row are one gap.
+    expect(yours.querySelectorAll('.pg-gap')).toHaveLength(1);
+    expect(yours.querySelector('.pg-gap')!.textContent).toBe(GAP);
+    expect(yours.querySelector('.pg-gap')!.getAttribute('title')).toBe('The engine could not name what these paragraphs do');
+    expect(app().querySelector('.pg-shape')!.textContent).not.toMatch(/Part/);
+    const labels = [...app().querySelectorAll('.pg-yours .pg-cell-label')].map((l) => l.textContent);
+    expect(labels[1]).toBe('Yours');
+    expect(labels.join(' ')).not.toMatch(/Part/);
+  });
+
+  it('names those paragraphs from the rewrite’s reading once it arrives, and marks them as read from it', async () => {
+    override = (path) => (path === '/api/read' ? json(gappy()) : undefined);
+    await onResult();
+    const yours = app().querySelector('.pg-shape-yours')!;
+    expect(yours.querySelectorAll('.pg-gap')).toHaveLength(0);
+    const lent = [...yours.querySelectorAll<HTMLElement>('.pg-guess')];
+    expect(lent.map((x) => (x.querySelector('.pg-term') ?? x).textContent)).toEqual(['Claim', 'Claim']);
+    expect(lent[0]!.title).toMatch(/^Read from the rewrite: what Austen’s version of this paragraph does\./);
+    expect(yours.querySelector('.pg-shape-key')!.textContent).toMatch(/read from the rewrite/);
+    const role = app().querySelectorAll('.pg-row')[1]!.querySelector<HTMLElement>('.pg-yours .pg-role')!;
+    expect((role.querySelector('.pg-term') ?? role).textContent).toBe('Claim');
+    expect(role.classList.contains('pg-guess')).toBe(true);
+    // A paragraph the engine named keeps the engine's name.
+    expect(app().querySelectorAll('.pg-row')[0]!.querySelector('.pg-yours .pg-role')!.textContent).toContain(reading.roles[0].name);
+    expect(app().querySelectorAll('.pg-row')[0]!.querySelector('.pg-yours .pg-role')!.classList.contains('pg-guess')).toBe(false);
+  });
+
+  it('takes a row’s `from` for the student’s paragraphs, and lends nothing from a part written to fill the form', () => {
+    const para = (index: number, extra: object = {}) => ({ kind: 'paragraph' as const, index, part: 0, yours: [], hers: [{ text: 'x', from: [], moves: [] }], notes: [], ...extra });
+    const rows = [para(0.001, { from: [3], moved: true }), para(0.002, { from: [1, 2] }), para(0.003, { filled: 'Not in your text.' })];
+    const run = { voice: 'austen', text: '', rows: new Map(), roles: new Map([[0, ['Claim', 'Reason', 'Call']]]), whys: new Map([[0, ['It states the point.', undefined, undefined]]]), done: true, started: 0 } as Run;
+    const read = { roles: [{ role: 'part' }, { role: 'reason' }, { role: 'part' }] } as never;
+    const lent = rolesFromRewrite(read, run, rows as never, new Map());
+    expect([...lent]).toEqual([
+      [2, { name: 'Claim', why: 'It states the point.' }],
+      [0, { name: 'Reason' }],
+    ]);
   });
 });

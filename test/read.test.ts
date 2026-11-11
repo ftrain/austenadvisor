@@ -159,6 +159,20 @@ describe.skipIf(!hasAusten)('POST /api/read and GET /api/boot', () => {
     expect(first.match?.text).not.toBe('O, sir, let it not trouble you.');
   });
 
+  it('sends the outline of a real piece by the voice, of the text’s kind, and never the word “Part”', async () => {
+    const a = await (await read('austen', sample('camp-letter'))).json();
+    expect(a.shape.outlines.map((o: { kind: string }) => o.kind)).toEqual(['letter', 'letter']);
+    const first = a.shape.outlines[0];
+    expect(first.work).toBe('Darcy’s letter, in Pride and Prejudice');
+    expect(first.line).toBe(first.parts.map((p: { name: string }) => p.name).join(' · '));
+    for (const p of first.parts) expect(p.says && p.quote && p.name).toBeTruthy();
+    const story = await (await read('austen', sample('store'))).json();
+    expect(story.shape.outlines[0].work).toBe('the first chapter of Pride and Prejudice');
+    expect(story.shape.yours).not.toMatch(/Part/);
+    expect(story.shape.yours).toMatch(/…/);
+    expect(story.shape).not.toHaveProperty('signature');
+  });
+
   it('refuses a voice that is not built, and an empty text', async () => {
     expect((await read('../nobody', 'Hello there.')).status).toBe(404);
     expect((await read('austen', '   ')).status).toBe(400);
