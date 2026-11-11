@@ -2,8 +2,12 @@
 // paragraph. Above the rows are one SHAPE line (how the piece is built) and one STYLE line (how its sentences run).
 // Until the rewrite of a paragraph arrives, its middle column holds a SKETCH: for each sentence of yours, the voice's
 // own sentence built most like it. Nothing here opens over the page: every tap opens a line in place.
+//
+// Text the rewrite added (a fact, a part the form lacked) is highlighted, and one legend line says so. A sentence
+// that states a fact carries a footnote number; the facts are listed under the rows, each quoted from its Wikipedia
+// article and linked to it. A text with nothing added and no facts shows neither the legend nor the list.
 
-import { button, get, h, type AuthorInfo, type Definer, type Drill, type HerSentence, type Note, type Para, type Quote, type Reading, type Row, type SketchRow } from './api.ts';
+import { button, get, h, type AuthorInfo, type Definer, type Drill, type FootFact, type HerSentence, type Note, type Para, type Quote, type Reading, type Row, type SketchRow } from './api.ts';
 import { fillVoices, RESTING, type Suggested } from './compose.ts';
 import type { GuessView } from './guesscard.ts';
 import type { MovesView } from './moves.ts';
@@ -21,6 +25,9 @@ function where(run: Run): string {
 export interface Run {
   voice: string;
   text: string;
+  /** The form it was fitted to ('auto' or a form's id), and whether facts were asked for. */
+  form?: string;
+  facts?: boolean;
   rows: Map<number, Row>;
   /** The writer's role for each paragraph, by part. */
   roles: Map<number, string[]>;
@@ -78,6 +85,31 @@ export interface ResultView {
 export const NOTES_PER_ROW = 2;
 const norm = (s: string) => s.replace(/\s+/g, ' ').trim().toLowerCase();
 const listOf = (xs: (string | number)[]) => (xs.length < 2 ? xs.join('') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`);
+/** A footnote links only to Wikipedia: any other address is shown as its title alone. */
+const wikiUrl = (u: string) => (/^https:\/\/[a-z-]+\.wikipedia\.org\//.test(u) ? u : null);
+
+/** The facts a page's rows state, numbered in the order the rows first state them. */
+export function numberFacts(rows: Row[]): { n: number; fact: FootFact }[] {
+  const out = new Map<string, { n: number; fact: FootFact }>();
+  for (const r of rows) if (r.kind === 'paragraph') for (const x of r.hers ?? []) for (const f of x.facts ?? []) if (!out.has(f.id)) out.set(f.id, { n: out.size + 1, fact: f });
+  return [...out.values()];
+}
+
+/** The rewrite as plain text: its paragraphs, a number in brackets after each sentence that states a fact, and the
+ * facts listed under it with their sources. */
+export function plainText(rows: Row[]): string {
+  const notes = numberFacts(rows);
+  const nOf = new Map(notes.map((x) => [x.fact.id, x.n]));
+  const body = rows
+    .map((r) => (r.kind === 'heading' ? r.text : (r.hers ?? []).map((x) => x.text + (x.facts ?? []).map((f) => ` [${nOf.get(f.id)}]`).join('')).join(' ')))
+    .filter(Boolean)
+    .join('\n\n');
+  if (!notes.length) return body;
+  return `${body}\n\nNotes\n${notes.map((x) => `${x.n}. “${x.fact.text}” ${x.fact.title}, Wikipedia${x.fact.url ? `, ${x.fact.url}` : ''}`).join('\n')}`;
+}
+
+/** The name over the middle column: a writer's full name; for a style, its short name, since its title is a sentence. */
+const headOf = (v: AuthorInfo) => (v.style ? v.short : v.title);
 const mmss = (ms: number) => `${Math.floor(ms / 60000)}:${String(Math.floor((ms % 60000) / 1000)).padStart(2, '0')}`;
 
 export function result(o: ResultOptions): ResultView {
@@ -94,9 +126,11 @@ export function result(o: ResultOptions): ResultView {
   const styleEl = h('div', { class: 'pg-line pg-style', hidden: true });
   const voiceHead = h('div', {});
   const colHead = h('div', { class: 'pg-cols pg-cols-head', 'aria-hidden': 'true' }, h('div', {}, 'Yours'), voiceHead, h('div', {}, 'Why'));
+  const legendEl = h('p', { class: 'pg-legend', hidden: true });
   const guessRow = h('div', { class: 'pg-cols pg-guess-row' }, h('div', {}), h('div', { class: 'pg-guess-slot' }), h('div', {}));
   const rowsEl = h('div', { class: 'pg-rows' });
-  const el = h('section', { class: 'pg-result', hidden: true, 'aria-label': 'The rewrite' }, tools, askEl, restingEl, progressEl, shapeEl, styleEl, colHead, guessRow, rowsEl);
+  const factsEl = h('section', { class: 'pg-facts', hidden: true, 'aria-label': 'Facts' });
+  const el = h('section', { class: 'pg-result', hidden: true, 'aria-label': 'The rewrite' }, tools, askEl, restingEl, progressEl, shapeEl, styleEl, colHead, legendEl, guessRow, rowsEl, factsEl);
   let state: ResultState | null = null;
 
   function step(d: number) {
@@ -121,6 +155,11 @@ export function result(o: ResultOptions): ResultView {
         'div',
         { class: 'pg-line-body' },
         h('p', {}, h('span', { class: 'pg-who' }, 'Yours: '), ...o.terms.shape(r.shape.yours)),
+        r.form && r.shape.form ? h('p', { class: 'pg-shape-form' }, h('span', { class: 'pg-who' }, ...o.terms.labelled(r.form.name, 'form'), ': '), ...o.terms.shape(r.shape.form)) : null,
+        // Only for a form the student chose: under Auto the form is the engine's guess at what the text already is.
+        r.form && !r.form.auto && r.form.missing.length
+          ? h('p', { class: 'pg-line-note pg-shape-missing' }, 'Not in yours: ', ...o.terms.shape(r.form.slots.filter((x) => x.missing).map((x) => x.name).join(' · ')))
+          : null,
         r.shape.voice ? h('p', {}, h('span', { class: 'pg-who' }, `${v.short}: `), ...o.terms.shape(r.shape.voice)) : null,
         r.shape.signature ? h('p', { class: 'pg-line-note' }, ...o.terms.defined(r.shape.signature)) : null,
       ),
@@ -172,7 +211,7 @@ export function result(o: ResultOptions): ResultView {
     prev.hidden = next.hidden = !flip;
     prev.setAttribute('aria-label', 'Previous ready voice');
     next.setAttribute('aria-label', 'Next ready voice');
-    voiceHead.textContent = v.title;
+    voiceHead.textContent = headOf(v);
     const run = s.run;
     restingEl.hidden = !(run?.resting || (s.resting && !run?.rows.size));
     restingEl.textContent = run?.resting === 'busy' ? 'Another rewrite from this page is still running. Try this one when it finishes.' : RESTING;
@@ -194,6 +233,8 @@ export function result(o: ResultOptions): ResultView {
     }
     const seen = new Set<string>();
     const marked = new Set<string>();
+    const notes = numberFacts(rows);
+    const noteOf = new Map(notes.map((x) => [x.fact.id, x.n]));
     let from = 0;
     // Each paragraph's place in its part, for the writer's role of it.
     const place = new Map<Row, number>();
@@ -208,8 +249,24 @@ export function result(o: ResultOptions): ResultView {
         if (r.kind === 'heading') return h('h2', { class: `pg-heading${r.title ? ' pg-heading-title' : ''}` }, r.text);
         const idx = paragraphOf(s.reading, r, from);
         if (idx !== null) from = idx + 1;
-        return paraRow(s, r, idx, place.get(r) ?? 0, seen, marked);
+        return paraRow(s, r, idx, place.get(r) ?? 0, seen, marked, noteOf);
       }),
+    );
+    // One legend line, and only when something was added; the facts under the rows, and only when there are some.
+    const added = rows.some((r) => r.kind === 'paragraph' && (r.hers ?? []).some((x) => x.added?.length));
+    legendEl.hidden = !added && !notes.length;
+    legendEl.replaceChildren(...(added ? [h('mark', { class: 'pg-added' }, 'Highlighted text'), ' was added. It is not in yours.'] : []), notes.length ? `${added ? ' ' : ''}A small number points to a fact under the rewrite.` : '');
+    factsEl.hidden = !notes.length;
+    factsEl.replaceChildren(
+      h('p', { class: 'pg-label' }, 'Facts'),
+      h(
+        'ol',
+        {},
+        ...notes.map(({ n, fact }) => {
+          const url = wikiUrl(fact.url);
+          return h('li', { id: `pg-fact-${n}`, value: n }, `“${fact.text}” `, h('cite', {}, url ? h('a', { href: url, target: '_blank', rel: 'noopener' }, fact.title) : fact.title, ', Wikipedia'));
+        }),
+      ),
     );
     for (const [at, t] of open) {
       const row = rowsEl.querySelector<HTMLElement>(`.pg-row[data-index="${at}"]`) ?? rowsEl.querySelector<HTMLElement>(`.pg-row[data-index^="${Math.floor(Number(at))}."]`);
@@ -231,7 +288,7 @@ export function result(o: ResultOptions): ResultView {
     return i >= 0 ? i : null;
   }
 
-  function paraRow(s: ResultState, r: Para, idx: number | null, at: number, seen: Set<string>, marked: Set<string>): HTMLElement {
+  function paraRow(s: ResultState, r: Para, idx: number | null, at: number, seen: Set<string>, marked: Set<string>, noteOf: Map<string, number>): HTMLElement {
     const v = s.voice;
     const reading = s.reading;
     const roleYours = idx !== null ? reading?.roles[idx]?.name : undefined;
@@ -240,10 +297,29 @@ export function result(o: ResultOptions): ResultView {
     const cells = h('div', { class: 'pg-cols' });
     row.append(cells);
 
-    // YOURS: the sentences, with the words the voice never wrote dotted (five at most on the page).
+    // YOURS: the sentences, with the words the voice never wrote dotted (five at most on the page). For a style the
+    // dotted words are the writer's needless ones, each placed by where the engine found it.
     const opened = h('p', { class: 'pg-open-line', hidden: true, 'aria-live': 'polite' });
-    const nevers = (reading?.never ?? []).filter((w) => w.paragraph === idx && !marked.has(w.word.toLowerCase()));
-    const text = h('div', { class: 'pg-yours-text' }, ...r.yours.flatMap((y, i) => [i ? ' ' : '', yourSentence(y.n, y.text, nevers, marked, opened)]));
+    const needless = reading?.marks === 'needless';
+    const nevers = (reading?.never ?? []).filter((w) => w.paragraph === idx && (needless || !marked.has(w.word.toLowerCase())));
+    const para = idx !== null ? (reading?.paragraphs[idx] ?? '') : '';
+    let cursor = 0;
+    const text = h(
+      'div',
+      { class: 'pg-yours-text' },
+      ...r.yours.flatMap((y, i) => {
+        if (!needless) return [i ? ' ' : '', yourSentence(y.n, y.text, nevers, marked, opened)];
+        // Where this sentence stands in its paragraph, looking forward from the last one found.
+        let at = para.indexOf(y.text, cursor);
+        if (at < 0) at = para.indexOf(y.text);
+        if (at >= 0) cursor = at + y.text.length;
+        return [i ? ' ' : '', needlessSentence(y.n, y.text, at, nevers, opened)];
+      }),
+    );
+    if (r.filled) {
+      text.replaceChildren(h('p', { class: 'pg-filled' }, r.filled));
+      text.classList.add('pg-full');
+    }
     const more = button('Show all', () => {
       const on = text.classList.toggle('pg-full');
       more.textContent = on ? 'Show less' : 'Show all';
@@ -252,16 +328,16 @@ export function result(o: ResultOptions): ResultView {
       h(
         'div',
         { class: 'pg-cell pg-yours' },
-        label('Yours', roleYours, r.from?.length && r.from.length > 1 ? `your paragraphs ${listOf(r.from)}` : undefined),
+        label('Yours', r.filled ? undefined : roleYours, r.from?.length && r.from.length > 1 ? `your paragraphs ${listOf(r.from)}` : r.moved && r.from?.length ? `your paragraph ${r.from[0]}` : undefined),
         text,
-        more,
+        r.filled ? null : more,
         opened,
       ),
     );
 
     // THEIRS: the rewrite, else the sketch.
-    const theirs = h('div', { class: 'pg-cell pg-hers' }, label(v.title, roleHers));
-    if (r.hers) theirs.append(h('div', {}, ...r.hers.flatMap((x, i) => [i ? ' ' : '', herSentence(x, row)])));
+    const theirs = h('div', { class: 'pg-cell pg-hers' }, label(headOf(v), roleHers));
+    if (r.hers) theirs.append(h('div', {}, ...r.hers.flatMap((x, i) => [i ? ' ' : '', herSentence(x, row, noteOf)])));
     else {
       if (r.resting === 'long') theirs.append(h('p', { class: 'pg-muted' }, 'Only the first 1,200 words are rewritten.'));
       else if (r.error) theirs.append(h('p', { class: 'pg-muted' }, 'This part could not be rewritten.'));
@@ -331,8 +407,55 @@ export function result(o: ResultOptions): ResultView {
     return el;
   }
 
-  function herSentence(x: HerSentence, row: HTMLElement): HTMLElement {
-    const el = h('span', { class: 'pg-s pg-her', tabindex: 0 }, x.text);
+  /** A sentence of the writer's with its needless words dotted, each by its offsets in the paragraph. A tap opens
+   * the reason in one line, with the word's kind (a hedge, an intensifier) defined in it. */
+  function needlessSentence(n: number, text: string, at: number, words: Reading['never'], opened: HTMLElement): HTMLElement {
+    const el = h('span', { class: 'pg-s', 'data-n': String(n) });
+    const here = at < 0 ? [] : words.filter((w) => w.start >= at && w.end <= at + text.length).sort((a, b) => a.start - b.start);
+    let done = 0;
+    for (const w of here) {
+      const [a, b] = [w.start - at, w.end - at];
+      if (a < done) continue;
+      el.append(text.slice(done, a));
+      const btn = h('button', { type: 'button', class: 'pg-never pg-needless', 'aria-expanded': 'false' }, text.slice(a, b));
+      btn.addEventListener('click', () => {
+        const key = `${w.paragraph}:${w.start}`;
+        const on = opened.hidden || opened.dataset.word !== key;
+        for (const x of opened.parentElement?.querySelectorAll('.pg-never') ?? []) x.setAttribute('aria-expanded', 'false');
+        opened.hidden = !on;
+        opened.dataset.word = key;
+        const line = o.terms.defined(w.note);
+        // The kind's name may not be in the reason itself: then its definition follows the reason.
+        const term = w.term ? o.terms.definition(w.term) : null;
+        const named = line.some((x) => x instanceof HTMLElement && x.classList.contains('pg-term'));
+        opened.replaceChildren(...line, ...(term && !named ? [' ', ...o.terms.defined(`${term.term}: ${term.definition}`)] : []));
+        btn.setAttribute('aria-expanded', String(on));
+      });
+      el.append(btn);
+      done = b;
+    }
+    el.append(text.slice(done));
+    return el;
+  }
+
+  function herSentence(x: HerSentence, row: HTMLElement, noteOf: Map<string, number> = new Map()): HTMLElement {
+    // Added text is built as nodes, never as HTML: the words may come from an article.
+    const el = h('span', { class: 'pg-s pg-her', tabindex: 0 });
+    let done = 0;
+    for (const [a, b] of [...(x.added ?? [])].sort((p, q) => p[0] - q[0])) {
+      const [from, to] = [Math.max(done, a), Math.min(x.text.length, b)];
+      if (to <= from) continue;
+      el.append(x.text.slice(done, from), h('mark', { class: 'pg-added' }, x.text.slice(from, to)));
+      done = to;
+    }
+    el.append(x.text.slice(done));
+    for (const f of x.facts ?? []) {
+      const n = noteOf.get(f.id);
+      if (!n) continue;
+      const a = h('a', { href: `#pg-fact-${n}`, 'aria-label': `Fact ${n}` }, String(n));
+      a.addEventListener('click', (e) => e.stopPropagation());
+      el.append(h('sup', { class: 'pg-fn' }, a));
+    }
     const lit = (on: boolean) => {
       el.classList.toggle('pg-lit', on);
       for (const n of x.from) row.querySelector(`.pg-yours .pg-s[data-n="${n}"]`)?.classList.toggle('pg-lit', on);
@@ -429,8 +552,7 @@ export function result(o: ResultOptions): ResultView {
 
   async function copy() {
     if (!state?.run) return;
-    const rows = [...state.run.rows.values()].sort((a, b) => a.index - b.index);
-    const text = rows.map((r) => (r.kind === 'heading' ? r.text : (r.hers ?? []).map((x) => x.text).join(' '))).filter(Boolean).join('\n\n');
+    const text = plainText([...state.run.rows.values()].sort((a, b) => a.index - b.index));
     try {
       await navigator.clipboard.writeText(text);
       copyBtn.textContent = 'Copied';

@@ -3,12 +3,17 @@
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { numberFacts, plainText } from '../src/web/result.ts';
 import { rewritePage } from '../src/web/rewrite-page.ts';
 
 const FX = join(import.meta.dirname, 'fixtures');
 const boot = JSON.parse(readFileSync(join(FX, 'page-boot.json'), 'utf8'));
 const reading = JSON.parse(readFileSync(join(FX, 'page-read.json'), 'utf8'));
 const ndjson = readFileSync(join(FX, 'page-rewrite.ndjson'), 'utf8');
+const essayRead = JSON.parse(readFileSync(join(FX, 'page-read-essay.json'), 'utf8'));
+const essayLines = readFileSync(join(FX, 'page-rewrite-essay.ndjson'), 'utf8');
+const plainRead = JSON.parse(readFileSync(join(FX, 'page-read-plain.json'), 'utf8'));
+const essay = (essayRead.paragraphs as string[]).join('\n\n');
 const debate = boot.samples.find((s: { id: string }) => s.id === 'debate-rebuttal').text as string;
 
 type Handler = (path: string, body: unknown) => Response | undefined;
@@ -62,11 +67,21 @@ async function onResult(text = debate) {
 }
 
 describe('the page', () => {
-  it('composes with one select and one primary button', async () => {
+  it('composes with a voice select, a form select, one checkbox and one primary button', async () => {
     await rewritePage(app());
     const compose = app().querySelector('.pg-compose')!;
-    expect(compose.querySelectorAll('select')).toHaveLength(1);
+    expect([...compose.querySelectorAll('select')].map((x) => x.id)).toEqual(['pg-voice', 'pg-form']);
+    expect(compose.querySelectorAll('input')).toHaveLength(1);
+    expect(compose.querySelector('.pg-check')!.textContent).toBe('Add facts from Wikipedia');
     expect(compose.querySelectorAll('[data-primary]')).toHaveLength(1);
+    // The form select: Auto first, then the forms, each with its definition as its title.
+    const forms = [...compose.querySelectorAll<HTMLOptionElement>('#pg-form option')];
+    expect(forms.map((x) => x.value)).toEqual(['auto', 'essay', 'argument', 'anecdote', 'story', 'letter', 'speech', 'review']);
+    expect(forms[1]!.title).toBe(boot.forms[0].definition);
+    // A style stands last, under its own heading, and its title stands alone with no colon after it.
+    const styles = [...compose.querySelectorAll('optgroup')].at(-1)!;
+    expect(styles.label).toBe('Styles');
+    expect(styles.querySelector('option')!.textContent).toBe('Plain: formal and declarative, with everything extra removed');
     // The select holds the families as option groups.
     const groups = [...compose.querySelectorAll('optgroup')].map((g) => g.label);
     expect(groups).toEqual(expect.arrayContaining(['Storytellers', 'Speakers']));
@@ -280,5 +295,128 @@ describe('the page', () => {
     row.querySelector<HTMLButtonElement>('.pg-tryit .pg-btn-main')!.click();
     await vi.waitFor(() => expect(row.querySelector('.pg-verdict')?.textContent).toContain('Not yet'));
     expect(row.querySelector('.pg-try-also')!.textContent).toBe('For “opponent”, try “opposition”. Austen never wrote “okay”.');
+  });
+});
+
+describe('the form, the facts and what was added', () => {
+  async function essayResult() {
+    override = (path) => (path === '/api/read' ? json(essayRead) : path === '/api/rewrite' ? new Response(essayLines, { status: 200, headers: { 'content-type': 'application/x-ndjson' } }) : undefined);
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: essay, form: 'essay', facts: true }));
+    const page = await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(app().querySelectorAll('.pg-hers .pg-her').length).toBeGreaterThan(0));
+    return page;
+  }
+
+  it('sends the form and the facts choice with the reading and the rewrite', async () => {
+    await essayResult();
+    expect(calls.find((c) => c.path === '/api/read')!.body).toMatchObject({ form: 'essay' });
+    expect(calls.find((c) => c.path === '/api/rewrite')!.body).toMatchObject({ author: 'austen', form: 'essay', facts: true });
+  });
+
+  it('asks for the form of the kind and no facts until the student chooses otherwise', async () => {
+    await onResult();
+    expect(calls.find((c) => c.path === '/api/rewrite')!.body).toMatchObject({ form: 'auto', facts: false });
+    expect(app().querySelector<HTMLElement>('.pg-legend')!.hidden).toBe(true);
+    expect(app().querySelector<HTMLElement>('.pg-facts')!.hidden).toBe(true);
+    expect(app().querySelectorAll('.pg-added, .pg-fn')).toHaveLength(0);
+  });
+
+  it('shows the form’s line between yours and the voice’s, with the form’s name defined', async () => {
+    await essayResult();
+    await vi.waitFor(() => expect(app().querySelector('.pg-shape-form')).not.toBeNull());
+    const lines = [...app().querySelectorAll('.pg-shape .pg-line-body > p')].map((p) => p.textContent!);
+    expect(lines[0]).toMatch(/^Yours: /);
+    expect(lines[1]).toMatch(/^Essay/);
+    expect([...app().querySelectorAll('.pg-shape-form .pg-term')].map((b) => b.textContent)).toEqual(['Essay', 'Claim', 'Reason', 'Evidence', 'Objection', 'Answer', 'Call']);
+    expect(app().querySelector('.pg-shape-missing')!.textContent).toMatch(/^Not in yours: Call/);
+    const name = app().querySelector<HTMLButtonElement>('.pg-shape-form .pg-who .pg-term')!;
+    name.click();
+    expect(app().querySelector('.pg-shape-form .pg-who .pg-def')!.textContent).toContain('short piece that states a claim');
+  });
+
+  it('highlights added text, says so in one legend line, and numbers the facts', async () => {
+    await essayResult();
+    const legend = app().querySelector<HTMLElement>('.pg-legend')!;
+    expect(legend.hidden).toBe(false);
+    expect(legend.textContent).toBe('Highlighted text was added. It is not in yours. A small number points to a fact under the rewrite.');
+    const added = [...app().querySelectorAll('.pg-hers mark.pg-added')].map((x) => x.textContent);
+    // A fact in a sentence of its own, two stretches of a fact worked into the writer's sentence, and the part written.
+    expect(added).toEqual(['It was a protest of December 16, 1773, in which 342 chests of tea went into Boston harbour.', 'a silversmith', 'in April 1775', 'Let the reader judge the colonists, then, as people who had been refused a hearing.']);
+    expect([...app().querySelectorAll('.pg-hers .pg-fn a')].map((a) => [a.textContent, a.getAttribute('href')])).toEqual([['1', '#pg-fact-1'], ['2', '#pg-fact-2']]);
+    const facts = app().querySelector<HTMLElement>('.pg-facts')!;
+    expect(facts.hidden).toBe(false);
+    const items = [...facts.querySelectorAll('li')];
+    expect(items.map((li) => li.id)).toEqual(['pg-fact-1', 'pg-fact-2']);
+    expect(items[0]!.textContent).toBe('“The Boston Tea Party was a protest on December 16, 1773, in which colonists threw 342 chests of tea into Boston harbor.” Boston Tea Party, Wikipedia');
+    expect(items[1]!.querySelector('a')!.getAttribute('href')).toBe('https://en.wikipedia.org/wiki/Paul_Revere');
+  });
+
+  it('says where a moved paragraph came from, and what a written part is for', async () => {
+    await essayResult();
+    const rows = [...app().querySelectorAll<HTMLElement>('.pg-row')];
+    expect(rows[0]!.querySelector('.pg-yours .pg-from')!.textContent).toBe('your paragraph 3');
+    expect(rows[0]!.querySelector('.pg-why .pg-note-structure .pg-note-text')!.textContent).toBe('Moved: this was your paragraph 3. An essay opens with its claim.');
+    const filled = rows.at(-1)!;
+    expect(filled.querySelector('.pg-yours .pg-filled')!.textContent).toBe('Not in your text. An essay closes by saying what the reader should now believe or do.');
+    expect(filled.querySelectorAll('.pg-yours .pg-s, .pg-yours .pg-more')).toHaveLength(0);
+    expect(filled.querySelector('.pg-why .pg-note-structure')).not.toBeNull();
+  });
+
+  it('never takes a fact’s words for HTML, and links only to Wikipedia', async () => {
+    const lines = essayLines.trim().split('\n').map((l) => JSON.parse(l));
+    for (const l of lines) for (const r of l.rows ?? []) for (const x of r.hers ?? []) for (const f of x.facts ?? []) (f.text = '<img src=x onerror=alert(1)> <b>bold</b>'), (f.url = 'javascript:alert(1)');
+    const bad = lines.map((l) => JSON.stringify(l)).join('\n');
+    override = (path) => (path === '/api/read' ? json(essayRead) : path === '/api/rewrite' ? new Response(bad, { status: 200, headers: { 'content-type': 'application/x-ndjson' } }) : undefined);
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: essay, form: 'essay', facts: true }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(app().querySelectorAll('.pg-facts li').length).toBe(2));
+    const facts = app().querySelector('.pg-facts')!;
+    expect(facts.querySelectorAll('img, b, a')).toHaveLength(0);
+    expect(facts.textContent).toContain('<b>bold</b>');
+  });
+
+  it('copies the rewrite with its footnotes as plain text', async () => {
+    const rows = essayLines.trim().split('\n').map((l) => JSON.parse(l)).flatMap((l) => (l.type === 'part' ? l.rows : []));
+    expect(numberFacts(rows).map((x) => [x.n, x.fact.title])).toEqual([[1, 'Boston Tea Party'], [2, 'Paul Revere']]);
+    const text = plainText(rows);
+    expect(text).toContain('went into Boston harbour. [1] Britain then punished Boston');
+    expect(text).toContain('that the soldiers were coming. [2]');
+    expect(text).toMatch(/\n\nNotes\n1\. “The Boston Tea Party was a protest[^\n]+” Boston Tea Party, Wikipedia, https:\/\/en\.wikipedia\.org\/wiki\/Boston_Tea_Party\n2\. “Paul Revere/);
+    // With no facts the text is the paragraphs and nothing more.
+    const none = ndjson.trim().split('\n').map((l) => JSON.parse(l)).flatMap((l) => (l.type === 'part' ? l.rows : []));
+    expect(plainText(none)).not.toContain('Notes');
+  });
+
+  it('asks before a ready voice when a form or facts were chosen, since that rewrite is not the one kept', async () => {
+    await essayResult();
+    const sel = app().querySelector<HTMLSelectElement>('.pg-result select')!;
+    expect([...sel.options].some((o) => o.textContent!.includes('· ready') && o.value !== 'austen')).toBe(false);
+    sel.value = 'twain';
+    sel.dispatchEvent(new Event('change'));
+    await new Promise((r) => setTimeout(r, 30));
+    expect(rewrites()).toBe(1);
+    expect(app().querySelector<HTMLElement>('.pg-ask')!.hidden).toBe(false);
+  });
+
+  it('for a style, marks the needless words where they stand and defines each kind in the opened line', async () => {
+    const text = (plainRead.paragraphs as string[]).join('\n\n');
+    override = (path) => (path === '/api/read' ? json(plainRead) : path === '/api/rewrite' ? json({ error: 'Rewrites are resting.', budget: 'resting' }, 503) : undefined);
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'plain', text }));
+    await rewritePage(app());
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(app().querySelectorAll('.pg-needless').length).toBeGreaterThan(0));
+    const marks = [...app().querySelectorAll<HTMLButtonElement>('.pg-needless')];
+    expect(marks.map((b) => b.textContent)).toEqual(plainRead.never.map((w: { word: string }) => w.word));
+    const really = marks.find((b) => b.textContent === 'really')!;
+    really.click();
+    const line = really.closest('.pg-yours')!.querySelector<HTMLElement>('.pg-open-line')!;
+    expect(line.hidden).toBe(false);
+    expect(line.textContent).toContain('“really” is an intensifier');
+    expect(line.querySelector('.pg-term')!.textContent).toBe('intensifier');
+    expect(app().textContent).not.toMatch(/never wrote/);
+    // The column is headed by the style's short name: its title is a sentence.
+    expect(app().querySelector('.pg-cols-head > :nth-child(2)')!.textContent).toBe('Plain style');
   });
 });

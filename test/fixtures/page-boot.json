@@ -331,6 +331,72 @@
 "story",
 "essay"
 ]
+},
+{
+"id": "plain",
+"style": true,
+"name": "Plain style",
+"title": "Plain: formal and declarative, with everything extra removed",
+"tagline": "",
+"epigraph": {
+"text": "Vigorous writing is concise.",
+"cite": "Strunk, The Elements of Style, rule 13"
+},
+"action": "Make it plain",
+"whole": "Grant’s Personal Memoirs and Strunk’s Elements of Style",
+"advisor": "Plain Advisor",
+"short": "Plain style",
+"years": "1885–1918",
+"pronouns": {
+"subject": "it",
+"object": "it",
+"possessive": "its",
+"possessivePronoun": "its"
+},
+"works": [
+"Personal Memoirs of Ulysses S. Grant",
+"The Elements of Style"
+],
+"moves": [
+{
+"id": "needless",
+"name": "Needless words cut",
+"does": "The sentence has no stock phrase that one word would replace: “because” stands where “due to the fact that” stood."
+},
+{
+"id": "active",
+"name": "Active voice",
+"does": "The one who acts is the subject of the sentence: “The committee rejected the plan”, where the passive has “The plan was rejected by the committee”."
+},
+{
+"id": "positive",
+"name": "Positive form",
+"does": "The sentence says what is so, in one word, where a “not” said what is not: “dishonest” for “not honest”."
+},
+{
+"id": "hedge",
+"name": "Hedges and intensifiers removed",
+"does": "The sentence states its matter with no hedge (“sort of”, “I think”) and no intensifier (“very”, “really”) before it."
+},
+{
+"id": "oneidea",
+"name": "One idea a sentence",
+"does": "The sentence states one thing and stops; the next thing gets a sentence of its own."
+},
+{
+"id": "concrete",
+"name": "The concrete word",
+"does": "The sentence names the thing itself, where an abstract word (“situation”, “aspect”, “factor”) stood for it."
+}
+],
+"built": true,
+"family": "styles",
+"goodFor": [
+"essay",
+"argument",
+"review",
+"letter"
+]
 }
 ],
 "samples": [
@@ -377,6 +443,43 @@
 "federalist"
 ],
 "text": "# Rebuttal: The Four-Day School Week\n\nMy opponent says a four-day week would save money and give students more time to rest. But honestly, has my opponent ever actually looked at the numbers? I don't think so. Their whole speech was basically just feelings.\n\nThey also said teachers would be happier. Okay, but who cares if teachers are happier if students are falling behind? That's the real issue here. And they talked about a district in another state where it worked, but that's just one district, and things are totally different there.\n\nAlso, what are working parents supposed to do on Fridays? My opponent didn't even mention that. That shows they didn't think it through.\n\nPlus, kids would just stay on their phones all day on the extra day off. Everybody knows that's what would happen. So for all these reasons, my opponent's case falls apart, and you should vote for our side.\n"
+}
+],
+"forms": [
+{
+"id": "essay",
+"name": "Essay",
+"definition": "A short piece that states a claim, gives reasons with evidence, answers the other side and closes."
+},
+{
+"id": "argument",
+"name": "Argument",
+"definition": "A piece written to win the reader over: a claim, the reasons for it, and a call to act."
+},
+{
+"id": "anecdote",
+"name": "Anecdote",
+"definition": "A short account of one thing that happened, told to make a point."
+},
+{
+"id": "story",
+"name": "Story",
+"definition": "An account of events in the order they happened: a scene, a turn, and what it meant."
+},
+{
+"id": "letter",
+"name": "Letter",
+"definition": "A piece written to one reader: a greeting, the news, what the writer asks for, and a sign-off."
+},
+{
+"id": "speech",
+"name": "Speech",
+"definition": "A piece written to be heard: it greets the listeners, argues a claim and ends on a call."
+},
+{
+"id": "review",
+"name": "Review",
+"definition": "A judgement of a book, a film or other work, with the reasons for it."
 }
 ],
 "glossary": [
@@ -442,6 +545,269 @@
 "clauses",
 "clause"
 ]
+},
+{
+"id": "intensifier",
+"term": "Intensifier",
+"kind": "diction",
+"definition": "A word that strengthens the word after it: “quite”, “perfectly”, “absolutely”.",
+"names": [
+"intensifiers",
+"intensifier"
+]
+},
+{
+"id": "stockphrase",
+"term": "Stock phrase",
+"kind": "diction",
+"definition": "A ready-made run of words used where one word would do.",
+"names": [
+"stock phrase"
+],
+"example": "“due to the fact that” for “because”"
+},
+{
+"id": "hedge",
+"term": "Hedge",
+"kind": "diction",
+"definition": "Words that soften a statement, so the writer need not stand behind it.",
+"names": [
+"hedges and intensifiers removed",
+"hedging",
+"hedge"
+],
+"example": "“sort of”, “I think”, “it seems”"
+},
+{
+"id": "positiveform",
+"term": "Positive form",
+"kind": "sentence",
+"definition": "Saying what is so, in place of what is not.",
+"names": [
+"positive statement",
+"positive form"
+],
+"example": "“He forgot” for “He did not remember”"
+},
+{
+"id": "role-claim",
+"term": "Claim",
+"kind": "role",
+"definition": "The point the writer sets out to prove, stated so someone could disagree with it. Example: “Homework should be banned.”",
+"names": [
+"claim"
+],
+"unless": "^"
+},
+{
+"id": "role-reason",
+"term": "Reason",
+"kind": "role",
+"definition": "Why the claim is true: one cause the writer gives for believing it. Example: “First, it takes up the whole evening.”",
+"names": [
+"reason"
+],
+"unless": "^"
+},
+{
+"id": "role-evidence",
+"term": "Evidence",
+"kind": "role",
+"definition": "A fact, number, example or quotation that shows a reason is true. Example: “Students who start at 8:30 sleep an hour more.”",
+"names": [
+"evidence"
+],
+"unless": "^"
+},
+{
+"id": "role-objection",
+"term": "Objection",
+"kind": "role",
+"definition": "The other side’s case, stated fairly so the writer can answer it. Example: “Some people say homework teaches responsibility.”",
+"names": [
+"objection"
+],
+"unless": "^"
+},
+{
+"id": "role-answer",
+"term": "Answer",
+"kind": "role",
+"definition": "The writer’s reply to an objection. Example: “But responsibility is learned in other ways too.”",
+"names": [
+"answer"
+],
+"unless": "^"
+},
+{
+"id": "role-call",
+"term": "Call",
+"kind": "role",
+"definition": "What the writer asks the reader to do or believe at the end. Example: “Vote for our side.”",
+"names": [
+"call"
+],
+"unless": "^"
+},
+{
+"id": "role-stakes",
+"term": "Stakes",
+"kind": "role",
+"definition": "What is won or lost if the reader agrees or not. Example: “If nothing changes, tired students will keep driving to school.”",
+"names": [
+"stakes"
+],
+"unless": "^"
+},
+{
+"id": "role-scene",
+"term": "Scene",
+"kind": "role",
+"definition": "The place, time and people of a story, set down before anything happens. Example: “The party was at Jessica’s house.”",
+"names": [
+"scene"
+],
+"unless": "^"
+},
+{
+"id": "role-turn",
+"term": "Turn",
+"kind": "role",
+"definition": "The moment a story changes direction. Example: “Then I heard it again.”",
+"names": [
+"turn"
+],
+"unless": "^"
+},
+{
+"id": "role-feeling",
+"term": "Feeling",
+"kind": "role",
+"definition": "What a person in the story feels, told or shown. Example: “My heart was beating really fast.”",
+"names": [
+"feeling"
+],
+"unless": "^"
+},
+{
+"id": "role-verdict",
+"term": "Verdict",
+"kind": "role",
+"definition": "The writer’s judgement of what the story meant, usually at the end. Example: “Maybe I was wrong about him.”",
+"names": [
+"verdict"
+],
+"unless": "^"
+},
+{
+"id": "role-greeting",
+"term": "Greeting",
+"kind": "role",
+"definition": "The line that names the person a letter or speech is for. Example: “Dear Mom and Dad,”",
+"names": [
+"greeting"
+],
+"unless": "^"
+},
+{
+"id": "role-news",
+"term": "News",
+"kind": "role",
+"definition": "What the letter tells the reader: what has happened or how things stand. Example: “Camp is okay, I guess.”",
+"names": [
+"news"
+],
+"unless": "^"
+},
+{
+"id": "role-request",
+"term": "Request",
+"kind": "role",
+"definition": "What the letter asks the reader to do. Example: “Can you send more snacks?”",
+"names": [
+"request"
+],
+"unless": "^"
+},
+{
+"id": "role-close",
+"term": "Close",
+"kind": "role",
+"definition": "The sign-off that ends a letter or speech: thanks, a farewell, a name. Example: “Love, Jake”",
+"names": [
+"close"
+],
+"unless": "^"
+},
+{
+"id": "form-essay",
+"term": "Essay",
+"kind": "form",
+"definition": "A short piece that states a claim, gives reasons with evidence, answers the other side and closes.",
+"names": [
+"essay"
+],
+"unless": "^"
+},
+{
+"id": "form-argument",
+"term": "Argument",
+"kind": "form",
+"definition": "A piece written to win the reader over: a claim, the reasons for it, and a call to act.",
+"names": [
+"argument"
+],
+"unless": "^"
+},
+{
+"id": "form-anecdote",
+"term": "Anecdote",
+"kind": "form",
+"definition": "A short account of one thing that happened, told to make a point.",
+"names": [
+"anecdote"
+],
+"unless": "^"
+},
+{
+"id": "form-story",
+"term": "Story",
+"kind": "form",
+"definition": "An account of events in the order they happened: a scene, a turn, and what it meant.",
+"names": [
+"story"
+],
+"unless": "^"
+},
+{
+"id": "form-letter",
+"term": "Letter",
+"kind": "form",
+"definition": "A piece written to one reader: a greeting, the news, what the writer asks for, and a sign-off.",
+"names": [
+"letter"
+],
+"unless": "^"
+},
+{
+"id": "form-speech",
+"term": "Speech",
+"kind": "form",
+"definition": "A piece written to be heard: it greets the listeners, argues a claim and ends on a call.",
+"names": [
+"speech"
+],
+"unless": "^"
+},
+{
+"id": "form-review",
+"term": "Review",
+"kind": "form",
+"definition": "A judgement of a book, a film or other work, with the reasons for it.",
+"names": [
+"review"
+],
+"unless": "^"
 }
 ],
 "ai": {

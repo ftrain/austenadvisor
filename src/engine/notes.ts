@@ -2,7 +2,8 @@
 // beside the writer's sentences it renders, finds the moves and figures of speech the new sentence makes that the
 // writer's did not, and takes for each a sentence of the voice's own that makes the same move. No note quotes the
 // model that wrote the rewrite: every example is a sentence from the corpus, checked by the same test that found the
-// move. A paragraph gets at most two notes, and no move is noted twice on a page.
+// move. A paragraph gets at most two notes, and no move is noted twice on a page. A paragraph
+// the form moved, or one written to fill a part the form lacked, always carries its Structure note.
 
 import { FIGURES, findFigures } from './figures.ts';
 import { termOf } from './glossary.ts';
@@ -43,6 +44,9 @@ export interface NoteRow {
   from?: number[];
   /** Where the paragraph's matter came from, already said (“Brings together your paragraphs 2 and 3.”). */
   structure?: string;
+  /** The structure note is one the writer must see (a paragraph the form moved, a part the form lacked): it comes
+   * before the moves, so two other notes cannot crowd it out. */
+  structureFirst?: boolean;
 }
 
 export interface NoteOptions {
@@ -201,6 +205,9 @@ export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}
     const notes = out[k]!;
     const room = () => notes.length < limit;
     for (const n of sense[k]!) if (room()) notes.push(n);
+    const structure = r.structure ?? (r.from && r.from.length > 1 ? `Joins your paragraphs ${listOf(r.from)}.` : '');
+    const structureNote: EngineNote | null = structure ? { kind: 'structure', technique: 'Structure', before: '', after: '', text: structure, quote: null, verified: true } : null;
+    if (structureNote && r.structureFirst) notes.length < limit ? notes.push(structureNote) : (notes[limit - 1] = structureNote);
 
     // Moves: the voice's own first, in the order its sentences come.
     if (room() && r.hers) {
@@ -219,10 +226,7 @@ export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}
 
     for (const n of liberties[k]!) if (room()) notes.push(n);
 
-    if (room()) {
-      const text = r.structure ?? (r.from && r.from.length > 1 ? `Joins your paragraphs ${listOf(r.from)}.` : '');
-      if (text) notes.push({ kind: 'structure', technique: 'Structure', before: '', after: '', text, quote: null, verified: true });
-    }
+    if (room() && structureNote && !r.structureFirst) notes.push(structureNote);
   });
   return out;
 }

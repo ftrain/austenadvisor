@@ -1,15 +1,16 @@
-// COMPOSE: the voice, the text, and the engine's first reading of it as the student types. One native select holds
-// every voice: three suggested for this piece first, then the four families. Under the box are the voice the text
+// COMPOSE: the voice, the form, the text, and the engine's first reading of it as the student types. One native
+// select holds every voice: three suggested for this piece first, then the families, the styles last. Beside it a
+// second select holds the forms, "Auto" first; under them is one checkbox, "Add facts from Wikipedia". Under the box are the voice the text
 // already sounds like, the samples by kind, and the guess card. On a phone the select and the Rewrite button sit in
 // a bar at the foot of the screen.
 
 import { button, cap, fill, h, type AuthorInfo, type Boot, type Definer, type Family, type Reading, type Sample } from './api.ts';
 import type { GuessView } from './guesscard.ts';
 
-export const FAMILY_NAMES: Record<Family, string> = { storytellers: 'Storytellers', speakers: 'Speakers', arguers: 'Arguers', essayists: 'Essayists' };
-const FAMILY_ORDER: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists'];
+export const FAMILY_NAMES: Record<Family, string> = { storytellers: 'Storytellers', speakers: 'Speakers', arguers: 'Arguers', essayists: 'Essayists', styles: 'Styles' };
+const FAMILY_ORDER: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists', 'styles'];
 /** The voices in the order the select lists them: within each family, the order a reader meets them. */
-const VOICE_ORDER = ['austen', 'eliot', 'dickens', 'twain', 'hemingway', 'hammett', 'woolf', 'fairy', 'lincoln', 'douglass', 'obama', 'kjv', 'shakespeare', 'federalist', 'johnson', 'gibbon', 'chesterton', 'emerson', 'thoreau', 'wilde'];
+const VOICE_ORDER = ['austen', 'eliot', 'dickens', 'twain', 'hemingway', 'hammett', 'woolf', 'fairy', 'lincoln', 'douglass', 'obama', 'kjv', 'shakespeare', 'federalist', 'johnson', 'gibbon', 'chesterton', 'emerson', 'thoreau', 'wilde', 'plain'];
 export const KINDS = ['argument', 'story', 'letter', 'speech', 'essay', 'review'];
 export const RESTING = 'Rewrites of your own text are off for now. Every sample has a rewrite ready.';
 
@@ -42,6 +43,10 @@ export interface ComposeView {
   el: HTMLElement;
   area: HTMLTextAreaElement;
   select: HTMLSelectElement;
+  /** The form asked for: 'auto' or a form's id. */
+  form(): string;
+  /** Whether facts from Wikipedia are asked for. */
+  facts(): boolean;
   /** The sample in the box, while its text is unchanged. */
   sample(): Sample | null;
   setVoice(v: AuthorInfo): void;
@@ -61,6 +66,11 @@ export interface ComposeOptions {
   text: string;
   voice: AuthorInfo;
   onVoice(id: string): void;
+  /** The form and the facts as they were left last time. */
+  form?: string;
+  facts?: boolean;
+  /** The form or the facts checkbox changed. */
+  onOptions?(): void;
   /** The text changed and has rested 400 ms. */
   onText(text: string): void;
   onGo(): void;
@@ -78,7 +88,22 @@ export function compose(o: ComposeOptions): ComposeView {
   select.addEventListener('change', () => o.onVoice(select.value));
   const go = h('button', { type: 'button', class: 'pg-btn pg-primary', 'data-primary': '' }, 'Rewrite');
   go.addEventListener('click', () => o.onGo());
-  const dock = h('div', { class: 'pg-dock' }, h('div', { class: 'pg-pick' }, h('label', { for: 'pg-voice', class: 'pg-pick-label' }, 'Rewrite it as'), select), go);
+  // The form: "Auto" takes the form of the kind of writing the text is; each form's definition is its title.
+  const forms = o.boot.forms ?? [];
+  const auto = h('option', { value: 'auto', title: 'The form of the kind of writing your text already is.' }, 'Auto');
+  const formSelect = h('select', { id: 'pg-form', class: 'pg-select pg-form', 'aria-label': 'Form' }, auto, ...forms.map((f) => h('option', { value: f.id, title: f.definition }, f.name))) as HTMLSelectElement;
+  formSelect.value = forms.some((f) => f.id === o.form) ? o.form! : 'auto';
+  formSelect.addEventListener('change', () => o.onOptions?.());
+  const factsBox = h('input', { type: 'checkbox', id: 'pg-facts' }) as HTMLInputElement;
+  factsBox.checked = !!o.facts;
+  factsBox.addEventListener('change', () => o.onOptions?.());
+  const options = h('div', { class: 'pg-options' }, h('label', { class: 'pg-check', for: 'pg-facts' }, factsBox, 'Add facts from Wikipedia'));
+  const dock = h(
+    'div',
+    { class: 'pg-dock' },
+    h('div', { class: 'pg-pick' }, h('label', { for: 'pg-voice', class: 'pg-pick-label' }, 'Rewrite it as'), select, forms.length ? h('label', { for: 'pg-form', class: 'pg-pick-label' }, 'Form') : null, forms.length ? formSelect : null),
+    go,
+  );
 
   const epigraph = h('p', { class: 'pg-epigraph' });
   const area = h('textarea', { class: 'pg-input', rows: 12, spellcheck: true, placeholder: 'Paste or write a paragraph or a page.', 'aria-label': 'Your text' }) as HTMLTextAreaElement;
@@ -110,7 +135,7 @@ export function compose(o: ComposeOptions): ComposeView {
     o.boot.samples.length ? button('Shuffle', shuffle, { class: 'pg-chip pg-chip-quiet' }) : null,
   );
 
-  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, epigraph, area, sounds, chips, sampleLine, notice, o.guess.el, resting);
+  const el = h('section', { class: 'pg-compose', 'aria-label': 'Your text' }, dock, options, epigraph, area, sounds, chips, sampleLine, notice, o.guess.el, resting);
 
   function teachName(id: string): string {
     const t = o.terms.definition(id);
@@ -166,9 +191,13 @@ export function compose(o: ComposeOptions): ComposeView {
     el,
     area,
     select,
+    form: () => formSelect.value || 'auto',
+    facts: () => factsBox.checked,
     sample: () => sample,
     setVoice,
     setReading(r) {
+      // Under Auto the option names the form the engine took the text for.
+      auto.textContent = r?.form?.auto ? `Auto: ${r.form.name.toLowerCase()}` : 'Auto';
       if (!r) {
         sounds.textContent = '';
         return;

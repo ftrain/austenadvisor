@@ -4,12 +4,12 @@ import type { Citation } from '../engine/model.ts';
 import { findTerms } from '../engine/terms.ts';
 import type { Drill, PracticeCheck } from '../engine/practice.ts';
 import type { GlossaryEntry } from '../engine/terms.ts';
-import type { HerSentence, Note, Quote, Row, YourSentence } from '../server/page.ts';
+import type { FootFact, HerSentence, Note, Quote, Row, YourSentence } from '../server/page.ts';
 import type { NeverWord, Reading, SketchRow, StyleLine } from '../server/read.ts';
 import type { GuessCard } from '../server/routes/guess.ts';
 import type { Sample } from '../server/routes/samples.ts';
 
-export type { Citation, Drill, GlossaryEntry, GuessCard, HerSentence, NeverWord, Note, PracticeCheck, Quote, Reading, Row, Sample, SketchRow, StyleLine, YourSentence };
+export type { Citation, Drill, FootFact, GlossaryEntry, GuessCard, HerSentence, NeverWord, Note, PracticeCheck, Quote, Reading, Row, Sample, SketchRow, StyleLine, YourSentence };
 export type Para = Extract<Row, { kind: 'paragraph' }>;
 
 async function json<T>(r: Response): Promise<T> {
@@ -32,7 +32,7 @@ export interface Pronouns {
   possessive: string;
   possessivePronoun: string;
 }
-export type Family = 'storytellers' | 'speakers' | 'arguers' | 'essayists';
+export type Family = 'storytellers' | 'speakers' | 'arguers' | 'essayists' | 'styles';
 
 export interface AuthorInfo {
   id: string;
@@ -49,11 +49,22 @@ export interface AuthorInfo {
   built: boolean;
   family?: Family;
   goodFor?: string[];
+  /** A style (plain), not a writer: the page marks needless words in place of words never written. */
+  style?: boolean;
+}
+
+/** A form a student can ask for, as the Form select lists it. */
+export interface FormInfo {
+  id: string;
+  name: string;
+  definition: string;
 }
 
 export interface Boot {
   voices: AuthorInfo[];
   samples: Sample[];
+  /** The forms, in the order the select lists them. An older server sends none. */
+  forms?: FormInfo[];
   glossary: GlossaryEntry[];
   ai: { available: boolean };
   /** For each sample id, the voices it is already rewritten in. */
@@ -230,10 +241,11 @@ export function definer(glossary: GlossaryEntry[]) {
     return out;
   }
   /** A paragraph's role shown as a label (“Claim”, “Scene”), defined in place. Running prose never marks a role
-   * word, since “close” and “call” are everyday words; a label is known to be one. */
-  function labelled(name: string): (Node | string)[] {
+   * word, since “close” and “call” are everyday words; a label is known to be one. A form's name (“Essay”) is
+   * defined the same way, with kind 'form'. */
+  function labelled(name: string, kind: 'role' | 'form' = 'role'): (Node | string)[] {
     const n = name.trim().toLowerCase();
-    const t = glossary.find((x) => x.kind === 'role' && (x.term.toLowerCase() === n || x.names.includes(n)));
+    const t = glossary.find((x) => x.kind === kind && (x.term.toLowerCase() === n || x.names.includes(n)));
     return t ? term(t, name) : defined(name);
   }
   /** A SHAPE line, “Claim · Reason · Call”, each role defined in place. */

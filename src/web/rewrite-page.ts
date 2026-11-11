@@ -18,7 +18,7 @@ export async function rewritePage(app: HTMLElement) {
   const boot = await get<Boot>('/api/boot');
   const voices = sortVoices(boot.voices.filter((v) => v.built));
   const byId = new Map(voices.map((v) => [v.id, v]));
-  const kept = keep.get<{ voice?: string; text?: string } | null>(PAGE_KEY, null);
+  const kept = keep.get<{ voice?: string; text?: string; form?: string; facts?: boolean } | null>(PAGE_KEY, null);
   let voice: AuthorInfo = byId.get(kept?.voice ?? '') ?? byId.get('austen') ?? voices[0]!;
   const terms = definer(boot.glossary);
   const moves = movesBook(voices, terms);
@@ -38,16 +38,20 @@ export async function rewritePage(app: HTMLElement) {
   /** A run that finished with every part it could rewrite rewritten. */
   const whole = (r: Run) => r.done && !r.failed && !r.resting && !r.partial;
 
-  const key = (v: string, t: string) => `${v}\u0000${t.trim()}`;
-  const save = () => keep.set(PAGE_KEY, { voice: voice.id, text: c.area.value });
+  // A rewrite is of one text in one voice, fitted to one form, with facts or without.
+  const key = (v: string, t: string) => `${v}\u0000${c.form()}\u0000${c.facts() ? 'facts' : ''}\u0000${t.trim()}`;
+  const save = () => keep.set(PAGE_KEY, { voice: voice.id, text: c.area.value, form: c.form(), facts: c.facts() });
+  /** The request the samples and the server's "ready" answer: the form of the text's kind, and no facts. */
+  const plainAsk = () => c.form() === 'auto' && !c.facts();
 
   // -----------------------------------------------------------------------------------------------------------
   // What the engine reads in the text, and which voices are ready for it
 
   function readingFor(v: string, text: string): Promise<Reading | null> {
-    const k = key(v, text);
+    const form = c.form();
+    const k = `${v}\u0000${form}\u0000${text.trim()}`;
     if (!readings.has(k)) {
-      const p = post<Reading>('/api/read', { voice: v, text }).catch(() => null);
+      const p = post<Reading>('/api/read', { voice: v, text, form }).catch(() => null);
       readings.set(k, p);
       void p.then((r) => r || readings.delete(k));
     }
@@ -59,14 +63,20 @@ export async function rewritePage(app: HTMLElement) {
   /** The voices this text is rewritten in already: a sample's made ahead of time, the server's cache, this page's own. */
   async function readyFor(text: string): Promise<Set<string>> {
     const t = text.trim();
-    const out = new Set<string>(sampleOf(t) ? boot.ready[sampleOf(t)!.id] ?? [] : []);
+    const out = new Set<string>();
+    // With a form chosen or facts asked for, only this page's own rewrites are ready: any other costs a rewrite.
+    if (!plainAsk()) {
+      for (const [k, r] of runs) if (r.text === t && whole(r) && k === key(r.voice, t)) out.add(r.voice);
+      return out;
+    }
+    for (const v of sampleOf(t) ? boot.ready[sampleOf(t)!.id] ?? [] : []) out.add(v);
     if (!readyServer.has(t))
       readyServer.set(
         t,
         textHash(t).then((hash) => (hash ? get<{ voices: string[] }>(`/api/ready?hash=${hash}`).then((r) => r.voices ?? []).catch(() => []) : [])),
       );
     for (const v of await readyServer.get(t)!) out.add(v);
-    for (const r of runs.values()) if (r.text === t && whole(r)) out.add(r.voice);
+    for (const [k, r] of runs) if (r.text === t && whole(r) && k === key(r.voice, t)) out.add(r.voice);
     return out;
   }
   const isReady = (v: string, text: string) => {
@@ -97,6 +107,9 @@ export async function rewritePage(app: HTMLElement) {
     text: kept?.text ?? '',
     voice,
     onVoice: (id) => setVoice(id),
+    form: kept?.form,
+    facts: kept?.facts,
+    onOptions: () => noticeText(c.area.value),
     onText: noticeText,
     onGo: () => void go(),
   });
@@ -135,7 +148,7 @@ export async function rewritePage(app: HTMLElement) {
 
   function state(): ResultState {
     const run = shown?.run ?? null;
-    const flipOk = !!sampleOf(c.area.value) || ready.size > 0;
+    const flipOk = (plainAsk() && !!sampleOf(c.area.value)) || ready.size > 0;
     const flip = flipOk ? voices.filter((v) => isReady(v.id, c.area.value) || v.id === voice.id).map((v) => v.id) : [];
     return { voice, run, reading: shown?.reading ?? null, flip, ready, suggested: c.suggested(), resting: !boot.ai.available && !sampleOf(c.area.value) };
   }
@@ -199,7 +212,7 @@ export async function rewritePage(app: HTMLElement) {
     let run = runs.get(k);
     const fresh = !run || (run.done && (!!run.failed || !!run.partial || run.resting === 'busy'));
     if (fresh) {
-      run = { voice: v.id, text, rows: new Map(), roles: new Map(), done: false, started: Date.now() };
+      run = { voice: v.id, text, form: c.form(), facts: c.facts(), rows: new Map(), roles: new Map(), done: false, started: Date.now() };
       runs.set(k, run);
     }
     shown = { run: run!, reading: null };
@@ -225,14 +238,14 @@ export async function rewritePage(app: HTMLElement) {
     streaming.add(ctl);
     tick ??= setInterval(() => shown && !shown.run.done && app.dataset.state === 'result' && r.progress(state()), 1000);
     try {
-      await streamLines('/api/rewrite', { author: v.id, text, client: clientId }, (line) => take(run, line), ctl.signal);
+      await streamLines('/api/rewrite', { author: v.id, text, client: clientId, form: run.form ?? 'auto', facts: !!run.facts }, (line) => take(run, line), ctl.signal);
       run.done = true;
       const rows = [...run.rows.values()].filter((x) => x.kind === 'paragraph');
       if (rows.length && rows.every((x) => x.kind === 'paragraph' && !x.hers && x.resting === 'budget')) run.resting = 'resting';
       else if (rows.some((x) => x.kind === 'paragraph' && (x.error || x.resting === 'budget'))) run.partial = true;
     } catch (e) {
       if ((e as Error).name === 'AbortError') {
-        runs.delete(key(v.id, text));
+        for (const [k, x] of runs) if (x === run) runs.delete(k);
         return;
       }
       run.done = true;
@@ -252,7 +265,7 @@ export async function rewritePage(app: HTMLElement) {
     }
     if (run.resting || ![...run.rows.values()].some((x) => x.kind === 'paragraph' && x.hers)) void drills(run, v);
     // Ready for the text on the page only if this run was of that text.
-    if (whole(run) && run.text === c.area.value.trim()) {
+    if (whole(run) && run.text === c.area.value.trim() && runs.get(key(v.id, text)) === run) {
       ready.add(v.id);
       c.setReady(ready);
     }

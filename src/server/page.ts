@@ -3,12 +3,21 @@
 // where the sense was mended, the moves the voice made (each with a sentence of the voice's own that makes it), the
 // words the voice added, and where a paragraph's matter came from.
 //
+// Before any part is written the engine fits the text to its form (fit.ts): the paragraphs go in the form's order,
+// and a paragraph that moved says so in its row. With facts on, it gathers sentences from Wikipedia (facts.ts) and
+// gives each part the facts for its paragraphs; the rewrite's sentences that state one carry it as a footnote. Text
+// the writer added (a fact, a part the form lacked) is marked in each sentence, for the page to highlight.
+//
 // A text is rewritten in parts of whole paragraphs. Each part is looked for first among the samples rewritten ahead
 // of time, then in the cache, and only then sent to the writer, within the budget (src/server/cache.ts).
 
 import type { ServerResponse } from 'node:http';
+import { createHash } from 'node:crypto';
+import type { BriefFact, BriefForm } from '../engine/brief.ts';
 import { blocksOfText, type DocBlock } from '../engine/doc.ts';
+import { slotSentence, type Form } from '../engine/forms.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
+import type { Role } from '../engine/structure.ts';
 import { notesFor, type NoteRow } from '../engine/notes.ts';
 import {
   findPrecomputed,
@@ -23,6 +32,8 @@ import {
   type Refusal,
   type RewriteCache,
 } from './cache.ts';
+import { BUDGET_MS, gatherFacts, type Fact } from './facts.ts';
+import { briefFacts, briefForm, fitText, missingByPart } from './fit.ts';
 import { send } from './http.ts';
 import { pack } from './models.ts';
 import { PROMPT_VERSION, promptFingerprint, rewriteWithAI, tierOf, type RewriteProgress, type RewriteResult, type WriterClient } from './rewrite.ts';
@@ -50,8 +61,19 @@ export interface YourSentence {
   /** Words the voice never wrote, and the voice's words for each. */
   never: { word: string; alternatives: string[] }[];
 }
+/** A fact a sentence states: a whole sentence from a Wikipedia article, shown as a footnote. */
+export interface FootFact {
+  id: string;
+  text: string;
+  title: string;
+  url: string;
+}
 export interface HerSentence {
   text: string;
+  /** The stretches of the sentence that are not in the writer's text, as offsets in `text`: the page highlights them. */
+  added?: [number, number][];
+  /** The facts the sentence states, for its footnotes. */
+  facts?: FootFact[];
   /** The writer's sentences (by n) it renders. */
   from: number[];
   /** The voice's moves the engine finds in it that the writer's sentence did not make, by name. */
@@ -87,6 +109,10 @@ export type Row =
       notes: Note[];
       /** The writer's paragraphs (numbered through the text) this one renders, where they are not just its own. */
       from?: number[];
+      /** The form moved this paragraph from where the writer put it. */
+      moved?: boolean;
+      /** The paragraph fills a part of the form the writer's text lacked: the line the YOURS cell shows in its place. */
+      filled?: string;
       error?: string;
       /** No full rewrite: `long` past the word cap, `budget` when rewrites are resting. */
       resting?: 'long' | 'budget';
@@ -104,8 +130,8 @@ const words = (t: string) => t.split(/\s+/).filter(Boolean).length;
 const altWord = (a: string) => a.replace(/\s*\(.*$/, '').trim();
 
 /** The text's blocks, numbered, and its paragraphs gathered into parts. */
-export function plan(text: string): { blocks: DocBlock[]; parts: number[][] } {
-  const blocks = blocksOfText(text);
+export function plan(text: string | DocBlock[]): { blocks: DocBlock[]; parts: number[][] } {
+  const blocks = typeof text === 'string' ? blocksOfText(text) : text;
   const parts: number[][] = [];
   let cur: number[] = [];
   let n = 0;
@@ -134,6 +160,10 @@ export interface RowNoteOptions {
   seen?: Set<string>;
   /** The voice's pack table of sentence ids for each move and figure. */
   exemplars?: Record<string, number[]>;
+  /** The form the text was fitted to, for the line a filled part carries. */
+  form?: Form;
+  /** The paragraphs the form moved, by block index, each with its note (fit.ts). */
+  moved?: Map<number, string>;
 }
 
 /**
@@ -152,6 +182,7 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
     return { n: offset + n, text: x.text, never: x.never.map((w) => ({ word: w.word, alternatives: w.alternatives.map(altWord).filter(Boolean).slice(0, 4) })) };
   };
   const rows: Para[] = r.paragraphs.map((_p, k) => ({ kind: 'paragraph', index: idx[0]! + (k + 1) / 1000, part, yours: [], hers: [], notes: [] }));
+  const factOf = new Map((r.facts ?? []).map((f) => [f.id, { id: f.id, text: f.text, title: f.title, url: f.url ?? '' }]));
   const moveIds: string[][][] = rows.map(() => []);
   const used = new Set<number>();
   const sourcesOf: number[][] = [];
@@ -164,7 +195,8 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
       from.forEach((n) => ns.add(n));
       const ids = a?.moves ?? [];
       const names = ids.map((id) => (m?.author.moves ?? []).find((mv) => mv.id === id)?.name ?? id);
-      rows[k]!.hers!.push({ text: x.text, from: from.map((n) => offset + n), moves: names });
+      const facts = (a?.facts ?? []).map((id) => factOf.get(id)).filter((f): f is FootFact => !!f);
+      rows[k]!.hers!.push({ text: x.text, from: from.map((n) => offset + n), moves: names, ...(a?.added?.length ? { added: a.added } : {}), ...(facts.length ? { facts } : {}) });
       moveIds[k]!.push(ids);
     }
     sourcesOf[k] = [...ns].sort((a, b) => a - b);
@@ -206,12 +238,31 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
     });
   }
 
+  // What the engine did before the writer: a paragraph the form moved, and a part the form lacked, now written.
+  const must = rows.map(() => false);
+  rows.forEach((row, k) => {
+    const ps = parasOf(k);
+    const moved = ps.map((p) => opts.moved?.get(idx[p - 1]!)).find(Boolean);
+    if (moved) {
+      row.moved = true;
+      row.from ??= ps.map(numberOf);
+      structure[k] = moved;
+      must[k] = true;
+    } else if (!ps.length && row.hers?.length && !row.yours.length) {
+      const says = opts.form ? slotSentence(opts.form, r.paragraphs[k]!.role as Role) : '';
+      row.filled = `Not in your text.${says ? ` ${says}` : ''}`;
+      structure[k] = 'Written to fill the form. It is highlighted because none of it is yours.';
+      must[k] = true;
+    }
+  });
+
   if (m) {
     const noteRows: NoteRow[] = rows.map((row, k) => ({
       yours: row.yours.map((y) => ({ n: y.n, text: y.text })),
       hers: (row.hers ?? []).map((h, j) => ({ text: h.text, from: h.from, moves: moveIds[k]![j] ?? [] })),
       ...(row.from ? { from: row.from } : {}),
       ...(structure[k] ? { structure: structure[k] } : {}),
+      ...(must[k] ? { structureFirst: true } : {}),
     }));
     const notes = notesFor(m, noteRows, { sense: r.sense ?? [], liberties: r.liberties ?? [], seen: opts.seen, exemplars: opts.exemplars });
     rows.forEach((row, k) => (row.notes = notes[k] ?? []));
@@ -256,7 +307,11 @@ type Kept = RewriteResult;
 const keep = (r: RewriteResult): Kept => {
   const { toolCalls: _drop, ...rest } = r;
   void _drop;
-  return { ...rest, toolCalls: [], aligned: r.aligned.map((a) => ({ after: a.after, before: a.before, from: a.from, moves: a.moves, why: '', model: null as unknown as Citation })) };
+  return {
+    ...rest,
+    toolCalls: [],
+    aligned: r.aligned.map((a) => ({ after: a.after, before: a.before, from: a.from, moves: a.moves, why: '', model: null as unknown as Citation, ...(a.facts?.length ? { facts: a.facts } : {}), ...(a.added?.length ? { added: a.added } : {}) })),
+  };
 };
 
 const fingerprints = new Map<string, string>();
@@ -286,7 +341,30 @@ export interface StreamOptions {
   precomputed?: string | null;
   /** Asked once, before any writer call, with the number of parts to write. A refusal is answered as JSON. */
   admit?: (calls: number) => Admission | Refusal;
+  /** The form to fit the text to: 'auto' (the form of the kind the text is) or a form id. 'auto' when left out. */
+  form?: string;
+  /** Gather facts from Wikipedia for the text and give them to the writer. Off when left out. */
+  facts?: boolean;
+  /** Gathers the facts; facts.ts's gatherFacts when left out. */
+  gather?: (text: string) => Promise<Fact[]>;
+  /** Told a progress line before the answer's head is written, while the engine fits the text and gathers facts. A
+   * job passes this, so the page hears of those steps; a streamed answer has no head yet and passes nothing. */
+  early?: (line: Line) => void;
 }
+
+/** The facts for a text, never later than the facts budget and a little: a rewrite does not wait on Wikipedia. */
+async function factsFor(text: string, gather: (text: string) => Promise<Fact[]>): Promise<Fact[]> {
+  let timer: ReturnType<typeof setTimeout> | undefined;
+  try {
+    return await Promise.race([gather(text).catch(() => []), new Promise<Fact[]>((ok) => (timer = setTimeout(() => ok([]), BUDGET_MS + 500)))]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+/** What sets one part's brief apart beyond its text: the form as the brief states it, and the facts supplied. */
+const briefSalt = (form: BriefForm, facts: BriefFact[]) =>
+  createHash('sha256').update(JSON.stringify([form.form.id, form.slots.map((s) => [s.role, s.paragraphs]), form.missing, facts.map((f) => [f.id, f.paragraph])])).digest('hex').slice(0, 16);
 
 /** A line of the stream. */
 export type Line = { type: string; [k: string]: unknown };
@@ -306,9 +384,24 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     if (!closed) res.write(JSON.stringify(o) + '\n');
   };
 
-  // A sample, or within 3% of one: made ahead of time, and served whole.
+  const formId = opts.form || 'auto';
+  const early: string[] = [];
+  const sayEarly = (what: string) => {
+    early.push(what);
+    opts.early?.({ type: 'progress', elapsed: Date.now() - t0, done: 0, parts: 1, drafts: 0, calls: 0, log: early.slice(-4) });
+  };
+  // The facts first: which rewrite is asked for depends on them. A text with none is rewritten as it was before
+  // there were facts.
+  let facts: Fact[] = [];
+  if (opts.facts) {
+    sayEarly('gathering facts');
+    facts = await factsFor(text, opts.gather ?? ((t) => gatherFacts(t)));
+    if (facts.length) sayEarly(facts.length === 1 ? '1 fact found' : `${facts.length} facts found`);
+  }
+
+  // A sample, or within 3% of one: made ahead of time, and served whole. Only in the form of its kind, with no facts.
   const preDir = opts.precomputed === undefined ? precomputedRoot() : opts.precomputed;
-  if (preDir && !fresh && !instructions.trim()) {
+  if (preDir && !fresh && !instructions.trim() && formId === 'auto' && !facts.length) {
     const pre = findPrecomputed(voice, text, preDir);
     if (pre) {
       head();
@@ -321,8 +414,12 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
   }
 
   const cache = process.env.ADVISOR_CACHE === 'off' ? null : opts.cache === undefined ? rewriteCache() : opts.cache;
-  const { blocks, parts } = plan(text);
-  const paraNo = new Map(parts.flat().map((i, k) => [i, k + 1]));
+  sayEarly('fitting it to the form');
+  const fit = fitText(blocksOfText(text), formId) ?? fitText(blocksOfText(text), 'auto')!;
+  const { blocks, parts } = plan(fit.blocks);
+  // Each paragraph's number as the writer wrote it, by where it stands now.
+  const paraNo = new Map(parts.flat().map((i) => [i, (fit.paragraph.get(i) ?? 0) + 1]));
+  const missing = missingByPart(fit, parts);
   const tier = tierOf(voice);
   const fingerprint = parts.length ? fingerprintOf(m) : '';
   const cap = limits().words;
@@ -333,7 +430,10 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     const before = idx[0]! > 0 ? blocks[idx[0]! - 1]!.text : '';
     const after = blocks[idx.at(-1)! + 1]?.text ?? '';
     const own = idx.map((i) => blocks[i]!.text).join('\n\n');
-    return { part, idx, before, after, words: words(own), ...partKeys({ voice, tier, fingerprint, promptVersion: PROMPT_VERSION, instructions, text: own, before, after }), how: 'write' as How, kept: null as Kept | null, flight: null as Promise<Kept> | null };
+    const form = briefForm(fit, idx, missing[part]);
+    const supplied = briefFacts(fit, idx, facts);
+    const keys = partKeys({ voice, tier, fingerprint: `${fingerprint}/${briefSalt(form, supplied)}`, promptVersion: PROMPT_VERSION, instructions, text: own, before, after });
+    return { part, idx, before, after, words: words(own), form, facts: supplied, ...keys, how: 'write' as How, kept: null as Kept | null, flight: null as Promise<Kept> | null };
   });
   let total = 0;
   let writing = 0;
@@ -381,7 +481,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     }
 
     const state = jobs.map((j) => ({ what: j.how === 'kept' ? 'kept from before' : 'waiting', calls: 0, draft: 0, done: j.how !== 'write' && j.how !== 'join' }));
-    const log: string[] = [];
+    const log: string[] = [...early];
     const say = (part: number, what: string) => log.push(parts.length > 1 ? `Part ${part + 1}: ${what}` : what);
     const tell = () =>
       line({
@@ -400,7 +500,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     let whole = true;
     const emit = (j: (typeof jobs)[number], r: Kept, cached: boolean) => {
       try {
-        const rows = rowsOf(blocks, j.idx, j.part, r, 1000 * j.part, paraNo, m, { seen, exemplars });
+        const rows = rowsOf(blocks, j.idx, j.part, r, 1000 * j.part, paraNo, m, { seen, exemplars, form: fit.reading.form, moved: fit.moved });
         line({ type: 'part', part: j.part, rows, reading: r.reading, ...(cached ? {} : { usage: r.usage }), explanation: r.explanation, model: r.model, tier: r.tier, promptVersion: r.promptVersion, scoreBefore: r.scoreBefore, scoreAfter: r.scoreAfter, cached });
       } catch (e) {
         fail(j, e);
@@ -441,7 +541,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
           const r = await rewriteWithAI(
             m,
             j.idx.map((i) => blocks[i]!),
-            { before: j.before, after: j.after, instructions, strength: 'full', spend: (n) => admission?.spend(n) },
+            { before: j.before, after: j.after, instructions, strength: 'full', spend: (n) => admission?.spend(n), form: formId, fit: j.form, facts: j.facts },
             (what: string, p: RewriteProgress) => {
               state[j.part] = { what, calls: p.calls, draft: p.draft, done: false };
               say(j.part, what);
@@ -451,7 +551,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
           );
           const kept = keep(r);
           // A rewrite the page cannot show is not kept: it would fail on every later request.
-          rowsOf(blocks, j.idx, j.part, kept, 1000 * j.part, paraNo, m, { exemplars });
+          rowsOf(blocks, j.idx, j.part, kept, 1000 * j.part, paraNo, m, { exemplars, form: fit.reading.form, moved: fit.moved });
           cache?.put(j.key, j.core, voice, JSON.stringify(kept), r.model);
           return kept;
         } finally {
@@ -481,7 +581,8 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
     console.log(`${new Date().toISOString()} rewrite ${voice}: ${whole ? 'done' : 'done, with parts missing'} in ${Math.round((Date.now() - t0) / 1000)} s`);
     res.end();
     // A whole text rewritten in a voice is ready in it: the page can show so before anyone asks again.
-    if (whole && cache && !instructions.trim()) cache.markReady(textHash(text), voice, PROMPT_VERSION);
+    // Only the plain request (the form of its kind, no facts) is marked: that is what "ready" promises.
+    if (whole && cache && !instructions.trim() && formId === 'auto' && !facts.length) cache.markReady(textHash(text), voice, PROMPT_VERSION);
   } finally {
     admission?.done();
   }

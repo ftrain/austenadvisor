@@ -29,6 +29,8 @@ export function tryIt(o: TryItOptions): HTMLElement {
 
   /** The voice's own words for the ones it never wrote. A word the verdict already names gets only its substitute. */
   function neverLine(c: PracticeCheck): string {
+    // A style has no words it never wrote: its faults are in the verdict.
+    if (o.voice.style) return '';
     return c.never
       .map((w) => {
         const named = (c.verdict ?? '').includes(`“${w.word}”`);

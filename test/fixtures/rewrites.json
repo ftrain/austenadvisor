@@ -26,13 +26,17 @@
        "from": [
         1,
         2
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "I then went home.",
        "from": [
         3
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     }
@@ -62,7 +66,9 @@
        "from": [
         1,
         2
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     }
@@ -91,7 +97,9 @@
        "text": "Full. Good even, all.",
        "from": [
         1
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -103,7 +111,9 @@
        "text": "Hear it in brief: the setting forth, that was for Tuesday, stands now for Thursday.",
        "from": [
         2
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -115,19 +125,25 @@
        "text": "The lawyers have not yet subscribed their hand to the page of prices, and I would not set up us forth without it.",
        "from": [
         3
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "Wherefore I pray you, let each man have his part of the book done by Wednesday at the stroke of noon.",
        "from": [
         4
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "And if any be stayed in his labour, say so today, not tomorrow.",
        "from": [
         5
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -139,7 +155,9 @@
        "text": "My thanks. Sam.",
        "from": [
         6
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     }
@@ -168,7 +186,9 @@
        "text": "Dear Mother and Father,",
        "from": [
         1
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -180,25 +200,33 @@
        "text": "Camp is well enough, I think.",
        "from": [
         2
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "The food is foul, and my bedfellow snores like a whole herd.",
        "from": [
         3
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "Yesterday we went upon the water in a small boat, and I threw it over, and all the company laughed at me as one made a jest of.",
        "from": [
         4
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "It shamed me sorely, I tell you.",
        "from": [
         5
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -210,25 +238,33 @@
        "text": "Yet there is a girl named Kayla, and she is passing fine.",
        "from": [
         6
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "She is of Ohio, and she knows more of horses than any in the camp.",
        "from": [
         7
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "After supper we walk down to the lake and talk of this and that.",
        "from": [
         8
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "I think she likes me; but of that I am not certain.",
        "from": [
         9
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -240,19 +276,25 @@
        "text": "Can you send me more bites to eat?",
        "from": [
         10
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "And my charger also, which I wholly forgot.",
        "from": [
         11
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "The counsellors are somewhat strict, yet for the most part fair.",
        "from": [
         12
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -264,7 +306,9 @@
        "text": "Your loving son, Jake",
        "from": [
         13
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     },
@@ -276,13 +320,17 @@
        "text": "P. S.",
        "from": [
         14
-       ]
+       ],
+       "facts": [],
+       "added": false
       },
       {
        "text": "Let not Max use my room.",
        "from": [
         14
-       ]
+       ],
+       "facts": [],
+       "added": false
       }
      ]
     }

@@ -248,7 +248,8 @@ export function practiceCheck(m: AuthorModel, attempt: string, moveName = ''): P
   const example = target && !target.test ? (m.moveExamples(target.id, text, 6).find((c) => !exclude.has(c.work)) ?? null) : null;
   const shape = example && text ? shapeAgainst(text, example) : null;
 
-  const lengthLine = lens.length ? `${meanWords} ${meanWords === 1 ? 'word' : 'words'}${lens.length > 1 ? ' a sentence' : ''}; ${pr.possessive} usual ${lo} to ${hi}.` : '';
+  // A style has no usual length to hold a sentence to: its rule is one idea a sentence.
+  const lengthLine = lens.length && !m.author.style ? `${meanWords} ${meanWords === 1 ? 'word' : 'words'}${lens.length > 1 ? ' a sentence' : ''}; ${pr.possessive} usual ${lo} to ${hi}.` : '';
   const parts: string[] = [];
   if (!text) parts.push('Write a sentence first.');
   else if (target && made) parts.push(`Yes, that’s ${withArticle(nameOf(target))}.`, lengthLine);

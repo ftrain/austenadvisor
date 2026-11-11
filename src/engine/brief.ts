@@ -9,6 +9,7 @@ import { tokenize } from '../nlp/tokenize.ts';
 import { analyze } from './analyze.ts';
 import { FIGURES } from './figures.ts';
 import type { DocBlock } from './doc.ts';
+import type { Form } from './forms.ts';
 import type { AuthorModel, Citation, Register } from './model.ts';
 import { plainFaults } from './plain.ts';
 
@@ -32,6 +33,32 @@ export interface Brief {
    * across it. */
   headings: { before: number; text: string }[];
   score: number;
+}
+
+/** The form a part is fitted to, as the brief states it. Paragraph numbers are the brief's own, from 1. */
+export interface BriefForm {
+  form: Form;
+  /** The form's parts in order, each with the brief's paragraphs that do its work. */
+  slots: { role: string; says: string; paragraphs: number[] }[];
+  /** The required parts no paragraph fills, which the writer may write. Empty unless the student chose the form. */
+  missing: string[];
+}
+
+/** A fact the writer may state: a whole sentence from a Wikipedia article, for one paragraph of the brief. */
+export interface BriefFact {
+  id: string;
+  text: string;
+  title: string;
+  /** The brief's paragraph it supports, from 1. */
+  paragraph: number;
+  /** The article's address, for the page's footnote. The writer is not shown it. */
+  url?: string;
+}
+
+/** What a brief carries beyond the passage: the form it is fitted to, and the facts gathered for it. */
+export interface BriefExtras {
+  form?: BriefForm | null;
+  facts?: BriefFact[];
 }
 
 const FIRST = new Set(['i', 'me', 'my', 'mine', 'myself', 'we', 'us', 'our']);
@@ -112,7 +139,7 @@ function contractionRates(m: AuthorModel): { n: number; d: number } {
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
 /** The brief as the model reads it: tagged and numbered, each sentence with the author's sentence nearest it. */
-export function renderBrief(m: AuthorModel, b: Brief): string {
+export function renderBrief(m: AuthorModel, b: Brief, extras: BriefExtras = {}): string {
   const short = m.author.short;
   const pr = pronounsOf(m.author);
   const P = m.profile;
@@ -122,7 +149,9 @@ export function renderBrief(m: AuthorModel, b: Brief): string {
     `<targets>`,
     `Narration: ${short}’s sentences have a median of ${P.sentenceLength.narration.p50} words; half fall between ${P.sentenceLength.narration.p25} and ${P.sentenceLength.narration.p75}. Speech: median ${P.sentenceLength.dialogue.p50}.`,
     `${(P.punctuationPerSentence[';'] ?? 0).toFixed(2)} semicolons and ${(P.punctuationPerSentence[':'] ?? 0).toFixed(2)} colons a sentence; ${(P.punctuationPerSentence[',']! ).toFixed(1)} commas a sentence. ${contractionNote(m)}`,
-    `Write within these as ${short} did: most narrative sentences at or above the median, never padded; a short one only for a turn or a verdict.`,
+    m.author.style
+      ? `These are the lengths of the style’s models. Give each sentence one idea, and let its length follow from that.`
+      : `Write within these as ${short} did: most narrative sentences at or above the median, never padded; a short one only for a turn or a verdict.`,
     `</targets>`,
   );
   let para = 0;
@@ -141,8 +170,37 @@ export function renderBrief(m: AuthorModel, b: Brief): string {
     out.push(`</sentence>`);
   }
   if (para) out.push(`</paragraph>`);
+  out.push(...renderForm(extras.form), ...renderFacts(extras.facts));
   out.push(`</brief>`);
   return out.join('\n');
+}
+
+/** The form's parts in order, the paragraphs that fill each, and the parts the writer may write. */
+function renderForm(f?: BriefForm | null): string[] {
+  if (!f) return [];
+  const out = [`<form name="${esc(f.form.name)}">`, esc(f.form.definition), `Its parts in order, with the writer’s paragraphs that do each:`];
+  for (const s of f.slots) {
+    const missing = f.missing.includes(s.role);
+    out.push(`  <part role="${esc(s.role)}"${s.paragraphs.length ? ` paragraphs="${s.paragraphs.join(' ')}"` : ''}${missing ? ' missing="true"' : ''}>${esc(s.says)}</part>`);
+  }
+  out.push(`The engine has put the paragraphs in the form’s order. Keep that order.`);
+  if (f.missing.length)
+    out.push(
+      `Missing: ${f.missing.join(', ')}. The engine found no paragraph for ${f.missing.length > 1 ? 'these parts' : 'this part'}. Where a paragraph of the writer’s already does the work, give that paragraph the role and add nothing. Otherwise write the part as one new paragraph in its place, in one or two sentences drawn from what the passage already says.${f.form.short ? ` ${/^[aeiou]/i.test(f.form.name) ? 'An' : 'A'} ${f.form.name.toLowerCase()} is short: one sentence will do.` : ''}`,
+    );
+  out.push(`</form>`);
+  return out;
+}
+
+/** The facts the writer may state, each with its id and the paragraph it supports. */
+function renderFacts(facts?: BriefFact[]): string[] {
+  if (!facts?.length) return [];
+  return [
+    `<facts>`,
+    `Sentences from Wikipedia that bear on the passage. State one only where it helps the paragraph it is given for, and leave out any that does not fit.`,
+    ...facts.map((f) => `  <fact id="${esc(f.id)}" paragraph="${f.paragraph}" source="${esc(f.title)}">${esc(f.text)}</fact>`),
+    `</facts>`,
+  ];
 }
 
 export function craftOf(m: AuthorModel): string {

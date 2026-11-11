@@ -5,9 +5,14 @@
 // - In: a system prompt that is the same for every rewrite in a voice (its manner, its moves with one example each),
 //   and so is cached; then a numbered brief (engine/brief.ts): each sentence with its register, its length, every word
 //   the voice never wrote with the voice's own words for it, and the voice's sentence nearest it.
+//   The brief also names the form the passage is fitted to (the engine has already put the paragraphs in its order),
+//   the parts of the form the passage lacks, and the facts gathered for it from Wikipedia, each with an id.
 // - Out: submit_rewrite, with the faults of sense mended, the liberties taken, a short explanation, and the paragraphs,
 //   each with its role and the writer's sentences each of its sentences renders (`from`), so nothing is lost unseen.
+//   Each sentence also names the facts it rests on and says whether it adds what the writer did not say.
 // - Gate: hardGate finds what is worth one redraft (a sentence lost, a heading crossed, the paragraphs run together);
+//   factGate drops a fact that was not supplied, marks as added a sentence the writer's words do not account for, and
+//   cuts an added sentence that states a number or a name found in no fact and not in the writer's text;
 //   softFindings finds the rest, which the engine shows or mends itself.
 
 import { createHash } from 'node:crypto';
@@ -16,19 +21,22 @@ import { join } from 'node:path';
 import Anthropic from '@anthropic-ai/sdk';
 import { cap, pronounsOf } from '../corpus/sources.ts';
 import { DATA } from '../db.ts';
-import { buildBrief, contractsFreely, renderBrief, renderMoves, type Brief } from '../engine/brief.ts';
+import { buildBrief, contractsFreely, renderBrief, renderMoves, type Brief, type BriefExtras, type BriefFact, type BriefForm } from '../engine/brief.ts';
 import { analyze } from '../engine/analyze.ts';
 import { blocksOfText, type DocBlock } from '../engine/doc.ts';
 import type { AuthorModel, Citation } from '../engine/model.ts';
 import { CONTRACTIONS } from '../engine/profile.ts';
 import { explainSentence } from '../engine/explain.ts';
 import { FIGURES, findFigures } from '../engine/figures.ts';
-import { readStructure, ROLES, type Role } from '../engine/structure.ts';
+import { ROLES, type Role } from '../engine/structure.ts';
 import { checkPassage, runTool } from '../engine/tools.ts';
 import { tokenize } from '../nlp/tokenize.ts';
+import { stem } from './facts.ts';
+import { readForm } from '../engine/forms.ts';
+import { briefForm, fitText } from './fit.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-10.plain';
+export const PROMPT_VERSION = '2026-11-11.form-facts';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -150,6 +158,12 @@ export type Strength = 'full';
 export interface SubmittedSentence {
   text: string;
   from: number[];
+  /** The ids of the supplied facts the sentence states. */
+  facts?: string[];
+  /** True when the sentence says something the writer's text did not. */
+  added?: boolean;
+  /** Set by factGate: the stretches of the sentence that were added, as offsets in its text. */
+  addedSpans?: [number, number][];
   /** Older submissions named the author's sentence that inspired this one; the schema no longer asks for it. */
   model?: string;
 }
@@ -197,7 +211,9 @@ export interface RewriteResult {
    * (1-based, counting only paragraphs, quotes and items) its first sentence renders. */
   paragraphs: { text: string; source: number | null; role?: string; why?: string; sentences: { text: string; source: number | null }[] }[];
   /** Each new sentence beside the writer's sentences it renders, and why it was rewritten (from the engine). */
-  aligned: { after: string; before: string[]; from: number[]; why: string; model: Citation; moves: string[] }[];
+  aligned: { after: string; before: string[]; from: number[]; why: string; model: Citation; moves: string[]; facts?: string[]; added?: [number, number][] }[];
+  /** The facts the rewrite states, each a sentence from Wikipedia, for the page's footnotes. */
+  facts?: BriefFact[];
   /** The writer's sentences as the brief numbered them, with the words in each the author never wrote. */
   source: { n: number; paragraph: number; text: string; never: { word: string; alternatives: string[] }[] }[];
   explanation: string;
@@ -271,9 +287,11 @@ export const SUBMIT = {
                 type: 'object',
                 properties: {
                   text: { type: 'string', description: 'One sentence of the rewrite.' },
-                  from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders: one, or several joined.' },
+                  from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders: one, or several joined. Empty for a sentence that renders none.' },
+                  facts: { type: 'array', items: { type: 'string' }, description: 'The ids of the brief’s facts it states. Usually empty.' },
+                  added: { type: 'boolean', description: 'True when it says something the writer’s text did not: a fact, or a part the form lacked.' },
                 },
-                required: ['text', 'from'],
+                required: ['text', 'from', 'facts', 'added'],
                 additionalProperties: false,
               },
             },
@@ -288,8 +306,16 @@ export const SUBMIT = {
   },
 };
 
+/** What every voice is told of the form, the facts and the marking of added text. */
+const FORM_AND_FACTS = `<form_and_facts>
+The brief may name a form (an essay, an anecdote) with its parts in order. The engine has already put the writer's paragraphs in that order: keep it. Where the form marks a part as missing, follow the form's own instruction for it; a new paragraph takes the part's role, and each of its sentences has an empty "from" and "added" true.
+The brief may list facts, each a sentence from Wikipedia with an id. You may state a fact where it helps the paragraph it is given for, in a sentence of its own: keep its numbers, dates and names exactly, put the rest in the voice's words, name the fact's id in "facts", give it an empty "from" and set "added" true. Use few; a short passage needs one or two, and many need none. State no number, date or name that is in neither the passage nor a supplied fact.
+Set "added" true on every sentence that says something the writer's text did not, and false on the rest. Added sentences are shown to the writer in a highlight, so the marking must be honest. A missing part or a fact is no liberty: do not report it in liberties.
+</form_and_facts>`;
+
 export function systemPrompt(m: AuthorModel): string {
   const a = m.author;
+  if (a.style) return stylePrompt(m);
   const pr = pronounsOf(a);
   // "of hers", "of his"; a voice that is "it" is named.
   const ofTheirs = pr.possessivePronoun === 'its' ? `${a.short}’s` : pr.possessivePronoun;
@@ -303,7 +329,7 @@ Render the passage as ${a.short} would have written it.
 Keep: what happens and in what order; who speaks and what they mean; what each sentence means, and the way each feeling points (embarrassment stays embarrassment); the point of view and person; the form (a letter stays a letter, with its greeting and its close); the writer's names.
 Change: the words, the sentences, how they are joined, what is told and what is shown.
 You may join sentences, split them, reorder them, and turn quoted speech into reported speech or back. You may move, merge or split paragraphs where the author would order the matter otherwise; keep a paragraph for each turn of the matter, and never run the whole into one. Every sentence of the writer's is rendered somewhere, and each of yours names the brief's sentences it renders. A heading stands where it is: write nothing for it, join nothing across it.
-Add no incident, person, detail, motive or degree of feeling the writer did not give: nervous stays nervous. The voice may frame what is there (a verdict on the writer's own matter), sparingly; report every such liberty.
+Add no incident, person, detail, motive or degree of feeling the writer did not give: nervous stays nervous. Two things only may be added, and only as form_and_facts allows: a part the form lacks, and a supplied fact. The voice may frame what is there (a verdict on the writer's own matter), sparingly; report every such liberty.
 Keep the writer's tenses. Prefer the voice's most usual way of saying a thing to an ornate one.
 </task>
 
@@ -320,15 +346,61 @@ ${a.craftNotes?.length ? `\n<craft>\n${a.craftNotes.map((x) => `- ${x}`).join('\
 ${cap(pr.possessive)} moves, each with a sentence of ${ofTheirs} that makes it:
 ${renderMoves(m)}
 
+${FORM_AND_FACTS}
+
 <the_brief>
 The brief comes from a statistical engine built on ${a.whole ?? `${a.short}'s complete works`}: the passage in numbered sentences, each with its register, its length, every word ${a.short} never wrote (with ${pr.possessive} words instead), and the sentence of ${ofTheirs} nearest it.
-${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names${a.keepModern ? ', and the writer’s own nouns for modern things, which keep their names' : ''}. ${a.keepModern ? '' : `A modern thing with no word of ${ofTheirs} is rendered by what it does in ${pr.possessive} world, in a short plain phrase.`}
+${cap(pr.subject)} never wrote a word the engine flags: no such word may stand in your rewrite, except the writer's names${a.keepModern ? ', and the writer’s own nouns for modern things, which keep their names' : ''}, and the numbers, dates and names of a fact you state. ${a.keepModern ? '' : `A modern thing with no word of ${ofTheirs} is rendered by what it does in ${pr.possessive} world, in a short plain phrase.`}
 </the_brief>
 
-<answer>
+${ANSWER}`;
+}
+
+const ANSWER = `<answer>
 Write the whole rewrite and call submit_rewrite once: the sense first, then the liberties, a short explanation, and the paragraphs. Give each paragraph its role (the work it does: claim, reason, scene, greeting) and, in fifteen words or fewer, why the voice puts it there. The engine checks the rewrite and answers "Accepted" or names what to mend.
 Write the sense notes, the liberties, the explanation and each paragraph's why in your own voice, not the author's, for a student of about fifteen: short plain sentences in the active voice and concrete words. No praise, no exclamation marks, no rhetorical questions. Name a term of rhetoric or grammar only with a few words on what it means.
 </answer>`;
+
+/**
+ * The system prompt for a style (plain): a manner with rules, not a writer with a world. The passage keeps its own
+ * period and its own words for things; the brief marks the faults to mend in place of words never written.
+ */
+function stylePrompt(m: AuthorModel): string {
+  const a = m.author;
+  const name = a.short.toLowerCase();
+  const manner = (a.manner ?? []).map((x, i) => (i ? `- ${x}` : x));
+  return `You are ${a.advisor}: a teacher of writing who knows ${a.whole ?? 'the models of the style'}, working beside a living writer. ${a.persona}
+
+The writer has asked for a passage of theirs in the ${name}. They are learning to write; your rewrite is a lesson as much as a text.
+
+<task>
+Rewrite the passage in the ${name}.
+Keep: what happens and in what order; who speaks and what they mean; what each sentence means; the point of view and person; the form (a letter stays a letter, with its greeting and its close); the writer's names, and the writer's own words for the things of their world. A phone stays a phone.
+Change: what the rules of the style ask, and no more. A sentence that breaks no rule may stand as it is.
+You may join sentences, split them and reorder them. Keep a paragraph for each turn of the matter, and never run the whole into one. Every sentence of the writer's is rendered somewhere, and each of yours names the brief's sentences it renders. A heading stands where it is: write nothing for it, join nothing across it.
+Add no incident, person, detail, motive or degree of feeling the writer did not give. Two things only may be added, and only as form_and_facts allows: a part the form lacks, and a supplied fact. Report any other liberty.
+Keep the writer's tenses.
+</task>
+
+<sense>
+Read the passage for sense before you write. Where it contradicts itself, mend it with the smallest change the rest of the passage points to, and check the mending against every other sentence. Where it leaves unclear who is meant or when, supply the least that makes it clear. Report each mending in sense, before the rewrite. Most passages need nothing here.
+</sense>
+
+<manner>
+${manner.join('\n')}
+</manner>
+${a.craftNotes?.length ? `\n<craft>\n${a.craftNotes.map((x) => `- ${x}`).join('\n')}\n</craft>\n` : ''}
+The rules of the style, each with a sentence from its models that keeps it:
+${renderMoves(m)}
+
+${FORM_AND_FACTS}
+
+<the_brief>
+The brief comes from an engine that checks the rules: the passage in numbered sentences, each with its register, its length, every place it breaks a rule (a fault, with the rule's name and what to do), and a sentence from the style's models near it in meaning.
+Mend every fault the brief marks. Where a fault says to cut words, cut them; where it gives a word to write, write it. Modern words stay: the style has no period.
+</the_brief>
+
+${ANSWER}`;
 }
 
 export interface EditorNote {
@@ -400,16 +472,18 @@ ${a.echoes?.length ? `Report too any scene of ${pr.possessive} that the passage 
   return (got.sense ?? []).filter((x) => x?.problem?.trim() && x?.resolution?.trim());
 }
 
-export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: string; after?: string; instructions?: string; editor?: EditorNote[] } = {}): string {
+export function userPrompt(m: AuthorModel, brief: Brief, context: { before?: string; after?: string; instructions?: string; editor?: EditorNote[]; extras?: BriefExtras } = {}): string {
   return [
     context.before ? `<text_before>\n${context.before}\n</text_before>` : '',
-    renderBrief(m, brief),
+    renderBrief(m, brief, context.extras),
     context.editor?.length
       ? `<editor>\nAn editor has read the passage for sense. Make each mending below, and report each in sense:\n${context.editor.map((e) => `- ${e.problem} ${e.resolution} (at: “${e.quote}”)`).join('\n')}\n</editor>`
       : '',
     context.after ? `<text_after>\n${context.after}\n</text_after>` : '',
     context.instructions ? `<writer_asks>\n${context.instructions}\n</writer_asks>` : '',
-    `Rewrite the passage in the brief as ${m.author.short} would have written it (the text before and after is context only). Then call submit_rewrite.`,
+    m.author.style
+      ? `Rewrite the passage in the brief in the ${m.author.short.toLowerCase()} (the text before and after is context only). Then call submit_rewrite.`
+      : `Rewrite the passage in the brief as ${m.author.short} would have written it (the text before and after is context only). Then call submit_rewrite.`,
   ]
     .filter(Boolean)
     .join('\n\n');
@@ -428,7 +502,13 @@ const STUB_BRIEF: Brief = {
   person: 'third',
   headings: [{ before: 2, text: 'Heading' }],
   score: 0,
-  sentences: [1, 2].map((n) => ({ n, paragraph: n, text: 'Text.', register: 'narration' as const, words: 1, never: [{ word: 'word', alternatives: ['alt'] }, { word: 'none', alternatives: [] }], models: [{ id: 1, text: 'Model.', cite: 'Cite' } as Citation] })),
+  sentences: [1, 2].map((n) => ({ n, paragraph: n, text: 'Text.', register: 'narration' as const, words: 1, never: [{ word: 'word', alternatives: ['alt'] }, { word: 'none', alternatives: [] }], faults: [{ rule: 'rule', words: 'w', instead: null, reason: 'Reason.' }], models: [{ id: 1, text: 'Model.', cite: 'Cite' } as Citation] })),
+};
+const STUB_STYLE = { ...STUB, author: { ...STUB.author, style: true }, profile: STUB.profile, moveExamples: STUB.moveExamples } as unknown as AuthorModel;
+const STUB_FORM = { id: 'essay', name: 'Form', definition: 'Definition.', kind: 'essay', short: true, slots: [] } as unknown as BriefForm['form'];
+const STUB_EXTRAS: BriefExtras = {
+  form: { form: STUB_FORM, slots: [{ role: 'claim', says: 'says', paragraphs: [1] }, { role: 'call', says: 'says', paragraphs: [] }], missing: ['call'] },
+  facts: [{ id: 'w0', text: 'Fact.', title: 'Title', paragraph: 1 }],
 };
 
 /**
@@ -437,7 +517,8 @@ const STUB_BRIEF: Brief = {
  */
 export function promptFingerprint(m?: AuthorModel): string {
   const h = createHash('sha256');
-  for (const x of [PROMPT_VERSION, systemPrompt(STUB), userPrompt(STUB, STUB_BRIEF, { before: 'B', after: 'A', instructions: 'I', editor: [{ problem: 'P', resolution: 'R', quote: 'Q' }] }), JSON.stringify(SUBMIT), m ? systemPrompt(m) : ''])
+  const context = { before: 'B', after: 'A', instructions: 'I', editor: [{ problem: 'P', resolution: 'R', quote: 'Q' }], extras: STUB_EXTRAS };
+  for (const x of [PROMPT_VERSION, systemPrompt(STUB), systemPrompt(STUB_STYLE), userPrompt(STUB, STUB_BRIEF, context), userPrompt(STUB_STYLE, STUB_BRIEF, context), JSON.stringify(SUBMIT), m ? systemPrompt(m) : ''])
     h.update(x).update('\u0000');
   return h.digest('hex').slice(0, 16);
 }
@@ -613,6 +694,172 @@ export function softFindings(m: AuthorModel, brief: Brief, s: Submission): strin
   return problems;
 }
 
+// ---------------------------------------------------------------------------------------------------------------
+// What was added: facts, parts the form lacked, and anything else the writer's words do not account for.
+
+const SMALL = new Set(
+  `that with have would which their there been were this from they when what upon very such more than into could should being them then will
+shall must might every never ever only much most some your mine hers these those where while about after before again also because
+each here just like made make many said same over other does done were been both even still through under until whom whose yours
+ours having cannot without within though although however therefore indeed quite rather`.split(/\s+/),
+);
+/** The stems of a text's content words: words of four letters or more that are not function words. */
+const contentStems = (t: string) => tokenize(t).filter((x) => x.kind === 'word' && x.norm.length >= 4 && !SMALL.has(x.norm)).map((x) => stem(x.norm));
+
+/** A sentence of this many content words or more, with fewer than this share of them in the sentences it claims to
+ * render, says something those sentences did not. A voice changes most words, so the share is low. */
+const ABSENT_WORDS = 6;
+const ABSENT_SHARE = 0.1;
+
+/** Whether a word of the rewrite is accounted for by the writer's words: the same stem, or a WordNet sense shared. */
+function accounted(m: AuthorModel, word: string, source: Set<string>, senses: Set<string>): boolean {
+  if (source.has(stem(word))) return true;
+  for (const pos of ['n', 'v', 'a', 'r'] as const) for (const l of m.wn.lemmas(word, pos)) for (const id of m.wn.senses(l, pos).slice(0, 3)) if (senses.has(id)) return true;
+  return false;
+}
+function sensesOf(m: AuthorModel, text: string): Set<string> {
+  const out = new Set<string>();
+  for (const t of tokenize(text)) {
+    if (t.kind !== 'word' || t.norm.length < 4 || SMALL.has(t.norm)) continue;
+    for (const pos of ['n', 'v', 'a', 'r'] as const) for (const l of m.wn.lemmas(t.norm, pos)) for (const id of m.wn.senses(l, pos).slice(0, 3)) out.add(id);
+  }
+  return out;
+}
+
+/** The numbers and names a sentence states that are in none of the words allowed: the writer's text and the facts. */
+export function unsupported(text: string, allowed: Set<string>): string[] {
+  const out: string[] = [];
+  const toks = tokenize(text);
+  toks.forEach((t, k) => {
+    if (t.kind === 'num') {
+      const n = t.norm.replace(/,/g, '').replace(/(?:st|nd|rd|th|s)$/, '');
+      if (!allowed.has(n)) out.push(t.text);
+      return;
+    }
+    if (t.kind !== 'word' || !/^\p{Lu}/u.test(t.text) || t.norm === 'i' || /^i'/.test(t.norm)) return;
+    // A capital opens a sentence or a quotation; only one inside a sentence marks a name.
+    const prev = toks[k - 1];
+    if (!prev || (prev.kind === 'punct' && /^[.!?"“‘…:—]$/.test(prev.text))) return;
+    if (!allowed.has(t.norm) && !allowed.has(stem(t.norm))) out.push(t.text);
+  });
+  return out;
+}
+
+/** Every word and number of some texts, as `unsupported` looks them up. */
+function allowedIn(texts: string[]): Set<string> {
+  const out = new Set<string>();
+  for (const text of texts)
+    for (const t of tokenize(text)) {
+      if (t.kind === 'num') out.add(t.norm.replace(/,/g, '').replace(/(?:st|nd|rd|th|s)$/, ''));
+      else if (t.kind === 'word') (out.add(t.norm), out.add(stem(t.norm)));
+    }
+  return out;
+}
+
+const LEAD_IN = new Set(['a', 'an', 'the', 'in', 'on', 'of', 'at', 'by', 'for', 'from', 'with', 'as', 'some', 'about', 'nearly', 'over']);
+
+/**
+ * The words of a sentence that state a fact and not the writer's matter, as offsets in the sentence. A word is the
+ * fact's when its stem (or the number) is in the fact and not in the sentences the sentence renders. Each run of
+ * such words is marked, with the article or preposition that leads into it: “in April 1775”, “a silversmith”.
+ */
+function factWords(text: string, source: Set<string>, fact: Set<string>): [number, number][] {
+  const toks = tokenize(text);
+  const kind = toks.map((t) => {
+    if (t.kind === 'punct') return 'p';
+    const content = t.kind === 'num' || (t.norm.length >= 4 && !SMALL.has(t.norm));
+    if (!content) return 'n';
+    const key = t.kind === 'num' ? t.norm : stem(t.norm);
+    return source.has(key) ? 's' : fact.has(key) ? 'f' : 'n';
+  });
+  const spans: [number, number][] = [];
+  for (let k = 0; k < toks.length; k++) {
+    if (kind[k] !== 'f') continue;
+    let from = k;
+    while (from > 0 && kind[from - 1] === 'n' && LEAD_IN.has(toks[from - 1]!.norm) && k - from < 2) from--;
+    // The run goes on over small words to the next word of the fact, and stops at the writer's matter or a mark.
+    let to = k;
+    for (let j = k + 1; j < toks.length && kind[j] !== 's' && kind[j] !== 'p'; j++) if (kind[j] === 'f') to = j;
+    spans.push([toks[from]!.start, toks[to]!.end]);
+    k = to;
+  }
+  return spans;
+}
+
+export interface FactGateOptions {
+  /** The facts supplied in the brief. */
+  facts?: BriefFact[];
+  /** The roles of the form's parts the writer was asked to write. */
+  missing?: string[];
+  /** Text around the passage that the writer was shown, whose names an added sentence may use. */
+  context?: string[];
+}
+
+/**
+ * Checks what a submission added, and mends it in place. A fact id that was not supplied is dropped. A sentence that
+ * renders none of the writer's sentences is marked added; so is one whose content words are mostly absent from the
+ * sentences it claims to render. An added sentence that renders nothing and states a number or a name found in no
+ * supplied fact and not in the writer's text is cut, and so is a new paragraph the form did not ask for. Each sentence
+ * left with something added carries `addedSpans`. Returns what was cut, in words for the log.
+ */
+export function factGate(m: AuthorModel, brief: Brief, s: Submission, opts: FactGateOptions = {}): string[] {
+  if (!s.paragraphs?.length) return [];
+  const findings: string[] = [];
+  const supplied = new Map((opts.facts ?? []).map((f) => [f.id, f]));
+  const missing = new Set(opts.missing ?? []);
+  const allowed = allowedIn([...brief.sentences.map((x) => x.text), ...(opts.context ?? []), ...(opts.facts ?? []).flatMap((f) => [f.text, f.title])]);
+  const filled = new Set<string>();
+  const kept: SubmittedParagraph[] = [];
+  for (const p of s.paragraphs) {
+    const sentences: SubmittedSentence[] = [];
+    for (const x of p.sentences ?? []) {
+      if (typeof x?.text !== 'string' || !x.text.trim()) continue;
+      x.from = (Array.isArray(x.from) ? x.from : []).filter((n) => Number.isInteger(n) && !!brief.sentences[n - 1]);
+      x.facts = [...new Set((Array.isArray(x.facts) ? x.facts : []).filter((id) => supplied.has(id)))];
+      const source = x.from.map((n) => brief.sentences[n - 1]!.text).join(' ');
+      if (!x.from.length) x.added = true;
+      else if (x.added !== true) {
+        const words = tokenize(x.text).filter((t) => t.kind === 'word' && t.norm.length >= 4 && !SMALL.has(t.norm)).map((t) => t.norm);
+        if (words.length >= ABSENT_WORDS) {
+          const stems = new Set(contentStems(source));
+          const senses = sensesOf(m, source);
+          const share = words.filter((w) => accounted(m, w, stems, senses)).length / words.length;
+          x.added = share < ABSENT_SHARE;
+        } else x.added = false;
+      }
+      if (x.added && !x.from.length) {
+        const bad = unsupported(x.text, allowed);
+        if (bad.length) {
+          findings.push(`Cut: “${x.text}” states ${bad.map((w) => `“${w}”`).join(', ')}, found in no supplied fact and not in the writer’s text.`);
+          continue;
+        }
+      }
+      if (x.added) x.addedSpans = [[0, x.text.length]];
+      else if (x.facts.length) {
+        const fact = new Set(x.facts.flatMap((id) => tokenize(supplied.get(id)!.text).filter((t) => t.kind !== 'punct').map((t) => (t.kind === 'num' ? t.norm : stem(t.norm)))));
+        const src = new Set([...contentStems(source), ...tokenize(source).filter((t) => t.kind === 'num').map((t) => t.norm)]);
+        x.addedSpans = factWords(x.text, src, fact);
+      } else delete x.addedSpans;
+      sentences.push(x);
+    }
+    if (!sentences.length) continue;
+    // A paragraph that renders nothing of the writer's stands only as a part the form lacked, once for each part.
+    if (sentences.every((x) => !x.from.length)) {
+      const role = p.role ?? '';
+      if (!missing.has(role) || filled.has(role)) {
+        findings.push(`Cut: a new paragraph (“${sentences[0]!.text.slice(0, 60)}”) that the form did not ask for.`);
+        continue;
+      }
+      filled.add(role);
+    }
+    p.sentences = sentences;
+    kept.push(p);
+  }
+  // Nothing of the writer's may be lost to a cut: if every paragraph went, the submission stands as it came.
+  if (kept.length) s.paragraphs = kept;
+  return findings;
+}
+
 /** Everything the engine finds: the hard findings first, then the soft. */
 export function gate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   const hard = hardGate(m, brief, s);
@@ -646,7 +893,7 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
         const reg = brief.sentences[(from[0] ?? 1) - 1]?.register;
         const noted = notes.filter((n) => n.after && x.text.includes(n.after.trim().replace(/[.,;]$/, ''))).map((n) => n.move);
         const w = explainSentence(m, before, x.text, x.model ?? null, reg === 'letter' ? 'letter' : undefined, [], noted);
-        return { after: x.text, before, from: from.filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves };
+        return { after: x.text, before, from: from.filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves, ...(x.facts?.length ? { facts: x.facts } : {}), ...(x.addedSpans?.length ? { added: x.addedSpans } : {}) };
       }),
     ),
     explanation: s.explanation,
@@ -766,6 +1013,13 @@ export async function rewriteWithAI(
     editor?: EditorNote[];
     /** Told the tokens of each paid call as it returns, the reader's too, whether or not the rewrite succeeds. */
     spend?: (tokens: number) => void;
+    /** The form to fit the passage to: 'auto' or a form id. Used when `fit` is not given. */
+    form?: string;
+    /** The form as the brief states it, when the caller has fitted the whole text already (the page). The passage is
+     * then taken to be in the form's order. */
+    fit?: BriefForm | null;
+    /** The facts gathered for the passage, each for a paragraph of it (numbered from 1 as given). */
+    facts?: BriefFact[];
   } = {},
   onProgress: (what: string, progress: RewriteProgress) => void = () => {},
   writer: WriterClient = defaultWriter(),
@@ -774,7 +1028,16 @@ export async function rewriteWithAI(
   let rounds = 0;
   let problems: string[] = [];
   const tell = (what: string) => onProgress(what, { what, calls, draft: rounds, problems: problems.length });
-  const blocks = typeof passage === 'string' ? blocksOfText(passage) : passage;
+  const given = typeof passage === 'string' ? blocksOfText(passage) : passage;
+  // Fitted to the form here unless the caller did it: the paragraphs in the form's order, and the form for the brief.
+  const own = context.fit === undefined ? (fitText(given, context.form ?? 'auto') ?? fitText(given, 'auto')) : null;
+  const blocks = own ? own.blocks : given;
+  const paraIdx = blocks.flatMap((b, i) => ((b.kind === 'paragraph' || b.kind === 'quote' || b.kind === 'item') && b.text.trim() ? [i] : []));
+  const form: BriefForm | null = context.fit ?? (own ? briefForm(own, paraIdx, own.reading.auto ? [] : own.reading.alignment.missing) : null);
+  // A caller's facts are numbered by the paragraphs as given; here they follow each paragraph to its new place.
+  const placeOf = new Map(paraIdx.map((i, k) => [own ? paraIdx.indexOf(own.orig[i]!) + 1 : k + 1, k + 1]));
+  const facts = (context.facts ?? []).flatMap((f) => (placeOf.has(f.paragraph) ? [{ ...f, paragraph: placeOf.get(f.paragraph)! }] : []));
+  const extras: BriefExtras = { form, facts };
   const brief = buildBrief(m, blocks);
   const tier = tierOf(m.author.id);
   const model = modelFor(tier);
@@ -791,7 +1054,7 @@ export async function rewriteWithAI(
   }
   const system = systemPrompt(m);
   const tools = [SUBMIT] as unknown as Anthropic.Beta.BetaTool[];
-  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, brief, { ...context, editor }) }];
+  const messages: Anthropic.Beta.BetaMessageParam[] = [{ role: 'user', content: userPrompt(m, brief, { before: context.before, after: context.after, instructions: context.instructions, editor, extras }) }];
   const toolCalls: RewriteResult['toolCalls'] = [];
   const usage = { input: 0, cached: 0, cacheWrite: 0, output: 0 };
   let accepted: Submission | null = null;
@@ -840,12 +1103,15 @@ export async function rewriteWithAI(
   usage.input += readerTokens;
   const sub = accepted ?? last;
   if (!sub) throw new Error('The model gave no rewrite.');
-  repairWords(m, brief, sub);
+  // A style keeps the writer's words: there is no word of the voice's to put in their place.
+  if (!m.author.style) repairWords(m, brief, sub);
+  const cut = factGate(m, brief, sub, { facts, missing: form?.missing ?? [], context: [context.before ?? '', context.after ?? ''] });
   const r = render(m, brief, sub);
-  problems = [...hardGate(m, brief, sub), ...softFindings(m, brief, sub)];
-  // How it is built: the writer's parts as the engine reads them, the voice's as the rewrite gives them.
-  const structure = readStructure(blocks);
-  const paragraphs = blocks.filter((b) => b.kind === 'paragraph' || b.kind === 'quote' || b.kind === 'item').map((b) => b.text.trim()).filter(Boolean);
+  problems = [...hardGate(m, brief, sub), ...cut, ...softFindings(m, brief, sub)];
+  const cited = new Set(sub.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.facts ?? [])));
+  // How it is built: the writer's parts as the engine reads them for the form, the voice's as the rewrite gives them.
+  const structure = own?.reading ?? (readForm(blocks, context.form ?? 'auto') ?? readForm(blocks, 'auto'))!;
+  const paragraphs = structure.paragraphs;
   const reading: Reading = {
     kind: structure.kind,
     outline: structure.roles.map((p) => ({ role: ROLES[p.role]?.name ?? p.role, gist: gistOf(paragraphs[p.paragraph] ?? '') })),
@@ -855,9 +1121,12 @@ export async function rewriteWithAI(
   const flat = (t: string) => t.toLowerCase().replace(/[“”"‘’']/g, "'").replace(/[—–-]/g, '-').replace(/\s+/g, ' ').replace(/^[\s'.,;:]+|[\s'.,;:!?]+$/g, '');
   const whole = flat(r.text);
   r.notes = r.notes.filter((n) => (!n.after?.trim() || whole.includes(flat(n.after))) && n.verified);
-  r.liberties = r.liberties.filter((x) => whole.includes(flat(x.after)));
+  // A fact or a part the form lacked is shown in a highlight, and that is its note: it is no liberty.
+  const addedText = sub.paragraphs.flatMap((p) => p.sentences.filter((x) => x.added).map((x) => flat(x.text)));
+  r.liberties = r.liberties.filter((x) => whole.includes(flat(x.after)) && !addedText.some((t) => t.includes(flat(x.after))));
   return {
     ...r,
+    ...(cited.size ? { facts: facts.filter((f) => cited.has(f.id)) } : {}),
     reading,
     usage,
     toolCalls,

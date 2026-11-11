@@ -17,7 +17,7 @@ describe('the writer on its diet', () => {
     expect(Object.keys(schema.properties).sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
     expect([...schema.required].sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
     expect([...paragraph.required].sort()).toEqual(['role', 'sentences', 'why']);
-    expect([...paragraph.properties.sentences!.items!.required].sort()).toEqual(['from', 'text']);
+    expect([...paragraph.properties.sentences!.items!.required].sort()).toEqual(['added', 'facts', 'from', 'text']);
   });
 
   it('keeps the test fixtures in the shape the schema asks for', () => {
@@ -27,7 +27,7 @@ describe('the writer on its diet', () => {
       for (const p of f.submission.paragraphs) {
         expect(Object.keys(p).sort()).toEqual(['role', 'sentences', 'why']);
         expect(p.why!.split(/\s+/).length).toBeLessThanOrEqual(15);
-        for (const x of p.sentences) expect(Object.keys(x).sort()).toEqual(['from', 'text']);
+        for (const x of p.sentences) expect(Object.keys(x).sort()).toEqual(['added', 'facts', 'from', 'text']);
       }
     }
   });

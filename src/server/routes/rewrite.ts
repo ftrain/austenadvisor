@@ -1,11 +1,13 @@
-// The page's rewrite: a text in the voice's manner, streamed as NDJSON as each part is written. Also which voices a
+// The page's rewrite: a text in the voice's manner, fitted to a form (`form`: 'auto' or a form id) and, unless
+// `facts` is false, given facts from Wikipedia, streamed as NDJSON as each part is written. Also which voices a
 // text is ready in, so the page can offer them without spending a call.
 
 import { randomUUID } from 'node:crypto';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import { admit, askerHash, precomputedVoices, rewriteCache, type Asker } from '../cache.ts';
 import { body, route, send } from '../http.ts';
-import { MAX_CHARS, streamRewrite } from '../page.ts';
+import { formOf } from '../../engine/forms.ts';
+import { MAX_CHARS, streamRewrite, type Line } from '../page.ts';
 import { aiAvailable, PROMPT_VERSION, writerInjected } from '../rewrite.ts';
 import { voiceOr404 } from './engine.ts';
 
@@ -40,8 +42,10 @@ route('POST', '/api/rewrite', async (req, res) => {
   if (text.length > MAX_CHARS) return send(res, 413, { error: `That is ${text.length.toLocaleString()} characters; the most is ${MAX_CHARS.toLocaleString()}. Try a chapter at a time.` });
   const instructions = String(b.instructions ?? '');
   if (instructions.length > MAX_INSTRUCTIONS) return send(res, 413, { error: `The instructions run to ${instructions.length.toLocaleString()} characters; the most is ${MAX_INSTRUCTIONS}.` });
+  const form = String(b.form ?? 'auto') || 'auto';
+  if (form !== 'auto' && !formOf(form)) return send(res, 400, { error: `No form “${form}” is known here.` });
   const asker = askerOf(req, b.client);
-  const opts = { admit: () => admit(rewriteCache(), asker, aiAvailable() || writerInjected()) };
+  const opts = { admit: () => admit(rewriteCache(), asker, aiAvailable() || writerInjected()), form, facts: b.facts !== false };
   // fresh: write it again, not the kept answer (the evaluation asks for this).
   if (b.job !== true) return streamRewrite(res, m, text, instructions, b.fresh === true, opts);
   // job: answer at once with an id, and let the page ask for the lines as they come. A proxy that holds a streamed
@@ -49,7 +53,9 @@ route('POST', '/api/rewrite', async (req, res) => {
   const job = new Job();
   sweep();
   jobs.set(job.id, job);
-  void streamRewrite(job as unknown as ServerResponse, m, text, instructions, b.fresh === true, opts)
+  // What the engine does before the answer has a head (fitting the form, gathering facts) reaches the page as lines.
+  const early = (l: Line) => void job.write(`${JSON.stringify(l)}\n`);
+  void streamRewrite(job as unknown as ServerResponse, m, text, instructions, b.fresh === true, { ...opts, early })
     .catch((e) => job.fail(e))
     .finally(() => job.end());
   send(res, 200, { job: job.id });
@@ -127,7 +133,9 @@ route('GET', '/api/rewrite/:job', async (_q, res, [id], url) => {
   if (!job) return send(res, 404, { error: 'That rewrite is not here. Ask for it again.' });
   const after = Math.max(0, Number(url.searchParams.get('after')) || 0);
   if (job.lines.length <= after && !job.done) await job.next(JOB_WAIT);
-  send(res, 200, { status: job.status || 200, lines: job.lines.slice(after), next: job.lines.length, done: job.done });
+  // A refusal's reason is the job's last line, whatever progress lines came before it.
+  const refused = !!job.status && job.status !== 200;
+  send(res, 200, { status: job.status || 200, lines: refused ? job.lines.slice(-1) : job.lines.slice(after), next: job.lines.length, done: job.done });
 });
 
 /** GET /api/ready?hash=<sha256 of the text, see textHash>: {hash, voices}, the voices it can be shown in at once. */
