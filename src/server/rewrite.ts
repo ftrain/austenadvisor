@@ -547,6 +547,12 @@ export function wordsThatStand(m: AuthorModel, brief: Brief): Set<string> {
   return names;
 }
 
+/** A submission the engine can read: paragraphs, each with sentences that have text. */
+export function wellFormed(input: unknown): input is Submission {
+  const ps = (input as { paragraphs?: unknown })?.paragraphs;
+  return Array.isArray(ps) && ps.length > 0 && ps.every((p) => Array.isArray(p?.sentences) && p.sentences.length > 0 && p.sentences.every((x: { text?: unknown }) => typeof x?.text === 'string'));
+}
+
 /**
  * The statistics mend in place what a second draft would: a word the author never used, where the engine is sure of
  * the author's own word of the same sense (a synonym in WordNet's first senses, used ten times or more, or a
@@ -991,7 +997,7 @@ async function writerCall(client: Anthropic, params: Record<string, any>): Promi
     const u = j.usage ?? {};
     const cached = u.prompt_tokens_details?.cached_tokens ?? 0;
     const usage = { input_tokens: (u.prompt_tokens ?? 0) - cached, cache_read_input_tokens: cached, cache_creation_input_tokens: u.prompt_tokens_details?.cache_write_tokens ?? 0, output_tokens: u.completion_tokens ?? 0 };
-    return { id: j.id, type: 'message', role: 'assistant', model: WRITER_MODEL, content, usage, stop_reason: content.some((b) => b.type === 'tool_use') ? 'tool_use' : 'end_turn' } as unknown as Anthropic.Beta.BetaMessage;
+    return { id: j.id, type: 'message', role: 'assistant', model: WRITER_MODEL, content, usage, stop_reason: choice.finish_reason === 'length' ? 'max_tokens' : content.some((b) => b.type === 'tool_use') ? 'tool_use' : 'end_turn' } as unknown as Anthropic.Beta.BetaMessage;
   }
   throw new Error(`The writer (${WRITER_MODEL}) did not answer: ${lastError}`);
 }
@@ -1089,6 +1095,13 @@ export async function rewriteWithAI(
       toolCalls.push({ name: use.name, input });
       if (use.name !== SUBMIT.name) {
         results.push({ type: 'tool_result', tool_use_id: use.id, content: 'The only tool is submit_rewrite.', is_error: true });
+        continue;
+      }
+      // An answer cut short, or one that is not the shape asked for, is no draft: say so and ask once more.
+      if (!wellFormed(input)) {
+        console.error(`${new Date().toISOString()} writer ${model ?? ''}: an answer with no paragraphs (stop: ${response.stop_reason}, ${u.output_tokens ?? '?'} tokens out, keys: ${Object.keys(input ?? {}).join(' ') || 'none'})`);
+        tell('the answer came back cut short');
+        results.push({ type: 'tool_result', tool_use_id: use.id, content: 'That answer had no paragraphs. Submit the whole rewrite again, and keep the notes short.', is_error: true });
         continue;
       }
       last = input as unknown as Submission;

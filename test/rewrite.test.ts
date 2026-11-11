@@ -110,6 +110,15 @@ describe.skipIf(!built)('rewriteWithAI with a fake writer', () => {
     expect(r.text).toContain('My sister took the carriage');
   });
 
+  it('takes an answer with no paragraphs as no draft: asks again, and fails plainly if the next is empty too', async () => {
+    const f = fixture('sister-car-short');
+    const writer = fakeWriter([submitted({}), submitted(f.submission as unknown as Record<string, unknown>)]);
+    const r = await rewriteWithAI(austen, f.text, {}, () => {}, writer);
+    expect(writer.calls).toHaveLength(2);
+    expect(r.text).toContain('My sister took the carriage');
+    await expect(rewriteWithAI(austen, f.text, {}, () => {}, fakeWriter([submitted({}), submitted({ paragraphs: 'none' })]))).rejects.toThrow('The model gave no rewrite.');
+  });
+
   it('fails plainly when the writer never submits', async () => {
     const writer = fakeWriter(Array.from({ length: 18 }, () => noTool));
     await expect(rewriteWithAI(austen, fixture('sister-car').text, {}, () => {}, writer)).rejects.toThrow('The model gave no rewrite.');
