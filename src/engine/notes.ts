@@ -277,9 +277,12 @@ function movesIn(m: AuthorModel, after: string, before: string, sib: Siblings, r
   for (const c of claims) {
     const at = FIGURES[c.term] ? text.indexOf(curly(c.quote)) : -1;
     if (at < 0) continue;
-    const kept = norm(before).includes(norm(c.quote));
+    // The writer's own figure: the same words, or most of their longer words (“time had by then stolen his hair”
+    // keeps “Time had stolen his hair”).
+    const long = [...wordSet(c.quote)].filter((w) => w.length > 3);
+    const kept = norm(before).includes(norm(c.quote)) || (long.length > 1 && long.filter((w) => wordSet(before).has(w)).length >= Math.max(2, long.length * 0.75));
     if (same && !kept) continue;
-    push({ term: c.term, start: at, end: at + curly(c.quote).length }, { claimed: true, ...(kept ? { kept: true, theirs: c.quote } : {}) });
+    push({ term: c.term, start: at, end: at + curly(c.quote).length }, { claimed: true, ...(kept ? { kept: true, ...(norm(before).includes(norm(c.quote)) ? { theirs: c.quote } : {}) } : {}) });
   }
   return out;
 }

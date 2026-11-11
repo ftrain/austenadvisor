@@ -261,6 +261,9 @@ describe.skipIf(!voices.length)('notes written by the engine', () => {
     const kept = notesFor(m, [row([{ term: 'metaphor', quote: 'the evening of life' }], 'She was in the evening of life.', 'She was now in the evening of life.')])[0]!.find((n) => n.id === 'metaphor')!;
     expect(kept).toMatchObject({ yours: true });
     expect(kept.text).toMatch(/^You wrote metaphor here/);
+    // Kept with a word or two put in, it is still theirs.
+    const near = notesFor(m, [row([{ term: 'personification', quote: 'time had by then stolen his hair' }], 'Time had stolen his hair.', 'And time had by then stolen his hair.')])[0]!.find((n) => n.id === 'personification')!;
+    expect(near).toMatchObject({ yours: true });
   }, 120_000);
 
   it.skipIf(!voices.includes('austen'))('notes the figures found by form: the words, what they do, and a sentence of hers that shows the same', () => {
