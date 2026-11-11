@@ -190,6 +190,8 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
   const rows: Para[] = r.paragraphs.map((_p, k) => ({ kind: 'paragraph', index: idx[0]! + (k + 1) / 1000, part, yours: [], hers: [], notes: [] }));
   const factOf = new Map((r.facts ?? []).map((f) => [f.id, { id: f.id, text: f.text, title: f.title, url: f.url ?? '' }]));
   const moveIds: string[][][] = rows.map(() => []);
+  // The figures the writer of the rewrite named in each sentence, already checked against its words.
+  const claims: { term: string; quote: string }[][][] = rows.map(() => []);
   const used = new Set<number>();
   const sourcesOf: number[][] = [];
   let k0 = 0;
@@ -204,6 +206,7 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
       const facts = (a?.facts ?? []).map((id) => factOf.get(id)).filter((f): f is FootFact => !!f);
       rows[k]!.hers!.push({ text: x.text, from: from.map((n) => offset + n), moves: names, ...(a?.added?.length ? { added: a.added } : {}), ...(facts.length ? { facts } : {}) });
       moveIds[k]!.push(ids);
+      claims[k]!.push(a?.figures ?? []);
     }
     sourcesOf[k] = [...ns].sort((a, b) => a - b);
     // The writer's sentences beside the first paragraph that renders them, in the writer's order.
@@ -265,7 +268,7 @@ export function rowsOf(blocks: DocBlock[], idx: number[], part: number, r: Rewri
   if (m) {
     const noteRows: NoteRow[] = rows.map((row, k) => ({
       yours: row.yours.map((y) => ({ n: y.n, text: y.text })),
-      hers: (row.hers ?? []).map((h, j) => ({ text: h.text, from: h.from, moves: moveIds[k]![j] ?? [] })),
+      hers: (row.hers ?? []).map((h, j) => ({ text: h.text, from: h.from, moves: moveIds[k]![j] ?? [], claims: claims[k]![j] ?? [] })),
       ...(row.from ? { from: row.from } : {}),
       ...(structure[k] ? { structure: structure[k] } : {}),
       ...(must[k] ? { structureFirst: true } : {}),
@@ -316,7 +319,7 @@ const keep = (r: RewriteResult): Kept => {
   return {
     ...rest,
     toolCalls: [],
-    aligned: r.aligned.map((a) => ({ after: a.after, before: a.before, from: a.from, moves: a.moves, why: '', model: null as unknown as Citation, ...(a.facts?.length ? { facts: a.facts } : {}), ...(a.added?.length ? { added: a.added } : {}) })),
+    aligned: r.aligned.map((a) => ({ after: a.after, before: a.before, from: a.from, moves: a.moves, why: '', model: null as unknown as Citation, ...(a.facts?.length ? { facts: a.facts } : {}), ...(a.added?.length ? { added: a.added } : {}), ...(a.figures?.length ? { figures: a.figures } : {}) })),
   };
 };
 

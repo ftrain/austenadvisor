@@ -13,7 +13,7 @@ import { RewriteCache } from '../src/server/cache.ts';
 import { gatherFacts, type Fact } from '../src/server/facts.ts';
 import { fitText, missingByPart } from '../src/server/fit.ts';
 import { streamRewrite, type Row } from '../src/server/page.ts';
-import { factGate, rewriteWithAI, submitted, systemPrompt, unsupported, useWriter, type Submission, type WriterAnswer, type WriterClient } from '../src/server/rewrite.ts';
+import { claimedFigures, factGate, rewriteWithAI, submitted, SUBMIT, systemPrompt, unsupported, useWriter, type Submission, type WriterAnswer, type WriterClient } from '../src/server/rewrite.ts';
 import { ESSAY, essaySubmission, essayWiki } from './fixtures/essay-scenario.ts';
 
 interface Fixture {
@@ -432,5 +432,19 @@ describe.skipIf(!existsSync(authorDbPath('plain')))('a style’s writer', () => 
     expect(system).toContain('Modern words stay');
     expect(system).toContain('<form_and_facts>');
     expect(system).not.toMatch(/would have written|never wrote|in its world/);
+  });
+
+  it('keeps a named figure only where its term is listed and its words are in the sentence', () => {
+    const x = (figures: unknown, text = 'She had reached the evening of life.') => claimedFigures({ text, from: [1], figures } as never);
+    expect(x([{ term: 'metaphor', quote: 'the evening of life.' }])).toEqual([{ term: 'metaphor', quote: 'the evening of life' }]);
+    expect(x([{ term: 'metaphor', quote: 'the autumn of life' }])).toEqual([]);
+    expect(x([{ term: 'litotes', quote: 'the evening of life' }])).toEqual([]);
+    expect(x([{ term: 'metaphor', quote: 'a' }, { term: 'irony', quote: 'reached' }, { term: 'metonymy', quote: 'life' }])).toEqual([{ term: 'irony', quote: 'reached' }]);
+    expect(x('metaphor')).toEqual([]);
+    expect(x(undefined)).toEqual([]);
+    // Free indirect discourse is the narrator's sentence: words inside quotation marks are speech.
+    expect(x([{ term: 'fid', quote: 'Why should she go' }], 'She said, “Why should she go?”')).toEqual([]);
+    expect(x([{ term: 'fid', quote: 'Why should she go' }], 'Why should she go?')).toEqual([{ term: 'fid', quote: 'Why should she go' }]);
+    expect(SUBMIT.input_schema.properties.paragraphs.items.properties.sentences.items.required).toContain('figures');
   });
 });

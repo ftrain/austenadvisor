@@ -246,6 +246,47 @@ describe.skipIf(!voices.length)('notes written by the engine', () => {
     // Two notes a paragraph, when the caller asks for two.
     expect(notesFor(m, FIXTURES.austen!, { perParagraph: 2 }).every((p) => p.length <= 2)).toBe(true);
   }, 120_000);
+
+  it.skipIf(!voices.includes('austen'))('notes a figure the writer of the rewrite named, where its words stand in the sentence', () => {
+    const m = page('austen').m;
+    const row = (claims: { term: string; quote: string }[], yours = 'My aunt was old.', hers = 'My aunt had reached the evening of life.'): NoteRow => ({ yours: [{ n: 1, text: yours }], hers: [{ text: hers, from: [1], claims }] });
+    const made = notesFor(m, [row([{ term: 'metaphor', quote: 'the evening of life' }])])[0]!.find((n) => n.id === 'metaphor')!;
+    expect(made).toMatchObject({ technique: 'Metaphor', quote: null, term: 'metaphor' });
+    expect(made.text).toContain(termOf('metaphor')!.definition);
+    expect(made.text).toContain('Here: “the evening of life”.');
+    // Words that are not in the sentence, and a term with no entry, name nothing.
+    expect(notesFor(m, [row([{ term: 'metaphor', quote: 'the autumn of life' }])])[0]!.some((n) => n.id === 'metaphor')).toBe(false);
+    expect(notesFor(m, [row([{ term: 'catachresis', quote: 'the evening of life' }])])[0]!.some((n) => n.id === 'catachresis')).toBe(false);
+    // The writer's own metaphor, kept, is theirs.
+    const kept = notesFor(m, [row([{ term: 'metaphor', quote: 'the evening of life' }], 'She was in the evening of life.', 'She was now in the evening of life.')])[0]!.find((n) => n.id === 'metaphor')!;
+    expect(kept).toMatchObject({ yours: true });
+    expect(kept.text).toMatch(/^You wrote metaphor here/);
+  }, 120_000);
+
+  it.skipIf(!voices.includes('austen'))('notes the figures found by form: the words, what they do, and a sentence of hers that shows the same', () => {
+    const m = page('austen').m;
+    const one = (yours: string, hers: string) => notesFor(m, [{ yours: [{ n: 1, text: yours }], hers: [{ text: hers, from: [1] }] }])[0]!;
+    const simile = one('My bunkmate snores loudly.', 'My bedfellow snores like a whole herd.').find((n) => n.id === 'simile')!;
+    expect(simile).toMatchObject({ technique: 'Simile', term: 'simile' });
+    expect(simile.text).toBe('A comparison made openly, with “like” or “as”. Here: “like a whole herd”. The comparison gives the reader a picture of the thing.');
+    expect(findFigures(m, simile.quote!.text).some((f) => f.term === 'simile')).toBe(true);
+    // A build of the whole sentence has no phrase to point at.
+    const periodic = one('She sat down after the rain.', 'When the rain had stopped, and the guests had gone, she sat down by the fire.').find((n) => n.id === 'periodic')!;
+    expect(periodic.text).toBe('A sentence that holds its main point until the end. The reader waits for the main clause, and it carries the weight of all that came before.');
+    const asked = one('Nobody would refuse.', 'Who would not prefer four days of labour to six?').find((n) => n.id === 'rhetoricalquestion')!;
+    expect(asked.text).toBe('A question asked for effect, with the answer taken for granted. The reader supplies the answer and so agrees with it.');
+    // “Far from wrong” is litotes.
+    expect(one('He was right.', 'He was very far from wrong.').find((n) => n.id === 'litotes')!.text).toContain('Here: “far from wrong”.');
+    const fixed = one('It was a mistake.', 'It was a mistake, or rather a blunder.').find((n) => n.id === 'epanorthosis')!;
+    expect(fixed).toMatchObject({ technique: 'Epanorthosis (correction)', term: 'epanorthosis' });
+    // Climax is not taught from, and the series is named for what it surely is.
+    const series = one('I am very tired.', 'I am worn, I am wounded, I can bear no more.').map((n) => n.id);
+    expect(series).toContain('asyndeton');
+    expect(series).not.toContain('climax');
+    // A sound that comes back in the writer's own sentence is as often chance: no praise for it.
+    expect(one('The counselors keep a close watch on us.', 'The counselors keep a close watch upon us all.').some((n) => n.id === 'alliteration')).toBe(false);
+    expect(one('Yesterday we went canoeing and I flipped the canoe.', 'Yesterday we went canoeing, and I overturned the canoe.').some((n) => n.id === 'polyptoton')).toBe(false);
+  }, 120_000);
 });
 
 describe('the glossary’s aliases and roles', () => {

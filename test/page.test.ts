@@ -17,7 +17,7 @@ describe('the writer on its diet', () => {
     expect(Object.keys(schema.properties).sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
     expect([...schema.required].sort()).toEqual(['explanation', 'liberties', 'paragraphs', 'sense']);
     expect([...paragraph.required].sort()).toEqual(['role', 'sentences', 'why']);
-    expect([...paragraph.properties.sentences!.items!.required].sort()).toEqual(['added', 'facts', 'from', 'text']);
+    expect([...paragraph.properties.sentences!.items!.required].sort()).toEqual(['added', 'facts', 'figures', 'from', 'text']);
   });
 
   it('keeps the test fixtures in the shape the schema asks for', () => {

@@ -36,7 +36,7 @@ import { readForm } from '../engine/forms.ts';
 import { briefForm, fitText } from './fit.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-11.you';
+export const PROMPT_VERSION = '2026-11-11.figures';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -155,6 +155,28 @@ export function submitted(input: Record<string, unknown>, id = `toolu_${Math.ran
 /** A rewrite goes the whole way. The type stays for callers that still pass it. */
 export type Strength = 'full';
 
+/** The figures the writer of a rewrite may name in its own sentences: those the engine has no form to find. */
+export const CLAIMABLE = ['metaphor', 'personification', 'metonymy', 'synecdoche', 'zeugma', 'oxymoron', 'irony', 'fid'];
+
+/**
+ * The figures a sentence was said to make, kept only where they can stand: a term from the list, a quotation of at
+ * least two letters that is in the sentence word for word, and for free indirect discourse, words outside quotation
+ * marks. One a sentence.
+ */
+export function claimedFigures(x: SubmittedSentence): { term: string; quote: string }[] {
+  const out: { term: string; quote: string }[] = [];
+  for (const f of Array.isArray(x.figures) ? x.figures : []) {
+    if (typeof f?.term !== 'string' || typeof f?.quote !== 'string' || !CLAIMABLE.includes(f.term)) continue;
+    const quote = f.quote.trim().replace(/^[“"‘']+|[”"’'.,;:!?]+$/g, '');
+    const at = quote.length > 1 && /\p{L}{2}/u.test(quote) ? x.text.indexOf(quote) : -1;
+    if (at < 0) continue;
+    if (f.term === 'fid' && (x.text.slice(0, at).match(/[“"]/g)?.length ?? 0) > (x.text.slice(0, at).match(/[”]/g)?.length ?? 0)) continue;
+    out.push({ term: f.term, quote });
+    break;
+  }
+  return out;
+}
+
 export interface SubmittedSentence {
   text: string;
   from: number[];
@@ -164,6 +186,8 @@ export interface SubmittedSentence {
   added?: boolean;
   /** Set by factGate: the stretches of the sentence that were added, as offsets in its text. */
   addedSpans?: [number, number][];
+  /** A figure of speech the writer of the rewrite says the sentence makes, with the words that make it. */
+  figures?: { term: string; quote: string }[];
   /** Older submissions named the author's sentence that inspired this one; the schema no longer asks for it. */
   model?: string;
 }
@@ -211,7 +235,7 @@ export interface RewriteResult {
    * (1-based, counting only paragraphs, quotes and items) its first sentence renders. */
   paragraphs: { text: string; source: number | null; role?: string; why?: string; sentences: { text: string; source: number | null }[] }[];
   /** Each new sentence beside the writer's sentences it renders, and why it was rewritten (from the engine). */
-  aligned: { after: string; before: string[]; from: number[]; why: string; model: Citation; moves: string[]; facts?: string[]; added?: [number, number][] }[];
+  aligned: { after: string; before: string[]; from: number[]; why: string; model: Citation; moves: string[]; facts?: string[]; added?: [number, number][]; figures?: { term: string; quote: string }[] }[];
   /** The facts the rewrite states, each a sentence from Wikipedia, for the page's footnotes. */
   facts?: BriefFact[];
   /** The writer's sentences as the brief numbered them, with the words in each the author never wrote. */
@@ -290,8 +314,21 @@ export const SUBMIT = {
                   from: { type: 'array', items: { type: 'integer' }, description: 'The numbers of the brief’s sentences it renders: one, or several joined. Empty for a sentence that renders none.' },
                   facts: { type: 'array', items: { type: 'string' }, description: 'The ids of the brief’s facts it states. Usually empty.' },
                   added: { type: 'boolean', description: 'True when it says something the writer’s text did not: a fact, or a part the form lacked.' },
+                  figures: {
+                    type: 'array',
+                    description: 'A figure of speech this sentence makes, where you are sure of it. Usually empty; one at most.',
+                    items: {
+                      type: 'object',
+                      properties: {
+                        term: { type: 'string', enum: CLAIMABLE },
+                        quote: { type: 'string', description: 'The few words of the sentence that make the figure, exactly as written.' },
+                      },
+                      required: ['term', 'quote'],
+                      additionalProperties: false,
+                    },
+                  },
                 },
-                required: ['text', 'from', 'facts', 'added'],
+                required: ['text', 'from', 'facts', 'added', 'figures'],
                 additionalProperties: false,
               },
             },
@@ -357,7 +394,23 @@ ${cap(pr.subject)} never wrote a word the engine flags: no such word may stand i
 ${ANSWER}`;
 }
 
-const ANSWER = `<answer>
+/** What every voice is told of naming its figures. */
+const FIGURES_TOLD = `<figures>
+Each sentence has a "figures" list. Leave it empty unless the sentence plainly makes one of these, and then name it and quote the few words that make it, exactly as you wrote them:
+- metaphor: one thing called by the name of another ("the evening of life").
+- personification: a thing or idea given a person's acts or feelings ("the fire sulked").
+- metonymy: a thing named by something tied to it ("the Crown" for the monarch).
+- synecdoche: a part named for the whole ("all hands").
+- zeugma: one word used with two others in two senses ("lost her keys and her temper").
+- oxymoron: two words of opposite meaning joined ("cruel kindness").
+- irony: words that say one thing so that the reader understands another.
+- fid (free indirect discourse): a character's thought given in the narrator's own sentence, with no "she thought" and no quotation marks.
+Name a figure only where a careful teacher would agree at once. A dead metaphor ("the leg of the table", "time flies") is none. One figure a sentence at most; most sentences have none. The engine finds the other figures itself: name no others.
+</figures>`;
+
+const ANSWER = `${FIGURES_TOLD}
+
+<answer>
 Write the whole rewrite and call submit_rewrite once: the sense first, then the liberties, a short explanation, and the paragraphs. Give each paragraph its role (the work it does: claim, reason, scene, greeting) and, in fifteen words or fewer, why the voice puts it there. The engine checks the rewrite and answers "Accepted" or names what to mend.
 Write the sense notes, the liberties, the explanation and each paragraph's why in your own voice, not the author's, for a student of about fifteen: short plain sentences in the active voice and concrete words. No praise, no exclamation marks, no rhetorical questions. Name a term of rhetoric or grammar only with a few words on what it means.
 </answer>`;
@@ -901,7 +954,7 @@ export function render(m: AuthorModel, brief: Brief, s: Submission): Pick<Rewrit
         const reg = brief.sentences[(from[0] ?? 1) - 1]?.register;
         const noted = notes.filter((n) => n.after && x.text.includes(n.after.trim().replace(/[.,;]$/, ''))).map((n) => n.move);
         const w = explainSentence(m, before, x.text, x.model ?? null, reg === 'letter' ? 'letter' : undefined, [], noted);
-        return { after: x.text, before, from: from.filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves, ...(x.facts?.length ? { facts: x.facts } : {}), ...(x.addedSpans?.length ? { added: x.addedSpans } : {}) };
+        return { after: x.text, before, from: from.filter((n) => Number.isFinite(n)), why: w.why, model: w.model, moves: w.moves, ...(x.facts?.length ? { facts: x.facts } : {}), ...(x.addedSpans?.length ? { added: x.addedSpans } : {}), ...(claimedFigures(x).length ? { figures: claimedFigures(x) } : {}) };
       }),
     ),
     explanation: s.explanation,

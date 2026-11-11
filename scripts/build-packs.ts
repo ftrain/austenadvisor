@@ -9,7 +9,7 @@ import { existsSync, mkdirSync, readdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { ROOT, authorDbPath, open } from '../src/db.ts';
 import { AuthorModel, type Register } from '../src/engine/model.ts';
-import { FIGURES, findFigures, mayShow } from '../src/engine/figures.ts';
+import { FIGURES, findFigures, mayShow, NAMED_ONLY } from '../src/engine/figures.ts';
 import {
   PACK_VERSION,
   forgetPack,
@@ -118,7 +118,7 @@ function exemplarsOf(m: AuthorModel, rows: Row[]): { exemplars: Record<string, n
   const exclude = new Set(m.author.linkExclude ?? []);
   const moves = m.author.moves ?? [];
   // A key is "figure:<id>" or "move:<id>".
-  const keys = [...Object.keys(FIGURES).map((id) => `figure:${id}`), ...moves.map((x) => `move:${x.id}`)];
+  const keys = [...Object.keys(FIGURES).filter((id) => !NAMED_ONLY.has(id)).map((id) => `figure:${id}`), ...moves.map((x) => `move:${x.id}`)];
   const out: Record<string, number[]> = Object.fromEntries(keys.map((k) => [k, []]));
   const perWork: Record<string, Map<string, number>> = Object.fromEntries(keys.map((k) => [k, new Map()]));
   const manyWorks = new Set(rows.map((r) => r.work)).size >= 3;
@@ -152,7 +152,7 @@ function exemplarsOf(m: AuthorModel, rows: Row[]): { exemplars: Record<string, n
   }
   const exemplars: Record<string, number[]> = {};
   const moveExemplars: Record<string, number[]> = {};
-  for (const id of Object.keys(FIGURES)) exemplars[id] = out[`figure:${id}`]!;
+  for (const id of Object.keys(FIGURES)) exemplars[id] = out[`figure:${id}`] ?? [];
   for (const mv of moves) {
     if (mv.id in FIGURES) moveExemplars[mv.id] = out[`move:${mv.id}`]!;
     else exemplars[mv.id] = out[`move:${mv.id}`]!;

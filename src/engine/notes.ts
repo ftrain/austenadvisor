@@ -51,7 +51,8 @@ export interface EngineNote {
 /** A paragraph of the rewrite: the writer's sentences beside it, and its own sentences with those they render. */
 export interface NoteRow {
   yours: { n: number; text: string }[];
-  hers: { text: string; from: number[]; moves?: string[] }[] | null;
+  /** `claims` are figures the writer of the rewrite named in the sentence, with the words that make each. */
+  hers: { text: string; from: number[]; moves?: string[]; claims?: { term: string; quote: string }[] }[] | null;
   /** The writer's paragraphs (numbered through the text) this one renders, where they are not just its own. */
   from?: number[];
   /** Where the paragraph's matter came from, already said (“Brings together your paragraphs 2 and 3.”). */
@@ -88,13 +89,17 @@ export const NOTES_PER_PARAGRAPH = 3;
  * Figures the engine will not teach from. Irony has no form: the engine can find a generalization or an aside, and
  * names those. Free indirect discourse is found only as a question or exclamation in the narration, and in the
  * rewrites of students' own pieces every such sentence was the writer's plain question (“Can you send more
- * snacks?”), never a character's thought.
+ * snacks?”), never a character's thought. Climax is found as a series whose members grow longer, and in the voices'
+ * own books only half of those rose in weight as well as in length.
  */
-const OFF = new Set(['irony', 'fid']);
-/** Figures not worth praise in the writer's own sentence: a string of “and”s there is as often a run-on. */
-const NO_PRAISE = new Set(['polysyndeton', 'periphrasis']);
+const OFF = new Set(['irony', 'fid', 'climax']);
+/**
+ * Figures not worth praise in the writer's own sentence: a string of “and”s there is as often a run-on, and a sound
+ * or a word that comes back (“went canoeing and flipped the canoe”) is as often chance.
+ */
+const NO_PRAISE = new Set(['polysyndeton', 'periphrasis', 'alliteration', 'polyptoton', 'anadiplosis', 'epistrophe']);
 /** Figures that are a build of the whole sentence, with no phrase to point at. */
-const WHOLE = new Set(['polysyndeton', 'anaphora', 'inversion']);
+const WHOLE = new Set(['polysyndeton', 'anaphora', 'inversion', 'periodic', 'climax', 'rhetoricalquestion', 'hypophora']);
 
 /** What each figure does for a reader, in a line, for its first note on a page. */
 const USE: Record<string, string> = {
@@ -109,9 +114,44 @@ const USE: Record<string, string> = {
   parenthesis: 'The writer comments without stopping the sentence.',
   gnomic: 'The one case is made to look like the common rule.',
   aside: 'The afterthought undercuts what came before it.',
+  asyndeton: 'With no “and”, the items come quickly, one on top of another.',
+  epistrophe: 'The repeated ending drives the word home.',
+  anadiplosis: 'The repeated word carries the thought from one clause into the next.',
+  chiasmus: 'The second half turns the first around, and the reader weighs the two.',
+  isocolon: 'The matching clauses ask to be weighed against each other.',
+  polyptoton: 'The reader hears the same root twice and ties the two words together.',
+  rhetoricalquestion: 'The reader supplies the answer and so agrees with it.',
+  hypophora: 'The question is the one the reader would ask, and the answer settles it.',
+  alliteration: 'The repeated sound binds the words and makes them easy to remember.',
+  climax: 'Each term outweighs the last, and the reader feels the rise.',
+  periodic: 'The reader waits for the main clause, and it carries the weight of all that came before.',
+  apostrophe: 'The address gives the thing a presence, and shows the feeling of the speaker.',
+  simile: 'The comparison gives the reader a picture of the thing.',
+  epanorthosis: 'The reader watches the first word give way to a truer one, and trusts it more.',
+  metaphor: 'The reader sees the one thing in the light of the other.',
+  personification: 'The thing seems to act of its own will.',
+  metonymy: 'The reader takes the thing by the part of it that matters here.',
+  synecdoche: 'The part named is the part that does the work.',
+  zeugma: 'The one word turns from a plain sense to another, and the turn is the wit.',
+  oxymoron: 'The clash makes the reader stop and weigh both words.',
+  irony: 'The reader is trusted to hear what is meant.',
+  fid: 'The reader hears the character think without leaving the story.',
 };
 /** A figure's name in the middle of a sentence: “You wrote a tricolon here”. */
-const NAMED: Record<string, string> = { tricolon: 'a tricolon', gnomic: 'a generalization', aside: 'an aside', parenthesis: 'a parenthesis', inversion: 'an inversion' };
+const NAMED: Record<string, string> = {
+  chiasmus: 'a chiasmus',
+  isocolon: 'an isocolon',
+  rhetoricalquestion: 'a rhetorical question',
+  climax: 'a climax',
+  periodic: 'a periodic sentence',
+  apostrophe: 'an apostrophe',
+  simile: 'a simile',
+  tricolon: 'a tricolon',
+  gnomic: 'a generalization',
+  aside: 'an aside',
+  parenthesis: 'a parenthesis',
+  inversion: 'an inversion',
+};
 
 const norm = (t: string) => t.toLowerCase().replace(/[’']/g, "'").replace(/[^\p{L}\p{N}']+/gu, ' ').trim();
 const curly = (t: string) => t.replace(/(^|[\s(—])"/g, '$1“').replace(/"/g, '”').replace(/'/g, '’');
@@ -150,6 +190,8 @@ interface Candidate {
   stands?: string;
   /** For a kept figure: the writer's words that made it. */
   theirs?: string;
+  /** Named by the writer of the rewrite, not found by form: it needs no sentence of the voice's beside it. */
+  claimed?: boolean;
 }
 
 /** The sentence's rivals: the other new sentences that render one of the same sentences of the writer's. */
@@ -180,7 +222,7 @@ function mendsRule(m: AuthorModel, rule: PlainRule, after: string, before: strin
 }
 
 /** The moves and figures a sentence makes: those the sentences it renders do not, and the figures they share. */
-function movesIn(m: AuthorModel, after: string, before: string, sib: Siblings, register: Register | undefined, named: string[], off: (id: string, fate: NoteFate) => void): Candidate[] {
+function movesIn(m: AuthorModel, after: string, before: string, sib: Siblings, register: Register | undefined, named: string[], off: (id: string, fate: NoteFate) => void, claims: { term: string; quote: string }[] = []): Candidate[] {
   if (!after.trim()) return [];
   const same = norm(after) === norm(before);
   const look = (id: string) => (id === 'saidshe' ? curly : narration);
@@ -229,6 +271,15 @@ function movesIn(m: AuthorModel, after: string, before: string, sib: Siblings, r
       continue;
     }
     push(f, theirs ? { kept: true, theirs: theirs.text } : {});
+  }
+  // Figures with no form to find them by (a metaphor, an irony), named by the writer of the rewrite. Each must
+  // point at words of the new sentence; where the writer's own sentence has the same words, the figure is theirs.
+  for (const c of claims) {
+    const at = FIGURES[c.term] ? text.indexOf(curly(c.quote)) : -1;
+    if (at < 0) continue;
+    const kept = norm(before).includes(norm(c.quote));
+    if (same && !kept) continue;
+    push({ term: c.term, start: at, end: at + curly(c.quote).length }, { claimed: true, ...(kept ? { kept: true, theirs: c.quote } : {}) });
   }
   return out;
 }
@@ -343,11 +394,12 @@ export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}
         // The other new sentences that render one of the same sentences of the writer's.
         const group = hers.map((x, i) => ({ x, i })).filter(({ x }) => x.from.some((n) => s.from.includes(n)));
         const sib: Siblings = { texts: group.map(({ x }) => x.text), self: Math.max(0, group.findIndex(({ i }) => i === j)) };
-        return movesIn(m, s.text, s.from.map((n) => byN.get(n) ?? '').join(' '), sib, opts.register, s.moves ?? [], (id, fate) => opts.trace?.({ paragraph: k, after: s.text, id, figure: true, fate }));
+        return movesIn(m, s.text, s.from.map((n) => byN.get(n) ?? '').join(' '), sib, opts.register, s.moves ?? [], (id, fate) => opts.trace?.({ paragraph: k, after: s.text, id, figure: true, fate }), s.claims);
       });
       const tell = (c: Candidate, fate: NoteFate) => opts.trace?.({ paragraph: k, after: c.after, id: c.key, figure: c.figure, fate });
       // A figure the rewrite made comes before one it kept, and a first note before a second.
-      const rank = (c: Candidate) => (times(c.key) ? 2 : 0) + (c.kept ? 1 : 0);
+      // One the engine proved by its form comes before one the writer of the rewrite only named.
+      const rank = (c: Candidate) => (times(c.key) ? 4 : 0) + (c.kept ? 2 : 0) + (c.claimed ? 1 : 0);
       const figures = all.filter((c) => c.figure).sort((a, b) => rank(a) - rank(b));
       const others = all.filter((c) => !c.figure);
       // A figure first, then the voice's moves and further figures by turns.
@@ -369,8 +421,8 @@ export function notesFor(m: AuthorModel, rows: NoteRow[], opts: NoteOptions = {}
           tell(c, 'room');
           continue;
         }
-        const quote = exampleOf(m, c, opts.exemplars, quoted);
-        if (!quote) {
+        const quote = c.claimed ? null : exampleOf(m, c, opts.exemplars, quoted);
+        if (!quote && !c.claimed) {
           tell(c, 'noquote');
           continue;
         }

@@ -11,7 +11,7 @@ import { concordance, wordProfile } from '../src/engine/tools.ts';
 import { buildBrief } from '../src/engine/brief.ts';
 import { gate, render, type Submission } from '../src/server/rewrite.ts';
 import { explainSentence } from '../src/engine/explain.ts';
-import { figureExamples, findFigures } from '../src/engine/figures.ts';
+import { figureExamples, findFigures, onset } from '../src/engine/figures.ts';
 
 const built = existsSync(authorDbPath('austen'));
 
@@ -215,6 +215,114 @@ describe.skipIf(!built)('the Austen engine', () => {
     expect(terms('The witnesses were stupid, as witnesses always are.')).toContain('gnomic');
     expect(terms('He had the look of a man who is not at ease.')).not.toContain('gnomic');
     expect(terms('She was late, as she always is.')).not.toContain('gnomic');
+  });
+
+  it('finds the figures of repetition and balance, and leaves an ordinary sentence alone', () => {
+    const texts = (term: string, t: string) => findFigures(m, t).filter((f) => f.term === term).map((f) => f.text);
+    const none = (term: string, ts: string[]) => {
+      for (const t of ts) expect(texts(term, t), `${term}: ${t}`).toEqual([]);
+    };
+    expect(texts('asyndeton', 'I came, I saw, I conquered.')).toEqual(['I came, I saw, I conquered']);
+    expect(texts('asyndeton', 'She was proud, vain, selfish.')).toEqual(['proud, vain, selfish']);
+    expect(texts('asyndeton', 'He had no money, no friends, no hope.')).toEqual(['no money, no friends, no hope']);
+    // A list closed by “and” is the ordinary kind, and “he said” is no member of a series.
+    none('asyndeton', ['We bought eggs, milk, and bread.', 'She walked in, sat down, and wept.', 'It wasn’t about me, he said, it was about him.']);
+    expect(texts('epistrophe', 'They talked of the people, they voted for the people, they died for the people.')).toHaveLength(1);
+    expect(texts('epistrophe', 'We ate a good deal, and slept a good deal.')).toEqual(['We ate a good deal, and slept a good deal']);
+    none('epistrophe', ['He came to the house, and she left the house.', 'We have our breakfast on a balcony—on a balcony, if you please.']);
+    expect(texts('anadiplosis', 'He gave them hope, and hope gave them strength.')).toEqual(['hope, and hope']);
+    expect(texts('anadiplosis', 'I drove to the store. The store was full of people.')).toEqual(['store. The store']);
+    // A name taken up again is plain narrative, and a word said twice at once is another figure.
+    none('anadiplosis', ['She looked at Jane, and Jane looked away.', 'Come, come, we must go.']);
+    expect(texts('chiasmus', 'Fair is foul, and foul is fair.')).toEqual(['Fair is foul, and foul is fair']);
+    expect(texts('chiasmus', 'The people were made for kings, not kings for the people.')).toEqual(['people were made for kings, not kings for the people']);
+    expect(texts('chiasmus', 'One should eat to live, not live to eat.')).toEqual(['eat to live, not live to eat']);
+    none('chiasmus', ['My mother baked cakes for them, and the cakes of my mother went before her.', 'Asa begat Josaphat, and Josaphat begat Joram.']);
+    expect(texts('isocolon', 'Many are called, but few are chosen.')).toEqual(['Many are called, but few are chosen']);
+    expect(texts('isocolon', 'The walls are yellow; the floor is gray.')).toEqual(['The walls are yellow; the floor is gray']);
+    none('isocolon', ['He came home late, and she was already asleep in the chair.']);
+    expect(texts('polyptoton', 'Judge not, that ye be not judged.')).toEqual(['Judge not, that ye be not judged']);
+    expect(texts('polyptoton', 'He was happy by imitation, and such was his happiness.')).toHaveLength(1);
+    // A tense is the same form; two words that only begin alike share no root.
+    none('polyptoton', ['It would happen, as it had happened before.', 'He considers the condition of others.', 'Everybody had cleared out, and I saw him helping clean up.', 'I thought the thought again.']);
+  });
+
+  it('names a question rhetorical only on evidence, and a hypophora only with its answer', () => {
+    const texts = (term: string, t: string, opts = {}) => findFigures(m, t, opts).filter((f) => f.term === term).map((f) => f.text);
+    for (const t of ['Who would not wish to be happy?', 'Is it not strange that nobody came?', 'What could be more natural?', 'Why should the artist be troubled by criticism?'])
+      expect(texts('rhetoricalquestion', t), t).toEqual([t]);
+    // A plain question asks for an answer, in a letter or anywhere.
+    for (const t of ['Can you send more snacks?', 'Will you send me my books?', 'What time does the bus leave?', 'Did you get my letter?', 'Who is Mr. Ladislaw?', 'Will not your honours bear me company?', 'She could not repress the question, “Who is Mr. Ladislaw?”']) {
+      expect(texts('rhetoricalquestion', t), t).toEqual([]);
+      expect(texts('rhetoricalquestion', t, { letter: true }), t).toEqual([]);
+    }
+    expect(texts('hypophora', 'But has he ever looked at the numbers? I think not.')).toEqual(['But has he ever looked at the numbers? I think not.']);
+    expect(texts('hypophora', 'Why did we lose? Because we did not try.')).toHaveLength(1);
+    expect(texts('hypophora', 'What did he want? He wanted money.')).toHaveLength(1);
+    // The answer may be the next sentence, handed in by the caller.
+    expect(texts('hypophora', 'Why did we lose?', { next: 'Because we did not try.' })).toEqual(['Why did we lose?']);
+    // A comment is no answer, and another speaker's answer is a conversation.
+    for (const t of ['What is the result if the children fall behind? That is the true question.', 'How are you? I am well.', '“Where is she?” “She is in the garden.”', 'What shall the parents do? My adversary made no mention of it.'])
+      expect(texts('hypophora', t), t).toEqual([]);
+    // A question that is answered is not also called rhetorical.
+    expect(texts('rhetoricalquestion', 'Who would not wish it? Nobody.')).toEqual([]);
+  });
+
+  it('hears alliteration by sound, not by letter', () => {
+    expect(['city', 'cat', 'phone', 'fine', 'knee', 'write', 'who', 'why', 'hour', 'chorus', 'chair', 'gentle', 'girl', 'one', 'use', 'psalm', 'apple'].map(onset)).toEqual(
+      ['s', 'k', 'f', 'f', 'n', 'r', 'h', 'w', '', 'k', 'ch', 'j', 'g', 'w', 'y', 's', ''],
+    );
+    const texts = (t: string) => findFigures(m, t).filter((f) => f.term === 'alliteration').map((f) => f.text);
+    expect(texts('The counselors keep a close watch on us.')).toEqual(['counselors keep a close']);
+    expect(texts('The city sent six cellists to the hall.')).toEqual(['city sent six cellists']);
+    expect(texts('He took the phone and found a fine photograph.')).toEqual(['phone and found a fine photograph']);
+    expect(texts('He knew no nicer neighbour.')).toEqual(['knew no nicer neighbour']);
+    // One letter, two sounds; two words are not three; a word repeated is not alliteration; small words do not count.
+    for (const t of ['The cat sat in the city centre.', 'She had a big brown dog.', 'It was a long, long lane.', 'We can’t cork that bottle.', 'The printers came, the paper presently died.']) expect(texts(t), t).toEqual([]);
+  });
+
+  it('finds the periodic sentence, apostrophe, simile and correction by their forms', () => {
+    const texts = (term: string, t: string) => findFigures(m, t).filter((f) => f.term === term).map((f) => f.text);
+    const none = (term: string, ts: string[]) => {
+      for (const t of ts) expect(texts(term, t), `${term}: ${t}`).toEqual([]);
+    };
+    expect(texts('periodic', 'When the rain had stopped, and the guests had gone, she sat down by the fire.')).toHaveLength(1);
+    expect(texts('periodic', 'If the reader will refer to the letter, to the notes, to the diary, he will understand these words.')).toHaveLength(1);
+    // A main clause in the middle, or first, is no periodic sentence.
+    none('periodic', [
+      'When she was tired of playing she came out, but though she hunted high and low, she could find them nowhere.',
+      'In a few minutes he reached the nest, and laying her down among the eaglets, he flew away.',
+      'She sat down by the fire, when the rain had stopped, and the guests had gone.',
+      'Well, my dear, if you say so, I will go.',
+    ]);
+    expect(texts('apostrophe', 'O Death, where is thy sting?')).toEqual(['O Death']);
+    expect(texts('apostrophe', 'Ye hills, why do you look down on me?')).toEqual(['Ye hills']);
+    // A prayer, a person, a cry, and plain “thou art”.
+    none('apostrophe', ['O Lord, hear my prayer, for thou art good.', 'O Romeo, wherefore art thou Romeo?', 'O Henry, ope thine eyes!', 'O cursed spite, that ever I was born to set it right!', 'Thou art needlessly rough, methinks.']);
+    expect(texts('simile', 'He ran like a hare.')).toEqual(['like a hare']);
+    expect(texts('simile', 'She was as cold as ice.')).toEqual(['as cold as ice']);
+    expect(texts('simile', 'Her face was pale as death.')).toEqual(['pale as death']);
+    expect(texts('simile', 'My bedfellow snores like a whole herd.')).toEqual(['like a whole herd']);
+    none('simile', [
+      'I like a good book.',
+      'I would like a cup of tea.',
+      'We need things like education and research.',
+      'It smells like detergent.',
+      'He looks like a good man.',
+      'She is as tall as her brother.',
+      'Come as soon as you can.',
+      'He was known as a writer.',
+      'She plays as well as a professional.',
+    ]);
+    expect(texts('epanorthosis', 'It was a mistake, or rather a blunder.')).toEqual(['or rather']);
+    expect(texts('epanorthosis', 'He was rude, nay, insolent to her.')).toEqual(['nay']);
+    expect(texts('epanorthosis', 'The father was single; or, to speak more exactly, divorced.')).toEqual(['or, to speak more exactly']);
+    none('epanorthosis', ['I would rather go than stay.', '“Nay, sir, I will not.”', 'He would sooner walk or rather than ride.']);
+    // Litotes by distance: “far from” before a describing word, after a verb of being.
+    const lit = (t: string) => texts('litotes', t);
+    expect(lit('He was very far from wrong.')).toEqual(['far from wrong']);
+    expect(lit('She was far from unhappy, and he was far from being poor.')).toEqual(['far from unhappy', 'far from being poor']);
+    for (const t of ['They were far from home.', 'He was not far from wrong.', 'I am far from agreeing with you.', 'She had wandered far from the subject.']) expect(lit(t), t).toEqual([]);
   });
 
   it('names what a rewrite did with each word she never wrote: replaced, rendered by periphrasis, or dropped', () => {
