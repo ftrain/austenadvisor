@@ -1,0 +1,17 @@
+# Advisor on advisor.exe.xyz. Installed by scripts/deploy (MANAGED in targets/advisor.env); edit it here, not on
+# the box. The keys are in the box's .env, which is in no repository.
+[Unit]
+Description=Advisor writing tutor
+After=network.target
+
+[Service]
+User=exedev
+WorkingDirectory=/home/exedev/austenadvisor
+EnvironmentFile=/home/exedev/austenadvisor/.env
+Environment=PORT=8000
+ExecStart=/home/exedev/node/bin/node src/server/main.ts
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
