@@ -110,6 +110,8 @@ export interface WorkConfig {
     | HtmlSource
     /** A local corpus of speeches (data/sources/<file>), one speech a chapter: see scripts/fetch-obama.ts. */
     | { type: 'speeches'; file: string; kind: string; repo?: undefined; url: string }
+    /** A local corpus of pieces (data/sources/<file>), one piece a chapter, titled by its venue and date: see scripts/fetch-ford.ts. */
+    | { type: 'pieces'; file: string; kind: string; venue: string; repo?: undefined; url: string }
     /** Project Gutenberg's numbered Bible (ebook 30): every verse "BB:CCC:VVV text"; the work is one book of it. */
     | { type: 'bible'; repo: string; file: string; book: number }
     /** Project Gutenberg's Complete Works of Shakespeare (ebook 100): a play by its title (scenes of speeches), or the sonnets. */
@@ -121,7 +123,7 @@ export interface WorkConfig {
 /** Where a work's text came from, as a link. */
 export function sourceUrl(work: WorkConfig): string {
   const s = work.source;
-  return s.type === 'speeches' || s.type === 'html' ? s.url : `https://github.com/${s.repo}`;
+  return s.type === 'speeches' || s.type === 'pieces' || s.type === 'html' ? s.url : `https://github.com/${s.repo}`;
 }
 
 /** The families of voices, in the order the picker shows them. A style (plain) is a manner, not one writer. */
@@ -137,8 +139,11 @@ export interface License {
   source: string;
   /** Why the texts are public domain in the US: “Published 1811–1818.” */
   note: string;
-  /** 'age': published 1930 or earlier (as of 2026); 'government': a work of the US government. */
-  basis: 'age' | 'government';
+  /**
+   * 'age': published 1930 or earlier (as of 2026); 'government': a work of the US government; 'author': a living
+   * writer's own work, used with that writer's permission.
+   */
+  basis: 'age' | 'government' | 'author';
 }
 
 /** The latest year of publication that is public domain in the US in a given year: 1930 in 2026. */
@@ -167,7 +172,8 @@ export interface AuthorConfig {
   /** The whole corpus, named: “Austen’s complete works”, “the whole of the King James Bible”. */
   whole?: string;
   /** How a sentence is cited: by chapter and paragraph (“Emma, ch. 3, ¶ 12”), or by chapter and verse (“Genesis 1:3”). */
-  citeStyle?: 'chapter' | 'verse' | 'speech' | 'play';
+  /** By the piece's title and paragraph (“What Is Code?, ¶ 4”): 'speech' and 'piece', which differ in what a chapter is called. */
+  citeStyle?: 'chapter' | 'verse' | 'speech' | 'piece' | 'play';
   /**
    * A style, not a writer: its moves are rules (plain.ts), and the page marks the writer's needless words in place
    * of the words the voice never wrote. Its corpus supplies model sentences; it does not limit the writer's words.
@@ -218,9 +224,12 @@ export const hintOf = (m: Move): string => m.hint ?? m.does;
 const UNKNOWN_LICENSE: License = { source: 'Not recorded', note: 'Not recorded', basis: 'age' };
 export const licenseOf = (a: { license?: License }): License => a.license ?? UNKNOWN_LICENSE;
 
-/** The works of an author that are not public domain in the US by age, in the given year. A government work always is. */
+/**
+ * The works of an author that are not public domain in the US by age, in the given year, and have no other ground
+ * for use. A government work always is public domain; a work used with its author's permission needs to be none.
+ */
 export function notPublicDomain(a: AuthorConfig, now?: number): WorkConfig[] {
-  if (licenseOf(a).basis === 'government') return [];
+  if (licenseOf(a).basis !== 'age') return [];
   return a.works.filter((w) => w.year > usPublicDomainYear(now));
 }
 
@@ -246,6 +255,7 @@ export function fetchFile(url: string, path: string): string {
 
 export function readWork(work: WorkConfig, sourcesDir: string): SourceChapter[] {
   if (work.source.type === 'speeches') return readSpeeches(join(sourcesDir, work.source.file), work.source.kind);
+  if (work.source.type === 'pieces') return readPieces(join(sourcesDir, work.source.file), work.source.kind, work.source.venue);
   if (work.source.type === 'html') return readHtml(fetchFile(work.source.url, join(sourcesDir, work.source.file)), work.source);
   const dir = fetchRepo(work.source.repo, sourcesDir);
   if (work.source.type === 'standardebooks') return readStandardEbook(dir, work.source);
@@ -908,6 +918,35 @@ export function readSpeeches(path: string, kind: string): SourceChapter[] {
     .filter((s) => s.kind === kind && !NOT_HIS.test(s.title))
     .map((s) => ({ title: speechTitle(s), paragraphs: s.paragraphs.filter((p) => !SUMMARY.test(p)).map((p) => ({ text: cleanText(p), kind: 'prose' as const })) }))
     .filter((c) => c.paragraphs.length >= 3);
+}
+
+// ---------------------------------------------------------------------------------------------------------------
+// Pieces kept locally
+
+interface Piece {
+  kind: string;
+  title: string;
+  /** YYYY-MM-DD, or ''. */
+  date: string;
+  url: string;
+  paragraphs: string[];
+}
+
+/** “What Is Code?” in “Why Are Coders Angry?”, venue and date: “Why Are Coders Angry? (What Is Code?, June 2015)”. */
+export function pieceTitle(p: { title: string; date: string }, venue: string): string {
+  const [y, m] = p.date.split('-').map(Number);
+  const when = y ? (m ? `${MONTHS[m - 1]} ${y}` : String(y)) : '';
+  const title = p.title.replace(/\s+/g, ' ').trim().replace(/[.,;:]+$/, '');
+  return `${title} (${[venue, when].filter(Boolean).join(', ')})`;
+}
+
+export function readPieces(path: string, kind: string, venue: string): SourceChapter[] {
+  if (!existsSync(path)) throw new Error(`No pieces at ${path}: run the fetch script named in the author's file`);
+  const all = JSON.parse(readFileSync(path, 'utf8')) as Piece[];
+  return all
+    .filter((p) => p.kind === kind)
+    .map((p) => ({ title: pieceTitle(p, venue), paragraphs: p.paragraphs.map((t) => ({ text: cleanText(t), kind: kind === 'letters' ? ('letter' as const) : ('prose' as const) })) }))
+    .filter((c) => c.paragraphs.length);
 }
 
 export function listSourceDirs(sourcesDir: string): string[] {

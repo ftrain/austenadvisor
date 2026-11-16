@@ -1,6 +1,6 @@
 # Austen Advisor
 
-Advisor helps a student write better by showing how a great writer would have written the same piece. The student pastes a paragraph or a page, picks a form (an essay, an anecdote) and one of twenty writers or the plain style, and reads three columns, one row to each paragraph:
+Advisor helps a student write better by showing how a great writer would have written the same piece. The student pastes a paragraph or a page, picks a form (an essay, an anecdote) and one of twenty-one writers or the plain style, and reads three columns, one row to each paragraph:
 
 - **Yours**: the student's paragraph, with up to five words the voice never wrote underlined. Tap one for the voice's own word. For the plain style the underlined words are the student's needless ones, each with the reason to cut it.
 - **The voice**: the same paragraph rewritten in that voice. Text the rewrite added is highlighted, and a sentence that states a fact carries a footnote.
@@ -45,7 +45,7 @@ npm run cli -- define tricolon
 
 ## The voices
 
-Each voice is a statistical model of the whole corpus below. All are public domain in the US; `authors/<id>.json` gives each work, its source and its license.
+Each voice is a statistical model of the whole corpus below. All but one are public domain in the US. Paul Ford's are his own, used with his permission. `authors/<id>.json` gives each work, its source and its license.
 
 | Voice | Family | Corpus | Words |
 |---|---|---|---|
@@ -69,8 +69,9 @@ Each voice is a statistical model of the whole corpus below. All are public doma
 | Ralph Waldo Emerson | Essayists | Nature, the Essays, Representative Men, The Conduct of Life (Standard Ebooks, Gutenberg) | 272,035 |
 | Henry David Thoreau | Essayists | Walden, A Week on the Concord and Merrimack Rivers, the essays, A Yankee in Canada (Standard Ebooks) | 443,883 |
 | Oscar Wilde | Essayists | The Picture of Dorian Gray, the stories, Intentions, the four comedies (Standard Ebooks, Gutenberg) | 253,239 |
+| Paul Ford | Essayists | Ftrain from 1997, its stories and journals, The Morning News, Medium, Postlight, the Aboard newsletter and “What Is Code?” (the database behind ftrain.com; Bloomberg Graphics on GitHub) | 988,719 |
 
-**The plain style** stands apart from the twenty writers, under Styles. It is a manner with rules: formal, declarative prose with everything extra removed. Its models are Ulysses S. Grant's Personal Memoirs and William Strunk's The Elements of Style of 1918 (240,245 words). Its moves are rules the engine checks ([src/engine/plain.ts](src/engine/plain.ts)): needless words cut, the active voice, positive form, no hedges or intensifiers, one idea a sentence, the concrete word. The student's modern words stay. In place of words the voice never wrote, the Yours column marks the student's needless words: the hedges, intensifiers and stock phrases the rules cut.
+**The plain style** stands apart from the twenty-one writers, under Styles. It is a manner with rules: formal, declarative prose with everything extra removed. Its models are Ulysses S. Grant's Personal Memoirs and William Strunk's The Elements of Style of 1918 (240,245 words). Its moves are rules the engine checks ([src/engine/plain.ts](src/engine/plain.ts)): needless words cut, the active voice, positive form, no hedges or intensifiers, one idea a sentence, the concrete word. The student's modern words stay. In place of words the voice never wrote, the Yours column marks the student's needless words: the hedges, intensifiers and stock phrases the rules cut.
 
 Each voice has a pack (`data/packs/<id>.json` and `.sif`), built from its model: its signature words, real sentences that make each of its moves, and a shape index of its sentences. The server keeps every pack in memory, and the whole models of only the six voices used last.
 
@@ -110,6 +111,7 @@ npm install
 npm run build:model -- austen   # about 3 minutes, once: fetches the works, WordNet and the Brown Corpus, trains the model
 npm run build:model -- eliot    # about a minute each for the other voices (ids are the file names in authors/)
 npm run fetch:obama && npm run build:model -- obama
+npm run fetch:ford -- --ssh ftrain.exe.xyz && npm run build:model -- ford   # or FTRAIN_DATABASE_URL=… npm run fetch:ford
 node scripts/build-packs.ts     # every built voice's pack; run again after adding or rebuilding a voice
 npm run dev                     # http://localhost:4180, keyless: the engine's view only
 ANTHROPIC_API_KEY=… npm run dev # with rewrites

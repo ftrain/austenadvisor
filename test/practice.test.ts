@@ -2,11 +2,12 @@
 // the voice's own that makes the move, a modern sentence that does not, and nothing at all.
 import { existsSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { afterAll, beforeAll, describe, expect, it } from 'vitest';
 import { authorDbPath, ROOT } from '../src/db.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { drillsFor, practiceCheck, withArticle } from '../src/engine/practice.ts';
-import { hintOf } from '../src/corpus/sources.ts';
+import { hintOf, readAuthor } from '../src/corpus/sources.ts';
+import { packPaths } from '../src/engine/pack.ts';
 import { createApp } from '../src/server/app.ts';
 
 const voices = readdirSync(join(ROOT, 'authors'))
@@ -16,9 +17,19 @@ const voices = readdirSync(join(ROOT, 'authors'))
 
 const MODERN = 'I texted my bestie and she was like totally chill about it.';
 
+// Each voice's whole model is opened for its own tests and let go after them: twenty-two at once outgrow the heap.
 describe.skipIf(!voices.length).each(voices)('practiceCheck in the voice of %s', (id) => {
-  const m = AuthorModel.load(id);
-  const moves = (m.author.moves ?? []).map((mv) => ({ mv, example: m.moveExamples(mv.id, '', 1)[0] })).filter((x) => x.example);
+  const author = readAuthor(ROOT, id);
+  let m: AuthorModel;
+  let moves: { mv: NonNullable<typeof author.moves>[number]; example: ReturnType<AuthorModel['moveExamples']>[number] | undefined }[] = [];
+  beforeAll(() => {
+    m = AuthorModel.open(id);
+    moves = (m.author.moves ?? []).map((mv) => ({ mv, example: m.moveExamples(mv.id, '', 1)[0] })).filter((x) => x.example);
+  });
+  afterAll(() => {
+    m = undefined as unknown as AuthorModel;
+    moves = [];
+  });
 
   it('has a move with an example of its own', () => {
     expect(moves.length).toBeGreaterThan(0);
@@ -34,16 +45,18 @@ describe.skipIf(!voices.length).each(voices)('practiceCheck in the voice of %s',
   });
 
   // A style (plain) limits no words, and a sentence that breaks no rule shows its moves: test/voices.test.ts reads it.
-  it.skipIf(!!m.author.style)('finds no move in a modern sentence, and names the words the voice never used', () => {
+  it.skipIf(!!author.style)('finds no move in a modern sentence, and names the words the voice never used', () => {
     const { mv } = moves[0]!;
     const r = practiceCheck(m, MODERN, mv.name);
     expect(r.move?.made).toBe(false);
-    expect(r.never.map((w) => w.word)).toContain('texted');
+    // A living writer may have texted; nobody here has a bestie.
+    const never = author.license?.basis === 'author' ? 'bestie' : 'texted';
+    expect(r.never.map((w) => w.word)).toContain(never);
     expect(r.length.sentences).toBe(1);
     expect(r.length.meanWords).toBe(12);
     expect(r.length.authorRange[0]).toBeLessThanOrEqual(r.length.authorMedian);
     expect(r.length.authorMedian).toBeLessThanOrEqual(r.length.authorRange[1]);
-    expect(r.verdict).toMatch(/texted/);
+    expect(r.verdict).toContain(never);
   });
 
   it('writes verdicts with articles, and gives the hint, never the definition, on a miss', () => {
@@ -141,7 +154,7 @@ describe('Try it', () => {
     expect(drillsFor(m, `${full} ${full} ${full}`)).toEqual([]);
   });
 
-  const packed = voices.filter((id) => AuthorModel.load(id).pack).slice(0, 3);
+  const packed = voices.filter((id) => existsSync(packPaths(id).json)).slice(0, 3);
   it.skipIf(!packed.length).each(packed)('answers in under 250 ms once warm, for %s', (id) => {
     const m = AuthorModel.load(id);
     const mv = m.author.moves![0]!.id;

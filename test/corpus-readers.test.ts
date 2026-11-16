@@ -1,6 +1,6 @@
 // The readers for the newer voices, each on a small fixture: Standard Ebooks books of essays and stories, a paper's
 // byline, a novel split at its scene breaks; Gutenberg headings that wrap, editors' notes, dialogue; Lincoln's papers;
-// one HTML page. And the fields every author file carries.
+// one HTML page; a local file of pieces, and how Paul Ford's are gathered. And the fields every author file carries.
 
 import { mkdirSync, mkdtempSync, readdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -14,6 +14,7 @@ import {
   lincolnPiece,
   lincolnTitle,
   notPublicDomain,
+  pieceTitle,
   plainGutenberg,
   readAuthor,
   readGutenberg,
@@ -28,6 +29,7 @@ import {
   type WorkConfig,
 } from '../src/corpus/sources.ts';
 import { KINDS } from '../src/engine/structure.ts';
+import { hisTurns, kindOf, paragraphsOf, whatIsCode } from '../scripts/fetch-ford.ts';
 
 const ROOT = join(import.meta.dirname, '..');
 const tmp = () => mkdtempSync(join(tmpdir(), 'readers-'));
@@ -348,6 +350,79 @@ describe('one HTML page', () => {
   });
 });
 
+describe('pieces kept locally', () => {
+  it('reads one kind of piece, each a chapter titled by its venue and date, a letter’s paragraphs as letters', () => {
+    const dir = tmp();
+    mkdirSync(join(dir, 'ford'));
+    const pieces = [
+      { kind: 'ftrain', title: 'Processing Processing ', date: '2003-09-14', url: 'https://ftrain.com/x', paragraphs: ['It was a long day at the office, and I wrote some code.'] },
+      { kind: 'letters', title: 'Last Issue', date: '2020-06-11', url: 'https://ftrain.com/y', paragraphs: ['I figured you had subscribed, so I should tell you why I bailed.'] },
+      { kind: 'ftrain', title: 'Undated', date: '', url: 'https://ftrain.com/z', paragraphs: ['A piece with no date at all, which the source does not give.'] },
+    ];
+    writeFileSync(join(dir, 'ford', 'pieces.json'), JSON.stringify(pieces));
+    const work = (kind: string, venue: string): WorkConfig => ({ id: kind, title: venue, year: 2003, source: { type: 'pieces', file: 'ford/pieces.json', kind, venue, url: 'https://ftrain.com/' } });
+    const ftrain = readWork(work('ftrain', 'Ftrain'), dir);
+    expect(ftrain.map((c) => c.title)).toEqual(['Processing Processing (Ftrain, September 2003)', 'Undated (Ftrain)']);
+    expect(ftrain[0]!.paragraphs[0]!.kind).toBe('prose');
+    expect(readWork(work('letters', 'Letters'), dir)[0]!.paragraphs[0]!.kind).toBe('letter');
+    expect(sourceUrl(work('ftrain', 'Ftrain'))).toBe('https://ftrain.com/');
+    expect(pieceTitle({ title: 'Real Editors Ship.', date: '2010-07' }, 'Ftrain')).toBe('Real Editors Ship (Ftrain, July 2010)');
+  });
+
+  it('keeps a writer’s own paragraphs: no block quotation, table, code, caption or heading, and no line too short to be prose', () => {
+    const html = `<h2>Title</h2><p>This is a sentence of mine that runs long enough to keep.</p>
+      <blockquote><p>This is somebody else’s sentence, quoted at length in the piece.</p></blockquote>
+      <table><tr><td>FoodQtyCalories Bread, white, one slice, eighty calories.</td></tr></table>
+      <pre>for (let i = 0; i &lt; 10; i++) console.log("a long line of code here");</pre>
+      <figure><figcaption>Illustration by someone else, who drew the picture above.</figcaption></figure>
+      <p>Too short.</p><p>By Paul Ford, who wrote this piece for the magazine in 2015.</p>
+      <p>A link to https://example.com/page stays out, and so do the &ldquo;entities&rdquo; as marks.</p>`;
+    expect(paragraphsOf(html)).toEqual([
+      'This is a sentence of mine that runs long enough to keep.',
+      'A link to stays out, and so do the “entities” as marks.',
+    ]);
+  });
+
+  it('keeps a block quotation where the whole piece is set in one', () => {
+    expect(paragraphsOf('<p>A date.</p><blockquote>In the cool morning I walked over the gray carpet to my desk.</blockquote>')).toEqual([
+      'In the cool morning I walked over the gray carpet to my desk.',
+    ]);
+  });
+
+  it('keeps only his turns in a conversation, without his name', () => {
+    const talk = ['Rich: So what do you think about the browser wars, honestly, now?', 'Paul: I think the browser wars ended a long time ago, frankly.', 'Rich: Okay.', 'Paul Ford: And nobody told the browsers about it, which is sad.', 'PF: That is my whole position on the matter, and I stand by it.'];
+    expect(hisTurns(talk)).toEqual(['I think the browser wars ended a long time ago, frankly.', 'And nobody told the browsers about it, which is sad.', 'That is my whole position on the matter, and I stand by it.']);
+    expect(hisTurns(['Paul: one line of his that is long enough to keep.', 'A paragraph of prose.'])).toHaveLength(2);
+  });
+
+  it('puts a row of the database in its work', () => {
+    expect(kindOf({ id: 'ohlih-12', type: 'Journal Entry', parent: 'July 2009' })).toBe('journal');
+    expect(kindOf({ id: 'medium-the-great-works-of-software', type: 'Article', parent: 'Medium' })).toBe('medium');
+    expect(kindOf({ id: 'linkedin-6734', type: 'LinkedIn Post', parent: 'LinkedIn' })).toBe('aboard');
+    expect(kindOf({ id: 'archive_ftraintwo_12', type: 'Story', parent: 'A Tent in the Arctic' })).toBe('stories');
+    expect(kindOf({ id: 'ContraShirky', type: 'Post', parent: 'The Semantic Web' })).toBe('ftrain');
+  });
+
+  it('reads “What Is Code?” by its numbered sections, without the editor’s note, the graphics or the code', () => {
+    const page = `<p>Software has been around since the 1940s, as the editor's note says here.</p>
+      <h2 id="the-man-in-the-taupe-blazer"><a href="#the-man-in-the-taupe-blazer">1</a> The Man in the Taupe Blazer</h2>
+      <p class="introText">You are an educated, successful person capable of abstract thought.</p>
+      <p>A VP doing an SVP’s job, in an office with decent furniture and blinds.</p>
+      <p class='g-aiPstyle1'>epublic</p><pre>print("hello, world, from a code listing here")</pre>
+      <p>Copper plaques on the wall attest to your various leadership abilities.</p>
+      <h2 id="lets-begin"><a href="#lets-begin">2</a> Let’s Begin</h2><p>Too few paragraphs here to make a section of it.</p>`;
+    const [s, ...rest] = whatIsCode(page);
+    expect(rest).toEqual([]);
+    expect(s!.title).toBe('The Man in the Taupe Blazer');
+    expect(s!.url).toMatch(/#the-man-in-the-taupe-blazer$/);
+    expect(s!.paragraphs).toEqual([
+      'You are an educated, successful person capable of abstract thought.',
+      'A VP doing an SVP’s job, in an office with decent furniture and blinds.',
+      'Copper plaques on the wall attest to your various leadership abilities.',
+    ]);
+  });
+});
+
 describe('author files', () => {
   const ids = readdirSync(join(ROOT, 'authors'))
     .filter((f) => f.endsWith('.json'))
@@ -360,7 +435,7 @@ describe('author files', () => {
     for (const k of a.goodFor!) expect(KINDS).toContain(k);
     expect(a.license?.source).toBeTruthy();
     expect(a.license?.note).toBeTruthy();
-    expect(['age', 'government']).toContain(a.license?.basis);
+    expect(['age', 'government', 'author']).toContain(a.license?.basis);
     for (const m of a.moves ?? []) {
       expect(m.hint, `${id}/${m.id}`).toBeTruthy();
       expect(hintOf(m)).not.toBe(m.does);
@@ -376,5 +451,6 @@ describe('author files', () => {
     const a = { ...readAuthor(ROOT, 'austen'), works: [{ id: 'x', title: 'The Glass Key', year: 1931, source: { type: 'standardebooks' as const, repo: 'x/y' } }] };
     expect(notPublicDomain(a, 2026).map((w) => w.title)).toEqual(['The Glass Key']);
     expect(notPublicDomain(a, 2027)).toEqual([]);
+    expect(notPublicDomain({ ...a, license: { source: 'The author', note: 'Used with his permission.', basis: 'author' } }, 2026)).toEqual([]);
   });
 });

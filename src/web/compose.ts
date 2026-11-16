@@ -9,7 +9,7 @@ import { button, cap, fill, h, type AuthorInfo, type Boot, type Definer, type Fa
 export const FAMILY_NAMES: Record<Family, string> = { storytellers: 'Storytellers', speakers: 'Speakers', arguers: 'Arguers', essayists: 'Essayists', styles: 'Styles' };
 const FAMILY_ORDER: Family[] = ['storytellers', 'speakers', 'arguers', 'essayists', 'styles'];
 /** The voices in the order the select lists them: within each family, the order a reader meets them. */
-const VOICE_ORDER = ['austen', 'eliot', 'dickens', 'twain', 'hemingway', 'hammett', 'woolf', 'fairy', 'lincoln', 'douglass', 'obama', 'kjv', 'shakespeare', 'federalist', 'johnson', 'gibbon', 'chesterton', 'emerson', 'thoreau', 'wilde', 'plain'];
+const VOICE_ORDER = ['austen', 'eliot', 'dickens', 'twain', 'hemingway', 'hammett', 'woolf', 'fairy', 'lincoln', 'douglass', 'obama', 'kjv', 'shakespeare', 'federalist', 'johnson', 'gibbon', 'chesterton', 'emerson', 'thoreau', 'wilde', 'ford', 'plain'];
 export const KINDS = ['argument', 'story', 'letter', 'speech', 'essay', 'review'];
 export const RESTING = 'Rewrites of your own text are off for now. Every sample has a rewrite ready.';
 

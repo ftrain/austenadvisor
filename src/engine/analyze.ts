@@ -843,7 +843,7 @@ function chapterLength(m: AuthorModel): { mean: number; count: number; unit: str
   if (!c) {
     const r = m.db.prepare('SELECT COUNT(*) AS n FROM chapters').get() as { n: number };
     const count = Math.max(1, r.n);
-    const unit = m.author.citeStyle === 'speech' ? 'speeches' : m.author.citeStyle === 'play' ? 'scenes' : 'chapters';
+    const unit = m.author.citeStyle === 'speech' ? 'speeches' : m.author.citeStyle === 'piece' ? 'pieces' : m.author.citeStyle === 'play' ? 'scenes' : 'chapters';
     c = { mean: Math.round(m.profile.words / count / 100) * 100, count, unit };
     chapterLengths.set(m, c);
   }

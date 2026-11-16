@@ -145,7 +145,7 @@ An example offered for a figure is always confirmed by that figure's detector as
 
 ## Another author
 
-Everything above reads the voice from `authors/<id>.json`: the works and their sources, the license, the name and pronouns, the family (storytellers, speakers, arguers, essayists, or styles), the kinds of writing it suits, its moves with a pattern each (for a style, a rule each), and the persona and manner for the writer. There are twenty writers and one style, plain; the README lists them. To add one:
+Everything above reads the voice from `authors/<id>.json`: the works and their sources, the license, the name and pronouns, the family (storytellers, speakers, arguers, essayists, or styles), the kinds of writing it suits, its moves with a pattern each (for a style, a rule each), and the persona and manner for the writer. There are twenty-one writers and one style, plain; the README lists them. To add one:
 
 ```sh
 npm run build:model -- <id>       # the corpus and the model, data/<id>.sqlite

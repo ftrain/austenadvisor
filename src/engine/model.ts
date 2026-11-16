@@ -271,7 +271,7 @@ export class AuthorModel {
       cite:
         this.author.citeStyle === 'verse'
           ? `${w.title} ${r.chapter}:${r.paragraph}`
-          : this.author.citeStyle === 'speech'
+          : this.author.citeStyle === 'speech' || this.author.citeStyle === 'piece'
             ? `${r.chapterTitle}, ¶ ${r.paragraph}`
             : this.author.citeStyle === 'play'
               ? /^Sonnet/.test(r.chapterTitle) ? r.chapterTitle : `${w.title} ${r.chapterTitle}`

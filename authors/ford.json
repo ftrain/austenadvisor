@@ -1,0 +1,372 @@
+{
+  "id": "ford",
+  "name": "Paul Ford",
+  "title": "Paul Ford",
+  "advisor": "Ford Advisor",
+  "short": "Ford",
+  "years": "1997–2026",
+  "citeStyle": "piece",
+  "pronouns": {
+    "subject": "he",
+    "object": "him",
+    "possessive": "his",
+    "possessivePronoun": "his"
+  },
+  "persona": "Paul Ford (born 1971), American essayist, programmer and co-founder of Postlight and Aboard, in Ftrain (1997 on), his magazine essays, “What Is Code?” (Bloomberg Businessweek, 2015) and his newsletters: a programmer who writes like a humanist and a humanist who knows how the machine works; long, talky sentences that explain a hard thing to a smart friend, then a short flat one that lands the point; the aside in brackets; the reader put in the scene as “you”; the absurd detail told straight (a Scrum Master in ninja socks); lists that run on for comedy; a frank admission of what he does not know or did badly; and under the jokes, a plain, unembarrassed tenderness toward people, ending on what we owe one another.",
+  "family": "essayists",
+  "goodFor": [
+    "essay",
+    "argument",
+    "story",
+    "speech"
+  ],
+  "tagline": "Technology explained to a friend, with jokes, asides and a big heart",
+  "epigraph": {
+    "text": "The time you spend is not your own.",
+    "cite": "10 Timeframes (Medium, May 2014)"
+  },
+  "whole": "Paul Ford’s essays, stories and journals, Ftrain to Aboard",
+  "action": "Ford it up",
+  "echoes": [
+    "A vice president meets a Scrum Master in a taupe blazer who wants money for a website and says “We’ve got to budget for apps”: “What Is Code?”, 2015.",
+    "A commencement talk that keeps asking how far we would be if the speech were a century long, and ends: the time you spend is not your own: “10 Timeframes”, 2014.",
+    "Watching the towers fall on television from an office in Israel, losing his job the next day, and flying home to New York: “Run From Ground Zero”, 2001.",
+    "A polite person’s trick at parties: ask people about their work, because nearly everyone believes their job is difficult: “How to Be Polite”, 2014.",
+    "An AI writes a recipe and a test kitchen checks it, over and over, until the cookies are right: the good loop, “Distrust, then verify”, 2026.",
+    "A few drinks, a spare server and a joke about the old web, and a thousand people sign up by morning: “Tilde.Club”, 2014."
+  ],
+  "manner": [
+    "Go the whole way: the passage should read as if Paul Ford wrote it for a magazine or a newsletter, in his order and his turns. A rewrite that keeps the writer’s sentences and adds “sort of” has failed them.",
+    "Talk to a smart friend who does not know the subject: plain words, contractions, “I” and “you”, long sentences that wander and come back, then a short one that lands (“Over time. That’s the thing.”).",
+    "Put the reader in the scene as “you” where it helps: what you see, what you are told, what you are afraid to ask.",
+    "Set an aside in brackets once or twice a paragraph: a joke, a confession, a correction, a fact too good to leave out.",
+    "Tell the absurd detail with a straight face, and let a list run one item past sense (“case file notes, quick briefs, purchase orders, incident reports”).",
+    "Ask the question the reader is thinking (“So what does this mean?”) and answer it plainly; say it again plainer if it needs it (“What I’m saying is …”).",
+    "Admit what you do not know or did badly, and end on people: what the thing means for them, and a little warmth that is not embarrassed of itself."
+  ],
+  "craftNotes": [
+    "Keep what the writer named, in its order, and how much. A first-person passage stays first person; the speaker is the writer, in Ford’s manner, not Ford himself, and says nothing of Ford’s own life, family or companies.",
+    "Add no technology, company or news the passage does not have. A joke or an aside may be added; facts may not.",
+    "Keep the writer’s degree of feeling. Ford is warm, not gushing; a small thing stays small, and is funny before it is grand.",
+    "Modern words stay modern: phone, app, email, meeting. Never put on an old manner."
+  ],
+  "moves": [
+    {
+      "id": "parenthesis",
+      "name": "The aside in brackets",
+      "does": "A remark set in brackets inside or after the sentence (parenthesis): a joke, a confession, a correction or a fact too good to leave out.",
+      "pattern": "\\([^)]{12,}\\)",
+      "register": "any",
+      "hint": "Add one remark in brackets after a sentence: “(Which I gladly accepted.)”"
+    },
+    {
+      "id": "you",
+      "name": "You, in the scene",
+      "does": "The reader is put in the scene as “you”: what you see, what you are told, what you are afraid to ask.",
+      "pattern": "^\\W*(you|your)\\b",
+      "register": "any",
+      "hint": "Begin a sentence with “You”: “You are sitting in a meeting …”."
+    },
+    {
+      "id": "talk",
+      "name": "Talk, not prose",
+      "does": "A word from talk, not from print (vernacular): “basically”, “weird”, “a bunch of”, “stuff”, “nerds”. It tells the reader a friend is speaking.",
+      "pattern": "\\b(basically|frankly|pretty much|a bunch of|tons of|weird|weirdly|stuff|honestly|anyway|nerds?|dumb)\\b",
+      "register": "any",
+      "hint": "Put one spoken word in a written sentence: “basically”, “weird”, “a bunch of”."
+    },
+    {
+      "id": "hypophora",
+      "name": "The reader’s question, answered",
+      "does": "He asks the question the reader is thinking, then answers it himself (hypophora): “So what does this mean?”",
+      "pattern": "^\\W*(so |but |and |ok,? |okay,? )?(what|who|why|how|is|are|does|do|did|will|can|should|could|would)\\b[^?]{6,}\\?\\W*$",
+      "register": "any",
+      "hint": "Ask the reader’s question aloud, “So what does this mean?”, then answer it."
+    },
+    {
+      "id": "plainer",
+      "name": "Said again, plainer",
+      "does": "The point said a second time in plainer words (epanorthosis): “What I’m saying is …”, “Which is to say …”.",
+      "pattern": "\\b(what I[’']m saying is|which is to say|that[’']s the thing|here[’']s the thing|the thing is|in other words|that[’']s my point|by which I mean|I mean,)",
+      "register": "any",
+      "hint": "Say it once more, plainer: “What I’m saying is …”."
+    },
+    {
+      "id": "admission",
+      "name": "The frank admission",
+      "does": "He owns what he does not know or did badly, which earns the reader’s trust (ethos): “I’m not a natural.” “I’m usually wrong there, too.”",
+      "pattern": "\\b(I don[’']t know|I[’']m not (sure|a natural|good at)|I (admit|confess)|I[’']m (usually|often) wrong|I (often )?regret|I was wrong|I have no idea)\\b",
+      "register": "any",
+      "hint": "Admit one thing you don’t know: “I’m not sure, but …”."
+    },
+    {
+      "id": "catalogue",
+      "name": "The list that runs on",
+      "does": "A list of four or more things, run one item past sense for weight or comedy (catalogue).",
+      "pattern": "(\\b[\\w’-]+(?: [\\w’-]+){0,3}, ){3,}(and|or) ",
+      "register": "any",
+      "hint": "List four things, and make the last one a little absurd: “…, …, …, and …”."
+    }
+  ],
+  "license": {
+    "source": "The database behind ftrain.com, and Bloomberg Graphics’ repository of “What Is Code?” (Apache 2.0)",
+    "note": "Written 1997–2026 by Paul Ford, and used with his permission. Not public domain.",
+    "basis": "author"
+  },
+  "shapes": [
+    {
+      "work": "“10 Timeframes”, a commencement talk",
+      "cite": "10 Timeframes (Medium, May 2014)",
+      "kind": "speech",
+      "parts": [
+        {
+          "role": "occasion",
+          "says": "Begins by counting the time of everyone in the room.",
+          "quote": "There are 200 of you in this auditorium."
+        },
+        {
+          "role": "scene",
+          "says": "Pitches the clock to a medieval farmer.",
+          "quote": "Imagine doing user testing on clocks."
+        },
+        {
+          "role": "feeling",
+          "says": "Tells of a cousin who is learning math in the years she has left.",
+          "quote": "And what she’s doing with her time is learning math."
+        },
+        {
+          "role": "claim",
+          "says": "States the point in seven words.",
+          "quote": "The time you spend is not your own."
+        },
+        {
+          "role": "question",
+          "says": "Asks the graduates what they will build.",
+          "quote": "What is the new calendar?"
+        },
+        {
+          "role": "close",
+          "says": "Ends on the joke the speech has repeated all along.",
+          "quote": "If this speech was as long as this speech it would be over."
+        }
+      ]
+    },
+    {
+      "work": "“The Man in the Taupe Blazer”, in What Is Code?",
+      "cite": "The Man in the Taupe Blazer (What Is Code?, June 2015)",
+      "kind": "story",
+      "parts": [
+        {
+          "role": "scene",
+          "says": "Puts the reader in a vice president’s chair.",
+          "quote": "You are an educated, successful person capable of abstract thought."
+        },
+        {
+          "role": "description",
+          "says": "Describes the visitor down to his socks.",
+          "quote": "his socks are embroidered with little ninja"
+        },
+        {
+          "role": "question",
+          "says": "Asks what the reader is afraid to ask.",
+          "quote": "When will it be done?"
+        },
+        {
+          "role": "occasion",
+          "says": "Says why the essay exists: an editor asked.",
+          "quote": "Can you tell me what code is?"
+        },
+        {
+          "role": "background",
+          "says": "Admits he is no natural.",
+          "quote": "Which is to say I’m not a natural."
+        },
+        {
+          "role": "close",
+          "says": "Says what the essay will do.",
+          "quote": "It is time to understand how it all works."
+        }
+      ]
+    },
+    {
+      "work": "“Distrust, then verify”, in the Aboard newsletter",
+      "cite": "Distrust, then verify (Aboard, May 2026)",
+      "kind": "argument",
+      "parts": [
+        {
+          "role": "news",
+          "says": "Begins with yesterday’s news.",
+          "quote": "Anthropic released ten new tools for the finance industry"
+        },
+        {
+          "role": "question",
+          "says": "Asks what it means.",
+          "quote": "So what does this mean?"
+        },
+        {
+          "role": "scene",
+          "says": "Tells of a client who asked what they had told him.",
+          "quote": "What did I actually tell you?"
+        },
+        {
+          "role": "claim",
+          "says": "Names the pattern and explains it with a test kitchen.",
+          "quote": "But imagine, for a moment, if ChatGPT had a test kitchen."
+        },
+        {
+          "role": "objection",
+          "says": "Raises the objection to himself: he may be too cheerful.",
+          "quote": "I know that many people might find me too cheerful about all of this."
+        },
+        {
+          "role": "close",
+          "says": "Ends on the chores before the fun.",
+          "quote": "We can sing a little song while we do it."
+        }
+      ]
+    },
+    {
+      "work": "“How to Be Polite”",
+      "cite": "How to Be Polite (Medium, August 2014)",
+      "kind": "essay",
+      "parts": [
+        {
+          "role": "claim",
+          "says": "Begins by saying he is polite and nobody notices.",
+          "quote": "Most people don’t notice I’m polite, which is sort of the point."
+        },
+        {
+          "role": "background",
+          "says": "Recalls reading etiquette manuals in high school.",
+          "quote": "When I was in high school I used to read etiquette manuals."
+        },
+        {
+          "role": "evidence",
+          "says": "Gives the reader his trick for parties.",
+          "quote": "Here’s a polite person’s trick, one that has never failed me."
+        },
+        {
+          "role": "verdict",
+          "says": "Says what politeness is for.",
+          "quote": "Politeness buys you time."
+        },
+        {
+          "role": "feeling",
+          "says": "Admits the love underneath it.",
+          "quote": "I am often consumed with a sense of overwhelming love and empathy."
+        }
+      ]
+    }
+  ],
+  "works": [
+    {
+      "id": "ftrain",
+      "title": "Ftrain",
+      "year": 2002,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "ftrain",
+        "venue": "Ftrain",
+        "url": "https://ftrain.com/"
+      }
+    },
+    {
+      "id": "stories",
+      "title": "Stories from Ftrain",
+      "year": 2001,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "stories",
+        "venue": "Ftrain",
+        "url": "https://ftrain.com/"
+      }
+    },
+    {
+      "id": "journal",
+      "title": "Journals",
+      "year": 2010,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "journal",
+        "venue": "Journal",
+        "url": "https://ftrain.com/"
+      }
+    },
+    {
+      "id": "tmn",
+      "title": "The Morning News",
+      "year": 2005,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "tmn",
+        "venue": "The Morning News",
+        "url": "https://themorningnews.org/"
+      }
+    },
+    {
+      "id": "medium",
+      "title": "Essays from Medium",
+      "year": 2015,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "medium",
+        "venue": "Medium",
+        "url": "https://medium.com/@ftrain"
+      }
+    },
+    {
+      "id": "whatiscode",
+      "title": "What Is Code?",
+      "year": 2015,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "whatiscode",
+        "venue": "What Is Code?",
+        "url": "https://github.com/BloombergGraphics/whatiscode"
+      }
+    },
+    {
+      "id": "postlight",
+      "title": "Postlight",
+      "year": 2018,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "postlight",
+        "venue": "Postlight",
+        "url": "https://postlight.com/insights"
+      }
+    },
+    {
+      "id": "letters",
+      "title": "Letters",
+      "year": 2020,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "letters",
+        "venue": "Letters",
+        "url": "https://ftrain.com/"
+      }
+    },
+    {
+      "id": "aboard",
+      "title": "Aboard",
+      "year": 2025,
+      "source": {
+        "type": "pieces",
+        "file": "ford/pieces.json",
+        "kind": "aboard",
+        "venue": "Aboard",
+        "url": "https://aboard.com/"
+      }
+    }
+  ],
+  "keepModern": true
+}
