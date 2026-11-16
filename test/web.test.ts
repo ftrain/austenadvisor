@@ -254,8 +254,22 @@ describe('the page', () => {
     await onResult();
     const rows = [...app().querySelectorAll('.pg-row')];
     for (const r of rows) expect(r.querySelectorAll('.pg-why .pg-note').length).toBeLessThanOrEqual(3);
-    const heads = [...app().querySelectorAll('.pg-why .pg-note:not(.pg-note-liberty) .pg-note-head')].map((x) => x.textContent);
+    const heads = [...app().querySelectorAll('.pg-why .pg-note:not(.pg-note-liberty):not(.pg-note-plan) .pg-note-head')].map((x) => x.textContent);
     expect(new Set(heads).size).toBe(heads.length);
+  });
+
+  it('gives a rewritten row with no move to name the voice’s reason for the paragraph, and only such a row', async () => {
+    await onResult();
+    const rows = [...app().querySelectorAll('.pg-row')].filter((r) => r.querySelector('.pg-her'));
+    expect(rows.length).toBeGreaterThan(2);
+    for (const r of rows) expect(r.querySelectorAll('.pg-why .pg-note').length).toBeGreaterThan(0);
+    const plan = rows.filter((r) => r.querySelector('.pg-note-plan'));
+    expect(plan.length).toBeGreaterThan(0);
+    for (const r of plan) {
+      expect(r.querySelectorAll('.pg-why .pg-note')).toHaveLength(1);
+      expect(r.querySelector('.pg-note-plan .pg-note-head')!.textContent).toBe('Claim');
+      expect(r.querySelector('.pg-note-plan .pg-note-text')!.textContent).toBe('It states the point.');
+    }
   });
 
   it('marks at most five words the voice never wrote, and says so in a line', async () => {

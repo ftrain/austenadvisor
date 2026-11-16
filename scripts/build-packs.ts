@@ -123,10 +123,12 @@ function exemplarsOf(m: AuthorModel, rows: Row[]): { exemplars: Record<string, n
   const perWork: Record<string, Map<string, number>> = Object.fromEntries(keys.map((k) => [k, new Map()]));
   const manyWorks = new Set(rows.map((r) => r.work)).size >= 3;
   const open = new Set(keys);
-  const pool = shuffled(
-    rows.filter((r) => r.words >= 6 && r.words <= 60 && !exclude.has(r.work)),
-    7,
-  );
+  // The voice's own sentences of a readable length come first: a note's example should teach the move on its own,
+  // and a short line of somebody's speech ("You will do anything I say!") seldom does. The rest follow, for a move
+  // that lives in speech or a voice with few such sentences.
+  const fit = rows.filter((r) => r.words >= 6 && r.words <= 60 && !exclude.has(r.work));
+  const teaches = (r: Row) => !r.spoken && r.words >= 10 && r.words <= 45 && !/^\W*[“"‘']/.test(r.text);
+  const pool = [...shuffled(fit.filter(teaches), 7), ...shuffled(fit.filter((r) => !teaches(r)), 7)];
   for (const r of pool) {
     if (!open.size) break;
     let terms: Set<string> | null = null;

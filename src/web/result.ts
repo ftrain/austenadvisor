@@ -488,6 +488,13 @@ export function result(o: ResultOptions): ResultView {
       why.append(noteEl(s, note, r, row));
       n++;
     }
+    // Where the engine found no move or figure to name, the voice's own reason for the paragraph, so no rewritten
+    // row stands with an empty WHY.
+    const reason = !n && r.hers ? s.run?.whys?.get(r.part)?.[at]?.trim() : undefined;
+    if (reason) {
+      why.append(h('div', { class: 'pg-note pg-note-plan' }, h('p', { class: 'pg-note-head' }, ...o.terms.defined(capFirst(roleHers?.trim() || 'This paragraph'))), h('p', { class: 'pg-note-text' }, ...o.terms.defined(reason))));
+      n++;
+    }
     if (!r.hers && s.run?.drills)
       for (const d of s.run.drills) {
         if (n >= NOTES_PER_ROW || seen.has(`drill:${d.move}`)) continue;
