@@ -88,7 +88,7 @@
       "id": "plainer",
       "name": "Said again, plainer",
       "does": "The point said a second time in plainer words (epanorthosis): “What I’m saying is …”, “Which is to say …”.",
-      "pattern": "\\b(what I[’']m saying is|which is to say|that[’']s the thing|here[’']s the thing|the thing is|in other words|that[’']s my point|by which I mean|I mean,)",
+      "pattern": "\\b(what I[’']m saying is|which is to say|that[’']s the thing|here[’']s the thing|here is the thing|the thing is|in other words|that[’']s my point|by which I mean|I mean,|the point is|put (it )?another way)|, is the thing\\b",
       "register": "any",
       "hint": "Say it once more, plainer: “What I’m saying is …”."
     },
@@ -96,7 +96,7 @@
       "id": "admission",
       "name": "The frank admission",
       "does": "He owns what he does not know or did badly, which earns the reader’s trust (ethos): “I’m not a natural.” “I’m usually wrong there, too.”",
-      "pattern": "\\b(I don[’']t know|I[’']m not (sure|a natural|good at)|I (admit|confess)|I[’']m (usually|often) wrong|I (often )?regret|I was wrong|I have no idea)\\b",
+      "pattern": "\\b(I don[’']t know|I do not know|I[’']m not (sure|a natural|good at|proud)|I (admit|confess)|I[’']ll (admit|confess)|I (won[’']t|will not|can[’']t|cannot) pretend|I[’']m (usually|often) wrong|I (often )?regret|I was wrong|I have no idea|to be honest)\\b",
       "register": "any",
       "hint": "Admit one thing you don’t know: “I’m not sure, but …”."
     },
