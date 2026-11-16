@@ -36,7 +36,7 @@ import { readForm } from '../engine/forms.ts';
 import { briefForm, fitText } from './fit.ts';
 
 /** Raised whenever the prompts or the schema change in meaning: every cached rewrite made under another is stale. */
-export const PROMPT_VERSION = '2026-11-11.figures2';
+export const PROMPT_VERSION = '2026-11-16.keptwhole';
 
 // The provider: Anthropic when an Anthropic key is set; otherwise DeepSeek, through its Anthropic-compatible endpoint
 // (https://api-docs.deepseek.com/guides/anthropic_api), when DEEPSEEK_API_KEY is. The same SDK and protocol serve both;
@@ -629,8 +629,33 @@ export function repairWords(m: AuthorModel, brief: Brief, s: Submission): string
   return swapped;
 }
 
-/** What is worth a redraft: the rewrite is empty, runs the paragraphs together, crosses a heading, or loses a sentence. */
-export function hardGate(_m: AuthorModel, brief: Brief, s: Submission): string[] {
+/** Words only, lower-cased: two sentences that differ in nothing but their marks read the same. */
+const bareWords = (t: string) => t.toLowerCase().replace(/[’‘]/g, "'").replace(/[^\p{L}\p{N}']+/gu, ' ').trim();
+
+/**
+ * The writer's sentences a rewrite keeps whole: each of the rewrite's sentences that holds one of the writer's,
+ * word for word, with at most marks changed or a few words put before or after it.
+ */
+export function keptWhole(brief: Brief, s: Submission): number[] {
+  const kept = new Set<number>();
+  for (const x of s.paragraphs.flatMap((p) => p.sentences)) {
+    const mine = ` ${bareWords(x.text)} `;
+    for (const n of x.from ?? []) {
+      const theirs = bareWords(brief.sentences[n - 1]?.text ?? '');
+      if (theirs.split(' ').length >= 4 && mine.includes(` ${theirs} `) && mine.trim().split(' ').length <= theirs.split(' ').length + 10) kept.add(n);
+    }
+  }
+  return [...kept].sort((a, b) => a - b);
+}
+
+/** The share of the writer's sentences a writer's voice may keep whole before the draft goes back. */
+export const KEPT_WHOLE_SHARE = 0.25;
+
+/**
+ * What is worth a redraft: the rewrite is empty, runs the paragraphs together, crosses a heading, loses a sentence,
+ * or (for a writer's voice, not a style) leaves a quarter or more of the writer's sentences as they were.
+ */
+export function hardGate(m: AuthorModel, brief: Brief, s: Submission): string[] {
   if (!s.paragraphs?.length) return ['The rewrite is empty.'];
   const problems: string[] = [];
   // The author may gather paragraphs, but not run the writer's whole passage into a lump.
@@ -649,6 +674,15 @@ export function hardGate(_m: AuthorModel, brief: Brief, s: Submission): string[]
   const covered = new Set(s.paragraphs.flatMap((p) => p.sentences.flatMap((x) => x.from ?? [])));
   const missing = brief.sentences.filter((x) => !covered.has(x.n));
   if (missing.length) problems.push(`Not rendered: ${missing.map((x) => `sentence ${x.n} (“${x.text}”)`).join('; ')}. Render each, or name it in the "from" of the sentence that carries its sense.`);
+  // A style may leave a sentence that breaks no rule; a writer's voice rewrites.
+  if (!m.author.style) {
+    const kept = keptWhole(brief, s);
+    const his = pronounsOf(m.author).possessive;
+    if (kept.length >= 2 && kept.length >= KEPT_WHOLE_SHARE * brief.sentences.length)
+      problems.push(
+        `These stand as the writer wrote them, with at most a comma or a few words added: ${kept.map((n) => `sentence ${n} (“${brief.sentences[n - 1]!.text}”)`).join('; ')}. Write each as ${m.author.short} would: ${his} words, ${his} order, ${his} moves. Keep the sense, not the sentence.`,
+      );
+  }
   return problems;
 }
 

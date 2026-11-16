@@ -7,7 +7,7 @@ import { buildBrief } from '../src/engine/brief.ts';
 import { blocksOfText } from '../src/engine/doc.ts';
 import { AuthorModel } from '../src/engine/model.ts';
 import { plan, rowsOf } from '../src/server/page.ts';
-import { hardGate, promptFingerprint, PROMPT_VERSION, repairWords, softFindings, SUBMIT, systemPrompt, tierOf, userPrompt, type RewriteResult, type Submission } from '../src/server/rewrite.ts';
+import { hardGate, keptWhole, promptFingerprint, PROMPT_VERSION, repairWords, softFindings, SUBMIT, systemPrompt, tierOf, userPrompt, type RewriteResult, type Submission } from '../src/server/rewrite.ts';
 
 describe('the writer on its diet', () => {
   const schema = SUBMIT.input_schema;
@@ -123,6 +123,37 @@ describe('the gate, split', () => {
     expect(hardGate(m, brief, lost).join(' ')).toMatch(/^Not rendered: sentence 3/);
     expect(softFindings(m, brief, lost).some((p) => /^Not rendered/.test(p))).toBe(false);
     expect(hardGate(m, brief, { ...whole, paragraphs: [] })).toEqual(['The rewrite is empty.']);
+  });
+
+  it.skipIf(!austen)('sends back a rewrite that leaves the writer’s sentences as they were, with a comma or a lead-in added', () => {
+    const m = AuthorModel.load('austen');
+    const brief = buildBrief(m, blocksOfText('I learned so much from you this year. You made it fun and you always believed in me. You made a real difference in my life.'));
+    const copied: Submission = {
+      paragraphs: [
+        {
+          role: 'thanks',
+          why: 'The thanks.',
+          sentences: [
+            { text: 'I learned so much from you this year.', from: [1] },
+            { text: 'You made it fun, and you always believed in me.', from: [2] },
+            { text: 'So here is the thing I want you to know: you made a real difference in my life.', from: [3] },
+          ],
+        },
+      ],
+      sense: [],
+      liberties: [],
+      explanation: '',
+    };
+    expect(keptWhole(brief, copied)).toEqual([1, 2, 3]);
+    expect(hardGate(m, brief, copied).join(' ')).toMatch(/^These stand as the writer wrote them.*sentence 1.*sentence 2.*sentence 3/);
+    const rewritten = structuredClone(copied);
+    rewritten.paragraphs[0]!.sentences = [
+      { text: 'You taught me more this year than I had any right to expect.', from: [1] },
+      { text: 'You made the work a pleasure, and you never once doubted me.', from: [2] },
+      { text: 'So here is the thing I want you to know: you made a real difference in my life.', from: [3] },
+    ];
+    expect(keptWhole(brief, rewritten)).toEqual([3]);
+    expect(hardGate(m, brief, rewritten)).toEqual([]);
   });
 });
 

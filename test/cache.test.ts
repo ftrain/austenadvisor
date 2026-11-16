@@ -46,7 +46,7 @@ function echoWriter(wait = 0): WriterClient & { calls: number } {
       const paragraphs = [...prompt.matchAll(/<paragraph n="\d+">([\s\S]*?)<\/paragraph>/g)].map((p) => ({
         role: 'claim',
         why: 'It states the point.',
-        sentences: [...p[1]!.matchAll(/<sentence n="(\d+)"[^>]*>\n([^\n]*)/g)].map((s) => ({ text: unesc(s[2]!).replace(/[.!?]?$/, '; and it was not a little strange.'), from: [Number(s[1])] })),
+        sentences: [...p[1]!.matchAll(/<sentence n="(\d+)"[^>]*>\n([^\n]*)/g)].map((s) => ({ text: `Indeed, ${unesc(s[2]!).replace(/^\S+\s+/, '').replace(/[.!?]?$/, '; and it was not a little strange.')}`, from: [Number(s[1])] })),
       }));
       return submitted({ paragraphs, sense: [], liberties: [], explanation: 'Each sentence is turned on a semicolon.' });
     },
