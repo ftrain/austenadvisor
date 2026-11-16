@@ -36,6 +36,8 @@ beforeEach(() => {
   calls = [];
   override = null;
   document.body.innerHTML = '<div id="app"></div>';
+  // The page reads its address: each test starts at the bare one.
+  history.replaceState(null, '', '/');
   window.scrollTo = () => {};
   try {
     localStorage.clear();
@@ -295,6 +297,44 @@ describe('the page', () => {
     row.querySelector<HTMLButtonElement>('.pg-tryit .pg-btn-main')!.click();
     await vi.waitFor(() => expect(row.querySelector('.pg-verdict')?.textContent).toContain('Not yet'));
     expect(row.querySelector('.pg-try-also')!.textContent).toBe('For “opponent”, try “opposition”. Austen never wrote “okay”.');
+  });
+});
+
+describe('the address', () => {
+  it('names the voice, the sample and the rewrite on view, and drops the rewrite on Edit', async () => {
+    await rewritePage(app());
+    expect(location.search).toBe('?voice=austen');
+    app().querySelector<HTMLButtonElement>('.pg-chip[data-kind="argument"]')!.click();
+    expect(location.search).toBe('?voice=austen&sample=debate-rebuttal');
+    app().querySelector<HTMLButtonElement>('.pg-compose [data-primary]')!.click();
+    await vi.waitFor(() => expect(location.search).toBe('?voice=austen&sample=debate-rebuttal&rewrite'));
+  });
+
+  it('opens a linked rewrite that is ready, in the sample’s form and with no facts, whatever this browser kept', async () => {
+    localStorage.setItem('advisor.page', JSON.stringify({ voice: 'austen', text: 'Something else.', form: 'letter', facts: true }));
+    history.replaceState(null, '', '/?voice=twain&sample=debate-rebuttal&rewrite');
+    await rewritePage(app());
+    await vi.waitFor(() => expect(rewrites()).toBe(1));
+    expect(app().dataset.state).toBe('result');
+    const asked = calls.find((c) => c.path === '/api/rewrite')!.body as { author: string; text: string; form: string; facts: boolean };
+    expect(asked).toMatchObject({ author: 'twain', text: debate.trim(), form: 'auto', facts: false });
+  });
+
+  it('opens a linked sample in the box, and spends nothing, when its rewrite in that voice is not ready', async () => {
+    history.replaceState(null, '', '/?voice=kjv&sample=debate-rebuttal&rewrite');
+    await rewritePage(app());
+    await new Promise((ok) => setTimeout(ok, 50));
+    expect(app().dataset.state).not.toBe('result');
+    expect(app().querySelector<HTMLTextAreaElement>('.pg-compose textarea')!.value).toBe(debate);
+    expect(rewrites()).toBe(0);
+    expect(location.search).toBe('?voice=kjv&sample=debate-rebuttal');
+  });
+
+  it('ignores a voice or sample it does not know', async () => {
+    history.replaceState(null, '', '/?voice=nobody&sample=nothing&rewrite');
+    await rewritePage(app());
+    expect(location.search).toBe('?voice=austen');
+    expect(rewrites()).toBe(0);
   });
 });
 

@@ -48,6 +48,8 @@ export interface ComposeView {
   facts(): boolean;
   /** The sample in the box, while its text is unchanged. */
   sample(): Sample | null;
+  /** Put a sample in the box by its id, as a tap on a kind would; false if there is none by that id. */
+  useSample(id: string): boolean;
   setVoice(v: AuthorInfo): void;
   setReading(r: Reading | null): void;
   setReady(ready: Set<string>): void;
@@ -190,6 +192,11 @@ export function compose(o: ComposeOptions): ComposeView {
     form: () => formSelect.value || 'auto',
     facts: () => factsBox.checked,
     sample: () => sample,
+    useSample(id) {
+      const s = o.boot.samples.find((x) => x.id === id);
+      if (s) useSample(s);
+      return !!s;
+    },
     setVoice,
     setReading(r) {
       // Under Auto the option names the form the engine took the text for.

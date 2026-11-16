@@ -18,7 +18,11 @@ export async function rewritePage(app: HTMLElement) {
   const voices = sortVoices(boot.voices.filter((v) => v.built));
   const byId = new Map(voices.map((v) => [v.id, v]));
   const kept = keep.get<{ voice?: string; text?: string; form?: string; facts?: boolean } | null>(PAGE_KEY, null);
-  let voice: AuthorInfo = byId.get(kept?.voice ?? '') ?? byId.get('austen') ?? voices[0]!;
+  // The address names what is on the page (?voice=ford&sample=goodbye-biscuit&rewrite), so a page can be linked to.
+  // It wins over what this browser kept. A sample is linked as the samples are kept: its form, and no facts.
+  const asked = pageAddress(location.search);
+  const linked = boot.samples.some((x) => x.id === asked.sample);
+  let voice: AuthorInfo = byId.get(asked.voice ?? '') ?? byId.get(kept?.voice ?? '') ?? byId.get('austen') ?? voices[0]!;
   const terms = definer(boot.glossary);
   const moves = movesBook(voices, terms);
 
@@ -38,7 +42,20 @@ export async function rewritePage(app: HTMLElement) {
 
   // A rewrite is of one text in one voice, fitted to one form, with facts or without.
   const key = (v: string, t: string) => `${v}\u0000${c.form()}\u0000${c.facts() ? 'facts' : ''}\u0000${t.trim()}`;
-  const save = () => keep.set(PAGE_KEY, { voice: voice.id, text: c.area.value, form: c.form(), facts: c.facts() });
+  const save = () => {
+    keep.set(PAGE_KEY, { voice: voice.id, text: c.area.value, form: c.form(), facts: c.facts() });
+    showAddress();
+  };
+  /** Puts what is on the page in the address bar, without a new entry in the history. */
+  function showAddress() {
+    const s = sampleOf(c.area.value);
+    const q = addressOf({ voice: voice.id, sample: s?.id, rewrite: !!s && app.dataset.state === 'result' });
+    try {
+      if (location.search !== q) history.replaceState(history.state, '', `${location.pathname}${q}${location.hash}`);
+    } catch {
+      /* an address the browser will not take: the page works without it */
+    }
+  }
   /** The request the samples and the server's "ready" answer: the form of the text's kind, and no facts. */
   const plainAsk = () => c.form() === 'auto' && !c.facts();
 
@@ -101,11 +118,11 @@ export async function rewritePage(app: HTMLElement) {
     boot,
     voices,
     terms,
-    text: kept?.text ?? '',
+    text: linked ? '' : kept?.text ?? '',
     voice,
     onVoice: (id) => setVoice(id),
-    form: kept?.form,
-    facts: kept?.facts,
+    form: linked ? 'auto' : kept?.form,
+    facts: linked ? false : kept?.facts,
     onOptions: () => noticeText(c.area.value),
     onText: noticeText,
     onGo: () => void go(),
@@ -130,7 +147,8 @@ export async function rewritePage(app: HTMLElement) {
   app.replaceChildren(head, h('main', { class: 'pg-main' }, c.el, r.el, moves.el));
   setVoice(voice.id);
   c.setResting(!boot.ai.available);
-  if (c.area.value.trim()) noticeText(c.area.value);
+  if (linked) c.useSample(asked.sample!);
+  else if (c.area.value.trim()) noticeText(c.area.value);
 
   function setVoice(id: string) {
     const v = byId.get(id);
@@ -156,6 +174,7 @@ export async function rewritePage(app: HTMLElement) {
     r.el.hidden = true;
     c.el.hidden = false;
     app.dataset.state = 'compose';
+    showAddress();
     c.area.focus();
     window.scrollTo?.({ top: 0 });
   }
@@ -214,6 +233,7 @@ export async function rewritePage(app: HTMLElement) {
     c.el.hidden = true;
     r.el.hidden = false;
     app.dataset.state = 'result';
+    showAddress();
     redraw();
     window.scrollTo?.({ top: 0 });
     const reading = readingFor(v.id, text).then((rd) => {
@@ -301,6 +321,30 @@ export async function rewritePage(app: HTMLElement) {
     }
   }
 
+  // A linked rewrite opens at once if it is ready; one that is not would cost a call, so the page waits for Rewrite.
+  if (linked && asked.rewrite) {
+    ready = await readyFor(c.area.value).catch(() => ready);
+    if (isReady(voice.id, c.area.value)) void start();
+  }
+
   // Exposed for tests: nothing on the page reads these.
   return { compose: c, result: r, moves, resting: RESTING };
+}
+
+/** What a page's address asks for: ?voice=ford&sample=goodbye-biscuit&rewrite. */
+export interface PageAddress {
+  voice?: string;
+  sample?: string;
+  /** The rewrite on view, not the box. */
+  rewrite?: boolean;
+}
+
+export function pageAddress(search: string): PageAddress {
+  const q = new URLSearchParams(search);
+  return { voice: q.get('voice') ?? undefined, sample: q.get('sample') ?? undefined, rewrite: q.has('rewrite') };
+}
+
+export function addressOf(a: PageAddress): string {
+  const parts = [a.voice ? `voice=${encodeURIComponent(a.voice)}` : '', a.sample ? `sample=${encodeURIComponent(a.sample)}` : '', a.sample && a.rewrite ? 'rewrite' : ''].filter(Boolean);
+  return parts.length ? `?${parts.join('&')}` : '';
 }
