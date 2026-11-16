@@ -102,7 +102,11 @@ export function tokenize(text: string): Token[] {
       out.push({ text: c, norm: '"', start: i, end: i + 1, kind: 'punct', quoted: true });
       quoted = opening;
     } else {
-      out.push({ text: c, norm: c === '’' ? "'" : c, start: i, end: i + 1, kind: 'punct', quoted });
+      // A whole code point, so an emoji is one mark and not two halves of a surrogate pair.
+      const ch = String.fromCodePoint(text.codePointAt(i)!);
+      out.push({ text: ch, norm: ch === '’' ? "'" : ch, start: i, end: i + ch.length, kind: 'punct', quoted });
+      i += ch.length;
+      continue;
     }
     i += 1;
   }

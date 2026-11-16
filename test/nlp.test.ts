@@ -11,6 +11,13 @@ describe('tokenize', () => {
     expect(t.find((x) => x.norm === 'know')!.quoted).toBe(true);
     expect(t.find((x) => x.norm === 'said')!.quoted).toBe(false);
   });
+  it('keeps an emoji whole, so no token is half a surrogate pair', () => {
+    const toks = tokenize('I love it 😀 ok.');
+    expect(toks.map((t) => t.text)).toEqual(['I', 'love', 'it', '😀', 'ok', '.']);
+    expect(toks.every((t) => t.text.isWellFormed())).toBe(true);
+    expect(toks[3]).toMatchObject({ start: 10, end: 12 });
+  });
+
   it('reads straight quotation marks as opening and closing', () => {
     const t = tokenize('"Hey," she said. "Hi."');
     expect(t.find((x) => x.norm === 'hey')!.quoted).toBe(true);

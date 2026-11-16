@@ -545,7 +545,10 @@ function removePc(v: Float32Array, pc: Float32Array) {
 function readLm(db: DatabaseSync, vocabTable: string, col: string, triTable: string): KneserNey {
   const vocab = new Vocab();
   const rows = db.prepare(`SELECT id, ${col} AS w FROM ${vocabTable} ORDER BY id`).all() as { id: number; w: string }[];
-  for (const r of rows) vocab.add(r.w);
+  for (const r of rows) {
+    // Two stored words that read back the same (as lone surrogates do) would shift every id after them.
+    if (vocab.add(r.w) !== r.id) throw new Error(`${vocabTable}: word ${r.id} (${JSON.stringify(r.w)}) reads back as another; rebuild the model`);
+  }
   const c3 = new Map<number, number>();
   for (const r of db.prepare(`SELECT key, n FROM ${triTable}`).all() as { key: number; n: number }[]) c3.set(r.key, r.n);
   void KEY_BASE;

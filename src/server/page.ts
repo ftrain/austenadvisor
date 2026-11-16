@@ -519,6 +519,7 @@ export async function streamRewrite(res: ServerResponse, m: AuthorModel, text: s
       whole = false;
       const error = String((e as Error)?.message ?? e);
       console.error(`${new Date().toISOString()} rewrite ${voice}: part ${j.part + 1} failed after ${Math.round((Date.now() - t0) / 1000)} s: ${error}`);
+      if (e instanceof Error && e.stack) console.error(e.stack);
       say(j.part, error);
       line({ type: 'part', part: j.part, error, rows: j.idx.map((i) => ({ kind: 'paragraph', index: i, part: j.part, yours: [{ n: -1, text: blocks[i]!.text, never: [] }], hers: null, notes: [], error })) });
     };
