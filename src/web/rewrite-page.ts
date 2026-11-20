@@ -3,7 +3,7 @@
 // each paragraph. TRY-IT opens inside a row. A rewrite is spent only on Rewrite, or on a yes to the confirm line.
 
 import './page.css';
-import { clientId, definer, get, h, keep, post, Refused, streamLines, textHash, type AuthorInfo, type Boot, type Drill, type Reading, type Row } from './api.ts';
+import { at, clientId, definer, get, h, keep, post, Refused, streamLines, textHash, type AuthorInfo, type Boot, type Drill, type Reading, type Row } from './api.ts';
 import { compose, RESTING, sortVoices } from './compose.ts';
 
 /** The most a text may hold, as the server counts it. */
@@ -142,7 +142,7 @@ export async function rewritePage(app: HTMLElement) {
       void start();
     },
   });
-  const head = h('header', { class: 'pg-head' }, h('a', { class: 'pg-brand', href: '/' }, h('span', { class: 'pg-mark', 'aria-hidden': 'true' }, 'A'), h('span', {}, 'Advisor')));
+  const head = h('header', { class: 'pg-head' }, h('a', { class: 'pg-brand', href: at('/') }, h('span', { class: 'pg-mark', 'aria-hidden': 'true' }, 'A'), h('span', {}, 'Advisor')));
   app.className = 'pg';
   app.replaceChildren(head, h('main', { class: 'pg-main' }, c.el, r.el, moves.el));
   setVoice(voice.id);

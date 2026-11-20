@@ -16,9 +16,17 @@ async function json<T>(r: Response): Promise<T> {
   if (!r.ok) throw new Error(plain((data as { error?: string }).error ?? r.statusText));
   return data as T;
 }
-export const get = <T>(path: string, signal?: AbortSignal) => fetch(path, { signal }).then((r) => json<T>(r));
+/**
+ * Where the site is served from: '/' at a host's root, '/reviser/' on unscroll.com. Vite sets it from `base` at build
+ * (ADVISOR_BASE, see vite.config.ts), and the page's own requests all go under it.
+ */
+export const BASE: string = (import.meta as ImportMeta & { env?: { BASE_URL?: string } }).env?.BASE_URL ?? '/';
+/** A path of the site's ('/api/boot'), under BASE ('/reviser/api/boot'). */
+export const at = (path: string) => (path.startsWith('/') ? BASE.replace(/\/$/, '') + path : path);
+
+export const get = <T>(path: string, signal?: AbortSignal) => fetch(at(path), { signal }).then((r) => json<T>(r));
 export const post = <T>(path: string, body: unknown, signal?: AbortSignal) =>
-  fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal }).then((r) => json<T>(r));
+  fetch(at(path), { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body), signal }).then((r) => json<T>(r));
 
 /** A server message fit to show: never the name of a setting on the server. */
 export function plain(message: string): string {
@@ -134,7 +142,8 @@ type Each = (line: { type: string; [k: string]: unknown }) => void;
  * a proxy that holds a streamed answer until it ends does not hold these. A server that streams the lines in the one
  * answer is read that way.
  */
-export async function streamLines(path: string, body: unknown, each: Each, signal?: AbortSignal) {
+export async function streamLines(route: string, body: unknown, each: Each, signal?: AbortSignal) {
+  const path = at(route);
   const r = await fetch(path, { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ...(body as object), job: true }), signal });
   if (!r.ok) {
     const data = (await r.json().catch(() => ({}))) as { error?: string; budget?: string };

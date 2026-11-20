@@ -131,6 +131,17 @@ npm run cli -- concordance "at last"       # the voice's sentences with a phrase
 npm run cli -- similar "I went to the shop to buy bread"
 ```
 
+### Under a path: unscroll.com/reviser/
+
+The server always answers at its own root. To serve the page under a path, build it with that path and have the proxy take the path off before the request reaches the server:
+
+```sh
+ADVISOR_BASE=/reviser/ npm run build       # assets and API calls go to /reviser/...
+PORT=8010 HOST=127.0.0.1 npm start         # HOST binds one address; unset, every interface
+```
+
+On unscroll.exe.xyz, nginx does that with [ops/exe/unscroll.d/reviser.conf](ops/exe/unscroll.d/reviser.conf), included by the unscroll.com server block behind its password, and systemd runs [ops/exe/reviser.service](ops/exe/reviser.service). Without `ADVISOR_BASE` the page is built for a host's root, as on advisor.exe.xyz.
+
 The page's API: `/api/boot` (voices, forms, samples, glossary, which samples are ready), `/api/read` (the engine's view of a text; `form` is `auto` or a form's id), `/api/facts` (the facts for a text), `/api/rewrite` (the rewrite, as lines of JSON; it takes `form`, and `facts`, which is on unless false; with `job: true` it answers with a job id, and `GET /api/rewrite/<job>?after=n` gives the lines from the n-th on), `/api/ready`, `/api/practice` and `/api/practice/drills` (Try it), `/api/glossary`, `/api/health`.
 
 ## How it works

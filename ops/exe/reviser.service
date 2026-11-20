@@ -1,0 +1,19 @@
+# Reviser (the Advisor writing tutor) on unscroll.exe.xyz, served at https://unscroll.com/reviser/ through nginx
+# (ops/exe/unscroll.d/reviser.conf). Installed from this repository; edit it here, not on the box. The keys are in
+# the box's .env, which is in no repository. Node is the box's own /usr/local/bin/node (v26; package.json asks >=24).
+[Unit]
+Description=Reviser writing tutor (unscroll.com/reviser/)
+After=network.target
+
+[Service]
+User=exedev
+WorkingDirectory=/home/exedev/reviser
+EnvironmentFile=/home/exedev/reviser/.env
+Environment=PORT=8010
+Environment=HOST=127.0.0.1
+ExecStart=/usr/local/bin/node src/server/main.ts
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

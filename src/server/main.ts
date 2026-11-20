@@ -10,6 +10,8 @@ import { bootModels } from './models.ts';
 import { authors } from './voices.ts';
 
 const PORT = Number(process.env.PORT ?? 4180);
+/** The address to listen on: every interface unless HOST names one (127.0.0.1 behind nginx on unscroll.exe.xyz). */
+const HOST = process.env.HOST || undefined;
 const DEV = process.argv.includes('--dev');
 
 // A request that fails outside its handler is logged, and the server goes on serving the others.
@@ -19,7 +21,7 @@ async function main() {
   const server = await createApp({ dev: DEV, hmrPort: PORT + 1 });
   // Every built voice's pack, and the whole models of the voices most often suggested, read before the first writer arrives.
   bootModels(authors().filter((x) => x.built).map((a) => a.id), console.log);
-  server.listen(PORT, () => console.log(`Advisor at http://localhost:${PORT}${aiAvailable() ? ` (writer ${WRITER_MODEL}, reader ${READER_ON ? READER : 'off'})` : ` (rewrites off: no ${AI_KEYS})`}`));
+  server.listen(PORT, HOST, () => console.log(`Advisor at http://${HOST ?? 'localhost'}:${PORT}${aiAvailable() ? ` (writer ${WRITER_MODEL}, reader ${READER_ON ? READER : 'off'})` : ` (rewrites off: no ${AI_KEYS})`}`));
 }
 
 void main();
